@@ -1,0 +1,3794 @@
+{
+  "schema": "point-quality-completion-v1",
+  "executed_source": "a6d2c4bb2b1ccce671c17ab29e723da3b57bc8db",
+  "bindings": [
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-quality-20261001/STATUS.json",
+      "sha256": "15b81e915524cf328d86bbc077ab05236ec2ada008073d5bce9d1bf795c853af"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-quality-20261001/ACCOUNTING.json",
+      "sha256": "bece3710d394d08324491e599af99227f7283e349114e8073b287731a6f37ca1"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-quality-20261001/FREEZE.json",
+      "sha256": "c2d484ebc106f6c4f1e2e9c2c63ebd491c4b055ba91c819f93e0e03eac908a89"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-quality-20261001/PREFLIGHT_REVIEW.json",
+      "sha256": "26e13b4e865404b23d3655183cc8418c2cd64b38b7efda23807ea71bc94ade1d"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-quality-20261001/B-REF/LAUNCH.json",
+      "sha256": "36831cdbae90ece74e78b9da4e63b984d5ce0317bd00ae685886819f8cf121b5"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-quality-20261001/B-REF/EXECUTION.json",
+      "sha256": "d68ce0d6007650b77c25ca358401aac26ec2a5b4176fc000579859da2ba19736"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-quality-20261001/B-REF/timing.jsonl",
+      "sha256": "2d02e74ef513e0d57cebcda961c675bbd29f7110fdcc3ce6534c39c79acf6379"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-quality-20261001/B-REF/COMPLETED-SCRATCH-REMOVALS.json",
+      "sha256": "dc9688f7e4600d56f1dcdffe89516459f88f5fba8b789d02deca630b8e054d6e"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-quality-20261001/B-REF/freeze/prospective.json",
+      "sha256": "276df8cbc771fc698b149fb73292665b6338673944ceb3193728e039fc0f8570"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-quality-20261001/B-REF/run/BASE-POINT/REF/a1100/SUMMARY.json",
+      "sha256": "31548215af479564b04f323084125f26d86e89485cca6581e8806e4954175aad"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-quality-20261001/B-REF/run/BASE-POINT/REF/a1100/cycle-05/request.json",
+      "sha256": "4a6ea77a775e09042aecbc3a72e6e8db75c62c91538157bec1e00b3d69f31c29"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-quality-20261001/B-C-core-plus/LAUNCH.json",
+      "sha256": "71c54921d3effefd487ab1cbfc4b6edfd14c6ff0e46a0320a561baf9d28e1fe3"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-quality-20261001/B-C-core-plus/EXECUTION.json",
+      "sha256": "d68ce0d6007650b77c25ca358401aac26ec2a5b4176fc000579859da2ba19736"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-quality-20261001/B-C-core-plus/timing.jsonl",
+      "sha256": "c563d47777b9886f43515d571ebf60ace28682fd95c52984d7ca9080668b3d44"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-quality-20261001/B-C-core-plus/COMPLETED-SCRATCH-REMOVALS.json",
+      "sha256": "ae7f4add5ee4f432605f28e21a9a76bbe3365b28c90f75b313be5e772c378246"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-quality-20261001/B-C-core-plus/freeze/prospective.json",
+      "sha256": "af4e4bc6235bac6b46b5faaf16bdb25a8ffb6c7ca0378de70205469207da660d"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-quality-20261001/B-C-core-plus/run/BASE-POINT/REF/a1100/SUMMARY.json",
+      "sha256": "f591db0020c7a2ddbaf425e1f97583b86b54dfac6130bbaa4e8828ece984eedb"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-quality-20261001/B-C-core-plus/run/BASE-POINT/REF/a1100/cycle-05/request.json",
+      "sha256": "6cd026972628da7fdc1e8b70952540eda44597074378e220e1217b677783fcd7"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-quality-20261001/B-C-core-minus/LAUNCH.json",
+      "sha256": "305832b79e60d59533f4e22913ddc8fc38909762162052e8519cdd060a3f68c0"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-quality-20261001/B-C-core-minus/EXECUTION.json",
+      "sha256": "d68ce0d6007650b77c25ca358401aac26ec2a5b4176fc000579859da2ba19736"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-quality-20261001/B-C-core-minus/timing.jsonl",
+      "sha256": "317eef976014d97f01c5d111e862ea5a9c05d3904422d3265069d1f8b2ee2efc"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-quality-20261001/B-C-core-minus/COMPLETED-SCRATCH-REMOVALS.json",
+      "sha256": "99b813621ad714917b1885063ee401562e0d612b3e30fcc4ec7ec9c8cdca079d"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-quality-20261001/B-C-core-minus/freeze/prospective.json",
+      "sha256": "70c86bc0176dbfa86ac1c3467c1dcbd0363a38df628d972d603337e3cca8dab4"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-quality-20261001/B-C-core-minus/run/BASE-POINT/REF/a1100/SUMMARY.json",
+      "sha256": "488a332242487f8db9399f72305f94245216a8ad17b1ffa925b9c20daa5f92a5"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-quality-20261001/B-C-core-minus/run/BASE-POINT/REF/a1100/cycle-05/request.json",
+      "sha256": "b9b108aefd0caca23a3b36bd4886679c9e01afd6d88fc26579c3b9e689a0ac84"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-quality-20261001/report/response-B/response-maps.npz",
+      "sha256": "78bf76fa218a70c8a45adf2698514923e6014c1ca751e01353ed0f5c9245109a"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-quality-20261001/report/response-B/source-responses.json",
+      "sha256": "722708a5d7ad119c2d21704da1e62f34ad0025f4754467d28aebc5174356261f"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-quality-20261001/report/response-B/native-source-accounting.json",
+      "sha256": "ab7d7cdcbebed7a8670f16c9c3e64fd5dd59783a62b4dd826cf09d038a9fa57d"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-quality-20261001/report/response-B/response-extraction.json",
+      "sha256": "67fadeb3f3deaf84490a198f36c793d84366adbdec048a715e876bd1186cf3bc"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-quality-20261001/B-REF/SHAPES.json",
+      "sha256": "9e0b32dec21275b0f7d84d5ab54613105e5f8470dc61ddbb110f14414712b279"
+    }
+  ],
+  "accounting": {
+    "charged_attempts": {
+      "parent": 3,
+      "trajectory": 3,
+      "feedback": 15,
+      "endpoint": 3
+    },
+    "receipts": [
+      {
+        "role": "B-REF",
+        "network": 1,
+        "receipt": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-quality-20261001/B-REF/upstream/products/network1/receipt.yaml",
+          "sha256": "13ffb24d0189df89c63d8b2026b73f0fc1912fb7899f0419a8e5a9592a8ac021"
+        },
+        "Apply_performed": true
+      },
+      {
+        "role": "B-REF",
+        "network": 2,
+        "receipt": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-quality-20261001/B-REF/upstream/products/network2/receipt.yaml",
+          "sha256": "e17bd855c94ed8a1bdf6bad63ffd8e5faa4bb56219cc856665701607efb982a3"
+        },
+        "Apply_performed": true
+      },
+      {
+        "role": "B-REF",
+        "network": 3,
+        "receipt": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-quality-20261001/B-REF/upstream/products/network3/receipt.yaml",
+          "sha256": "076f8444f8efe0e356bbfcc3e8100ad931adfd6bd4f7bf119aea912c19413723"
+        },
+        "Apply_performed": true
+      },
+      {
+        "role": "B-REF",
+        "network": 4,
+        "receipt": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-quality-20261001/B-REF/upstream/products/network4/receipt.yaml",
+          "sha256": "e490bd851c79f3893cde38f7b120bf994b97e519355abd38303836fb0fe24dc1"
+        },
+        "Apply_performed": true
+      },
+      {
+        "role": "B-C-core-plus",
+        "network": 1,
+        "receipt": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-quality-20261001/B-C-core-plus/upstream/products/network1/receipt.yaml",
+          "sha256": "3113d768b36ebe60ad4e371d6a00c0944af4fbe15f0d0c298d11c005211d4591"
+        },
+        "Apply_performed": true
+      },
+      {
+        "role": "B-C-core-plus",
+        "network": 2,
+        "receipt": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-quality-20261001/B-C-core-plus/upstream/products/network2/receipt.yaml",
+          "sha256": "c23743d4c9052a5d27de3d2c27cc0f63e4a843747a06e25300ae7fc7f9d4a663"
+        },
+        "Apply_performed": true
+      },
+      {
+        "role": "B-C-core-plus",
+        "network": 3,
+        "receipt": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-quality-20261001/B-C-core-plus/upstream/products/network3/receipt.yaml",
+          "sha256": "441381e1843f87a3b810de68eb6f5bb834cce91369ff2853437ec389ac8fe016"
+        },
+        "Apply_performed": true
+      },
+      {
+        "role": "B-C-core-plus",
+        "network": 4,
+        "receipt": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-quality-20261001/B-C-core-plus/upstream/products/network4/receipt.yaml",
+          "sha256": "e461a1f561c7d607d071bdb792ab4d1f0e9b4d3bb22270fd3993ef6447b2bdc5"
+        },
+        "Apply_performed": true
+      },
+      {
+        "role": "B-C-core-minus",
+        "network": 1,
+        "receipt": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-quality-20261001/B-C-core-minus/upstream/products/network1/receipt.yaml",
+          "sha256": "158f304f804528f1d9ad35d1bb1cf31e21109ec4e554a5a02124bfb54b2cdb91"
+        },
+        "Apply_performed": true
+      },
+      {
+        "role": "B-C-core-minus",
+        "network": 2,
+        "receipt": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-quality-20261001/B-C-core-minus/upstream/products/network2/receipt.yaml",
+          "sha256": "128a5f215b10d7c2dbdbf4758ae1862cde4a421f73040c383f1ad480749bbc3b"
+        },
+        "Apply_performed": true
+      },
+      {
+        "role": "B-C-core-minus",
+        "network": 3,
+        "receipt": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-quality-20261001/B-C-core-minus/upstream/products/network3/receipt.yaml",
+          "sha256": "baebac76e0eac384d86740ca63f3ef246e44a3525f71f2c8b0b44845f049a702"
+        },
+        "Apply_performed": true
+      },
+      {
+        "role": "B-C-core-minus",
+        "network": 4,
+        "receipt": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-quality-20261001/B-C-core-minus/upstream/products/network4/receipt.yaml",
+          "sha256": "9af8b15d0d5a6f73e65d1382c6a4f7d1ffe324e030e0d136be81235724448eb7"
+        },
+        "Apply_performed": true
+      }
+    ],
+    "full_roles_charged": 1,
+    "compact_roles_charged": 2,
+    "subset_roles_charged": 0,
+    "replacements": 0,
+    "maximum_new_starts": 14,
+    "frozen_batch_maximum": 3,
+    "qualification": "Charge before child start. Missing/partial receipts mean unknown work, not no work. Unused slots parked, not automatic authorization for extra roles."
+  },
+  "roles": [
+    {
+      "role": "B-REF",
+      "source_revision": "a6d2c4bb2b1ccce671c17ab29e723da3b57bc8db",
+      "M0": {
+        "fit": {
+          "status": "success",
+          "method": "POINT-EXPECTED-v1",
+          "cause": null,
+          "constrained": false,
+          "parameters": [
+            223.27795359526573,
+            4.7221987560769865,
+            7.463589661259536,
+            4.592243647795891,
+            2.05601536216982,
+            -0.2336458666173562,
+            -2.0350237827599784
+          ]
+        },
+        "guard": {
+          "method": "POINT-EXPECTED-v1",
+          "status": "accepted",
+          "accepted": true,
+          "complete": true,
+          "cause": null,
+          "accepted_parameters": [
+            223.27795359526573,
+            4.7221987560769865,
+            7.463589661259536,
+            4.592243647795891,
+            2.05601536216982,
+            -0.2336458666173562,
+            -2.0350237827599784
+          ],
+          "pointing_correction": null,
+          "accepted_centroid_tangent_arcsec": [
+            4.7221987560769865,
+            7.463589661259536
+          ],
+          "expected_origin_tangent_arcsec": [
+            0.0,
+            0.0
+          ],
+          "fit_pixels": 1257,
+          "expected_origin_sky": {
+            "ra_deg": 176.7429079166667,
+            "dec_deg": 39.97619555555556,
+            "frame": "FK5",
+            "equinox": 2000.0
+          },
+          "sigma_A": 14.475689203549226,
+          "SNR_A": 15.42434010952109,
+          "diagnostic": {
+            "initial": [
+              232.66730916950513,
+              6.0,
+              8.0,
+              2.1233045007200477,
+              2.1233045007200477,
+              0.0,
+              -1.3451642171258862
+            ],
+            "parameters": [
+              223.27795359526573,
+              4.7221987560769865,
+              7.463589661259536,
+              4.592243647795891,
+              2.05601536216982,
+              -0.2336458666173562,
+              -2.0350237827599784
+            ],
+            "status": 2,
+            "message": "`ftol` termination condition is satisfied.",
+            "converged": true,
+            "finite": true,
+            "nfev": 11,
+            "njev": 10,
+            "cost": 331724.58591469575,
+            "optimality": 0.2606393753494024,
+            "active_mask": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "sigma_floor_arcsec": 1.5,
+            "sigma_floor_FWHM_arcsec": 3.5322300675464238,
+            "centroid_radius_arcsec": 8.832006098478152
+          },
+          "optimizer_calls": 1,
+          "amplitude_sensitivity": {
+            "rank": 7,
+            "rank_tolerance": 1.5152818626926856e-10,
+            "singular_values": [
+              542.897600014642,
+              259.61655304361426,
+              209.11151773194064,
+              106.76459169462892,
+              93.6218483656459,
+              34.56932659083277,
+              1.9253745207591861
+            ],
+            "amplitude_null_projection": 9.139425482834653e-18,
+            "identifiability_tolerance": 2.7911006839076435e-11
+          },
+          "message": "Expected POINT source accepted."
+        },
+        "frozen_template_projection": 223.27795359557558,
+        "auxiliary_support": {
+          "available": true,
+          "reason": null,
+          "missing_pixels": 0,
+          "nonfinite_pixels": 0,
+          "template_pixels": 824,
+          "supported_template_pixels": 824
+        },
+        "apertures": [
+          {
+            "radius_measured_fwhm": 1.0,
+            "radius_arcsec": 10.81390739349581,
+            "value_mJy_per_beam_arcsec2": 13364.0299146031,
+            "available": true,
+            "aperture_pixels": 90,
+            "expected_pixels": 90
+          },
+          {
+            "radius_measured_fwhm": 1.5,
+            "radius_arcsec": 16.220861090243716,
+            "value_mJy_per_beam_arcsec2": 14144.229917010238,
+            "available": true,
+            "aperture_pixels": 206,
+            "expected_pixels": 206
+          },
+          {
+            "radius_measured_fwhm": 2.0,
+            "radius_arcsec": 21.62781478699162,
+            "value_mJy_per_beam_arcsec2": 12402.664720022998,
+            "available": true,
+            "aperture_pixels": 370,
+            "expected_pixels": 370
+          }
+        ],
+        "raw_apertures": [
+          {
+            "radius_measured_fwhm": 1.0,
+            "radius_arcsec": 10.81390739349581,
+            "value_mJy_per_beam_arcsec2": 12631.421352809508,
+            "available": true,
+            "aperture_pixels": 90,
+            "expected_pixels": 90
+          },
+          {
+            "radius_measured_fwhm": 1.5,
+            "radius_arcsec": 16.220861090243716,
+            "value_mJy_per_beam_arcsec2": 12467.370320016016,
+            "available": true,
+            "aperture_pixels": 206,
+            "expected_pixels": 206
+          },
+          {
+            "radius_measured_fwhm": 2.0,
+            "radius_arcsec": 21.62781478699162,
+            "value_mJy_per_beam_arcsec2": 9390.829521538231,
+            "available": true,
+            "aperture_pixels": 370,
+            "expected_pixels": 370
+          }
+        ],
+        "aperture_background_terms": [
+          -732.6085617935914,
+          -1676.8595969942216,
+          -3011.835198484767
+        ],
+        "background": {
+          "n": 438,
+          "median": -1.6131648676402173,
+          "mean": -0.946219978579868,
+          "std": 24.016758527926996,
+          "robust_scale": 19.385098932621805
+        },
+        "profile": [
+          195.35819230235893,
+          112.90178640674525,
+          47.33983845469541,
+          14.626437879031467,
+          9.896599540842647,
+          1.3016356601066144,
+          -0.6335278095120577,
+          -0.19352933706806577,
+          -1.7713538702715637,
+          -6.956730170563462,
+          -8.052809044347956,
+          -4.775980811572492,
+          -3.3517852172182105,
+          2.9045549112799445,
+          -2.900148316895535,
+          -3.257271239197811,
+          0.09914518953155703,
+          -5.234340215236624,
+          -4.945083332376495,
+          -2.1343854076730744
+        ],
+        "uncertainty_scope": "guard conditional full frozen C0 reference-scale sigma_A; not endpoint empirical uncertainty"
+      },
+      "T5": {
+        "fit": {
+          "status": "success",
+          "method": "POINT-EXPECTED-v1",
+          "cause": null,
+          "constrained": false,
+          "parameters": [
+            291.81821448589625,
+            4.728987586792862,
+            7.408713442126636,
+            4.662890474472854,
+            2.205183781175711,
+            -0.24878559445422121,
+            -0.8682790029855479
+          ]
+        },
+        "guard": {
+          "method": "POINT-EXPECTED-v1",
+          "status": "accepted",
+          "accepted": true,
+          "complete": true,
+          "cause": null,
+          "accepted_parameters": [
+            291.81821448589625,
+            4.728987586792862,
+            7.408713442126636,
+            4.662890474472854,
+            2.205183781175711,
+            -0.24878559445422121,
+            -0.8682790029855479
+          ],
+          "pointing_correction": null,
+          "accepted_centroid_tangent_arcsec": [
+            4.728987586792862,
+            7.408713442126636
+          ],
+          "expected_origin_tangent_arcsec": [
+            0.0,
+            0.0
+          ],
+          "fit_pixels": 1257,
+          "expected_origin_sky": {
+            "ra_deg": 176.7429079166667,
+            "dec_deg": 39.97619555555556,
+            "frame": "FK5",
+            "equinox": 2000.0
+          },
+          "sigma_A": 14.111533221633673,
+          "SNR_A": 20.6794123574414,
+          "diagnostic": {
+            "initial": [
+              301.8778200191728,
+              6.0,
+              8.0,
+              2.1233045007200477,
+              2.1233045007200477,
+              0.0,
+              0.09883219010771775
+            ],
+            "parameters": [
+              291.81821448589625,
+              4.728987586792862,
+              7.408713442126636,
+              4.662890474472854,
+              2.205183781175711,
+              -0.24878559445422121,
+              -0.8682790029855479
+            ],
+            "status": 2,
+            "message": "`ftol` termination condition is satisfied.",
+            "converged": true,
+            "finite": true,
+            "nfev": 12,
+            "njev": 11,
+            "cost": 334268.2404638556,
+            "optimality": 0.03962975634126294,
+            "active_mask": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "sigma_floor_arcsec": 1.5,
+            "sigma_floor_FWHM_arcsec": 3.5322300675464238,
+            "centroid_radius_arcsec": 8.789332082905327
+          },
+          "optimizer_calls": 1,
+          "amplitude_sensitivity": {
+            "rank": 7,
+            "rank_tolerance": 1.899812322519795e-10,
+            "singular_values": [
+              680.6677858213226,
+              330.7294824036949,
+              265.9186837629971,
+              143.09351092363445,
+              125.75853195014321,
+              34.50852179294124,
+              2.0093543841268717
+            ],
+            "amplitude_null_projection": 8.109899475649535e-18,
+            "identifiability_tolerance": 2.7911006839076435e-11
+          },
+          "message": "Expected POINT source accepted."
+        },
+        "frozen_template_projection": 304.1300306565046,
+        "auxiliary_support": {
+          "available": true,
+          "reason": null,
+          "missing_pixels": 0,
+          "nonfinite_pixels": 0,
+          "template_pixels": 824,
+          "supported_template_pixels": 824
+        },
+        "apertures": [
+          {
+            "radius_measured_fwhm": 1.0,
+            "radius_arcsec": 10.81390739349581,
+            "value_mJy_per_beam_arcsec2": 19189.933406947526,
+            "available": true,
+            "aperture_pixels": 90,
+            "expected_pixels": 90
+          },
+          {
+            "radius_measured_fwhm": 1.5,
+            "radius_arcsec": 16.220861090243716,
+            "value_mJy_per_beam_arcsec2": 20965.104967783238,
+            "available": true,
+            "aperture_pixels": 206,
+            "expected_pixels": 206
+          },
+          {
+            "radius_measured_fwhm": 2.0,
+            "radius_arcsec": 21.62781478699162,
+            "value_mJy_per_beam_arcsec2": 19709.421469520654,
+            "available": true,
+            "aperture_pixels": 370,
+            "expected_pixels": 370
+          }
+        ],
+        "raw_apertures": [
+          {
+            "radius_measured_fwhm": 1.0,
+            "radius_arcsec": 10.81390739349581,
+            "value_mJy_per_beam_arcsec2": 18877.35296587273,
+            "available": true,
+            "aperture_pixels": 90,
+            "expected_pixels": 90
+          },
+          {
+            "radius_measured_fwhm": 1.5,
+            "radius_arcsec": 16.220861090243716,
+            "value_mJy_per_beam_arcsec2": 20249.643069323145,
+            "available": true,
+            "aperture_pixels": 206,
+            "expected_pixels": 206
+          },
+          {
+            "radius_measured_fwhm": 2.0,
+            "radius_arcsec": 21.62781478699162,
+            "value_mJy_per_beam_arcsec2": 18424.368545102043,
+            "available": true,
+            "aperture_pixels": 370,
+            "expected_pixels": 370
+          }
+        ],
+        "aperture_background_terms": [
+          -312.5804410747951,
+          -715.4618984600929,
+          -1285.052924418611
+        ],
+        "background": {
+          "n": 438,
+          "median": -1.6032644098064637,
+          "mean": -0.5214485927768697,
+          "std": 23.913851847548933,
+          "robust_scale": 19.336602963988625
+        },
+        "profile": [
+          261.0510506000179,
+          159.08219012149925,
+          71.23990058159931,
+          26.3556047544635,
+          16.856525943715198,
+          5.891304464935121,
+          2.7651333611887896,
+          2.4146993139261435,
+          0.6337519170315192,
+          -5.0668524449048675,
+          -6.511008251748948,
+          -3.6026276915930637,
+          -2.2241805163211716,
+          3.7988594524795762,
+          -2.0454130550544023,
+          -2.4991442777039183,
+          0.6849658018041558,
+          -4.766059185083599,
+          -4.628397936309637,
+          -1.917475845123229
+        ],
+        "uncertainty_scope": "guard conditional full frozen C0 reference-scale sigma_A; not endpoint empirical uncertainty"
+      },
+      "endpoint_uncertainty": [
+        {
+          "name": "peak",
+          "conditional_sigma": 14.10928317659862,
+          "source_transfer_supported": true,
+          "source_transfer_empirically_calibrated": false,
+          "high_coverage_operator_pixels": 0,
+          "identifiable": true,
+          "scope": "conditional background covariance transfer including refitted constant nuisance; not paired-difference significance or model-estimation error",
+          "qualification": null
+        },
+        {
+          "name": "cx",
+          "conditional_sigma": 0.2735057824080469,
+          "source_transfer_supported": true,
+          "source_transfer_empirically_calibrated": false,
+          "high_coverage_operator_pixels": 0,
+          "identifiable": true,
+          "scope": "conditional background covariance transfer including refitted constant nuisance; not paired-difference significance or model-estimation error",
+          "qualification": null
+        },
+        {
+          "name": "cy",
+          "conditional_sigma": 0.12199560538706429,
+          "source_transfer_supported": true,
+          "source_transfer_empirically_calibrated": false,
+          "high_coverage_operator_pixels": 0,
+          "identifiable": true,
+          "scope": "conditional background covariance transfer including refitted constant nuisance; not paired-difference significance or model-estimation error",
+          "qualification": null
+        },
+        {
+          "name": "sx",
+          "conditional_sigma": 0.2641632348758286,
+          "source_transfer_supported": true,
+          "source_transfer_empirically_calibrated": false,
+          "high_coverage_operator_pixels": 0,
+          "identifiable": true,
+          "scope": "conditional background covariance transfer including refitted constant nuisance; not paired-difference significance or model-estimation error",
+          "qualification": null
+        },
+        {
+          "name": "sy",
+          "conditional_sigma": 0.11930472584288537,
+          "source_transfer_supported": true,
+          "source_transfer_empirically_calibrated": false,
+          "high_coverage_operator_pixels": 0,
+          "identifiable": true,
+          "scope": "conditional background covariance transfer including refitted constant nuisance; not paired-difference significance or model-estimation error",
+          "qualification": null
+        },
+        {
+          "name": "angle",
+          "conditional_sigma": 0.03897075608756826,
+          "source_transfer_supported": true,
+          "source_transfer_empirically_calibrated": false,
+          "high_coverage_operator_pixels": 0,
+          "identifiable": true,
+          "scope": "conditional background covariance transfer including refitted constant nuisance; not paired-difference significance or model-estimation error",
+          "qualification": null
+        },
+        {
+          "name": "constant",
+          "conditional_sigma": 1.6968236764008753,
+          "source_transfer_supported": true,
+          "source_transfer_empirically_calibrated": false,
+          "high_coverage_operator_pixels": 0,
+          "identifiable": true,
+          "scope": "conditional background covariance transfer including refitted constant nuisance; not paired-difference significance or model-estimation error",
+          "qualification": null
+        },
+        {
+          "name": "template",
+          "conditional_sigma": 14.470409513346869,
+          "source_transfer_supported": true,
+          "source_transfer_empirically_calibrated": false,
+          "high_coverage_operator_pixels": 0,
+          "identifiable": true,
+          "scope": "conditional background covariance transfer including refitted constant nuisance; not paired-difference significance or model-estimation error",
+          "qualification": null
+        },
+        {
+          "name": "aperture1",
+          "conditional_sigma": 1917.5194768934775,
+          "source_transfer_supported": true,
+          "source_transfer_empirically_calibrated": false,
+          "high_coverage_operator_pixels": 0,
+          "identifiable": true,
+          "scope": "conditional background covariance transfer including refitted constant nuisance; not paired-difference significance or model-estimation error",
+          "qualification": null
+        },
+        {
+          "name": "aperture1.5",
+          "conditional_sigma": 3112.397899010095,
+          "source_transfer_supported": true,
+          "source_transfer_empirically_calibrated": false,
+          "high_coverage_operator_pixels": 0,
+          "identifiable": true,
+          "scope": "conditional background covariance transfer including refitted constant nuisance; not paired-difference significance or model-estimation error",
+          "qualification": null
+        },
+        {
+          "name": "aperture2",
+          "conditional_sigma": 3964.3261969678224,
+          "source_transfer_supported": true,
+          "source_transfer_empirically_calibrated": false,
+          "high_coverage_operator_pixels": 0,
+          "identifiable": true,
+          "scope": "conditional background covariance transfer including refitted constant nuisance; not paired-difference significance or model-estimation error",
+          "qualification": null
+        }
+      ],
+      "T5_consumes_m4": true,
+      "m5_applied": false,
+      "unexpected_error_logs": [],
+      "wall_seconds": 173.124694875,
+      "sampled_tree_RSS_bytes": 3060056064,
+      "stage_spans_seconds": {
+        "environment_input_verification": 0.553281833,
+        "native_invocation_including_reservation_hashing_publication": 168.92722662499997,
+        "load_noise_context": 0.059653333999999995,
+        "initial_noise_guard_context_publication": 0.124974875,
+        "source_measurements": 0.0021001649999999998,
+        "raw_parent_PTC_MAP_initial_guard_noise": 89.618667084,
+        "feedback_candidate_publication": 0.06283928999999999,
+        "source_fit_measurement": 0.078410459,
+        "cycle_cleanup": 0.558730834,
+        "conditional_endpoint_including_io": 0.039619083,
+        "trajectory_including_endpoint": 81.604542125
+      },
+      "stage_scope": "inclusive nested wall spans are not additive",
+      "feedback_trajectory_wall_seconds": 81.52201991699985,
+      "history_source": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-quality-20261001/B-REF/run/BASE-POINT/REF/a1100/SUMMARY.json",
+        "sha256": "31548215af479564b04f323084125f26d86e89485cca6581e8806e4954175aad"
+      }
+    },
+    {
+      "role": "B-C-core-plus",
+      "source_revision": "a6d2c4bb2b1ccce671c17ab29e723da3b57bc8db",
+      "M0": {
+        "fit": {
+          "status": "success",
+          "method": "POINT-EXPECTED-v1",
+          "cause": null,
+          "constrained": false,
+          "parameters": [
+            240.77679086510184,
+            4.720897408987595,
+            7.4663505213256025,
+            4.567951875149602,
+            2.03524670536018,
+            -0.23408294573404365,
+            -2.1501812397590654
+          ]
+        },
+        "guard": {
+          "method": "POINT-EXPECTED-v1",
+          "status": "accepted",
+          "accepted": true,
+          "complete": true,
+          "cause": null,
+          "accepted_parameters": [
+            240.77679086510184,
+            4.720897408987595,
+            7.4663505213256025,
+            4.567951875149602,
+            2.03524670536018,
+            -0.23408294573404365,
+            -2.1501812397590654
+          ],
+          "pointing_correction": null,
+          "accepted_centroid_tangent_arcsec": [
+            4.720897408987595,
+            7.4663505213256025
+          ],
+          "expected_origin_tangent_arcsec": [
+            0.0,
+            0.0
+          ],
+          "fit_pixels": 1257,
+          "expected_origin_sky": {
+            "ra_deg": 176.7429079166667,
+            "dec_deg": 39.97619555555556,
+            "frame": "FK5",
+            "equinox": 2000.0
+          },
+          "sigma_A": 14.545871612625124,
+          "SNR_A": 16.552929743730108,
+          "diagnostic": {
+            "initial": [
+              247.2981891771596,
+              6.0,
+              8.0,
+              2.1233045007200477,
+              2.1233045007200477,
+              0.0,
+              -1.537585905917932
+            ],
+            "parameters": [
+              240.77679086510184,
+              4.720897408987595,
+              7.4663505213256025,
+              4.567951875149602,
+              2.03524670536018,
+              -0.23408294573404365,
+              -2.1501812397590654
+            ],
+            "status": 2,
+            "message": "`ftol` termination condition is satisfied.",
+            "converged": true,
+            "finite": true,
+            "nfev": 11,
+            "njev": 10,
+            "cost": 332175.0711754713,
+            "optimality": 0.12590746544527476,
+            "active_mask": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "sigma_floor_arcsec": 1.5,
+            "sigma_floor_FWHM_arcsec": 3.5322300675464238,
+            "centroid_radius_arcsec": 8.833643781219893
+          },
+          "optimizer_calls": 1,
+          "amplitude_sensitivity": {
+            "rank": 7,
+            "rank_tolerance": 1.6332764100302463e-10,
+            "singular_values": [
+              585.1728744316022,
+              280.5836708043288,
+              226.04766431029913,
+              114.8557959429228,
+              100.71476414044032,
+              34.58855156863306,
+              1.9105639429523034
+            ],
+            "amplitude_null_projection": 3.675938894866118e-18,
+            "identifiability_tolerance": 2.7911006839076435e-11
+          },
+          "message": "Expected POINT source accepted."
+        },
+        "frozen_template_projection": 238.9161957771696,
+        "auxiliary_support": {
+          "available": true,
+          "reason": null,
+          "missing_pixels": 0,
+          "nonfinite_pixels": 0,
+          "template_pixels": 824,
+          "supported_template_pixels": 824
+        },
+        "apertures": [
+          {
+            "radius_measured_fwhm": 1.0,
+            "radius_arcsec": 10.81390739349581,
+            "value_mJy_per_beam_arcsec2": 14124.476483926905,
+            "available": true,
+            "aperture_pixels": 90,
+            "expected_pixels": 90
+          },
+          {
+            "radius_measured_fwhm": 1.5,
+            "radius_arcsec": 16.220861090243716,
+            "value_mJy_per_beam_arcsec2": 14829.421358679287,
+            "available": true,
+            "aperture_pixels": 206,
+            "expected_pixels": 206
+          },
+          {
+            "radius_measured_fwhm": 2.0,
+            "radius_arcsec": 21.62781478699162,
+            "value_mJy_per_beam_arcsec2": 13044.951806719218,
+            "available": true,
+            "aperture_pixels": 370,
+            "expected_pixels": 370
+          }
+        ],
+        "raw_apertures": [
+          {
+            "radius_measured_fwhm": 1.0,
+            "radius_arcsec": 10.81390739349581,
+            "value_mJy_per_beam_arcsec2": 13350.41123761364,
+            "available": true,
+            "aperture_pixels": 90,
+            "expected_pixels": 90
+          },
+          {
+            "radius_measured_fwhm": 1.5,
+            "radius_arcsec": 16.220861090243716,
+            "value_mJy_per_beam_arcsec2": 13057.67201711782,
+            "available": true,
+            "aperture_pixels": 206,
+            "expected_pixels": 206
+          },
+          {
+            "radius_measured_fwhm": 2.0,
+            "radius_arcsec": 21.62781478699162,
+            "value_mJy_per_beam_arcsec2": 9862.683571875801,
+            "available": true,
+            "aperture_pixels": 370,
+            "expected_pixels": 370
+          }
+        ],
+        "aperture_background_terms": [
+          -774.0652463132647,
+          -1771.7493415614663,
+          -3182.2682348434173
+        ],
+        "background": {
+          "n": 438,
+          "median": -1.5976862572957686,
+          "mean": -1.0025890996596774,
+          "std": 24.04479926347202,
+          "robust_scale": 19.37706247648153
+        },
+        "profile": [
+          209.3025966499306,
+          120.84397437282061,
+          49.96905005704129,
+          15.22053063161189,
+          9.954735029552031,
+          1.0128185093601672,
+          -0.9165097476246672,
+          -0.47101964733589125,
+          -2.005499466063864,
+          -7.092610066747085,
+          -8.222416440829612,
+          -4.858998960160628,
+          -3.443772167930006,
+          2.833239164729256,
+          -2.946769732322606,
+          -3.3326973076403172,
+          0.03973262094782008,
+          -5.3184460126365005,
+          -4.996517921965416,
+          -2.1566281174850097
+        ],
+        "uncertainty_scope": "guard conditional full frozen C0 reference-scale sigma_A; not endpoint empirical uncertainty"
+      },
+      "T5": {
+        "fit": {
+          "status": "success",
+          "method": "POINT-EXPECTED-v1",
+          "cause": null,
+          "constrained": false,
+          "parameters": [
+            314.7384149663861,
+            4.741688364105119,
+            7.423641169990226,
+            4.645802710390787,
+            2.2000571093871,
+            -0.24504962083848114,
+            -0.877073023395584
+          ]
+        },
+        "guard": {
+          "method": "POINT-EXPECTED-v1",
+          "status": "accepted",
+          "accepted": true,
+          "complete": true,
+          "cause": null,
+          "accepted_parameters": [
+            314.7384149663861,
+            4.741688364105119,
+            7.423641169990226,
+            4.645802710390787,
+            2.2000571093871,
+            -0.24504962083848114,
+            -0.877073023395584
+          ],
+          "pointing_correction": null,
+          "accepted_centroid_tangent_arcsec": [
+            4.741688364105119,
+            7.423641169990226
+          ],
+          "expected_origin_tangent_arcsec": [
+            0.0,
+            0.0
+          ],
+          "fit_pixels": 1257,
+          "expected_origin_sky": {
+            "ra_deg": 176.7429079166667,
+            "dec_deg": 39.97619555555556,
+            "frame": "FK5",
+            "equinox": 2000.0
+          },
+          "sigma_A": 14.139299116025128,
+          "SNR_A": 22.25983143744865,
+          "diagnostic": {
+            "initial": [
+              322.5949225441785,
+              6.0,
+              8.0,
+              2.1233045007200477,
+              2.1233045007200477,
+              0.0,
+              0.08244555060774295
+            ],
+            "parameters": [
+              314.7384149663861,
+              4.741688364105119,
+              7.423641169990226,
+              4.645802710390787,
+              2.2000571093871,
+              -0.24504962083848114,
+              -0.877073023395584
+            ],
+            "status": 2,
+            "message": "`ftol` termination condition is satisfied.",
+            "converged": true,
+            "finite": true,
+            "nfev": 11,
+            "njev": 10,
+            "cost": 334541.62538334203,
+            "optimality": 0.1110089934512732,
+            "active_mask": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "sigma_floor_arcsec": 1.5,
+            "sigma_floor_FWHM_arcsec": 3.5322300675464238,
+            "centroid_radius_arcsec": 8.808748876149423
+          },
+          "optimizer_calls": 1,
+          "amplitude_sensitivity": {
+            "rank": 7,
+            "rank_tolerance": 2.0385691501847972e-10,
+            "singular_values": [
+              730.3818031138617,
+              356.4719061123098,
+              286.6119968986667,
+              154.41770073077606,
+              135.72711012795108,
+              34.51752149633835,
+              2.003349227049842
+            ],
+            "amplitude_null_projection": 3.331271206536658e-16,
+            "identifiability_tolerance": 2.7911006839076435e-11
+          },
+          "message": "Expected POINT source accepted."
+        },
+        "frozen_template_projection": 327.09229637513715,
+        "auxiliary_support": {
+          "available": true,
+          "reason": null,
+          "missing_pixels": 0,
+          "nonfinite_pixels": 0,
+          "template_pixels": 824,
+          "supported_template_pixels": 824
+        },
+        "apertures": [
+          {
+            "radius_measured_fwhm": 1.0,
+            "radius_arcsec": 10.81390739349581,
+            "value_mJy_per_beam_arcsec2": 20513.57565621773,
+            "available": true,
+            "aperture_pixels": 90,
+            "expected_pixels": 90
+          },
+          {
+            "radius_measured_fwhm": 1.5,
+            "radius_arcsec": 16.220861090243716,
+            "value_mJy_per_beam_arcsec2": 22306.193336442964,
+            "available": true,
+            "aperture_pixels": 206,
+            "expected_pixels": 206
+          },
+          {
+            "radius_measured_fwhm": 2.0,
+            "radius_arcsec": 21.62781478699162,
+            "value_mJy_per_beam_arcsec2": 21049.86765823049,
+            "available": true,
+            "aperture_pixels": 370,
+            "expected_pixels": 370
+          }
+        ],
+        "raw_apertures": [
+          {
+            "radius_measured_fwhm": 1.0,
+            "radius_arcsec": 10.81390739349581,
+            "value_mJy_per_beam_arcsec2": 20197.829367795322,
+            "available": true,
+            "aperture_pixels": 90,
+            "expected_pixels": 90
+          },
+          {
+            "radius_measured_fwhm": 1.5,
+            "radius_arcsec": 16.220861090243716,
+            "value_mJy_per_beam_arcsec2": 21583.485165165002,
+            "available": true,
+            "aperture_pixels": 206,
+            "expected_pixels": 206
+          },
+          {
+            "radius_measured_fwhm": 2.0,
+            "radius_arcsec": 21.62781478699162,
+            "value_mJy_per_beam_arcsec2": 19751.799583605025,
+            "available": true,
+            "aperture_pixels": 370,
+            "expected_pixels": 370
+          }
+        ],
+        "aperture_background_terms": [
+          -315.7462884224078,
+          -722.7081712779618,
+          -1298.0680746254657
+        ],
+        "background": {
+          "n": 438,
+          "median": -1.612911432722354,
+          "mean": -0.5396860011325741,
+          "std": 23.932335733408177,
+          "robust_scale": 19.409845801894544
+        },
+        "profile": [
+          280.43865911754915,
+          171.11973166633743,
+          76.7146072429414,
+          28.033775286714576,
+          17.570131789971978,
+          6.0174210825415315,
+          2.7898432053688453,
+          2.384678225080655,
+          0.6218659929224929,
+          -5.033120602109469,
+          -6.548651005709699,
+          -3.578749296041801,
+          -2.217496014880576,
+          3.809377045694733,
+          -2.0171451982830715,
+          -2.5042954314973818,
+          0.6794209249272286,
+          -4.805429886057688,
+          -4.645575101879421,
+          -1.9227836939088097
+        ],
+        "uncertainty_scope": "guard conditional full frozen C0 reference-scale sigma_A; not endpoint empirical uncertainty"
+      },
+      "endpoint_uncertainty": [
+        {
+          "name": "peak",
+          "conditional_sigma": 14.101676942735509,
+          "source_transfer_supported": true,
+          "source_transfer_empirically_calibrated": false,
+          "high_coverage_operator_pixels": 0,
+          "identifiable": true,
+          "scope": "conditional background covariance transfer including refitted constant nuisance; not paired-difference significance or model-estimation error",
+          "qualification": null
+        },
+        {
+          "name": "cx",
+          "conditional_sigma": 0.25244267278529303,
+          "source_transfer_supported": true,
+          "source_transfer_empirically_calibrated": false,
+          "high_coverage_operator_pixels": 0,
+          "identifiable": true,
+          "scope": "conditional background covariance transfer including refitted constant nuisance; not paired-difference significance or model-estimation error",
+          "qualification": null
+        },
+        {
+          "name": "cy",
+          "conditional_sigma": 0.1122672491408056,
+          "source_transfer_supported": true,
+          "source_transfer_empirically_calibrated": false,
+          "high_coverage_operator_pixels": 0,
+          "identifiable": true,
+          "scope": "conditional background covariance transfer including refitted constant nuisance; not paired-difference significance or model-estimation error",
+          "qualification": null
+        },
+        {
+          "name": "sx",
+          "conditional_sigma": 0.24385060722307914,
+          "source_transfer_supported": true,
+          "source_transfer_empirically_calibrated": false,
+          "high_coverage_operator_pixels": 0,
+          "identifiable": true,
+          "scope": "conditional background covariance transfer including refitted constant nuisance; not paired-difference significance or model-estimation error",
+          "qualification": null
+        },
+        {
+          "name": "sy",
+          "conditional_sigma": 0.11033614746050925,
+          "source_transfer_supported": true,
+          "source_transfer_empirically_calibrated": false,
+          "high_coverage_operator_pixels": 0,
+          "identifiable": true,
+          "scope": "conditional background covariance transfer including refitted constant nuisance; not paired-difference significance or model-estimation error",
+          "qualification": null
+        },
+        {
+          "name": "angle",
+          "conditional_sigma": 0.036221504525996345,
+          "source_transfer_supported": true,
+          "source_transfer_empirically_calibrated": false,
+          "high_coverage_operator_pixels": 0,
+          "identifiable": true,
+          "scope": "conditional background covariance transfer including refitted constant nuisance; not paired-difference significance or model-estimation error",
+          "qualification": null
+        },
+        {
+          "name": "constant",
+          "conditional_sigma": 1.688553082868363,
+          "source_transfer_supported": true,
+          "source_transfer_empirically_calibrated": false,
+          "high_coverage_operator_pixels": 0,
+          "identifiable": true,
+          "scope": "conditional background covariance transfer including refitted constant nuisance; not paired-difference significance or model-estimation error",
+          "qualification": null
+        },
+        {
+          "name": "template",
+          "conditional_sigma": 14.430995776942856,
+          "source_transfer_supported": true,
+          "source_transfer_empirically_calibrated": false,
+          "high_coverage_operator_pixels": 0,
+          "identifiable": true,
+          "scope": "conditional background covariance transfer including refitted constant nuisance; not paired-difference significance or model-estimation error",
+          "qualification": null
+        },
+        {
+          "name": "aperture1",
+          "conditional_sigma": 1912.4567771302368,
+          "source_transfer_supported": true,
+          "source_transfer_empirically_calibrated": false,
+          "high_coverage_operator_pixels": 0,
+          "identifiable": true,
+          "scope": "conditional background covariance transfer including refitted constant nuisance; not paired-difference significance or model-estimation error",
+          "qualification": null
+        },
+        {
+          "name": "aperture1.5",
+          "conditional_sigma": 3103.2685725830543,
+          "source_transfer_supported": true,
+          "source_transfer_empirically_calibrated": false,
+          "high_coverage_operator_pixels": 0,
+          "identifiable": true,
+          "scope": "conditional background covariance transfer including refitted constant nuisance; not paired-difference significance or model-estimation error",
+          "qualification": null
+        },
+        {
+          "name": "aperture2",
+          "conditional_sigma": 3951.357807006868,
+          "source_transfer_supported": true,
+          "source_transfer_empirically_calibrated": false,
+          "high_coverage_operator_pixels": 0,
+          "identifiable": true,
+          "scope": "conditional background covariance transfer including refitted constant nuisance; not paired-difference significance or model-estimation error",
+          "qualification": null
+        }
+      ],
+      "T5_consumes_m4": true,
+      "m5_applied": false,
+      "unexpected_error_logs": [],
+      "wall_seconds": 171.198389625,
+      "sampled_tree_RSS_bytes": 3233841152,
+      "stage_spans_seconds": {
+        "environment_input_verification": 0.579072,
+        "native_invocation_including_reservation_hashing_publication": 166.910941915,
+        "load_noise_context": 0.047021001,
+        "source_measurements": 0.0022070830000000003,
+        "source_fit_measurement": 0.08793275099999999,
+        "raw_parent_PTC_MAP_initial_guard_noise": 88.999993166,
+        "feedback_candidate_publication": 0.0734475,
+        "cycle_cleanup": 0.5325345419999999,
+        "conditional_endpoint_including_io": 0.037582375,
+        "trajectory_including_endpoint": 79.978559041
+      },
+      "stage_scope": "inclusive nested wall spans are not additive",
+      "feedback_trajectory_wall_seconds": 79.90297820900014,
+      "history_source": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-quality-20261001/B-C-core-plus/run/BASE-POINT/REF/a1100/SUMMARY.json",
+        "sha256": "f591db0020c7a2ddbaf425e1f97583b86b54dfac6130bbaa4e8828ece984eedb"
+      }
+    },
+    {
+      "role": "B-C-core-minus",
+      "source_revision": "a6d2c4bb2b1ccce671c17ab29e723da3b57bc8db",
+      "M0": {
+        "fit": {
+          "status": "success",
+          "method": "POINT-EXPECTED-v1",
+          "cause": null,
+          "constrained": false,
+          "parameters": [
+            205.63267776223375,
+            4.725228853305146,
+            7.461034457199709,
+            4.628688644645907,
+            2.079522711367673,
+            -0.2336050146703179,
+            -1.920543444537499
+          ]
+        },
+        "guard": {
+          "method": "POINT-EXPECTED-v1",
+          "status": "accepted",
+          "accepted": true,
+          "complete": true,
+          "cause": null,
+          "accepted_parameters": [
+            205.63267776223375,
+            4.725228853305146,
+            7.461034457199709,
+            4.628688644645907,
+            2.079522711367673,
+            -0.2336050146703179,
+            -1.920543444537499
+          ],
+          "pointing_correction": null,
+          "accepted_centroid_tangent_arcsec": [
+            4.725228853305146,
+            7.461034457199709
+          ],
+          "expected_origin_tangent_arcsec": [
+            0.0,
+            0.0
+          ],
+          "fit_pixels": 1257,
+          "expected_origin_sky": {
+            "ra_deg": 176.7429079166667,
+            "dec_deg": 39.97619555555556,
+            "frame": "FK5",
+            "equinox": 2000.0
+          },
+          "sigma_A": 14.38739688471588,
+          "SNR_A": 14.292556145488897,
+          "diagnostic": {
+            "initial": [
+              217.99203882932403,
+              6.0,
+              8.0,
+              2.1233045007200477,
+              2.1233045007200477,
+              0.0,
+              -1.2478761274214845
+            ],
+            "parameters": [
+              205.63267776223375,
+              4.725228853305146,
+              7.461034457199709,
+              4.628688644645907,
+              2.079522711367673,
+              -0.2336050146703179,
+              -1.920543444537499
+            ],
+            "status": 2,
+            "message": "`ftol` termination condition is satisfied.",
+            "converged": true,
+            "finite": true,
+            "nfev": 12,
+            "njev": 11,
+            "cost": 331660.5927743978,
+            "optimality": 0.09975698294129838,
+            "active_mask": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "sigma_floor_arcsec": 1.5,
+            "sigma_floor_FWHM_arcsec": 3.5322300675464238,
+            "centroid_radius_arcsec": 8.831467765192196
+          },
+          "optimizer_calls": 1,
+          "amplitude_sensitivity": {
+            "rank": 7,
+            "rank_tolerance": 1.40173237586989e-10,
+            "singular_values": [
+              502.2149089610816,
+              238.73063881096613,
+              192.25234652116148,
+              98.50428727896123,
+              86.37250501594244,
+              34.54440081406751,
+              1.9440024919603427
+            ],
+            "amplitude_null_projection": 2.2216207202236964e-16,
+            "identifiability_tolerance": 2.7911006839076435e-11
+          },
+          "message": "Expected POINT source accepted."
+        },
+        "frozen_template_projection": 207.6153315582334,
+        "auxiliary_support": {
+          "available": true,
+          "reason": null,
+          "missing_pixels": 0,
+          "nonfinite_pixels": 0,
+          "template_pixels": 824,
+          "supported_template_pixels": 824
+        },
+        "apertures": [
+          {
+            "radius_measured_fwhm": 1.0,
+            "radius_arcsec": 10.81390739349581,
+            "value_mJy_per_beam_arcsec2": 12603.158251097282,
+            "available": true,
+            "aperture_pixels": 90,
+            "expected_pixels": 90
+          },
+          {
+            "radius_measured_fwhm": 1.5,
+            "radius_arcsec": 16.220861090243716,
+            "value_mJy_per_beam_arcsec2": 13461.583048564027,
+            "available": true,
+            "aperture_pixels": 206,
+            "expected_pixels": 206
+          },
+          {
+            "radius_measured_fwhm": 2.0,
+            "radius_arcsec": 21.62781478699162,
+            "value_mJy_per_beam_arcsec2": 11765.982990774899,
+            "available": true,
+            "aperture_pixels": 370,
+            "expected_pixels": 370
+          }
+        ],
+        "raw_apertures": [
+          {
+            "radius_measured_fwhm": 1.0,
+            "radius_arcsec": 10.81390739349581,
+            "value_mJy_per_beam_arcsec2": 11911.762611063785,
+            "available": true,
+            "aperture_pixels": 90,
+            "expected_pixels": 90
+          },
+          {
+            "radius_measured_fwhm": 1.5,
+            "radius_arcsec": 16.220861090243716,
+            "value_mJy_per_beam_arcsec2": 11879.05525026513,
+            "available": true,
+            "aperture_pixels": 206,
+            "expected_pixels": 206
+          },
+          {
+            "radius_measured_fwhm": 2.0,
+            "radius_arcsec": 21.62781478699162,
+            "value_mJy_per_beam_arcsec2": 8923.578692859403,
+            "available": true,
+            "aperture_pixels": 370,
+            "expected_pixels": 370
+          }
+        ],
+        "aperture_background_terms": [
+          -691.3956400334973,
+          -1582.5277982988973,
+          -2842.4042979154965
+        ],
+        "background": {
+          "n": 438,
+          "median": -1.6026369658421904,
+          "mean": -0.905746262446032,
+          "std": 24.008786796161353,
+          "robust_scale": 19.40583236825299
+        },
+        "profile": [
+          181.34472416034043,
+          104.8907952873544,
+          44.67725799049195,
+          13.975936190087547,
+          9.921624718812172,
+          1.622784434348431,
+          -0.33626726527907563,
+          0.0617706541924172,
+          -1.5382867918343577,
+          -6.775184441918589,
+          -7.903371358247548,
+          -4.660279805104908,
+          -3.244455827936628,
+          2.9921124703278736,
+          -2.821845814915298,
+          -3.1847791968934063,
+          0.1539575140935946,
+          -5.18690593520504,
+          -4.910541605186623,
+          -2.111216597175907
+        ],
+        "uncertainty_scope": "guard conditional full frozen C0 reference-scale sigma_A; not endpoint empirical uncertainty"
+      },
+      "T5": {
+        "fit": {
+          "status": "success",
+          "method": "POINT-EXPECTED-v1",
+          "cause": null,
+          "constrained": false,
+          "parameters": [
+            269.46922289186705,
+            4.7812979323110465,
+            7.397882628295646,
+            4.640787380309963,
+            2.2238107888526812,
+            -0.25430814181198147,
+            -0.8588369086240782
+          ]
+        },
+        "guard": {
+          "method": "POINT-EXPECTED-v1",
+          "status": "accepted",
+          "accepted": true,
+          "complete": true,
+          "cause": null,
+          "accepted_parameters": [
+            269.46922289186705,
+            4.7812979323110465,
+            7.397882628295646,
+            4.640787380309963,
+            2.2238107888526812,
+            -0.25430814181198147,
+            -0.8588369086240782
+          ],
+          "pointing_correction": null,
+          "accepted_centroid_tangent_arcsec": [
+            4.7812979323110465,
+            7.397882628295646
+          ],
+          "expected_origin_tangent_arcsec": [
+            0.0,
+            0.0
+          ],
+          "fit_pixels": 1257,
+          "expected_origin_sky": {
+            "ra_deg": 176.7429079166667,
+            "dec_deg": 39.97619555555556,
+            "frame": "FK5",
+            "equinox": 2000.0
+          },
+          "sigma_A": 14.101687427623704,
+          "SNR_A": 19.109005519722807,
+          "diagnostic": {
+            "initial": [
+              282.02948597848325,
+              6.0,
+              8.0,
+              2.1233045007200477,
+              2.1233045007200477,
+              0.0,
+              0.08313482718553562
+            ],
+            "parameters": [
+              269.46922289186705,
+              4.7812979323110465,
+              7.397882628295646,
+              4.640787380309963,
+              2.2238107888526812,
+              -0.25430814181198147,
+              -0.8588369086240782
+            ],
+            "status": 2,
+            "message": "`ftol` termination condition is satisfied.",
+            "converged": true,
+            "finite": true,
+            "nfev": 12,
+            "njev": 11,
+            "cost": 334251.60094050947,
+            "optimality": 0.05504098446578917,
+            "active_mask": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "sigma_floor_arcsec": 1.5,
+            "sigma_floor_FWHM_arcsec": 3.5322300675464238,
+            "centroid_radius_arcsec": 8.808488933952315
+          },
+          "optimizer_calls": 1,
+          "amplitude_sensitivity": {
+            "rank": 7,
+            "rank_tolerance": 1.721218403079014e-10,
+            "singular_values": [
+              616.6808718162202,
+              303.5613783822164,
+              243.94232401595318,
+              132.95145817299132,
+              116.8940721977533,
+              34.50115933026032,
+              2.0130251653547417
+            ],
+            "amplitude_null_projection": 2.220967820884789e-16,
+            "identifiability_tolerance": 2.7911006839076435e-11
+          },
+          "message": "Expected POINT source accepted."
+        },
+        "frozen_template_projection": 281.2547084675178,
+        "auxiliary_support": {
+          "available": true,
+          "reason": null,
+          "missing_pixels": 0,
+          "nonfinite_pixels": 0,
+          "template_pixels": 824,
+          "supported_template_pixels": 824
+        },
+        "apertures": [
+          {
+            "radius_measured_fwhm": 1.0,
+            "radius_arcsec": 10.81390739349581,
+            "value_mJy_per_beam_arcsec2": 17862.12682635963,
+            "available": true,
+            "aperture_pixels": 90,
+            "expected_pixels": 90
+          },
+          {
+            "radius_measured_fwhm": 1.5,
+            "radius_arcsec": 16.220861090243716,
+            "value_mJy_per_beam_arcsec2": 19622.2645926016,
+            "available": true,
+            "aperture_pixels": 206,
+            "expected_pixels": 206
+          },
+          {
+            "radius_measured_fwhm": 2.0,
+            "radius_arcsec": 21.62781478699162,
+            "value_mJy_per_beam_arcsec2": 18363.606761531075,
+            "available": true,
+            "aperture_pixels": 370,
+            "expected_pixels": 370
+          }
+        ],
+        "raw_apertures": [
+          {
+            "radius_measured_fwhm": 1.0,
+            "radius_arcsec": 10.81390739349581,
+            "value_mJy_per_beam_arcsec2": 17552.945539254964,
+            "available": true,
+            "aperture_pixels": 90,
+            "expected_pixels": 90
+          },
+          {
+            "radius_measured_fwhm": 1.5,
+            "radius_arcsec": 16.220861090243716,
+            "value_mJy_per_beam_arcsec2": 18914.582979895364,
+            "available": true,
+            "aperture_pixels": 206,
+            "expected_pixels": 206
+          },
+          {
+            "radius_measured_fwhm": 2.0,
+            "radius_arcsec": 21.62781478699162,
+            "value_mJy_per_beam_arcsec2": 17092.528136767436,
+            "available": true,
+            "aperture_pixels": 370,
+            "expected_pixels": 370
+          }
+        ],
+        "aperture_background_terms": [
+          -309.1812871046641,
+          -707.6816127062375,
+          -1271.0786247636388
+        ],
+        "background": {
+          "n": 438,
+          "median": -1.6004573199906882,
+          "mean": -0.5216611214951993,
+          "std": 23.914134356028544,
+          "robust_scale": 19.33347457367636
+        },
+        "profile": [
+          241.95782802436304,
+          147.4258121065667,
+          66.45211352203431,
+          23.95719584794872,
+          16.102036106633314,
+          5.787487844864573,
+          2.7463761558138633,
+          2.42823850179272,
+          0.6448059530460022,
+          -5.0652956567238485,
+          -6.504232582877134,
+          -3.601456443904799,
+          -2.224984347249665,
+          3.7985161833932035,
+          -2.0389972430833616,
+          -2.5068137064791003,
+          0.6852179892855763,
+          -4.763674950975001,
+          -4.624605952586085,
+          -1.9139644399348645
+        ],
+        "uncertainty_scope": "guard conditional full frozen C0 reference-scale sigma_A; not endpoint empirical uncertainty"
+      },
+      "endpoint_uncertainty": [
+        {
+          "name": "peak",
+          "conditional_sigma": 14.099978522353432,
+          "source_transfer_supported": true,
+          "source_transfer_empirically_calibrated": false,
+          "high_coverage_operator_pixels": 0,
+          "identifiable": true,
+          "scope": "conditional background covariance transfer including refitted constant nuisance; not paired-difference significance or model-estimation error",
+          "qualification": null
+        },
+        {
+          "name": "cx",
+          "conditional_sigma": 0.2941556377817124,
+          "source_transfer_supported": true,
+          "source_transfer_empirically_calibrated": false,
+          "high_coverage_operator_pixels": 0,
+          "identifiable": true,
+          "scope": "conditional background covariance transfer including refitted constant nuisance; not paired-difference significance or model-estimation error",
+          "qualification": null
+        },
+        {
+          "name": "cy",
+          "conditional_sigma": 0.13345190899697357,
+          "source_transfer_supported": true,
+          "source_transfer_empirically_calibrated": false,
+          "high_coverage_operator_pixels": 0,
+          "identifiable": true,
+          "scope": "conditional background covariance transfer including refitted constant nuisance; not paired-difference significance or model-estimation error",
+          "qualification": null
+        },
+        {
+          "name": "sx",
+          "conditional_sigma": 0.28449060767398304,
+          "source_transfer_supported": true,
+          "source_transfer_empirically_calibrated": false,
+          "high_coverage_operator_pixels": 0,
+          "identifiable": true,
+          "scope": "conditional background covariance transfer including refitted constant nuisance; not paired-difference significance or model-estimation error",
+          "qualification": null
+        },
+        {
+          "name": "sy",
+          "conditional_sigma": 0.13043037910474592,
+          "source_transfer_supported": true,
+          "source_transfer_empirically_calibrated": false,
+          "high_coverage_operator_pixels": 0,
+          "identifiable": true,
+          "scope": "conditional background covariance transfer including refitted constant nuisance; not paired-difference significance or model-estimation error",
+          "qualification": null
+        },
+        {
+          "name": "angle",
+          "conditional_sigma": 0.04305526863105478,
+          "source_transfer_supported": true,
+          "source_transfer_empirically_calibrated": false,
+          "high_coverage_operator_pixels": 0,
+          "identifiable": true,
+          "scope": "conditional background covariance transfer including refitted constant nuisance; not paired-difference significance or model-estimation error",
+          "qualification": null
+        },
+        {
+          "name": "constant",
+          "conditional_sigma": 1.6969401042848538,
+          "source_transfer_supported": true,
+          "source_transfer_empirically_calibrated": false,
+          "high_coverage_operator_pixels": 0,
+          "identifiable": true,
+          "scope": "conditional background covariance transfer including refitted constant nuisance; not paired-difference significance or model-estimation error",
+          "qualification": null
+        },
+        {
+          "name": "template",
+          "conditional_sigma": 14.472970789090898,
+          "source_transfer_supported": true,
+          "source_transfer_empirically_calibrated": false,
+          "high_coverage_operator_pixels": 0,
+          "identifiable": true,
+          "scope": "conditional background covariance transfer including refitted constant nuisance; not paired-difference significance or model-estimation error",
+          "qualification": null
+        },
+        {
+          "name": "aperture1",
+          "conditional_sigma": 1918.268252757233,
+          "source_transfer_supported": true,
+          "source_transfer_empirically_calibrated": false,
+          "high_coverage_operator_pixels": 0,
+          "identifiable": true,
+          "scope": "conditional background covariance transfer including refitted constant nuisance; not paired-difference significance or model-estimation error",
+          "qualification": null
+        },
+        {
+          "name": "aperture1.5",
+          "conditional_sigma": 3113.6067165363215,
+          "source_transfer_supported": true,
+          "source_transfer_empirically_calibrated": false,
+          "high_coverage_operator_pixels": 0,
+          "identifiable": true,
+          "scope": "conditional background covariance transfer including refitted constant nuisance; not paired-difference significance or model-estimation error",
+          "qualification": null
+        },
+        {
+          "name": "aperture2",
+          "conditional_sigma": 3965.9226156925847,
+          "source_transfer_supported": true,
+          "source_transfer_empirically_calibrated": false,
+          "high_coverage_operator_pixels": 0,
+          "identifiable": true,
+          "scope": "conditional background covariance transfer including refitted constant nuisance; not paired-difference significance or model-estimation error",
+          "qualification": null
+        }
+      ],
+      "T5_consumes_m4": true,
+      "m5_applied": false,
+      "unexpected_error_logs": [],
+      "wall_seconds": 172.497920166,
+      "sampled_tree_RSS_bytes": 3215523840,
+      "stage_spans_seconds": {
+        "environment_input_verification": 0.543037625,
+        "native_invocation_including_reservation_hashing_publication": 168.383282125,
+        "load_noise_context": 0.045384583,
+        "source_measurements": 0.002200293,
+        "source_fit_measurement": 0.098649084,
+        "raw_parent_PTC_MAP_initial_guard_noise": 90.018825167,
+        "feedback_candidate_publication": 0.074937292,
+        "cycle_cleanup": 0.5404756660000001,
+        "conditional_endpoint_including_io": 0.036954666,
+        "trajectory_including_endpoint": 80.500914292
+      },
+      "stage_scope": "inclusive nested wall spans are not additive",
+      "feedback_trajectory_wall_seconds": 80.42085679100273,
+      "history_source": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-quality-20261001/B-C-core-minus/run/BASE-POINT/REF/a1100/SUMMARY.json",
+        "sha256": "488a332242487f8db9399f72305f94245216a8ad17b1ffa925b9c20daa5f92a5"
+      }
+    }
+  ],
+  "response": [
+    {
+      "branch": "C-core-plus",
+      "cycle": 0,
+      "actual_peak_increment": 17.498837269836116,
+      "ideal_estimator_increment": 22.327729150490853,
+      "analytic_input_amplitude": 22.327795359526576,
+      "input_amplitude_gain": 0.7837243663365048,
+      "ideal_estimator_gain": 0.7837266903361474,
+      "sigma_A": 14.475689203549226,
+      "input_equivalent_sigma_A": 18.470382988365394,
+      "ideal_estimator_equivalent_sigma_A": 18.470328217787852,
+      "spatial": {
+        "pixels": 1257,
+        "g": 0.690078301626626,
+        "eta": 0.3515203266241147,
+        "difference_rms": 1.217151331778592,
+        "residual_rms": 0.6028358471179993,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "support": {
+        "HITS": {
+          "equal": false,
+          "changed": 1126
+        },
+        "NORMALIZATION": {
+          "equal": false,
+          "changed": 1126
+        },
+        "SCI_SUPPORT": {
+          "equal": false,
+          "changed": 29
+        }
+      },
+      "uncertainty_scope": "M0 guard reference covariance divided by finite perturbation gain",
+      "centroid_discrepancy_arcsec": {
+        "east": -0.00130112067540189,
+        "north": 0.002761026930789612
+      }
+    },
+    {
+      "branch": "C-core-plus",
+      "cycle": 5,
+      "actual_peak_increment": 22.920200480489825,
+      "ideal_estimator_increment": 22.39584125116619,
+      "analytic_input_amplitude": 22.327795359526576,
+      "input_amplitude_gain": 1.026532181589101,
+      "ideal_estimator_gain": 1.0234132410318069,
+      "sigma_A": 14.10928317659862,
+      "input_equivalent_sigma_A": 13.74460872211239,
+      "ideal_estimator_equivalent_sigma_A": 13.786496608519172,
+      "spatial": {
+        "pixels": 1257,
+        "g": 1.0276284467629544,
+        "eta": 0.17069322527541803,
+        "difference_rms": 1.7858377255328117,
+        "residual_rms": 0.2927284349227475,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "support": {
+        "HITS": {
+          "equal": false,
+          "changed": 1126
+        },
+        "NORMALIZATION": {
+          "equal": false,
+          "changed": 1126
+        },
+        "SCI_SUPPORT": {
+          "equal": false,
+          "changed": 29
+        }
+      },
+      "uncertainty_scope": "T5 endpoint conditional covariance divided by finite perturbation gain; not differential-gain uncertainty",
+      "centroid_discrepancy_arcsec": {
+        "east": 0.012934686155817054,
+        "north": 0.010342639293758005
+      }
+    },
+    {
+      "branch": "C-core-minus",
+      "cycle": 0,
+      "actual_peak_increment": -17.645275833031974,
+      "ideal_estimator_increment": -22.327820972681792,
+      "analytic_input_amplitude": -22.327795359526576,
+      "input_amplitude_gain": 0.7902829432509683,
+      "ideal_estimator_gain": 0.7902820366851321,
+      "sigma_A": 14.475689203549226,
+      "input_equivalent_sigma_A": 18.317096841291963,
+      "ideal_estimator_equivalent_sigma_A": 18.31711785360585,
+      "spatial": {
+        "pixels": 1257,
+        "g": 0.6912308603093301,
+        "eta": 0.33790846330631596,
+        "difference_rms": 1.2085681845310237,
+        "residual_rms": 0.5794923345739464,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "support": {
+        "HITS": {
+          "equal": false,
+          "changed": 5
+        },
+        "NORMALIZATION": {
+          "equal": false,
+          "changed": 5
+        },
+        "SCI_SUPPORT": {
+          "equal": true,
+          "changed": 0
+        }
+      },
+      "uncertainty_scope": "M0 guard reference covariance divided by finite perturbation gain",
+      "centroid_discrepancy_arcsec": {
+        "east": 0.003030306906665281,
+        "north": -0.002555187702483863
+      }
+    },
+    {
+      "branch": "C-core-minus",
+      "cycle": 5,
+      "actual_peak_increment": -22.3489915940292,
+      "ideal_estimator_increment": -22.406044567041306,
+      "analytic_input_amplitude": -22.327795359526576,
+      "input_amplitude_gain": 1.0009493205290232,
+      "ideal_estimator_gain": 0.9974536793925677,
+      "sigma_A": 14.10928317659862,
+      "input_equivalent_sigma_A": 14.095901647789281,
+      "ideal_estimator_equivalent_sigma_A": 14.145301649687566,
+      "spatial": {
+        "pixels": 1257,
+        "g": 1.023676436413196,
+        "eta": 0.1784829017438156,
+        "difference_rms": 1.7815639219092196,
+        "residual_rms": 0.30608725333788567,
+        "common_domain": "unweighted declared common supported pixels; zeros of known shape retained"
+      },
+      "support": {
+        "HITS": {
+          "equal": false,
+          "changed": 5
+        },
+        "NORMALIZATION": {
+          "equal": false,
+          "changed": 5
+        },
+        "SCI_SUPPORT": {
+          "equal": true,
+          "changed": 0
+        }
+      },
+      "uncertainty_scope": "T5 endpoint conditional covariance divided by finite perturbation gain; not differential-gain uncertainty",
+      "centroid_discrepancy_arcsec": {
+        "east": 0.05207525967705173,
+        "north": -0.005358528963855136
+      }
+    }
+  ],
+  "normalization": [
+    {
+      "branch": "C-core-plus",
+      "analytic_amplitude": 22.327795359526576,
+      "discrete_peak": 21.644484835619668,
+      "maximum_absolute_error": 3.552713678800501e-15,
+      "raster": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-quality-20261001/B-REF/freeze/shapes/C-core-plus.fits",
+        "sha256": "459789a624e0f95d9bd0b8a01d323851305b17e84612e3cc25a6bf2c0b37d19e"
+      }
+    },
+    {
+      "branch": "C-core-minus",
+      "analytic_amplitude": -22.327795359526576,
+      "discrete_peak": -21.644484835619668,
+      "maximum_absolute_error": 3.552713678800501e-15,
+      "raster": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-quality-20261001/B-REF/freeze/shapes/C-core-minus.fits",
+        "sha256": "10a6a5e3c77c8445ab2a6648e2386e7383a481505293485e6f597bb37e6fd653"
+      }
+    }
+  ],
+  "scorecard": {
+    "R": {
+      "input": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/science/pointings/reduced/redu00/152420/raw/toltec_commissioning_a1100_pointing_152420_citlali.fits",
+        "sha256": "603724c8ce3f8a957efec2b21e5b4a227bbc2e1feb97f12fd79b7585d12c927d"
+      },
+      "fit": {
+        "parameters": [
+          251.70174879250592,
+          8.46139050351392,
+          -2.7856412253821157,
+          2.5208233296665243,
+          3.4634077910478918,
+          -0.4534912540210907,
+          -1.6079909300373574
+        ],
+        "fwhm_major_minor_arcsec": [
+          8.155702090475938,
+          5.9360853066803925
+        ],
+        "axis_ratio": 1.3739192867221126,
+        "centroid_radial_offset_arcsec": 8.908138205568205,
+        "aperture_outer_extent_arcsec": 33.375244476996016,
+        "constant": -1.6079909300373574,
+        "amplitude": 251.70174879250592,
+        "fit_radius_arcsec": 40.0,
+        "fit_center_arcsec": [
+          0.0,
+          0.0
+        ],
+        "fit_pixels": 5025,
+        "residual_rms": 20.6654517845482,
+        "residual_rms_over_peak": 0.08210293287069718,
+        "cost": 1072990.5048669595,
+        "nfev": 19,
+        "active_mask": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "major_angle_native_radians": 1.1173050727738059,
+        "converged": true,
+        "status": "converged",
+        "centroid_native_arcsec": [
+          8.46139050351392,
+          -2.7856412253821157
+        ],
+        "gaussian_angular_integral_mJy_arcsec2_per_beam": 13807.40743524867
+      },
+      "asymmetry": {
+        "paired_pixels": 3615,
+        "half_absolute_odd_fraction": 0.6130400709217022,
+        "qualification": "Descriptive180degree asymmetry about free fitted center, paired within fixedcommanded40arcsec domain; bilinear reflection with complete interpolation support. Includes noise/grid/background effects, not intrinsic source fidelity or pointing agreement."
+      },
+      "background": {
+        "n": 20120,
+        "available": true,
+        "median": -0.46410776929890657,
+        "std": 28.83380292089629,
+        "robust_scale": 22.553248203757295,
+        "quantiles": [
+          -72.52984036553053,
+          -30.926352977732684,
+          -0.46410776929890657,
+          30.920075154617678,
+          78.00977527444114
+        ],
+        "positive_5mad": 59,
+        "negative_5mad": 35
+      },
+      "spatial_scales_FWHM_arcsec": {
+        "0.0": {
+          "n": 20120,
+          "available": true,
+          "median": -0.46410776929890657,
+          "std": 28.83380292089629,
+          "robust_scale": 22.553248203757295,
+          "quantiles": [
+            -72.52984036553053,
+            -30.926352977732684,
+            -0.46410776929890657,
+            30.920075154617678,
+            78.00977527444114
+          ],
+          "positive_5mad": 59,
+          "negative_5mad": 35,
+          "supported_background_pixels": 20120,
+          "expected_background_pixels": 20120
+        },
+        "6.0": {
+          "n": 20120,
+          "available": true,
+          "median": -0.4371847634081174,
+          "std": 16.463072438544813,
+          "robust_scale": 16.262753661133107,
+          "quantiles": [
+            -34.025762959776046,
+            -19.689829850878688,
+            -0.4371847634081174,
+            21.040516498790847,
+            45.235979921828104
+          ],
+          "positive_5mad": 2,
+          "negative_5mad": 0,
+          "supported_background_pixels": 20120,
+          "expected_background_pixels": 20120
+        },
+        "12.0": {
+          "n": 20120,
+          "available": true,
+          "median": -0.7830715905763483,
+          "std": 11.480761922247066,
+          "robust_scale": 11.820464859833562,
+          "quantiles": [
+            -20.29085817719597,
+            -14.375237826755306,
+            -0.7830715905763483,
+            15.764224377651427,
+            30.29626666003442
+          ],
+          "positive_5mad": 0,
+          "negative_5mad": 0,
+          "supported_background_pixels": 20120,
+          "expected_background_pixels": 20120
+        }
+      },
+      "native_axis_correlations": [
+        {
+          "axis": "native-y",
+          "requested_lag_arcsec": 2.0,
+          "actual_lag_arcsec": 2.0,
+          "pairs": 19484,
+          "correlation": 0.6183347713654952
+        },
+        {
+          "axis": "native-x",
+          "requested_lag_arcsec": 2.0,
+          "actual_lag_arcsec": 2.0,
+          "pairs": 19484,
+          "correlation": 0.6763922695400092
+        },
+        {
+          "axis": "native-y",
+          "requested_lag_arcsec": 6.0,
+          "actual_lag_arcsec": 6.0,
+          "pairs": 18212,
+          "correlation": 0.06428511082494505
+        },
+        {
+          "axis": "native-x",
+          "requested_lag_arcsec": 6.0,
+          "actual_lag_arcsec": 6.0,
+          "pairs": 18212,
+          "correlation": 0.16021956631981324
+        },
+        {
+          "axis": "native-y",
+          "requested_lag_arcsec": 12.0,
+          "actual_lag_arcsec": 12.0,
+          "pairs": 16304,
+          "correlation": 0.028457354692192502
+        },
+        {
+          "axis": "native-x",
+          "requested_lag_arcsec": 12.0,
+          "actual_lag_arcsec": 12.0,
+          "pairs": 16304,
+          "correlation": 0.12990799948977277
+        }
+      ],
+      "apertures": [
+        {
+          "radius_arcsec": 10.0,
+          "pixels": 316,
+          "supported": 316,
+          "complete": true,
+          "integral_minus_fit_constant": 14179.517199610664
+        },
+        {
+          "radius_arcsec": 20.0,
+          "pixels": 1258,
+          "supported": 1258,
+          "complete": true,
+          "integral_minus_fit_constant": 14163.254420637651
+        },
+        {
+          "radius_arcsec": 40.0,
+          "pixels": 5033,
+          "supported": 5033,
+          "complete": true,
+          "integral_minus_fit_constant": 14498.643618512757
+        }
+      ],
+      "radial_profiles": [
+        {
+          "inner": 0,
+          "outer": 10,
+          "expected_pixels": 305,
+          "supported": 305,
+          "signal": {
+            "n": 305,
+            "available": true,
+            "median": 14.396325601010037,
+            "std": 56.163658129889775,
+            "robust_scale": 27.410418212345476,
+            "quantiles": [
+              -40.214958552032215,
+              -17.123108874111033,
+              14.396325601010037,
+              88.04687841846491,
+              252.98947154809716
+            ],
+            "positive_5mad": 16,
+            "negative_5mad": 0
+          },
+          "gaussian_residual": {
+            "n": 305,
+            "available": true,
+            "median": 6.9606104265626865,
+            "std": 20.013135060209365,
+            "robust_scale": 21.39723974886449,
+            "quantiles": [
+              -40.93887750694923,
+              -24.793430104456824,
+              6.9606104265626865,
+              28.494849213578302,
+              43.50763235335162
+            ],
+            "positive_5mad": 0,
+            "negative_5mad": 0
+          }
+        },
+        {
+          "inner": 10,
+          "outer": 20,
+          "expected_pixels": 940,
+          "supported": 940,
+          "signal": {
+            "n": 940,
+            "available": true,
+            "median": -1.2010903652965563,
+            "std": 32.68193939631864,
+            "robust_scale": 17.930619365248262,
+            "quantiles": [
+              -53.20274008989717,
+              -23.96192166121134,
+              -1.2010903652965563,
+              30.849763761414344,
+              138.63792184402294
+            ],
+            "positive_5mad": 26,
+            "negative_5mad": 0
+          },
+          "gaussian_residual": {
+            "n": 940,
+            "available": true,
+            "median": -1.9479293914755629,
+            "std": 20.056880276657324,
+            "robust_scale": 16.45129408135569,
+            "quantiles": [
+              -52.49766549491602,
+              -24.151129850082242,
+              -1.9479293914755629,
+              22.134311440936624,
+              51.65233138155203
+            ],
+            "positive_5mad": 4,
+            "negative_5mad": 0
+          }
+        },
+        {
+          "inner": 20,
+          "outer": 40,
+          "expected_pixels": 3768,
+          "supported": 3768,
+          "signal": {
+            "n": 3768,
+            "available": true,
+            "median": -2.128285979949463,
+            "std": 20.834806980848608,
+            "robust_scale": 15.557919298666201,
+            "quantiles": [
+              -47.81051273321171,
+              -24.513302690045894,
+              -2.128285979949463,
+              20.76903163995662,
+              63.33909631423952
+            ],
+            "positive_5mad": 16,
+            "negative_5mad": 3
+          },
+          "gaussian_residual": {
+            "n": 3768,
+            "available": true,
+            "median": -0.5206253620311765,
+            "std": 20.83488950664193,
+            "robust_scale": 15.558081503800365,
+            "quantiles": [
+              -46.20252180317435,
+              -22.905311760008672,
+              -0.5206253620311765,
+              22.377022558549733,
+              64.9470872442768
+            ],
+            "positive_5mad": 16,
+            "negative_5mad": 3
+          }
+        },
+        {
+          "inner": 40,
+          "outer": 60,
+          "expected_pixels": 6264,
+          "supported": 6264,
+          "signal": {
+            "n": 6264,
+            "available": true,
+            "median": -0.6151162902437748,
+            "std": 23.20246035720632,
+            "robust_scale": 19.69051564383068,
+            "quantiles": [
+              -58.92077443255485,
+              -25.664653635929874,
+              -0.6151162902437748,
+              27.68935793639991,
+              63.667017979914185
+            ],
+            "positive_5mad": 7,
+            "negative_5mad": 6
+          },
+          "gaussian_residual": {
+            "n": 6264,
+            "available": true,
+            "median": 0.9928746397935826,
+            "std": 23.20246035720632,
+            "robust_scale": 19.690515643830683,
+            "quantiles": [
+              -57.31278350251749,
+              -24.056662705892517,
+              0.9928746397935826,
+              29.297348866437268,
+              65.27500890995154
+            ],
+            "positive_5mad": 7,
+            "negative_5mad": 6
+          }
+        },
+        {
+          "inner": 60,
+          "outer": 80,
+          "expected_pixels": 8792,
+          "supported": 8792,
+          "signal": {
+            "n": 8792,
+            "available": true,
+            "median": -4.891060422665153,
+            "std": 23.455724767670276,
+            "robust_scale": 19.62708885118986,
+            "quantiles": [
+              -73.76759525703694,
+              -32.016609015132396,
+              -4.891060422665153,
+              21.081598101278992,
+              55.01929836241628
+            ],
+            "positive_5mad": 3,
+            "negative_5mad": 22
+          },
+          "gaussian_residual": {
+            "n": 8792,
+            "available": true,
+            "median": -3.2830694926277957,
+            "std": 23.455724767670276,
+            "robust_scale": 19.62708885118986,
+            "quantiles": [
+              -72.15960432699958,
+              -30.40861808509504,
+              -3.2830694926277957,
+              22.68958903131635,
+              56.62728929245364
+            ],
+            "positive_5mad": 3,
+            "negative_5mad": 22
+          }
+        },
+        {
+          "inner": 80,
+          "outer": 100,
+          "expected_pixels": 11328,
+          "supported": 11328,
+          "signal": {
+            "n": 11328,
+            "available": true,
+            "median": 4.127198861224128,
+            "std": 31.740302292098562,
+            "robust_scale": 24.370153145590283,
+            "quantiles": [
+              -71.75593671207862,
+              -30.0394339677085,
+              4.127198861224128,
+              37.21646302228874,
+              91.13376896710399
+            ],
+            "positive_5mad": 42,
+            "negative_5mad": 22
+          },
+          "gaussian_residual": {
+            "n": 11328,
+            "available": true,
+            "median": 5.735189791261485,
+            "std": 31.740302292098566,
+            "robust_scale": 24.370153145590283,
+            "quantiles": [
+              -70.14794578204126,
+              -28.431443037671144,
+              5.735189791261485,
+              38.8244539523261,
+              92.74175989714135
+            ],
+            "positive_5mad": 42,
+            "negative_5mad": 22
+          }
+        }
+      ],
+      "artifact_diagnostic": {
+        "available": true,
+        "positive_local_extrema": 7,
+        "negative_local_extrema": 9,
+        "rule": "5 descriptive background MAD; 5 arcsec isolation; not significance or source catalog"
+      },
+      "support": {
+        "total_pixels": 134673,
+        "science_pixels": 97278,
+        "science_area_arcsec2": 97278.0,
+        "fit_expected": 5025,
+        "fit_supported": 5025,
+        "background_expected": 20120,
+        "background_supported": 20120
+      },
+      "uncertainty": "Descriptive spatial scatter only; no independent pixels, no paired-test significance; endpoint conditional uncertainty requires its own compatible estimator/operator binding."
+    },
+    "M0": {
+      "input": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-quality-20261001/B-REF/M0/products/a1100/map.fits",
+        "sha256": "79fc9c63e9f8812de9175b72bc6e91fab8d778475853a92f98f9f86b0e93c712"
+      },
+      "fit": {
+        "parameters": [
+          223.27795359526573,
+          4.7221987560769865,
+          7.463589661259536,
+          4.592243647795891,
+          2.05601536216982,
+          -0.2336458666173562,
+          -2.0350237827599784
+        ],
+        "fwhm_major_minor_arcsec": [
+          10.81390739349581,
+          4.841546187729059
+        ],
+        "axis_ratio": 2.2335648518450064,
+        "centroid_radial_offset_arcsec": 8.832006098478152,
+        "aperture_outer_extent_arcsec": 41.273728278965585,
+        "constant": -2.0350237827599784,
+        "amplitude": 223.27795359526573,
+        "fit_radius_arcsec": 40.0,
+        "fit_center_arcsec": [
+          0.0,
+          0.0
+        ],
+        "fit_pixels": 1257,
+        "residual_rms": 22.973977389554836,
+        "residual_rms_over_peak": 0.10289407001283966,
+        "cost": 331724.58591469575,
+        "nfev": 11,
+        "active_mask": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "major_angle_native_radians": -0.2336458666173562,
+        "converged": true,
+        "status": "converged",
+        "centroid_native_arcsec": [
+          4.7221987560769865,
+          7.463589661259536
+        ],
+        "gaussian_angular_integral_mJy_arcsec2_per_beam": 13245.763264194818
+      },
+      "asymmetry": {
+        "paired_pixels": 907,
+        "half_absolute_odd_fraction": 0.5237216777700805,
+        "qualification": "Descriptive180degree asymmetry about free fitted center, paired within fixedcommanded40arcsec domain; bilinear reflection with complete interpolation support. Includes noise/grid/background effects, not intrinsic source fidelity or pointing agreement."
+      },
+      "background": {
+        "n": 4382,
+        "available": true,
+        "median": 0.055990955542093275,
+        "std": 29.488031154127498,
+        "robust_scale": 24.52880784234797,
+        "quantiles": [
+          -79.68561521235054,
+          -34.29478823495451,
+          0.055990955542093275,
+          33.510062992009736,
+          76.35176375749343
+        ],
+        "positive_5mad": 4,
+        "negative_5mad": 10
+      },
+      "spatial_scales_FWHM_arcsec": {
+        "0.0": {
+          "n": 4382,
+          "available": true,
+          "median": 0.055990955542093275,
+          "std": 29.488031154127498,
+          "robust_scale": 24.52880784234797,
+          "quantiles": [
+            -79.68561521235054,
+            -34.29478823495451,
+            0.055990955542093275,
+            33.510062992009736,
+            76.35176375749343
+          ],
+          "positive_5mad": 4,
+          "negative_5mad": 10,
+          "supported_background_pixels": 4382,
+          "expected_background_pixels": 5016
+        },
+        "6.0": {
+          "n": 1402,
+          "available": true,
+          "median": -1.3777028091518293,
+          "std": 9.735247237775674,
+          "robust_scale": 9.003803972738936,
+          "quantiles": [
+            -24.183054638610873,
+            -13.734780737818266,
+            -1.3777028091518293,
+            10.113361631700938,
+            23.428910063243844
+          ],
+          "positive_5mad": 0,
+          "negative_5mad": 0,
+          "supported_background_pixels": 1402,
+          "expected_background_pixels": 5016
+        },
+        "12.0": {
+          "n": 321,
+          "available": true,
+          "median": 0.6901655365190358,
+          "std": 6.953444773810403,
+          "robust_scale": 6.5466082052900285,
+          "quantiles": [
+            -16.365210301886705,
+            -12.744879371046947,
+            0.6901655365190358,
+            7.66568606990422,
+            8.763657690841413
+          ],
+          "positive_5mad": 0,
+          "negative_5mad": 0,
+          "supported_background_pixels": 321,
+          "expected_background_pixels": 5016
+        }
+      },
+      "native_axis_correlations": [
+        {
+          "axis": "native-y",
+          "requested_lag_arcsec": 2.0,
+          "actual_lag_arcsec": 2.0,
+          "pairs": 3946,
+          "correlation": 0.16781172253162907
+        },
+        {
+          "axis": "native-x",
+          "requested_lag_arcsec": 2.0,
+          "actual_lag_arcsec": 2.0,
+          "pairs": 3970,
+          "correlation": 0.17517198358305078
+        },
+        {
+          "axis": "native-y",
+          "requested_lag_arcsec": 6.0,
+          "actual_lag_arcsec": 6.0,
+          "pairs": 3683,
+          "correlation": 0.07207226379578162
+        },
+        {
+          "axis": "native-x",
+          "requested_lag_arcsec": 6.0,
+          "actual_lag_arcsec": 6.0,
+          "pairs": 3749,
+          "correlation": 0.03950110892732834
+        },
+        {
+          "axis": "native-y",
+          "requested_lag_arcsec": 12.0,
+          "actual_lag_arcsec": 12.0,
+          "pairs": 3312,
+          "correlation": 0.047644282488044046
+        },
+        {
+          "axis": "native-x",
+          "requested_lag_arcsec": 12.0,
+          "actual_lag_arcsec": 12.0,
+          "pairs": 3344,
+          "correlation": 0.007608944777141503
+        }
+      ],
+      "apertures": [
+        {
+          "radius_arcsec": 10.0,
+          "pixels": 79,
+          "supported": 79,
+          "complete": true,
+          "integral_minus_fit_constant": 13239.638892509622
+        },
+        {
+          "radius_arcsec": 20.0,
+          "pixels": 315,
+          "supported": 315,
+          "complete": true,
+          "integral_minus_fit_constant": 13160.69534792383
+        },
+        {
+          "radius_arcsec": 40.0,
+          "pixels": 1256,
+          "supported": 1256,
+          "complete": true,
+          "integral_minus_fit_constant": 9565.82450893466
+        }
+      ],
+      "radial_profiles": [
+        {
+          "inner": 0,
+          "outer": 10,
+          "expected_pixels": 69,
+          "supported": 69,
+          "signal": {
+            "n": 69,
+            "available": true,
+            "median": 6.059482312807196,
+            "std": 54.88300184510716,
+            "robust_scale": 30.9009266049927,
+            "quantiles": [
+              -54.94173665201401,
+              -27.518987741364956,
+              6.059482312807196,
+              89.1109340584997,
+              211.82011050653256
+            ],
+            "positive_5mad": 3,
+            "negative_5mad": 0
+          },
+          "gaussian_residual": {
+            "n": 69,
+            "available": true,
+            "median": 0.9074553081692742,
+            "std": 23.654013948205442,
+            "robust_scale": 25.803196345079083,
+            "quantiles": [
+              -54.807366361760295,
+              -36.2889896649018,
+              0.9074553081692742,
+              27.443473816475002,
+              45.79990511498347
+            ],
+            "positive_5mad": 0,
+            "negative_5mad": 0
+          }
+        },
+        {
+          "inner": 10,
+          "outer": 20,
+          "expected_pixels": 236,
+          "supported": 236,
+          "signal": {
+            "n": 236,
+            "available": true,
+            "median": 2.024361577950138,
+            "std": 33.92272799646685,
+            "robust_scale": 25.02120826200653,
+            "quantiles": [
+              -55.24237718629018,
+              -30.240615533186784,
+              2.024361577950138,
+              33.789746634417824,
+              131.73155050276557
+            ],
+            "positive_5mad": 3,
+            "negative_5mad": 0
+          },
+          "gaussian_residual": {
+            "n": 236,
+            "available": true,
+            "median": -1.1958100252488648,
+            "std": 21.71730897815578,
+            "robust_scale": 21.460471391675192,
+            "quantiles": [
+              -54.923107857356925,
+              -28.38277266453626,
+              -1.1958100252488648,
+              24.816137984363138,
+              50.788577933930796
+            ],
+            "positive_5mad": 0,
+            "negative_5mad": 0
+          }
+        },
+        {
+          "inner": 20,
+          "outer": 40,
+          "expected_pixels": 940,
+          "supported": 940,
+          "signal": {
+            "n": 940,
+            "available": true,
+            "median": -1.926811733047661,
+            "std": 23.206740379089347,
+            "robust_scale": 20.021990891316392,
+            "quantiles": [
+              -65.44192811842129,
+              -28.336312203792406,
+              -1.926811733047661,
+              26.117408775134866,
+              52.209285784889985
+            ],
+            "positive_5mad": 1,
+            "negative_5mad": 0
+          },
+          "gaussian_residual": {
+            "n": 940,
+            "available": true,
+            "median": 0.10819139383722154,
+            "std": 23.205671700771934,
+            "robust_scale": 19.953665551763564,
+            "quantiles": [
+              -63.414079612431564,
+              -26.301288421044806,
+              0.10819139383722154,
+              28.152432557839198,
+              54.244309567649964
+            ],
+            "positive_5mad": 1,
+            "negative_5mad": 0
+          }
+        },
+        {
+          "inner": 40,
+          "outer": 60,
+          "expected_pixels": 1564,
+          "supported": 1564,
+          "signal": {
+            "n": 1564,
+            "available": true,
+            "median": -1.4630639853140164,
+            "std": 22.798389270967782,
+            "robust_scale": 20.13267449169305,
+            "quantiles": [
+              -58.26241366156877,
+              -28.970214864279484,
+              -1.4630639853140164,
+              26.929841198303446,
+              55.93504397385916
+            ],
+            "positive_5mad": 2,
+            "negative_5mad": 0
+          },
+          "gaussian_residual": {
+            "n": 1564,
+            "available": true,
+            "median": 0.571959797445962,
+            "std": 22.798389270967796,
+            "robust_scale": 20.13267449169305,
+            "quantiles": [
+              -56.22738987880879,
+              -26.935191081519505,
+              0.571959797445962,
+              28.964864981063425,
+              57.97006775661914
+            ],
+            "positive_5mad": 2,
+            "negative_5mad": 0
+          }
+        },
+        {
+          "inner": 60,
+          "outer": 80,
+          "expected_pixels": 2204,
+          "supported": 2128,
+          "signal": {
+            "n": 2128,
+            "available": true,
+            "median": -1.4298116692251965,
+            "std": 27.91938745194061,
+            "robust_scale": 23.453666700987394,
+            "quantiles": [
+              -74.97355997272528,
+              -34.77706555528063,
+              -1.4298116692251965,
+              31.43233228930871,
+              67.19095783735952
+            ],
+            "positive_5mad": 0,
+            "negative_5mad": 4
+          },
+          "gaussian_residual": {
+            "n": 2128,
+            "available": true,
+            "median": 0.6052121135347818,
+            "std": 27.91938745194061,
+            "robust_scale": 23.453666700987394,
+            "quantiles": [
+              -72.9385361899653,
+              -32.74204177252065,
+              0.6052121135347818,
+              33.46735607206869,
+              69.2259816201195
+            ],
+            "positive_5mad": 0,
+            "negative_5mad": 4
+          }
+        },
+        {
+          "inner": 80,
+          "outer": 100,
+          "expected_pixels": 2812,
+          "supported": 2254,
+          "signal": {
+            "n": 2254,
+            "available": true,
+            "median": 1.6474909513699947,
+            "std": 30.812648599710307,
+            "robust_scale": 25.5011148944806,
+            "quantiles": [
+              -81.4681552032025,
+              -33.608233942967686,
+              1.6474909513699947,
+              36.31869848065484,
+              80.06250442554959
+            ],
+            "positive_5mad": 3,
+            "negative_5mad": 6
+          },
+          "gaussian_residual": {
+            "n": 2254,
+            "available": true,
+            "median": 3.682514734129973,
+            "std": 30.812648599710307,
+            "robust_scale": 25.5011148944806,
+            "quantiles": [
+              -79.43313142044252,
+              -31.57321016020771,
+              3.682514734129973,
+              38.35372226341482,
+              82.09752820830957
+            ],
+            "positive_5mad": 3,
+            "negative_5mad": 6
+          }
+        }
+      ],
+      "artifact_diagnostic": {
+        "available": true,
+        "positive_local_extrema": 0,
+        "negative_local_extrema": 5,
+        "rule": "5 descriptive background MAD; 5 arcsec isolation; not significance or source catalog"
+      },
+      "support": {
+        "total_pixels": 34773,
+        "science_pixels": 9351,
+        "science_area_arcsec2": 37404.0,
+        "fit_expected": 1257,
+        "fit_supported": 1257,
+        "background_expected": 5016,
+        "background_supported": 4382
+      },
+      "uncertainty": "Descriptive spatial scatter only; no independent pixels, no paired-test significance; endpoint conditional uncertainty requires its own compatible estimator/operator binding."
+    },
+    "T5": {
+      "input": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-quality-20261001/B-REF/run/BASE-POINT/REF/a1100/cycle-05/native/products/total.fits",
+        "sha256": "e5caab4a8d3604df21af0ab4193b873d70f58151fdf67559a7aa2afcd1f22064"
+      },
+      "fit": {
+        "parameters": [
+          291.81821448589625,
+          4.728987586792862,
+          7.408713442126636,
+          4.662890474472854,
+          2.205183781175711,
+          -0.24878559445422121,
+          -0.8682790029855479
+        ],
+        "fwhm_major_minor_arcsec": [
+          10.98026795707255,
+          5.192810970889707
+        ],
+        "axis_ratio": 2.1145133182445215,
+        "centroid_radial_offset_arcsec": 8.789332082905327,
+        "aperture_outer_extent_arcsec": 41.73013595412298,
+        "constant": -0.8682790029855479,
+        "amplitude": 291.81821448589625,
+        "fit_radius_arcsec": 40.0,
+        "fit_center_arcsec": [
+          0.0,
+          0.0
+        ],
+        "fit_pixels": 1257,
+        "residual_rms": 23.06189107920972,
+        "residual_rms_over_peak": 0.07902827834046772,
+        "cost": 334268.2404638556,
+        "nfev": 12,
+        "active_mask": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "major_angle_native_radians": -0.24878559445422121,
+        "converged": true,
+        "status": "converged",
+        "centroid_native_arcsec": [
+          4.728987586792862,
+          7.408713442126636
+        ],
+        "gaussian_angular_integral_mJy_arcsec2_per_beam": 18853.51229030915
+      },
+      "asymmetry": {
+        "paired_pixels": 910,
+        "half_absolute_odd_fraction": 0.4944595695654674,
+        "qualification": "Descriptive180degree asymmetry about free fitted center, paired within fixedcommanded40arcsec domain; bilinear reflection with complete interpolation support. Includes noise/grid/background effects, not intrinsic source fidelity or pointing agreement."
+      },
+      "background": {
+        "n": 4382,
+        "available": true,
+        "median": 0.14880047211054415,
+        "std": 29.45699958858665,
+        "robust_scale": 24.54589120104225,
+        "quantiles": [
+          -79.37435168128853,
+          -34.102347592854024,
+          0.14880047211054415,
+          33.515867051192515,
+          76.88936075570624
+        ],
+        "positive_5mad": 4,
+        "negative_5mad": 9
+      },
+      "spatial_scales_FWHM_arcsec": {
+        "0.0": {
+          "n": 4382,
+          "available": true,
+          "median": 0.14880047211054415,
+          "std": 29.45699958858665,
+          "robust_scale": 24.54589120104225,
+          "quantiles": [
+            -79.37435168128853,
+            -34.102347592854024,
+            0.14880047211054415,
+            33.515867051192515,
+            76.88936075570624
+          ],
+          "positive_5mad": 4,
+          "negative_5mad": 9,
+          "supported_background_pixels": 4382,
+          "expected_background_pixels": 5016
+        },
+        "6.0": {
+          "n": 1402,
+          "available": true,
+          "median": -1.3008614616480678,
+          "std": 9.667720680249275,
+          "robust_scale": 9.006339603050057,
+          "quantiles": [
+            -23.596473243162453,
+            -13.378229578051913,
+            -1.3008614616480678,
+            10.17189199840028,
+            23.459591122274794
+          ],
+          "positive_5mad": 0,
+          "negative_5mad": 0,
+          "supported_background_pixels": 1402,
+          "expected_background_pixels": 5016
+        },
+        "12.0": {
+          "n": 321,
+          "available": true,
+          "median": 0.6858968516720556,
+          "std": 6.813310568319338,
+          "robust_scale": 6.809497099094098,
+          "quantiles": [
+            -15.84270526026007,
+            -11.84267701013284,
+            0.6858968516720556,
+            7.862759557949437,
+            9.242141173155849
+          ],
+          "positive_5mad": 0,
+          "negative_5mad": 0,
+          "supported_background_pixels": 321,
+          "expected_background_pixels": 5016
+        }
+      },
+      "native_axis_correlations": [
+        {
+          "axis": "native-y",
+          "requested_lag_arcsec": 2.0,
+          "actual_lag_arcsec": 2.0,
+          "pairs": 3946,
+          "correlation": 0.16773079127489426
+        },
+        {
+          "axis": "native-x",
+          "requested_lag_arcsec": 2.0,
+          "actual_lag_arcsec": 2.0,
+          "pairs": 3970,
+          "correlation": 0.1745490758268008
+        },
+        {
+          "axis": "native-y",
+          "requested_lag_arcsec": 6.0,
+          "actual_lag_arcsec": 6.0,
+          "pairs": 3683,
+          "correlation": 0.07134017884579978
+        },
+        {
+          "axis": "native-x",
+          "requested_lag_arcsec": 6.0,
+          "actual_lag_arcsec": 6.0,
+          "pairs": 3749,
+          "correlation": 0.03905459188083507
+        },
+        {
+          "axis": "native-y",
+          "requested_lag_arcsec": 12.0,
+          "actual_lag_arcsec": 12.0,
+          "pairs": 3312,
+          "correlation": 0.046565901651760354
+        },
+        {
+          "axis": "native-x",
+          "requested_lag_arcsec": 12.0,
+          "actual_lag_arcsec": 12.0,
+          "pairs": 3344,
+          "correlation": 0.008287729691629284
+        }
+      ],
+      "apertures": [
+        {
+          "radius_arcsec": 10.0,
+          "pixels": 80,
+          "supported": 80,
+          "complete": true,
+          "integral_minus_fit_constant": 19000.260996503806
+        },
+        {
+          "radius_arcsec": 20.0,
+          "pixels": 317,
+          "supported": 317,
+          "complete": true,
+          "integral_minus_fit_constant": 20205.252562808095
+        },
+        {
+          "radius_arcsec": 40.0,
+          "pixels": 1258,
+          "supported": 1258,
+          "complete": true,
+          "integral_minus_fit_constant": 15253.590305577272
+        }
+      ],
+      "radial_profiles": [
+        {
+          "inner": 0,
+          "outer": 10,
+          "expected_pixels": 69,
+          "supported": 69,
+          "signal": {
+            "n": 69,
+            "available": true,
+            "median": 10.58529905309916,
+            "std": 70.48788280158021,
+            "robust_scale": 30.5290365505854,
+            "quantiles": [
+              -52.16093346815213,
+              -24.45666896726431,
+              10.58529905309916,
+              122.13146578481297,
+              285.80377472029426
+            ],
+            "positive_5mad": 5,
+            "negative_5mad": 0
+          },
+          "gaussian_residual": {
+            "n": 69,
+            "available": true,
+            "median": 4.722086294025256,
+            "std": 25.260445371934363,
+            "robust_scale": 26.48479679488152,
+            "quantiles": [
+              -60.89275552599924,
+              -34.0181303747382,
+              4.722086294025256,
+              30.288439740784508,
+              49.70490091317135
+            ],
+            "positive_5mad": 0,
+            "negative_5mad": 0
+          }
+        },
+        {
+          "inner": 10,
+          "outer": 20,
+          "expected_pixels": 236,
+          "supported": 236,
+          "signal": {
+            "n": 236,
+            "available": true,
+            "median": 4.769469214297002,
+            "std": 41.42458194030839,
+            "robust_scale": 26.488310254881497,
+            "quantiles": [
+              -51.15934415882175,
+              -27.218510359913132,
+              4.769469214297002,
+              42.218486391658416,
+              177.02623973254714
+            ],
+            "positive_5mad": 6,
+            "negative_5mad": 0
+          },
+          "gaussian_residual": {
+            "n": 236,
+            "available": true,
+            "median": -0.5672591165576633,
+            "std": 21.991253818804495,
+            "robust_scale": 22.186238252464463,
+            "quantiles": [
+              -52.81887424360907,
+              -27.578202821076644,
+              -0.5672591165576633,
+              25.368671721649058,
+              54.08282499359355
+            ],
+            "positive_5mad": 0,
+            "negative_5mad": 0
+          }
+        },
+        {
+          "inner": 20,
+          "outer": 40,
+          "expected_pixels": 940,
+          "supported": 940,
+          "signal": {
+            "n": 940,
+            "available": true,
+            "median": -1.2841932291490612,
+            "std": 23.142717297582678,
+            "robust_scale": 20.354620286051905,
+            "quantiles": [
+              -63.99284206819429,
+              -27.205800282071454,
+              -1.2841932291490612,
+              27.067639718783138,
+              52.83643698013148
+            ],
+            "positive_5mad": 1,
+            "negative_5mad": 0
+          },
+          "gaussian_residual": {
+            "n": 940,
+            "available": true,
+            "median": -0.4159142415184416,
+            "std": 23.14075006680627,
+            "robust_scale": 20.354620286051905,
+            "quantiles": [
+              -63.14161265983523,
+              -26.337521279085905,
+              -0.4159142415184416,
+              27.935918719451287,
+              53.70471598311702
+            ],
+            "positive_5mad": 1,
+            "negative_5mad": 0
+          }
+        },
+        {
+          "inner": 40,
+          "outer": 60,
+          "expected_pixels": 1564,
+          "supported": 1564,
+          "signal": {
+            "n": 1564,
+            "available": true,
+            "median": -1.1961978689628816,
+            "std": 22.794474660289673,
+            "robust_scale": 20.250478806259263,
+            "quantiles": [
+              -58.51856032881665,
+              -28.948355157459044,
+              -1.1961978689628816,
+              27.403487575909004,
+              55.866388600348984
+            ],
+            "positive_5mad": 2,
+            "negative_5mad": 0
+          },
+          "gaussian_residual": {
+            "n": 1564,
+            "available": true,
+            "median": -0.32791886597733366,
+            "std": 22.794474660289715,
+            "robust_scale": 20.250478806259263,
+            "quantiles": [
+              -57.6502813258311,
+              -28.080076154473495,
+              -0.32791886597733366,
+              28.271766578894553,
+              56.73466760333453
+            ],
+            "positive_5mad": 2,
+            "negative_5mad": 0
+          }
+        },
+        {
+          "inner": 60,
+          "outer": 80,
+          "expected_pixels": 2204,
+          "supported": 2128,
+          "signal": {
+            "n": 2128,
+            "available": true,
+            "median": -1.31049504863821,
+            "std": 27.887618675461855,
+            "robust_scale": 23.448986273693624,
+            "quantiles": [
+              -75.32147227288647,
+              -34.30276634195355,
+              -1.31049504863821,
+              31.543833554379052,
+              67.6835757843428
+            ],
+            "positive_5mad": 0,
+            "negative_5mad": 4
+          },
+          "gaussian_residual": {
+            "n": 2128,
+            "available": true,
+            "median": -0.44221604565266215,
+            "std": 27.887618675461855,
+            "robust_scale": 23.44898627369362,
+            "quantiles": [
+              -74.45319326990092,
+              -33.434487338968005,
+              -0.44221604565266215,
+              32.4121125573646,
+              68.55185478732835
+            ],
+            "positive_5mad": 0,
+            "negative_5mad": 4
+          }
+        },
+        {
+          "inner": 80,
+          "outer": 100,
+          "expected_pixels": 2812,
+          "supported": 2254,
+          "signal": {
+            "n": 2254,
+            "available": true,
+            "median": 1.6645188300641771,
+            "std": 30.78684791482341,
+            "robust_scale": 25.36338141476128,
+            "quantiles": [
+              -81.17036010308239,
+              -33.63093263471592,
+              1.6645188300641771,
+              36.405287355020356,
+              80.29781259670384
+            ],
+            "positive_5mad": 3,
+            "negative_5mad": 6
+          },
+          "gaussian_residual": {
+            "n": 2254,
+            "available": true,
+            "median": 2.532797833049725,
+            "std": 30.78684791482341,
+            "robust_scale": 25.36338141476128,
+            "quantiles": [
+              -80.30208110009684,
+              -32.76265363173037,
+              2.532797833049725,
+              37.2735663580059,
+              81.16609159968938
+            ],
+            "positive_5mad": 3,
+            "negative_5mad": 6
+          }
+        }
+      ],
+      "artifact_diagnostic": {
+        "available": true,
+        "positive_local_extrema": 0,
+        "negative_local_extrema": 4,
+        "rule": "5 descriptive background MAD; 5 arcsec isolation; not significance or source catalog"
+      },
+      "support": {
+        "total_pixels": 34773,
+        "science_pixels": 9351,
+        "science_area_arcsec2": 37404.0,
+        "fit_expected": 1257,
+        "fit_supported": 1257,
+        "background_expected": 5016,
+        "background_supported": 4382
+      },
+      "uncertainty": "Descriptive spatial scatter only; no independent pixels, no paired-test significance; endpoint conditional uncertainty requires its own compatible estimator/operator binding."
+    }
+  },
+  "common_support": {
+    "common_pixels": 9351,
+    "lost_from_M0": 0,
+    "gained_after_M0": 0,
+    "M0_original_pixels": 9351,
+    "T5_original_pixels": 9351,
+    "background_common_pixels": 4382,
+    "same_domain_all_scales_pixels": 321,
+    "scales": [
+      {
+        "fwhm_arcsec": 0.0,
+        "M0": {
+          "n": 321,
+          "available": true,
+          "median": -0.37161212627772644,
+          "std": 25.02762587530763,
+          "robust_scale": 21.498505890690105,
+          "quantiles": [
+            -58.648030926195986,
+            -30.512460009774827,
+            -0.37161212627772644,
+            26.750918028483525,
+            60.58242079603778
+          ],
+          "positive_5mad": 0,
+          "negative_5mad": 1
+        },
+        "T5": {
+          "n": 321,
+          "available": true,
+          "median": -0.11658814505065286,
+          "std": 24.91537644933197,
+          "robust_scale": 21.50477609753076,
+          "quantiles": [
+            -58.487718880898036,
+            -30.38635891374856,
+            -0.11658814505065286,
+            26.69290048945672,
+            62.471874430657
+          ],
+          "positive_5mad": 0,
+          "negative_5mad": 1
+        },
+        "paired_delta": {
+          "n": 321,
+          "available": true,
+          "median": 0.05933870644598116,
+          "std": 0.6525909433450767,
+          "robust_scale": 0.35654314864247494,
+          "quantiles": [
+            -1.0516617557322618,
+            -0.29973173506130024,
+            0.05933870644598116,
+            0.9727600845326201,
+            2.330198070883849
+          ],
+          "positive_5mad": 10,
+          "negative_5mad": 2
+        }
+      },
+      {
+        "fwhm_arcsec": 6.0,
+        "M0": {
+          "n": 321,
+          "available": true,
+          "median": 1.1805606249469325,
+          "std": 10.61297824954738,
+          "robust_scale": 9.089947598270275,
+          "quantiles": [
+            -27.217896674423606,
+            -18.0386519782739,
+            1.1805606249469325,
+            10.377221310393743,
+            16.949632223257186
+          ],
+          "positive_5mad": 0,
+          "negative_5mad": 0
+        },
+        "T5": {
+          "n": 321,
+          "available": true,
+          "median": 1.1967531075041111,
+          "std": 10.51062545156234,
+          "robust_scale": 9.019577832233862,
+          "quantiles": [
+            -26.127843304009794,
+            -16.98540571292717,
+            1.1967531075041111,
+            10.547190527335282,
+            18.166874642414427
+          ],
+          "positive_5mad": 0,
+          "negative_5mad": 0
+        },
+        "paired_delta": {
+          "n": 321,
+          "available": true,
+          "median": 0.0541853143213884,
+          "std": 0.4139093357864202,
+          "robust_scale": 0.15750387325683893,
+          "quantiles": [
+            -0.16048477232587074,
+            -0.08102730463158236,
+            0.0541853143213884,
+            0.8008961177791543,
+            1.6340275503951942
+          ],
+          "positive_5mad": 31,
+          "negative_5mad": 0
+        }
+      },
+      {
+        "fwhm_arcsec": 12.0,
+        "M0": {
+          "n": 321,
+          "available": true,
+          "median": 0.6901655365190358,
+          "std": 6.953444773810403,
+          "robust_scale": 6.5466082052900285,
+          "quantiles": [
+            -16.365210301886705,
+            -12.744879371046947,
+            0.6901655365190358,
+            7.66568606990422,
+            8.763657690841413
+          ],
+          "positive_5mad": 0,
+          "negative_5mad": 0
+        },
+        "T5": {
+          "n": 321,
+          "available": true,
+          "median": 0.6858968516720556,
+          "std": 6.813310568319338,
+          "robust_scale": 6.809497099094098,
+          "quantiles": [
+            -15.84270526026007,
+            -11.84267701013284,
+            0.6858968516720556,
+            7.862759557949437,
+            9.242141173155849
+          ],
+          "positive_5mad": 0,
+          "negative_5mad": 0
+        },
+        "paired_delta": {
+          "n": 321,
+          "available": true,
+          "median": 0.08087250985084005,
+          "std": 0.3448457777265536,
+          "robust_scale": 0.16175704654641007,
+          "quantiles": [
+            -0.13686234124198773,
+            -0.05900526156511843,
+            0.08087250985084005,
+            0.759963555543532,
+            1.2736103243927155
+          ],
+          "positive_5mad": 25,
+          "negative_5mad": 0
+        }
+      }
+    ],
+    "qualification": "Same-grid conditional M0/T5 diagnostic, not independent noise realizations or R/S sensitivity improvement. Fixed12arcsec kernel-safe domain for every scale; small domain limits interpretation."
+  },
+  "corrected_version_comparison": {
+    "old_map": {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-completion-20260930/B-REF/run/BASE-POINT/REF/a1100/cycle-05/native/products/total.fits",
+      "sha256": "1f3a65e0adf496ea3e111ab748fccd00eb607a1a59661f4288d6a7d424b5fb23"
+    },
+    "peak_change": 0.00790056908152792,
+    "map_change_common": {
+      "n": 9351,
+      "available": true,
+      "median": 5.167769707270509e-06,
+      "std": 0.0003679678469111315,
+      "robust_scale": 4.285613106476162e-05,
+      "quantiles": [
+        -0.00013053032485821348,
+        -3.872494440093632e-05,
+        5.167769707270509e-06,
+        0.00015424350107906548,
+        0.0007666313145495707
+      ],
+      "positive_5mad": 609,
+      "negative_5mad": 25
+    },
+    "maximum_absolute_map_change": 0.00903838733000839,
+    "old_pixels": 9351,
+    "new_pixels": 9351,
+    "lost": 0,
+    "gained": 0,
+    "qualification": "Corrected B-to-B version comparison, not evidence of R/S improvement"
+  },
+  "support": [
+    {
+      "network": 1,
+      "detectors": 494,
+      "physical_runs": [
+        [
+          0,
+          7691
+        ]
+      ],
+      "integration_seconds": 0.008192,
+      "native_cell_count": 3799354,
+      "original_paired_cells": 3707062,
+      "retained_cells": 1854544,
+      "MAP_contributions": 1854544,
+      "retained_detector_count": 261,
+      "source_geometry_cells": 479718,
+      "source_original_paired_cells": 474050,
+      "source_retained_cells": 266710,
+      "source_retained_original_paired_cells": 266710,
+      "source_retained_without_original_pair": 0,
+      "source_MAP_contributions": 266710,
+      "source_original_detector_seconds": 3883.4175999999998,
+      "source_retained_detector_seconds": 2184.88832,
+      "source_crossing_episodes": 2231,
+      "episodes_with_original_pairs": 2201,
+      "episodes_with_any_retained": 1224,
+      "original_paired_episodes_with_any_retained": 1224,
+      "original_paired_episodes_with_no_retained": 977,
+      "episodes_with_no_retained": 1007,
+      "receipt": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-quality-20261001/B-REF/upstream/products/network1/receipt.yaml",
+        "sha256": "13ffb24d0189df89c63d8b2026b73f0fc1912fb7899f0419a8e5a9592a8ac021"
+      },
+      "source_probe": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-quality-20261001/B-REF/upstream/products/network1/source-probe/receipt.yaml",
+        "sha256": "dbe76b3be138661d5529b4df47f6d4e2e215f016948abea6b8037ac6d542fdf5"
+      }
+    },
+    {
+      "network": 2,
+      "detectors": 510,
+      "physical_runs": [
+        [
+          0,
+          7691
+        ]
+      ],
+      "integration_seconds": 0.008192,
+      "native_cell_count": 3922410,
+      "original_paired_cells": 3837809,
+      "retained_cells": 2157657,
+      "MAP_contributions": 2157657,
+      "retained_detector_count": 304,
+      "source_geometry_cells": 522918,
+      "source_original_paired_cells": 513071,
+      "source_retained_cells": 330092,
+      "source_retained_original_paired_cells": 330092,
+      "source_retained_without_original_pair": 0,
+      "source_MAP_contributions": 330092,
+      "source_original_detector_seconds": 4203.0776319999995,
+      "source_retained_detector_seconds": 2704.113664,
+      "source_crossing_episodes": 2677,
+      "episodes_with_original_pairs": 2622,
+      "episodes_with_any_retained": 1730,
+      "original_paired_episodes_with_any_retained": 1730,
+      "original_paired_episodes_with_no_retained": 892,
+      "episodes_with_no_retained": 947,
+      "receipt": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-quality-20261001/B-REF/upstream/products/network2/receipt.yaml",
+        "sha256": "e17bd855c94ed8a1bdf6bad63ffd8e5faa4bb56219cc856665701607efb982a3"
+      },
+      "source_probe": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-quality-20261001/B-REF/upstream/products/network2/source-probe/receipt.yaml",
+        "sha256": "e8a16951780d5e5082dfa5486638831c09edd60830209359d88a432c97b74f0e"
+      }
+    },
+    {
+      "network": 3,
+      "detectors": 533,
+      "physical_runs": [
+        [
+          0,
+          7691
+        ]
+      ],
+      "integration_seconds": 0.008192,
+      "native_cell_count": 4099303,
+      "original_paired_cells": 4045466,
+      "retained_cells": 1504270,
+      "MAP_contributions": 1504270,
+      "retained_detector_count": 212,
+      "source_geometry_cells": 588409,
+      "source_original_paired_cells": 586569,
+      "source_retained_cells": 239331,
+      "source_retained_original_paired_cells": 239331,
+      "source_retained_without_original_pair": 0,
+      "source_MAP_contributions": 239331,
+      "source_original_detector_seconds": 4805.173248,
+      "source_retained_detector_seconds": 1960.599552,
+      "source_crossing_episodes": 2831,
+      "episodes_with_original_pairs": 2820,
+      "episodes_with_any_retained": 1206,
+      "original_paired_episodes_with_any_retained": 1206,
+      "original_paired_episodes_with_no_retained": 1614,
+      "episodes_with_no_retained": 1625,
+      "receipt": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-quality-20261001/B-REF/upstream/products/network3/receipt.yaml",
+        "sha256": "076f8444f8efe0e356bbfcc3e8100ad931adfd6bd4f7bf119aea912c19413723"
+      },
+      "source_probe": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-quality-20261001/B-REF/upstream/products/network3/source-probe/receipt.yaml",
+        "sha256": "e7fdd748b83f583a5a06a24b013c7e8e9d6fadff09e5019961989df0d81a0f3e"
+      }
+    },
+    {
+      "network": 4,
+      "detectors": 532,
+      "physical_runs": [
+        [
+          0,
+          7691
+        ]
+      ],
+      "integration_seconds": 0.008192,
+      "native_cell_count": 4091612,
+      "original_paired_cells": 3937792,
+      "retained_cells": 2647244,
+      "MAP_contributions": 2647244,
+      "retained_detector_count": 376,
+      "source_geometry_cells": 538326,
+      "source_original_paired_cells": 522950,
+      "source_retained_cells": 405157,
+      "source_retained_original_paired_cells": 405157,
+      "source_retained_without_original_pair": 0,
+      "source_MAP_contributions": 405157,
+      "source_original_detector_seconds": 4284.0064,
+      "source_retained_detector_seconds": 3319.046144,
+      "source_crossing_episodes": 2443,
+      "episodes_with_original_pairs": 2381,
+      "episodes_with_any_retained": 1997,
+      "original_paired_episodes_with_any_retained": 1997,
+      "original_paired_episodes_with_no_retained": 384,
+      "episodes_with_no_retained": 446,
+      "receipt": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-quality-20261001/B-REF/upstream/products/network4/receipt.yaml",
+        "sha256": "e490bd851c79f3893cde38f7b120bf994b97e519355abd38303836fb0fe24dc1"
+      },
+      "source_probe": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-quality-20261001/B-REF/upstream/products/network4/source-probe/receipt.yaml",
+        "sha256": "a676a3b1b4c1d5fb176dd1ddc702f75a49d3ea478bae63bb99cc8416b6fa6502"
+      }
+    }
+  ],
+  "storage": {
+    "prior": [
+      {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-retained-residuals-20260928",
+        "bytes": 291593819
+      },
+      {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928",
+        "bytes": 1564657393
+      },
+      {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-20260928",
+        "bytes": 284278
+      },
+      {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-build-repair-20260929",
+        "bytes": 274383180
+      },
+      {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-runtime-repair-20260929",
+        "bytes": 491641929
+      },
+      {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-completion-20260930",
+        "bytes": 10561150785
+      },
+      {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point152420-amplitude-20260930",
+        "bytes": 1148364
+      }
+    ],
+    "current_bytes": 6887145961,
+    "ceiling": 30000000000,
+    "shared_bytes": 20072005709
+  },
+  "reduction_wall_seconds": 516.821004666,
+  "response_extraction_seconds": 101.17254762499942,
+  "completion_evaluation_seconds": 11.517049374997441,
+  "new_observation_starts_in_this_analysis": 0,
+  "qualification": "Input-amplitude gains use the signed analytic amplitude of the fixed raster family. Ideal-estimator gains are separately reported. These are finite10percent perturbations with shared data/calibration/context; sigma/g is conditional local finite-response uncertainty, not absolute calibration, unbiasedness, paired significance or a measured sensitivity advantage over R."
+}

@@ -1,3 +1,20 @@
+## POINT map-quality milestone assessed and closed — 2026-10-01
+
+The [completion assessment](../validation/point_quality_2026-10-01/COMPLETION.md)
+records three successful exact-a6d2c4bb2 roles, 15 feedback applications, no retry.
+Corrected152420 peak291.818mJy/beam differs by0.008 from earlierB; compact analytic
+finite-response gains improve from0.784/0.790 atM0 to1.027/1.001 atT5. Conditional
+input-equivalent peak uncertainties13.745/14.096mJy/beam do not establish R/S
+sensitivity. Paired-valid source exposure retention59.2%, residual response errors,
+adaptive positive-arm support changes and unmatched R controls remain explicit.
+Overall improvement over earlier processing is not established. No furtherPOINT
+starts or tuning follow automatically; unused numerical allowance remains parked.
+[OOF completion handoff](../handoff/POINT_TO_OOF_COMPLETION_2026-10-01.md) carries
+local152385–152387 sequence into mode/scan1 and solver-adapter fixture preparation;
+noOOF observational start, inferred feedback policy or production acceptance.
+Prelaunch bounddocuments remain unchanged as historical inputs. Native executed
+source remainsa6d2c4bb2; closeout changes only saved-product analysis and reporting.
+
 ## POINT map-quality checkpoint and OOF preparation — 2026-10-01
 
 The [saved-product assessment](../validation/point_quality_2026-10-01/ASSESSMENT.md)

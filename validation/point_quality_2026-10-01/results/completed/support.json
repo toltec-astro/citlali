@@ -1,0 +1,157 @@
+{
+  "networks": [
+    {
+      "network": 1,
+      "detectors": 494,
+      "physical_runs": [
+        [
+          0,
+          7691
+        ]
+      ],
+      "integration_seconds": 0.008192,
+      "native_cell_count": 3799354,
+      "original_paired_cells": 3707062,
+      "retained_cells": 1854544,
+      "MAP_contributions": 1854544,
+      "retained_detector_count": 261,
+      "source_geometry_cells": 479718,
+      "source_original_paired_cells": 474050,
+      "source_retained_cells": 266710,
+      "source_retained_original_paired_cells": 266710,
+      "source_retained_without_original_pair": 0,
+      "source_MAP_contributions": 266710,
+      "source_original_detector_seconds": 3883.4175999999998,
+      "source_retained_detector_seconds": 2184.88832,
+      "source_crossing_episodes": 2231,
+      "episodes_with_original_pairs": 2201,
+      "episodes_with_any_retained": 1224,
+      "original_paired_episodes_with_any_retained": 1224,
+      "original_paired_episodes_with_no_retained": 977,
+      "episodes_with_no_retained": 1007,
+      "receipt": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-quality-20261001/B-REF/upstream/products/network1/receipt.yaml",
+        "sha256": "13ffb24d0189df89c63d8b2026b73f0fc1912fb7899f0419a8e5a9592a8ac021"
+      },
+      "source_probe": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-quality-20261001/B-REF/upstream/products/network1/source-probe/receipt.yaml",
+        "sha256": "dbe76b3be138661d5529b4df47f6d4e2e215f016948abea6b8037ac6d542fdf5"
+      }
+    },
+    {
+      "network": 2,
+      "detectors": 510,
+      "physical_runs": [
+        [
+          0,
+          7691
+        ]
+      ],
+      "integration_seconds": 0.008192,
+      "native_cell_count": 3922410,
+      "original_paired_cells": 3837809,
+      "retained_cells": 2157657,
+      "MAP_contributions": 2157657,
+      "retained_detector_count": 304,
+      "source_geometry_cells": 522918,
+      "source_original_paired_cells": 513071,
+      "source_retained_cells": 330092,
+      "source_retained_original_paired_cells": 330092,
+      "source_retained_without_original_pair": 0,
+      "source_MAP_contributions": 330092,
+      "source_original_detector_seconds": 4203.0776319999995,
+      "source_retained_detector_seconds": 2704.113664,
+      "source_crossing_episodes": 2677,
+      "episodes_with_original_pairs": 2622,
+      "episodes_with_any_retained": 1730,
+      "original_paired_episodes_with_any_retained": 1730,
+      "original_paired_episodes_with_no_retained": 892,
+      "episodes_with_no_retained": 947,
+      "receipt": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-quality-20261001/B-REF/upstream/products/network2/receipt.yaml",
+        "sha256": "e17bd855c94ed8a1bdf6bad63ffd8e5faa4bb56219cc856665701607efb982a3"
+      },
+      "source_probe": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-quality-20261001/B-REF/upstream/products/network2/source-probe/receipt.yaml",
+        "sha256": "e8a16951780d5e5082dfa5486638831c09edd60830209359d88a432c97b74f0e"
+      }
+    },
+    {
+      "network": 3,
+      "detectors": 533,
+      "physical_runs": [
+        [
+          0,
+          7691
+        ]
+      ],
+      "integration_seconds": 0.008192,
+      "native_cell_count": 4099303,
+      "original_paired_cells": 4045466,
+      "retained_cells": 1504270,
+      "MAP_contributions": 1504270,
+      "retained_detector_count": 212,
+      "source_geometry_cells": 588409,
+      "source_original_paired_cells": 586569,
+      "source_retained_cells": 239331,
+      "source_retained_original_paired_cells": 239331,
+      "source_retained_without_original_pair": 0,
+      "source_MAP_contributions": 239331,
+      "source_original_detector_seconds": 4805.173248,
+      "source_retained_detector_seconds": 1960.599552,
+      "source_crossing_episodes": 2831,
+      "episodes_with_original_pairs": 2820,
+      "episodes_with_any_retained": 1206,
+      "original_paired_episodes_with_any_retained": 1206,
+      "original_paired_episodes_with_no_retained": 1614,
+      "episodes_with_no_retained": 1625,
+      "receipt": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-quality-20261001/B-REF/upstream/products/network3/receipt.yaml",
+        "sha256": "076f8444f8efe0e356bbfcc3e8100ad931adfd6bd4f7bf119aea912c19413723"
+      },
+      "source_probe": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-quality-20261001/B-REF/upstream/products/network3/source-probe/receipt.yaml",
+        "sha256": "e7fdd748b83f583a5a06a24b013c7e8e9d6fadff09e5019961989df0d81a0f3e"
+      }
+    },
+    {
+      "network": 4,
+      "detectors": 532,
+      "physical_runs": [
+        [
+          0,
+          7691
+        ]
+      ],
+      "integration_seconds": 0.008192,
+      "native_cell_count": 4091612,
+      "original_paired_cells": 3937792,
+      "retained_cells": 2647244,
+      "MAP_contributions": 2647244,
+      "retained_detector_count": 376,
+      "source_geometry_cells": 538326,
+      "source_original_paired_cells": 522950,
+      "source_retained_cells": 405157,
+      "source_retained_original_paired_cells": 405157,
+      "source_retained_without_original_pair": 0,
+      "source_MAP_contributions": 405157,
+      "source_original_detector_seconds": 4284.0064,
+      "source_retained_detector_seconds": 3319.046144,
+      "source_crossing_episodes": 2443,
+      "episodes_with_original_pairs": 2381,
+      "episodes_with_any_retained": 1997,
+      "original_paired_episodes_with_any_retained": 1997,
+      "original_paired_episodes_with_no_retained": 384,
+      "episodes_with_no_retained": 446,
+      "receipt": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-quality-20261001/B-REF/upstream/products/network4/receipt.yaml",
+        "sha256": "e490bd851c79f3893cde38f7b120bf994b97e519355abd38303836fb0fe24dc1"
+      },
+      "source_probe": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-quality-20261001/B-REF/upstream/products/network4/source-probe/receipt.yaml",
+        "sha256": "a676a3b1b4c1d5fb176dd1ddc702f75a49d3ea478bae63bb99cc8416b6fa6502"
+      }
+    }
+  ],
+  "qualification": "Saved native RTC/PTC/MAP support; no new processing. Crossing=contiguous geometry-available episode inside commanded40arcsec disk, separately within each physical run/detector; not independent sky measurement. Exposure is detector-seconds, not elapsed time. Original invalid/mapping-unavailable data remain unavailable. Shared helper verifies REF M0/T5 operator/support equality."
+}
