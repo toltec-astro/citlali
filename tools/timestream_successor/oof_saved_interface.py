@@ -59,6 +59,7 @@ def attach_historical(path, destination, *, requested_focus_mm, pupil_stop_m):
         require(ph['OOF_ID']==1100 and ph['OOF_W']==.0011,'declared a1100 nominal wavelength differs')
         require(abs(ph['OOF_M2Z']-requested_focus_mm*1000)<1e-8,'focus unit/sign differs from requested physical M2 Z')
         require(np.isfinite(pupil_stop_m) and 0<pupil_stop_m<=ph['OOF_RO'],'explicit model pupil stop invalid')
+        require(valid.sum()>=5,'existing LMTOOF DataGrid diagnostic requires at least five supported pixels')
         n=out.shape[0];target=fits.Header()
         for i,c in ((1,'AZ-OFFSET'),(2,'EL-OFFSET')):
             target[f'CTYPE{i}']=c;target[f'CUNIT{i}']='deg';target[f'CDELT{i}']=scale/3600.;target[f'CRPIX{i}']=n//2+1;target[f'CRVAL{i}']=0.
@@ -67,3 +68,19 @@ def attach_historical(path, destination, *, requested_focus_mm, pupil_stop_m):
         target['HISTORY']='Lossless axis permutation/integer embedding; no source centering, cropping or brightness scaling.'
         destination.parent.mkdir(parents=True,exist_ok=True);fits.PrimaryHDU(out,target).writeto(destination)
         return dict(source=bound(path),attachment=bound(destination),input_shape=list(z.shape),shape=list(out.shape),supported_pixels=int(valid.sum()),input_finite_pixels=int(np.isfinite(z).sum()),angular_pixel_arcsec=scale,wavelength_m=ph['OOF_W'],wavelength_status='nominal recorded array wavelength; no measured bandpass inference',focus_microns=ph['OOF_M2Z'],focus_convention='absolute requested M2Z, mm*1000; no best-focus subtraction or sign flip',normalization=1.,pointing_shift_arcsec=[0.,0.],support='historical coverage_bool AND finite positive weight AND finite signal; NaN elsewhere; not covariance',OOF_RMS=ph['OOF_RMS'],uncertainty='historical diagnostic header only; not new empirical/independent noise or scalar-sigma admission',pupil_stop_m=pupil_stop_m,pupil_status='explicit interface-test model operand; Python frontend22.5 versus C++DishParams22.0 remains a model decision',solver_inversion_admitted=False)
+
+
+def require_lm_sequence(records):
+    """Check current OOFLM storage preconditions; does not admit optical inference.
+
+    OOFLM allocates maps * first_count and uses map_index * first_count offsets.
+    Different counts can leave uninitialized residuals or write out of bounds.
+    Do not equalize counts by silently changing support or inventing observations.
+    """
+    require(len(records)==3,'three separately acquired focus states required')
+    require(len({tuple(r['shape']) for r in records})==1,'LMTOOF sequence grid differs')
+    require(len({r['angular_pixel_arcsec'] for r in records})==1 and
+            len({r['wavelength_m'] for r in records})==1,'LMTOOF sequence scale/wavelength differs')
+    counts=[r['supported_pixels'] for r in records]
+    require(min(counts)>=5,'existing LMTOOF reader minimum structural cardinality')
+    require(len(set(counts))==1,'OOFLM unequal valid-pixel counts require residual-vector repair in the existing solver; full support must not be silently cropped')

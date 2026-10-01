@@ -22,8 +22,14 @@ def test_base_extraction_preserves_fit_and_all_candidate_planes(tmp_path):
     for k in aa:np.testing.assert_array_equal(aa[k],bb[k])
 
 
+
+def freeze_point_recipe(root):
+    (root/'freeze').mkdir()
+    save_json(root/'freeze/prospective.json',dict(schema='citlali-bright-point-reference-v1',mode='POINT',subobservation=0,scan=2,cycles=10,threshold=3,coverage_policy='high-coverage-informational'))
+
 @pytest.mark.parametrize('mode',['forward','feedback'])
 def test_forward_and_feedback_use_one_initial_implementation(tmp_path,monkeypatch,mode):
+    freeze_point_recipe(tmp_path)
     calls=[]
     monkeypatch.setattr(pipeline,'validate_environment',lambda *a:{})
     def forward(out,binary):
@@ -37,6 +43,7 @@ def test_forward_and_feedback_use_one_initial_implementation(tmp_path,monkeypatc
 
 
 def test_rejected_initial_source_never_starts_feedback(tmp_path,monkeypatch):
+    freeze_point_recipe(tmp_path)
     monkeypatch.setattr(pipeline,'validate_environment',lambda *a:{})
     monkeypatch.setattr(pipeline,'upstream',lambda o,b:save_json(o/'UPSTREAM.json',dict(status='source_or_covariance_failed',guard=dict(complete=True,message='source rejected'))))
     blocked=Mock(side_effect=AssertionError('feedback on failed source'));monkeypatch.setattr(pipeline,'execute_branch',blocked)

@@ -4,7 +4,7 @@ from pathlib import Path
 import numpy as np,netCDF4
 from astropy.io import fits
 W=Path(__file__).resolve().parents[2];sys.path.insert(0,str(W/'tools/timestream_successor'))
-from oof_saved_interface import attach_historical
+from oof_saved_interface import attach_historical,require_lm_sequence
 from point_fruit_trajectory import bound
 from point_additive_diagnostics import save_json
 from inspect_forward_map import require
@@ -37,6 +37,12 @@ for obs,z in zip((152385,152386,152387),(-3.566596717269,-1.566596717269,.433403
         pa=np.asarray(y['Data.TelescopeBackend.ActParAng'][...]);parange=np.rad2deg([np.nanmin(pa),np.nanmax(pa)]).tolist()
     tel.append(dict(observation=obs,original=bound(original),selected_historical_recomputed=bound(derived),changed_numeric_fields=changed,selected_parallactic_angle_deg=parange,derivation_provenance='not recovered; exact historical bytes selected for matched control, not raw stream identity'))
 require(len({tuple(r['shape']) for r in results})==1,'three-map solver grid mismatch')
-identities=[bound(p) for p in sources]+[bound(p) for p in sorted((LM/'C++').glob('*.h'))]+[bound(LM/'C++/OOF.cpp'),bound(LM/'C++/OOFModel.cpp'),bound(LM/'C++/LMTGrid.cpp'),bound(LM/'python/TolTECBeamMap3.py'),bound(LM/'python/OOFBeamMap.py'),bound(LM/'python/OOFDriverFrontend.py')]
-save_json(out/'SAVED_INTERFACE.json',dict(status='pass-interface-only',source_revision=subprocess.check_output(['git','rev-parse','HEAD'],cwd=W,text=True).strip(),maps=results,telescope=tel,lmtoof_sources=identities,harness=bound(D/'lmtoof_reader_fixture.cpp'),command=command,inversion_runs=0,observation_starts=0))
+try:
+    require_lm_sequence(results)
+except ValueError as exc:
+    require('unequal valid-pixel' in str(exc),'unexpected sequence rejection')
+    joint=dict(status='blocked',reason=str(exc),support_changed=False)
+else:raise ValueError('known unequal support was incorrectly admitted')
+identities=[bound(p) for p in sources]+[bound(p) for p in sorted((LM/'C++').glob('*.h'))]+[*[bound(LM/'C++'/n) for n in ('OOF.cpp','OOFLM.cpp','OOFModelLM.cpp','glm_fit_data_files.cpp','FFTGrid.cpp','bandpass.cpp')],bound(LM/'C++/OOFModel.cpp'),bound(LM/'C++/LMTGrid.cpp'),bound(LM/'python/TolTECBeamMap3.py'),bound(LM/'python/OOFBeamMap.py'),bound(LM/'python/OOFDriverFrontend.py')]
+save_json(out/'SAVED_INTERFACE.json',dict(status='pass-interface-only',source_revision=subprocess.check_output(['git','rev-parse','HEAD'],cwd=W,text=True).strip(),maps=results,joint_lm_sequence=joint,telescope=tel,lmtoof_sources=identities,harness=bound(D/'lmtoof_reader_fixture.cpp'),command=command,inversion_runs=0,observation_starts=0))
 print('three saved maps passed exact C++ pixel/support/axis/focus roundtrip; no inversion')

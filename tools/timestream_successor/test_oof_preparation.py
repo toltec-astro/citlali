@@ -44,3 +44,15 @@ def test_oof_feedback_rejected_before_environment_or_processing(tmp_path,monkeyp
     check=Mock(side_effect=AssertionError('execution reached'));monkeypatch.setattr(p,'validate_environment',check)
     with pytest.raises(ValueError,match='OOF.*forward'):p.execute('feedback',tmp_path,Path('binary'))
     assert not check.called and not (tmp_path/'EXECUTION.json').exists()
+
+
+def test_joint_lm_sequence_rejects_unequal_support_without_cropping():
+    from oof_saved_interface import require_lm_sequence
+    records=[dict(shape=[512,512],angular_pixel_arcsec=1,wavelength_m=.0011,supported_pixels=n) for n in (89440,89377,88880)]
+    original=copy.deepcopy(records)
+    with pytest.raises(ValueError,match='unequal valid-pixel'):require_lm_sequence(records)
+    assert records==original
+    for r in records:r['supported_pixels']=10
+    require_lm_sequence(records)
+    records[0]['angular_pixel_arcsec']=2
+    with pytest.raises(ValueError,match='scale/wavelength'):require_lm_sequence(records)
