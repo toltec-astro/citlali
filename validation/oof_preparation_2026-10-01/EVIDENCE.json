@@ -1,0 +1,820 @@
+{
+  "implementation_revision": "0e63e6459112c0ddaeb284694612fd7d09b3d637",
+  "source_base": "6d9ad5e5c74f0b08687baba2ebeb1f25822d8cf3",
+  "passed": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-oof-cold-m0-20261001/preflight/0e63e6459112c0ddaeb284694612fd7d09b3d637/PASSED.json",
+    "sha256": "1bdfef4373c4bd1ec511a2500a790ef4a1aea20c91874a15e3de645622352303"
+  },
+  "gates": {
+    "source_revision": "0e63e6459112c0ddaeb284694612fd7d09b3d637",
+    "gates": [
+      {
+        "name": "configure",
+        "exit_code": 0,
+        "log": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-oof-cold-m0-20261001/preflight/0e63e6459112c0ddaeb284694612fd7d09b3d637/configure.log",
+          "sha256": "c6a9b13d7234f03fb46c005b888f80578231fc1816e5209368fc0cd8bf1b56e4"
+        }
+      },
+      {
+        "name": "build",
+        "exit_code": 0,
+        "log": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-oof-cold-m0-20261001/preflight/0e63e6459112c0ddaeb284694612fd7d09b3d637/build.log",
+          "sha256": "59ca96e146faabce50572a8046f6e3fb89b7f9e95286398d2fbdc4b793e3c2ff"
+        }
+      },
+      {
+        "name": "ctest",
+        "exit_code": 0,
+        "log": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-oof-cold-m0-20261001/preflight/0e63e6459112c0ddaeb284694612fd7d09b3d637/ctest.log",
+          "sha256": "d8602cb1263cbe53278e97c55638b9717d08eddf1475345b5234d78790bc2a60"
+        }
+      },
+      {
+        "name": "baseline-tools",
+        "exit_code": 0,
+        "log": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-oof-cold-m0-20261001/preflight/0e63e6459112c0ddaeb284694612fd7d09b3d637/baseline-tools.log",
+          "sha256": "1d0063be78ec76f50ea3fb47134e846675e13122a40e3db8af767f138bfb90a2"
+        }
+      },
+      {
+        "name": "point-tools",
+        "exit_code": 0,
+        "log": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-oof-cold-m0-20261001/preflight/0e63e6459112c0ddaeb284694612fd7d09b3d637/point-tools.log",
+          "sha256": "0ef7b83c6d5026aedf80f8f97121b242591072fe159c41c81d8bad8ae1b5fdd7"
+        }
+      },
+      {
+        "name": "oof-tools",
+        "exit_code": 0,
+        "log": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-oof-cold-m0-20261001/preflight/0e63e6459112c0ddaeb284694612fd7d09b3d637/oof-tools.log",
+          "sha256": "aca3d284e59fa99f725d39f3c06b8910ca6e5df13b4caf9e302d33da56b1861b"
+        }
+      },
+      {
+        "name": "config",
+        "exit_code": 0,
+        "log": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-oof-cold-m0-20261001/preflight/0e63e6459112c0ddaeb284694612fd7d09b3d637/config.log",
+          "sha256": "6af8189a094255f96e22b5472c96ea2c98a45dba1abfe3ad84f21fd65703c55e"
+        }
+      },
+      {
+        "name": "native-point-contract",
+        "exit_code": 0,
+        "log": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-oof-cold-m0-20261001/preflight/0e63e6459112c0ddaeb284694612fd7d09b3d637/native-point-contract.log",
+          "sha256": "921c96273bf32f7cfa6142d74297813e0a29493475eb54347669b1e35b4c4828"
+        }
+      },
+      {
+        "name": "lmtoof-saved-interface",
+        "exit_code": 0,
+        "log": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-oof-cold-m0-20261001/preflight/0e63e6459112c0ddaeb284694612fd7d09b3d637/lmtoof-saved-interface.log",
+          "sha256": "04bf949bf421cac500cdeea783a15e0e7ccf133c87ad5dd27b318c6f68699a42"
+        }
+      }
+    ],
+    "observation_starts": 0
+  },
+  "preparation": {
+    "source_revision": "0e63e6459112c0ddaeb284694612fd7d09b3d637",
+    "prepared": [
+      {
+        "observation": 152385,
+        "receipt": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-oof-cold-m0-20261001/preflight/0e63e6459112c0ddaeb284694612fd7d09b3d637/152385/native-preparation/products/PREPARED.yaml",
+          "sha256": "95a800bbaff1955ec2179cde8c3d3392f79fd04277f87abb80799ff9c75cb1e8"
+        },
+        "budget": {
+          "native_cells": 16264393,
+          "shared_upstream_allowance": 4163684608,
+          "peak_ceiling_bytes": 7644375472,
+          "free_space_reserve_bytes": 2000000000,
+          "network_workers": 2,
+          "library_threads": 1
+        },
+        "selected_detectors": 2069,
+        "matched_detectors": 1881
+      },
+      {
+        "observation": 152386,
+        "receipt": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-oof-cold-m0-20261001/preflight/0e63e6459112c0ddaeb284694612fd7d09b3d637/152386/native-preparation/products/PREPARED.yaml",
+          "sha256": "86ee32dfc0ed011e0bfaa054825f9371c674be043cf7a9ca61a00710e5e49ebd"
+        },
+        "budget": {
+          "native_cells": 16315092,
+          "shared_upstream_allowance": 4176663552,
+          "peak_ceiling_bytes": 7659787968,
+          "free_space_reserve_bytes": 2000000000,
+          "network_workers": 2,
+          "library_threads": 1
+        },
+        "selected_detectors": 2069,
+        "matched_detectors": 1881
+      },
+      {
+        "observation": 152387,
+        "receipt": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-oof-cold-m0-20261001/preflight/0e63e6459112c0ddaeb284694612fd7d09b3d637/152387/native-preparation/products/PREPARED.yaml",
+          "sha256": "9826ab1a32f7149b716531c5b6163ecf940c8ea70224679c689f10551baf0c5a"
+        },
+        "budget": {
+          "native_cells": 16280961,
+          "shared_upstream_allowance": 4167926016,
+          "peak_ceiling_bytes": 7649412144,
+          "free_space_reserve_bytes": 2000000000,
+          "network_workers": 2,
+          "library_threads": 1
+        },
+        "selected_detectors": 2069,
+        "matched_detectors": 1881
+      }
+    ],
+    "negative_cases": [
+      {
+        "kind": "foreign-scan",
+        "exit_code": 1,
+        "expected": "OOF observation identity",
+        "log": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-oof-cold-m0-20261001/preflight/0e63e6459112c0ddaeb284694612fd7d09b3d637/negative/foreign-scan/native/run.log",
+          "sha256": "f723b40426d043e73a2d08e667d6d642b9ed2bc98ee2ed747ed5e7edcf1bdb4b"
+        }
+      },
+      {
+        "kind": "duplicate-channel",
+        "exit_code": 1,
+        "expected": "duplicate/foreign detector",
+        "log": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-oof-cold-m0-20261001/preflight/0e63e6459112c0ddaeb284694612fd7d09b3d637/negative/duplicate-channel/native/run.log",
+          "sha256": "947a2f2d3e3459bf945c57eecb1bd135be279084821b920ce40a1bda8d1d15eb"
+        }
+      },
+      {
+        "kind": "foreign-APT",
+        "exit_code": 1,
+        "expected": "shared_input_mismatch",
+        "log": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-oof-cold-m0-20261001/preflight/0e63e6459112c0ddaeb284694612fd7d09b3d637/negative/foreign-APT/native/run.log",
+          "sha256": "8958f0804f3aa789e04e04c2c5eb90747c15c5a7b9ea0bd9f5b289060e0e2018"
+        }
+      },
+      {
+        "kind": "POINT-source-probe",
+        "exit_code": 1,
+        "expected": "POINT-only experiment",
+        "log": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-oof-cold-m0-20261001/preflight/0e63e6459112c0ddaeb284694612fd7d09b3d637/negative/POINT-source-probe/native/run.log",
+          "sha256": "74262fa26131f966a2ff76da535160fa01c7f88b0abad03d49cc3615ed13d651"
+        }
+      }
+    ],
+    "storage": {
+      "prior": [
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-retained-residuals-20260928",
+          "bytes": 291593819
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928",
+          "bytes": 1564657393
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-20260928",
+          "bytes": 284278
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-build-repair-20260929",
+          "bytes": 274383180
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-runtime-repair-20260929",
+          "bytes": 491641929
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-completion-20260930",
+          "bytes": 10561150785
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point152420-amplitude-20260930",
+          "bytes": 1148364
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-point-quality-20261001",
+          "bytes": 6887163486
+        }
+      ],
+      "prior_bytes": 20072023234,
+      "max_native_cells": 16315092,
+      "active_S_bound_bytes": 7659787968,
+      "R_active_bound_status": "unavailable until reference executor/population binding",
+      "six_role_S_based_lower_reservation_bytes": 42331811202,
+      "ceiling_bytes": 30000000000,
+      "minimum_release_or_added_allowance_bytes": 12331811202,
+      "free_reserve_bytes": 2000000000,
+      "current_free_bytes": 612923097088,
+      "roles_serial": true,
+      "network_workers": 2,
+      "library_threads": 1
+    },
+    "observation_starts": 0,
+    "inversion_runs": 0,
+    "launch_ready": false
+  },
+  "saved_interface": {
+    "status": "pass-interface-only",
+    "source_revision": "0e63e6459112c0ddaeb284694612fd7d09b3d637",
+    "maps": [
+      {
+        "source": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/refactor/1146+399/reduced/redu00/152385/raw/toltec_commissioning_a1100_oof_152385_citlali.fits",
+          "sha256": "1e28fc5e5646fe275567506e01e905e1f742c325265afa1849a75b19d308509e"
+        },
+        "attachment": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-oof-cold-m0-20261001/preflight/0e63e6459112c0ddaeb284694612fd7d09b3d637/saved-interface/152385-interface-test.fits",
+          "sha256": "efc238a8b099fd014de17fbebdc27014a97f9d8ce846b3ac177761810f6fddca"
+        },
+        "input_shape": [
+          373,
+          361
+        ],
+        "shape": [
+          512,
+          512
+        ],
+        "supported_pixels": 89440,
+        "input_finite_pixels": 134653,
+        "angular_pixel_arcsec": 1.0,
+        "wavelength_m": 0.0011,
+        "wavelength_status": "nominal recorded array wavelength; no measured bandpass inference",
+        "focus_microns": -3566.596717269,
+        "focus_convention": "absolute requested M2Z, mm*1000; no best-focus subtraction or sign flip",
+        "normalization": 1.0,
+        "pointing_shift_arcsec": [
+          0.0,
+          0.0
+        ],
+        "support": "historical coverage_bool AND finite positive weight AND finite signal; NaN elsewhere; not covariance",
+        "OOF_RMS": 2.96445875626257,
+        "uncertainty": "historical diagnostic header only; not new empirical/independent noise or scalar-sigma admission",
+        "pupil_stop_m": 22.0,
+        "pupil_status": "explicit interface-test model operand; Python frontend22.5 versus C++DishParams22.0 remains a model decision",
+        "solver_inversion_admitted": false,
+        "native_reader": {
+          "exact_pixel_roundtrip": true,
+          "supported_pixels": 89440,
+          "focus_path_derivative_center": -2.0,
+          "focus_path_derivative_at20m": -1.506966947278852,
+          "log": {
+            "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-oof-cold-m0-20261001/preflight/0e63e6459112c0ddaeb284694612fd7d09b3d637/saved-interface/152385-reader.log",
+            "sha256": "7d32c0b7de3fd4b8b8d48a2a638af170fe5d06429dedcbe85629b888da949384"
+          }
+        }
+      },
+      {
+        "source": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/refactor/1146+399/reduced/redu00/152386/raw/toltec_commissioning_a1100_oof_152386_citlali.fits",
+          "sha256": "a1b68a7e98c3551c5f5c46bf0ee2d2ef1e244364efadd12460dccea48eb93385"
+        },
+        "attachment": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-oof-cold-m0-20261001/preflight/0e63e6459112c0ddaeb284694612fd7d09b3d637/saved-interface/152386-interface-test.fits",
+          "sha256": "acde0ecead7fc3e0d46fe245186bd32d1be0793ddee9d3a706897c6cf44b0e75"
+        },
+        "input_shape": [
+          377,
+          363
+        ],
+        "shape": [
+          512,
+          512
+        ],
+        "supported_pixels": 89377,
+        "input_finite_pixels": 136851,
+        "angular_pixel_arcsec": 1.0,
+        "wavelength_m": 0.0011,
+        "wavelength_status": "nominal recorded array wavelength; no measured bandpass inference",
+        "focus_microns": -1566.596717269,
+        "focus_convention": "absolute requested M2Z, mm*1000; no best-focus subtraction or sign flip",
+        "normalization": 1.0,
+        "pointing_shift_arcsec": [
+          0.0,
+          0.0
+        ],
+        "support": "historical coverage_bool AND finite positive weight AND finite signal; NaN elsewhere; not covariance",
+        "OOF_RMS": 3.03538582326293,
+        "uncertainty": "historical diagnostic header only; not new empirical/independent noise or scalar-sigma admission",
+        "pupil_stop_m": 22.0,
+        "pupil_status": "explicit interface-test model operand; Python frontend22.5 versus C++DishParams22.0 remains a model decision",
+        "solver_inversion_admitted": false,
+        "native_reader": {
+          "exact_pixel_roundtrip": true,
+          "supported_pixels": 89377,
+          "focus_path_derivative_center": -2.0,
+          "focus_path_derivative_at20m": -1.506966947278852,
+          "log": {
+            "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-oof-cold-m0-20261001/preflight/0e63e6459112c0ddaeb284694612fd7d09b3d637/saved-interface/152386-reader.log",
+            "sha256": "9f1da969d3aef9897e60f96fc59aab476c5bbc81bdd1f7fb9d76fc2115ec4a92"
+          }
+        }
+      },
+      {
+        "source": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/refactor/1146+399/reduced/redu00/152387/raw/toltec_commissioning_a1100_oof_152387_citlali.fits",
+          "sha256": "25762ead530ae80fac146d1b9294bb736738e534e60784cfbf8f6954e414085b"
+        },
+        "attachment": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-oof-cold-m0-20261001/preflight/0e63e6459112c0ddaeb284694612fd7d09b3d637/saved-interface/152387-interface-test.fits",
+          "sha256": "449058bec09188a6ed30a87e55295d080103fd129cfdd786e8f7288f4ca8955b"
+        },
+        "input_shape": [
+          373,
+          365
+        ],
+        "shape": [
+          512,
+          512
+        ],
+        "supported_pixels": 88880,
+        "input_finite_pixels": 136145,
+        "angular_pixel_arcsec": 1.0,
+        "wavelength_m": 0.0011,
+        "wavelength_status": "nominal recorded array wavelength; no measured bandpass inference",
+        "focus_microns": 433.403282731,
+        "focus_convention": "absolute requested M2Z, mm*1000; no best-focus subtraction or sign flip",
+        "normalization": 1.0,
+        "pointing_shift_arcsec": [
+          0.0,
+          0.0
+        ],
+        "support": "historical coverage_bool AND finite positive weight AND finite signal; NaN elsewhere; not covariance",
+        "OOF_RMS": 2.97571350436344,
+        "uncertainty": "historical diagnostic header only; not new empirical/independent noise or scalar-sigma admission",
+        "pupil_stop_m": 22.0,
+        "pupil_status": "explicit interface-test model operand; Python frontend22.5 versus C++DishParams22.0 remains a model decision",
+        "solver_inversion_admitted": false,
+        "native_reader": {
+          "exact_pixel_roundtrip": true,
+          "supported_pixels": 88880,
+          "focus_path_derivative_center": -2.0,
+          "focus_path_derivative_at20m": -1.506966947278852,
+          "log": {
+            "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-oof-cold-m0-20261001/preflight/0e63e6459112c0ddaeb284694612fd7d09b3d637/saved-interface/152387-reader.log",
+            "sha256": "c191dc33f06df0d3861b4bcfebdc9de7ed7cc4e467c959091dde786bf063b064"
+          }
+        }
+      }
+    ],
+    "joint_lm_sequence": {
+      "status": "blocked",
+      "reason": "OOFLM unequal valid-pixel counts require residual-vector repair in the existing solver; full support must not be silently cropped",
+      "support_changed": false
+    },
+    "telescope": [
+      {
+        "observation": 152385,
+        "original": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/tel_toltec_2026-02-19_152385_00_0001.nc",
+          "sha256": "eea40ee5443022370c4c66ba289ce2ba566aaf0e645abe72985a53788a9e2926"
+        },
+        "selected_historical_recomputed": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/refactor/1146+399/reduced/tel_toltec_2026-02-19_152385_00_0001_recomputed.nc",
+          "sha256": "5959a7d0e2844f57b3dad2f9d71ca2ecdff089a9f7bcb7c67dac4435a7001947"
+        },
+        "changed_numeric_fields": [
+          {
+            "field": "Data.TelescopeBackend.SourceRaAct",
+            "max_absolute_difference": 5.686396284509954e-06
+          },
+          {
+            "field": "Data.TelescopeBackend.SourceDecAct",
+            "max_absolute_difference": 2.1044790496915766e-06
+          },
+          {
+            "field": "Data.TelescopeBackend.ActParAng",
+            "max_absolute_difference": 0.00771572750099736
+          }
+        ],
+        "selected_parallactic_angle_deg": [
+          -119.83920848956602,
+          -119.49613643786103
+        ],
+        "derivation_provenance": "not recovered; exact historical bytes selected for matched control, not raw stream identity"
+      },
+      {
+        "observation": 152386,
+        "original": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/tel_toltec_2026-02-19_152386_00_0001.nc",
+          "sha256": "35468feccdb9d07d0a370e8fca2d3b3bee379f983786fb4bce330a44dc7e96d8"
+        },
+        "selected_historical_recomputed": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/refactor/1146+399/reduced/tel_toltec_2026-02-19_152386_00_0001_recomputed.nc",
+          "sha256": "3c6e697e86a7621dfcae93b60a0a6e3708d89fa31c352dd6734c27b43b7fd3d9"
+        },
+        "changed_numeric_fields": [
+          {
+            "field": "Data.TelescopeBackend.SourceRaAct",
+            "max_absolute_difference": 5.506266170574037e-06
+          },
+          {
+            "field": "Data.TelescopeBackend.SourceDecAct",
+            "max_absolute_difference": 2.2919724688152954e-06
+          },
+          {
+            "field": "Data.TelescopeBackend.ActParAng",
+            "max_absolute_difference": 0.007811614128988786
+          }
+        ],
+        "selected_parallactic_angle_deg": [
+          -120.36003406411626,
+          -119.99582763450431
+        ],
+        "derivation_provenance": "not recovered; exact historical bytes selected for matched control, not raw stream identity"
+      },
+      {
+        "observation": 152387,
+        "original": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/tel_toltec_2026-02-19_152387_00_0001.nc",
+          "sha256": "e9fdcdf66c45e517fa4e3cf773e7ccff9173e1bc9c9ff611d48cd9419e775c3c"
+        },
+        "selected_historical_recomputed": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/refactor/1146+399/reduced/tel_toltec_2026-02-19_152387_00_0001_recomputed.nc",
+          "sha256": "d0d53f777ec22e2d4f42c44af9164cf2befd872be7ed79dd3b32c61be55f77f0"
+        },
+        "changed_numeric_fields": [
+          {
+            "field": "Data.TelescopeBackend.SourceRaAct",
+            "max_absolute_difference": 5.419850749088795e-06
+          },
+          {
+            "field": "Data.TelescopeBackend.SourceDecAct",
+            "max_absolute_difference": 2.01577467728864e-06
+          },
+          {
+            "field": "Data.TelescopeBackend.ActParAng",
+            "max_absolute_difference": 0.007893465576033876
+          }
+        ],
+        "selected_parallactic_angle_deg": [
+          -120.8156397459264,
+          -120.45619298249221
+        ],
+        "derivation_provenance": "not recovered; exact historical bytes selected for matched control, not raw stream identity"
+      }
+    ],
+    "lmtoof_sources": [
+      {
+        "path": "/Users/gwilson/GitHub/LMTOOF/C++/BaseGrid.cpp",
+        "sha256": "bc1fb448954eb5cfb4ef889166524ec1ca0e31e58b6999d810eddba453c07ab9"
+      },
+      {
+        "path": "/Users/gwilson/GitHub/LMTOOF/C++/DataGrid.cpp",
+        "sha256": "06bf5bf508bfda19c3f3680f97f86baebc5271921cbb5090f28d7d2de5feb986"
+      },
+      {
+        "path": "/Users/gwilson/GitHub/LMTOOF/C++/DishParams.cpp",
+        "sha256": "f9095abddf1591481e62319bf72cafd39f209921de5291979dd28a24b4eff135"
+      },
+      {
+        "path": "/Users/gwilson/GitHub/LMTOOF/C++/rng.cpp",
+        "sha256": "d817cc94af92cf27b2c8ecd023dc20454892e723f074570b86be953afb249892"
+      },
+      {
+        "path": "/Users/gwilson/GitHub/LMTOOF/C++/besj1.cpp",
+        "sha256": "74b192259eb542fbdca26d9fdca8c1af709510a7816525ae81334bcd40ff47c0"
+      },
+      {
+        "path": "/Users/gwilson/GitHub/LMTOOF/C++/TransferFunction.cpp",
+        "sha256": "00a9cea07c727ada783cc0100b0598dc6e3defc0ac6c0a5109a8b0a3c90428eb"
+      },
+      {
+        "path": "/Users/gwilson/GitHub/LMTOOF/C++/Subref.cpp",
+        "sha256": "04a634d53cac45a243f1d67745edec90048d7ba2ea245abb6a067b3e5fff5f7e"
+      },
+      {
+        "path": "/Users/gwilson/GitHub/LMTOOF/C++/BaseGrid.h",
+        "sha256": "e497182d1e8ec578588b8a096020b2a5f08cc49867e4aac64d736a5a235f6f0e"
+      },
+      {
+        "path": "/Users/gwilson/GitHub/LMTOOF/C++/DFTGrid.h",
+        "sha256": "ba2a1ff84f2344eb5b4aaed50d3a0f6d0048444855ebd47a7165032cd8214d62"
+      },
+      {
+        "path": "/Users/gwilson/GitHub/LMTOOF/C++/DataGrid.h",
+        "sha256": "ebf302df11234f51c33d86016767272df8190d8b5bed7691ef859ac2462da7d8"
+      },
+      {
+        "path": "/Users/gwilson/GitHub/LMTOOF/C++/DishParams.h",
+        "sha256": "c8791a5cd716e8641b365c0d6d96de5479f949099315ea2e6eb0be624b25c367"
+      },
+      {
+        "path": "/Users/gwilson/GitHub/LMTOOF/C++/FFTGrid.h",
+        "sha256": "6cdb6f56fabb6ef67769a3ec37dbeda84e96c7ac1dbda641f1e7f76da4c78103"
+      },
+      {
+        "path": "/Users/gwilson/GitHub/LMTOOF/C++/LMTGrid.h",
+        "sha256": "bd7c6b50c0ad395f5478440296cc4887e8546f33539c41a53850fd424fa2b49e"
+      },
+      {
+        "path": "/Users/gwilson/GitHub/LMTOOF/C++/OOF.h",
+        "sha256": "8e62d308b3a3511acba97dfb8a8a0f097aa0aebaa4b8d1b24f2b33af341ebe05"
+      },
+      {
+        "path": "/Users/gwilson/GitHub/LMTOOF/C++/OOFLM.h",
+        "sha256": "0324cd6fd9673a3d3ade3b1fbb4fe636c4bb2df044401a4b9531d770abe0b47f"
+      },
+      {
+        "path": "/Users/gwilson/GitHub/LMTOOF/C++/OOFMetropolisHastings.h",
+        "sha256": "0b1ee4a980b238f46dd6bf5204c4a2c596e7496bf8ca6626f2cd71b14a72103a"
+      },
+      {
+        "path": "/Users/gwilson/GitHub/LMTOOF/C++/OOFModel.h",
+        "sha256": "e9ace07325e7109fe4d71792608fc66ddad4b8aba73e4b8ec98614c3d397af08"
+      },
+      {
+        "path": "/Users/gwilson/GitHub/LMTOOF/C++/OOFModelLM.h",
+        "sha256": "7a17f42a68ec3f6fd54d4448f2e79dda521fcc57dcfe7d617ec22bdc8a7582c7"
+      },
+      {
+        "path": "/Users/gwilson/GitHub/LMTOOF/C++/Subref.h",
+        "sha256": "8ac102917fbfcf6f1c94a08d25cb380647d959fc80ea1a383321eb7c8ac6ce66"
+      },
+      {
+        "path": "/Users/gwilson/GitHub/LMTOOF/C++/TransferFunction.h",
+        "sha256": "2f05af4a3e8d81e7d99ff0203fe1d7ac10c9f78e5dd927a0acf632a9ee637ff1"
+      },
+      {
+        "path": "/Users/gwilson/GitHub/LMTOOF/C++/Zernike.h",
+        "sha256": "2a9f9e7740791e6f09a51b673b50f1780e22c777e744d17758f4983479524e39"
+      },
+      {
+        "path": "/Users/gwilson/GitHub/LMTOOF/C++/bandpass.h",
+        "sha256": "ea3dddd3bc71cdbda849ca4d6a66ca12d4278bdf7de62f4bf44a099eddc3a82c"
+      },
+      {
+        "path": "/Users/gwilson/GitHub/LMTOOF/C++/besj1.h",
+        "sha256": "6ef7b0cb49b6a35a5369fc71e6ad08ff1251fb3e28c9bbb8f62f852f108767c1"
+      },
+      {
+        "path": "/Users/gwilson/GitHub/LMTOOF/C++/mask.h",
+        "sha256": "9b280a0ae02cadb142e7694794a9100938cfade4dd07c49f2b3c96111650645c"
+      },
+      {
+        "path": "/Users/gwilson/GitHub/LMTOOF/C++/rng.h",
+        "sha256": "9d059d7945542055851e581c430a212cb62ae5cd3bf0a4c97293b8318c4d129b"
+      },
+      {
+        "path": "/Users/gwilson/GitHub/LMTOOF/C++/OOF.cpp",
+        "sha256": "ac3fa9ab5d8612c1c06de7b6533b889b899929525c43f0f30179036e4e7ea435"
+      },
+      {
+        "path": "/Users/gwilson/GitHub/LMTOOF/C++/OOFLM.cpp",
+        "sha256": "6bbf570d9183f30f49af77b5dcea8d8ce735fda875dde94f9554dc145bc53ea4"
+      },
+      {
+        "path": "/Users/gwilson/GitHub/LMTOOF/C++/OOFModelLM.cpp",
+        "sha256": "dc6d949df0ab46f015da81bdb24e771daacfc24ea36f804a4c159b9bb486ff29"
+      },
+      {
+        "path": "/Users/gwilson/GitHub/LMTOOF/C++/glm_fit_data_files.cpp",
+        "sha256": "f84abf28514850c6798dfb6d62a4d0e083f1f6d5e9554a429aed7492ae701b2a"
+      },
+      {
+        "path": "/Users/gwilson/GitHub/LMTOOF/C++/FFTGrid.cpp",
+        "sha256": "eb4627c0595d12095ceb1894567e9646d7958775530b227889095b74d6f810d1"
+      },
+      {
+        "path": "/Users/gwilson/GitHub/LMTOOF/C++/bandpass.cpp",
+        "sha256": "9b707b335d685b433e71330041420707728ac4a9ca546b53994f7b540071cfa4"
+      },
+      {
+        "path": "/Users/gwilson/GitHub/LMTOOF/C++/OOFModel.cpp",
+        "sha256": "2f502c4c3b575c292affe1262bc7f802505d6f663d4e44cfb21837ea790fb1b0"
+      },
+      {
+        "path": "/Users/gwilson/GitHub/LMTOOF/C++/LMTGrid.cpp",
+        "sha256": "852c7d8f166e360c4bc36d3f599a151e8ba9788331f6f91fdc5745bd0bde8d15"
+      },
+      {
+        "path": "/Users/gwilson/GitHub/LMTOOF/python/TolTECBeamMap3.py",
+        "sha256": "38922f9fca1ac5e2e1f9f1fedb8531a4cb5e7f97b0ac3e7e2b27dfd056e77825"
+      },
+      {
+        "path": "/Users/gwilson/GitHub/LMTOOF/python/OOFBeamMap.py",
+        "sha256": "e5ceaf7caa1b91b57b95e3a776c49aee2f15fbd1db4c65a65c0006aded961682"
+      },
+      {
+        "path": "/Users/gwilson/GitHub/LMTOOF/python/OOFDriverFrontend.py",
+        "sha256": "63e57c0e0d3b61b828244749bdb6f1c1fc48ef2ad3e010f065f3d1faedaf6cf2"
+      }
+    ],
+    "harness": {
+      "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/oof_preparation_2026-10-01/lmtoof_reader_fixture.cpp",
+      "sha256": "7906e7d8aad6d8d63b24ef840c542d1fb9e04a329be850ad8ff38fed0dedd2b9"
+    },
+    "command": [
+      "c++",
+      "-O1",
+      "-I/Users/gwilson/GitHub/LMTOOF/C++",
+      "-I/opt/homebrew/include",
+      "-L/opt/homebrew/lib",
+      "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/oof_preparation_2026-10-01/lmtoof_reader_fixture.cpp",
+      "/Users/gwilson/GitHub/LMTOOF/C++/BaseGrid.cpp",
+      "/Users/gwilson/GitHub/LMTOOF/C++/DataGrid.cpp",
+      "/Users/gwilson/GitHub/LMTOOF/C++/DishParams.cpp",
+      "/Users/gwilson/GitHub/LMTOOF/C++/rng.cpp",
+      "/Users/gwilson/GitHub/LMTOOF/C++/besj1.cpp",
+      "/Users/gwilson/GitHub/LMTOOF/C++/TransferFunction.cpp",
+      "/Users/gwilson/GitHub/LMTOOF/C++/Subref.cpp",
+      "-lcfitsio",
+      "-lfftw3",
+      "-lgsl",
+      "-lgslcblas",
+      "-o",
+      "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-oof-cold-m0-20261001/preflight/0e63e6459112c0ddaeb284694612fd7d09b3d637/saved-interface/lmtoof-reader-fixture"
+    ],
+    "inversion_runs": 0,
+    "observation_starts": 0
+  },
+  "calibration": [
+    {
+      "observation": 152385,
+      "manifest": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152385_matched.apt-v2/manifest.ecsv",
+        "sha256": "704432f67e253ca2df35366f5e15c3bf8a169058e2c7716ef8a3710470b93c0e"
+      },
+      "components": {
+        "apt": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152385_matched.apt-v2/sha256-983690601f9b487cc05528641f86a41c835a371235c2ac862039dd192860f532.apt.ecsv",
+          "sha256": "983690601f9b487cc05528641f86a41c835a371235c2ac862039dd192860f532"
+        },
+        "baseline-apt": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152385_matched.apt-v2/sha256-a90f2ac296f66a121351c4bd07f43f6de4cf3ca1dd9e80743b102c0eea20d15c.baseline-apt.ecsv",
+          "sha256": "a90f2ac296f66a121351c4bd07f43f6de4cf3ca1dd9e80743b102c0eea20d15c"
+        },
+        "baseline-fields": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152385_matched.apt-v2/sha256-4c0addc459aeb97658048a58d3fcf64682efcb02c9e605f5e2eb7a51abd12002.baseline-fields.ecsv",
+          "sha256": "4c0addc459aeb97658048a58d3fcf64682efcb02c9e605f5e2eb7a51abd12002"
+        },
+        "baseline-manifest": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152385_matched.apt-v2/sha256-0d3d7a0b28302a27f152fd221bb0ec431df8994fa88b586a322f0b44228930de.baseline-manifest.ecsv",
+          "sha256": "0d3d7a0b28302a27f152fd221bb0ec431df8994fa88b586a322f0b44228930de"
+        },
+        "baseline-receipt": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152385_matched.apt-v2/sha256-8b21c8135375876fa28459efcd075db132ad40aa4e7dfaa05061eaaaa60c0344.baseline-receipt.txt",
+          "sha256": "8b21c8135375876fa28459efcd075db132ad40aa4e7dfaa05061eaaaa60c0344"
+        },
+        "baseline-sources": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152385_matched.apt-v2/sha256-4ad9b421100523cfdb9cbc3d06e1da55b77f518c82f6f5f2004a62866c6bd77d.baseline-sources.ecsv",
+          "sha256": "4ad9b421100523cfdb9cbc3d06e1da55b77f518c82f6f5f2004a62866c6bd77d"
+        },
+        "exceptions": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152385_matched.apt-v2/sha256-dde603df9fce39783bc1b6b6fefc8338013c975122c99af930c310a25e060540.exceptions.ecsv",
+          "sha256": "dde603df9fce39783bc1b6b6fefc8338013c975122c99af930c310a25e060540"
+        },
+        "fields": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152385_matched.apt-v2/sha256-2d76736064f6f7bd066fcaa7fdc8b4fd648a0069011826c7504cbe8a18a8ee22.fields.ecsv",
+          "sha256": "2d76736064f6f7bd066fcaa7fdc8b4fd648a0069011826c7504cbe8a18a8ee22"
+        },
+        "relation": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152385_matched.apt-v2/sha256-7d29f9c12bd58424da737098717d7fb61b2a52fedc178ffab6c9ff9cd8c4227d.relation.ecsv",
+          "sha256": "7d29f9c12bd58424da737098717d7fb61b2a52fedc178ffab6c9ff9cd8c4227d"
+        },
+        "sources": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152385_matched.apt-v2/sha256-a64fecda75ca6d3cae4cc5a55cff4924deea71a405f7c94bf8559745addbd83f.sources.ecsv",
+          "sha256": "a64fecda75ca6d3cae4cc5a55cff4924deea71a405f7c94bf8559745addbd83f"
+        }
+      },
+      "rows": 2069,
+      "null_flag": 188,
+      "nonzero_flag": 91,
+      "positive_flxscale": 1790,
+      "unit": "mJy/beam/xs",
+      "realized_sample_calibration": false
+    },
+    {
+      "observation": 152386,
+      "manifest": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152386_matched.apt-v2/manifest.ecsv",
+        "sha256": "a1bfe20ad1a063a2b9bf746ad757579612f0abc4d9d6b55b9b5e84a09fb1ab79"
+      },
+      "components": {
+        "apt": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152386_matched.apt-v2/sha256-2df10cc72bc599c34351740af37dac3ffe08fa8063593ede274eccd416eec624.apt.ecsv",
+          "sha256": "2df10cc72bc599c34351740af37dac3ffe08fa8063593ede274eccd416eec624"
+        },
+        "baseline-apt": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152386_matched.apt-v2/sha256-a90f2ac296f66a121351c4bd07f43f6de4cf3ca1dd9e80743b102c0eea20d15c.baseline-apt.ecsv",
+          "sha256": "a90f2ac296f66a121351c4bd07f43f6de4cf3ca1dd9e80743b102c0eea20d15c"
+        },
+        "baseline-fields": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152386_matched.apt-v2/sha256-4c0addc459aeb97658048a58d3fcf64682efcb02c9e605f5e2eb7a51abd12002.baseline-fields.ecsv",
+          "sha256": "4c0addc459aeb97658048a58d3fcf64682efcb02c9e605f5e2eb7a51abd12002"
+        },
+        "baseline-manifest": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152386_matched.apt-v2/sha256-0d3d7a0b28302a27f152fd221bb0ec431df8994fa88b586a322f0b44228930de.baseline-manifest.ecsv",
+          "sha256": "0d3d7a0b28302a27f152fd221bb0ec431df8994fa88b586a322f0b44228930de"
+        },
+        "baseline-receipt": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152386_matched.apt-v2/sha256-8b21c8135375876fa28459efcd075db132ad40aa4e7dfaa05061eaaaa60c0344.baseline-receipt.txt",
+          "sha256": "8b21c8135375876fa28459efcd075db132ad40aa4e7dfaa05061eaaaa60c0344"
+        },
+        "baseline-sources": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152386_matched.apt-v2/sha256-4ad9b421100523cfdb9cbc3d06e1da55b77f518c82f6f5f2004a62866c6bd77d.baseline-sources.ecsv",
+          "sha256": "4ad9b421100523cfdb9cbc3d06e1da55b77f518c82f6f5f2004a62866c6bd77d"
+        },
+        "exceptions": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152386_matched.apt-v2/sha256-1ec2bc9341b0be624a5d10f94f94cb93fc42e8c462db7e85a03ccc6538d05eec.exceptions.ecsv",
+          "sha256": "1ec2bc9341b0be624a5d10f94f94cb93fc42e8c462db7e85a03ccc6538d05eec"
+        },
+        "fields": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152386_matched.apt-v2/sha256-dd3e76106d2f761a5ae87968b10e1a0eb6056fe1986796cb5de213d84d0d64d3.fields.ecsv",
+          "sha256": "dd3e76106d2f761a5ae87968b10e1a0eb6056fe1986796cb5de213d84d0d64d3"
+        },
+        "relation": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152386_matched.apt-v2/sha256-538a6a9975feb6f4002417b8c0a0d98423e13c93314a9dc60e2604593157cb67.relation.ecsv",
+          "sha256": "538a6a9975feb6f4002417b8c0a0d98423e13c93314a9dc60e2604593157cb67"
+        },
+        "sources": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152386_matched.apt-v2/sha256-7bcbe0d27a927e929706eb12d8e49fb3d55c08d16a94a2965a7b0a1efd85a394.sources.ecsv",
+          "sha256": "7bcbe0d27a927e929706eb12d8e49fb3d55c08d16a94a2965a7b0a1efd85a394"
+        }
+      },
+      "rows": 2069,
+      "null_flag": 188,
+      "nonzero_flag": 91,
+      "positive_flxscale": 1790,
+      "unit": "mJy/beam/xs",
+      "realized_sample_calibration": false
+    },
+    {
+      "observation": 152387,
+      "manifest": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152387_matched.apt-v2/manifest.ecsv",
+        "sha256": "b3de0111c424003dfbf21794f827b93fe98ef08bc8be5a61092dba1e39db470f"
+      },
+      "components": {
+        "apt": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152387_matched.apt-v2/sha256-052759419eb500c74886bfe65ff59199d8b1683dba96bcaa4e90b09ffd01d0de.apt.ecsv",
+          "sha256": "052759419eb500c74886bfe65ff59199d8b1683dba96bcaa4e90b09ffd01d0de"
+        },
+        "baseline-apt": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152387_matched.apt-v2/sha256-a90f2ac296f66a121351c4bd07f43f6de4cf3ca1dd9e80743b102c0eea20d15c.baseline-apt.ecsv",
+          "sha256": "a90f2ac296f66a121351c4bd07f43f6de4cf3ca1dd9e80743b102c0eea20d15c"
+        },
+        "baseline-fields": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152387_matched.apt-v2/sha256-4c0addc459aeb97658048a58d3fcf64682efcb02c9e605f5e2eb7a51abd12002.baseline-fields.ecsv",
+          "sha256": "4c0addc459aeb97658048a58d3fcf64682efcb02c9e605f5e2eb7a51abd12002"
+        },
+        "baseline-manifest": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152387_matched.apt-v2/sha256-0d3d7a0b28302a27f152fd221bb0ec431df8994fa88b586a322f0b44228930de.baseline-manifest.ecsv",
+          "sha256": "0d3d7a0b28302a27f152fd221bb0ec431df8994fa88b586a322f0b44228930de"
+        },
+        "baseline-receipt": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152387_matched.apt-v2/sha256-8b21c8135375876fa28459efcd075db132ad40aa4e7dfaa05061eaaaa60c0344.baseline-receipt.txt",
+          "sha256": "8b21c8135375876fa28459efcd075db132ad40aa4e7dfaa05061eaaaa60c0344"
+        },
+        "baseline-sources": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152387_matched.apt-v2/sha256-4ad9b421100523cfdb9cbc3d06e1da55b77f518c82f6f5f2004a62866c6bd77d.baseline-sources.ecsv",
+          "sha256": "4ad9b421100523cfdb9cbc3d06e1da55b77f518c82f6f5f2004a62866c6bd77d"
+        },
+        "exceptions": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152387_matched.apt-v2/sha256-1c8074a0334c138cb0a2707b0e9586006a86fc6495be0d2d012117308cec3f95.exceptions.ecsv",
+          "sha256": "1c8074a0334c138cb0a2707b0e9586006a86fc6495be0d2d012117308cec3f95"
+        },
+        "fields": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152387_matched.apt-v2/sha256-a6bd8b33a88f4f2a0693661e13c95281e1f0937f5fda63ffc3219bf5e7c4ce95.fields.ecsv",
+          "sha256": "a6bd8b33a88f4f2a0693661e13c95281e1f0937f5fda63ffc3219bf5e7c4ce95"
+        },
+        "relation": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152387_matched.apt-v2/sha256-5b157f8965eea760e701a235afcddf7bb64c0dbe7214391fd1a37b7ae73c59f4.relation.ecsv",
+          "sha256": "5b157f8965eea760e701a235afcddf7bb64c0dbe7214391fd1a37b7ae73c59f4"
+        },
+        "sources": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152387_matched.apt-v2/sha256-2e9af5320cf1542d92b5e8f11397853b52933feb6801c009f8db072a2b483d92.sources.ecsv",
+          "sha256": "2e9af5320cf1542d92b5e8f11397853b52933feb6801c009f8db072a2b483d92"
+        }
+      },
+      "rows": 2069,
+      "null_flag": 188,
+      "nonzero_flag": 91,
+      "positive_flxscale": 1790,
+      "unit": "mJy/beam/xs",
+      "realized_sample_calibration": false
+    }
+  ],
+  "prior_failed_preflight": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-oof-cold-m0-20261001/preflight/32f76b3126c53013fcfd84d4ca1d8b5acb358921/GATES.json",
+    "sha256": "ba3dd85de6a4c92d46be46aab5e06b3a8bc1849ebae588c03731ae1a8c6152e1"
+  },
+  "prior_failure": "three mocked POINT execution tests omitted newly required frozen recipe; fixtures corrected without weakening runtime admission",
+  "observation_starts": 0,
+  "inversion_runs": 0,
+  "launch_ready": false
+}

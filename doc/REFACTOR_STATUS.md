@@ -1,3 +1,25 @@
+## OOF engineering preparation validated; launch remains gated — 2026-10-01
+
+The [OOF readiness report](../validation/oof_preparation_2026-10-01/READINESS.md)
+records implemented/tested source0e63e6459112c0ddaeb284694612fd7d09b3d637:
+explicit OOF/scan1 routing through shared native owners, exact detector/APT/Tune
+identity, metadata-only preparation of152385–152387 and cold-M0 orchestration
+without POINT source gates or feedback. Native1322, baseline207, POINT214,
+OOF11 fixtures and required config gates pass; one pre-existing disabled lifecycle
+test remains disclosed. Historical maps pass exact existing LMTOOF reader checks,
+but its joint LM residual vector assumes equal valid counts: these maps would
+leave623 uninitialized entries, now rejected at the attachment boundary.
+
+No OOF observational reductions or inversions launched; POINT remains closed.
+The proposed3R+3S network1–4 rank3 comparison is not launch-ready: reference
+population selection, FK5/AltAz attachment, existing solver support repair,
+model/astrometric authority and resource reservation remain explicit. Provisional
+shared peak42.332GB exceeds30GB by12.332GB; R resource cost is not yet bound.
+No cleanup, sibling edit, production activation, push or merge. This status update
+is documentation/evidence only; future launch requires an exact rebuilt/frozen
+candidate and owner-run foreground/manual-resume procedure. See the
+[handoff](../handoff/OOF_PREPARATION_2026-10-01.md).
+
 ## POINT map-quality milestone assessed and closed — 2026-10-01
 
 The [completion assessment](../validation/point_quality_2026-10-01/COMPLETION.md)
