@@ -1,0 +1,18 @@
+{
+  "identity": "POINT-map-quality-2026-10-01",
+  "anchors": [[152420,0,2],[152430,0,2]],
+  "array": "a1100", "networks": [1,2,3,4],
+  "new_roles": ["152420/S/B-REF", "152420/S/B-C-core-plus", "152420/S/B-C-core-minus"],
+  "new_role_limits": {"full":1,"subset":0,"compact":2,"replacement":0},
+  "milestone_ceiling": {"full":4,"subset":4,"compact":4,"diagnosed_replacement":2,"total":14},
+  "unused_slots": "parked; no automatic extension, retries, replacement or optimization",
+  "successor": "Existing rtc-point-transfer-v1 numerical B route with separate point-map-quality-v1 accounting. Cold M0, current paired RTC/CAL semantics, padded2s/fixed4s diagnostic profile, ALS rank10 cap500 tolerance1e-5, warm fully resolved updates, ordinary2arcsecMAP, measured brightness threshold3 inside40arcsec; exactly5feedback applications; T5 consumesm4, m5unapplied.",
+  "injection": "Existing own-M0 physical compact positive/negative raster recipe; beforeRTC original-derivedx, originalr/native validity unchanged; each role independently relearnsRTC/PTC/feedback. Own uninjected M0 covariance/context shared, not learned cleaning states. Independently check native calibration-only projection against own ordinaryMAP direct raster. No shoulder run.",
+  "reason_for_new_152420": "Periodic-angle measurement repair changed intermediate applied candidates by up to0.02358mJy/beam. Earlier executed products remain historical; fresh3roles bind currentS reference/response.",
+  "reuse_152430": "Executed9d28b2c6 B full trajectory matches frozen originalB. Repaired measurement audit leaves applied membership unchanged and candidates within1.083e-7mJy/beam; T5measurement changed but m5unapplied. Endpoint remeasured and covariance rebound; no new observation pass.",
+  "R": "Saved V2redu00 per-networkPCA5,1arcsecJINCAltAz,validated weights,noFRUIT,noextinction,148670APT. Includesnw0 plus1–4. Operational comparison only, neither scoped R/S nor unique causal attribution.",
+  "subset": "152420 even scheduled scans0/2/4 vs odd1/3/5 fixed from acquisition/support geometry. Coverage-balanced conditional audit only; no subset reductions. Legacy retained samples purged and current supported legacy interface does not select/refit these populations. R/S independent stability not established.",
+  "R_response": "Available legacy injection followsRTC/CAL; cannot supply requested preRTC full-learning reference. No parallel legacy pipeline introduced. R/S sensitivity not established.",
+  "OOF_starts": 0,
+  "scientific_tuning": "None. Q/fixed11 parked. No rank, radius, threshold, N, notch, source family, JINC or weight optimization."
+}

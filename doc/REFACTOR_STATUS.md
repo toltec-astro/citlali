@@ -1,3 +1,17 @@
+## POINT map-quality checkpoint and OOF preparation — 2026-10-01
+
+The [saved-product assessment](../validation/point_quality_2026-10-01/ASSESSMENT.md)
+finds R/S scientific improvement not established: calibration lineage is explained,
+but population/frame/weighting/support and response controls are not matched.
+Repaired152430 endpoint is431.20mJy/beam with conditional sigma15.37; no new152430
+pass required. Prepare only corrected152420 B-REF/compact± (three roles, noQ),
+separate new14start ceiling, exact-source foreground owner/manual-resume workflow.
+New observation starts zero at this checkpoint; no OOF numerical execution.
+[OOF handoff](../handoff/POINT_TO_OOF_2026-10-01.md) nominates complete local
+152385–152387/0/1 sequence and names native mode/scan routing plus unadopted
+OOF feedback inference as execution boundaries. POINT morphology policy does not
+become OOF policy. No production/scientific-contract activation or algorithm tuning.
+
 # Citlali Refactor Status
 
 ## 2026-09-30 — POINT152420 APT lineage reconstructed; absolute selection open

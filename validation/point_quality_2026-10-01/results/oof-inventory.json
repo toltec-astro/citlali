@@ -1,0 +1,2109 @@
+{
+  "schema": "point-to-oof-local-sequence-v1",
+  "inventory_mode": "read-only local headers, byte counts, canonical manifests and KMP hashes; no reduction/download",
+  "census": {
+    "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/local_data_rtc_ptc_purge_2026-09-26/OBSERVATIONS.json.gz",
+    "bytes": 115960,
+    "sha256": "d0b80e5d13163c948d3a0078f80d8a6075676097233874de0d28ffaf90902de2"
+  },
+  "sequence": [
+    {
+      "observation": 152385,
+      "source": "1146+399",
+      "mode": "Lissajous",
+      "goal": "Oof",
+      "date_UT": 2026.1349655871484,
+      "telescope": {
+        "binding": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/tel_toltec_2026-02-19_152385_00_0001.nc",
+          "bytes": 1328728,
+          "sha256": "eea40ee5443022370c4c66ba289ce2ba566aaf0e645abe72985a53788a9e2926"
+        },
+        "headers": {
+          "Header.Source.SourceName": {
+            "value": "1146+399",
+            "unit": null
+          },
+          "Header.Telescope.ElActPos": {
+            "value": 0.9850864211481528,
+            "unit": "rad"
+          },
+          "Header.M2.ZAct": {
+            "value": -20.958614349365234,
+            "unit": "mm"
+          },
+          "Header.M2.ZReq": {
+            "value": -3.5665967172690003,
+            "unit": "mm"
+          },
+          "Header.M2.ZDes": {
+            "value": -20.959095431772873,
+            "unit": "mm"
+          },
+          "Header.M2.ZPcor": {
+            "value": -17.392498714503873,
+            "unit": "mm"
+          },
+          "Header.M2.ZCmd": {
+            "value": -20.959095431772873,
+            "unit": "mm"
+          },
+          "Header.M2.ZCoeff": {
+            "value": [
+              -4.8571,
+              -15.7281,
+              1.0139
+            ],
+            "unit": "mm"
+          },
+          "Header.M2.ZCoeff_32m": {
+            "value": [
+              1.4695,
+              -22.251,
+              -0.234
+            ],
+            "unit": "mm"
+          },
+          "Header.TimePlace.UTDate": {
+            "value": 2026.1349655871484,
+            "unit": "year"
+          },
+          "Header.Dcs.ObsPgm": {
+            "value": "Lissajous",
+            "unit": null
+          },
+          "Header.Dcs.ObsNum": {
+            "value": 152385,
+            "unit": null
+          },
+          "Header.Dcs.SubObsNum": {
+            "value": 0,
+            "unit": null
+          },
+          "Header.Dcs.ScanNum": {
+            "value": 1,
+            "unit": null
+          }
+        },
+        "stream_extents": {
+          "Data.TelescopeBackend.AcuTime": {
+            "shape": [
+              3271
+            ],
+            "unit": "sec",
+            "min": 1771481882.8907976,
+            "max": 1771481948.283875
+          },
+          "Data.TelescopeBackend.TelElAct": {
+            "shape": [
+              3271
+            ],
+            "unit": "rad",
+            "min": 0.9854796535278598,
+            "max": 0.9886932047108797
+          },
+          "Data.TelescopeBackend.TelElEnc1Pos": {
+            "shape": [
+              3271
+            ],
+            "unit": "rad",
+            "min": 0.989198291087499,
+            "max": 0.9924145223364409
+          },
+          "Data.TelescopeBackend.TelElEnc2Pos": {
+            "shape": [
+              3271
+            ],
+            "unit": "rad",
+            "min": 0.9854796535278598,
+            "max": 0.9886932047108797
+          },
+          "Data.TelescopeBackend.TelElCor": {
+            "shape": [
+              3271
+            ],
+            "unit": "rad",
+            "min": 0.0010919111460853672,
+            "max": 0.0010935229864493798
+          },
+          "Data.TelescopeBackend.TelElDes": {
+            "shape": [
+              3271
+            ],
+            "unit": "rad",
+            "min": 0.9854818686667886,
+            "max": 0.9886641022215892
+          },
+          "Data.TelescopeBackend.TelElCmd": {
+            "shape": [
+              3271
+            ],
+            "unit": "rad",
+            "min": 0.9854755148376956,
+            "max": 0.9886821299168472
+          },
+          "Data.TelescopeBackend.PpsTime": {
+            "shape": [
+              3271
+            ],
+            "unit": "sec",
+            "min": 1771481882.0017977,
+            "max": 1771481948.001875
+          },
+          "Data.TelescopeBackend.BackendTime": {
+            "shape": [
+              3271
+            ],
+            "unit": "sec",
+            "min": 1771481882.8944578,
+            "max": 1771481948.2843463
+          },
+          "Data.TelescopeBackend.TelTime": {
+            "shape": [
+              3271
+            ],
+            "unit": "sec",
+            "min": 1771481882.8944578,
+            "max": 1771481948.2843463
+          },
+          "Data.TelescopeBackend.TelElSky": {
+            "shape": [
+              3271
+            ],
+            "unit": "rad",
+            "min": 0.9843861305414104,
+            "max": 0.9876012707233088
+          },
+          "Data.TelescopeBackend.TelElMap": {
+            "shape": [
+              3271
+            ],
+            "unit": "rad",
+            "min": -0.0003274227942131171,
+            "max": 0.00032381275073198844
+          }
+        }
+      },
+      "raw": [
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/toltec0_152385_000_0001_2026_02_19_06_17_55.nc",
+          "bytes": 40062200,
+          "network": 0,
+          "identity": [
+            152385,
+            0,
+            1
+          ],
+          "shape": [
+            7861,
+            630
+          ],
+          "tune": [
+            152384,
+            0,
+            1
+          ],
+          "kmp": {
+            "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/toltec0_152384_000_0001_2026_02_19_06_16_38_tune.txt",
+            "bytes": 130188,
+            "sha256": "1b50df705f63009c10c83afae6b5cd623a4c433ed8fc69d0ff7de464ce0a111b"
+          },
+          "declared_raw_sha256": "sha256:c5f292647168ee6b9195dfad69f92360e011707b8e1ebd740b3e9219452c97e7",
+          "raw_hash_status": "not reread in metadata-only OOF inventory; header and byte count checked"
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/toltec1_152385_000_0001_2026_02_19_06_17_55.nc",
+          "bytes": 31490160,
+          "network": 1,
+          "identity": [
+            152385,
+            0,
+            1
+          ],
+          "shape": [
+            7862,
+            494
+          ],
+          "tune": [
+            152384,
+            0,
+            1
+          ],
+          "kmp": {
+            "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/toltec1_152384_000_0001_2026_02_19_06_16_38_tune.txt",
+            "bytes": 102352,
+            "sha256": "2623d62ce34e91e2079c7ca40ebeb90788c1661adc2e4e916a3f1209b3931ba9"
+          },
+          "declared_raw_sha256": "sha256:3adcf524c549a82ddf0f7d9d00394e0e619a8dddd7ebce434de400202ee35cd9",
+          "raw_hash_status": "not reread in metadata-only OOF inventory; header and byte count checked"
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/toltec2_152385_000_0001_2026_02_19_06_17_55.nc",
+          "bytes": 32491264,
+          "network": 2,
+          "identity": [
+            152385,
+            0,
+            1
+          ],
+          "shape": [
+            7860,
+            510
+          ],
+          "tune": [
+            152384,
+            0,
+            1
+          ],
+          "kmp": {
+            "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/toltec2_152384_000_0001_2026_02_19_06_16_38_tune.txt",
+            "bytes": 105588,
+            "sha256": "d09185b96f5862e115d388c7e114358681af1366e8fb2a8a6651af04fb6ffc0d"
+          },
+          "declared_raw_sha256": "sha256:782f1ecf3abd4766140913354aae938cc458e076a3e21747ee697e3cb0c96fe3",
+          "raw_hash_status": "not reread in metadata-only OOF inventory; header and byte count checked"
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/toltec3_152385_000_0001_2026_02_19_06_17_55.nc",
+          "bytes": 33945400,
+          "network": 3,
+          "identity": [
+            152385,
+            0,
+            1
+          ],
+          "shape": [
+            7861,
+            533
+          ],
+          "tune": [
+            152384,
+            0,
+            1
+          ],
+          "kmp": {
+            "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/toltec3_152384_000_0001_2026_02_19_06_16_38_tune.txt",
+            "bytes": 109905,
+            "sha256": "d50ecc57a2af6662a6c73ef6fed28516e9814826e17c035462a231566c048b8f"
+          },
+          "declared_raw_sha256": "sha256:375c53a8f8bc14c41c0daaa618f41bba22dab40961c1a45b5db6f666ac641a95",
+          "raw_hash_status": "not reread in metadata-only OOF inventory; header and byte count checked"
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/toltec4_152385_000_0001_2026_02_19_06_17_55.nc",
+          "bytes": 33882232,
+          "network": 4,
+          "identity": [
+            152385,
+            0,
+            1
+          ],
+          "shape": [
+            7861,
+            532
+          ],
+          "tune": [
+            152384,
+            0,
+            1
+          ],
+          "kmp": {
+            "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/toltec4_152384_000_0001_2026_02_19_06_16_38_tune.txt",
+            "bytes": 109734,
+            "sha256": "52968b17e53a60f684e61d9e2aa25df12a9002236bd529c4b3404eb7d50e7e22"
+          },
+          "declared_raw_sha256": "sha256:2534b3f8be4848aa9811fcd7aec6f1977650656c948f792de892334d663ba79a",
+          "raw_hash_status": "not reread in metadata-only OOF inventory; header and byte count checked"
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/toltec5_152385_000_0001_2026_02_19_06_17_55.nc",
+          "bytes": 30225176,
+          "network": 5,
+          "identity": [
+            152385,
+            0,
+            1
+          ],
+          "shape": [
+            7861,
+            474
+          ],
+          "tune": [
+            152384,
+            0,
+            1
+          ],
+          "kmp": {
+            "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/toltec5_152384_000_0001_2026_02_19_06_16_38_tune.txt",
+            "bytes": 98021,
+            "sha256": "89cb0d78146699c5ed505951a14d433076501acfaadd94d4b8a907a6a0dd63fd"
+          },
+          "declared_raw_sha256": "sha256:39860b68cd882cf0b7a60c66c1d862669b7d0355d503d8202aa77c72fd9c0dcf",
+          "raw_hash_status": "not reread in metadata-only OOF inventory; header and byte count checked"
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/toltec7_152385_000_0001_2026_02_19_06_17_55.nc",
+          "bytes": 26820272,
+          "network": 7,
+          "identity": [
+            152385,
+            0,
+            1
+          ],
+          "shape": [
+            7860,
+            420
+          ],
+          "tune": [
+            152384,
+            0,
+            1
+          ],
+          "kmp": {
+            "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/toltec7_152384_000_0001_2026_02_19_06_16_38_tune.txt",
+            "bytes": 85667,
+            "sha256": "5f9c76fd3ad4c55bf7d6ab5b9a02f4414597f627cccc5362cf53a7cdaf99ce56"
+          },
+          "declared_raw_sha256": "sha256:42f6eb04bcde8885edbc15ba2e7f996ec574162cb1c334accca63811acbc5836",
+          "raw_hash_status": "not reread in metadata-only OOF inventory; header and byte count checked"
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/toltec8_152385_000_0001_2026_02_19_06_17_55.nc",
+          "bytes": 29343864,
+          "network": 8,
+          "identity": [
+            152385,
+            0,
+            1
+          ],
+          "shape": [
+            7861,
+            460
+          ],
+          "tune": [
+            152384,
+            0,
+            1
+          ],
+          "kmp": {
+            "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/toltec8_152384_000_0001_2026_02_19_06_16_38_tune.txt",
+            "bytes": 95465,
+            "sha256": "37bf36425ab0b4b65af6a84668710517b4b81a15ba9594d1a00c5a82dd946664"
+          },
+          "declared_raw_sha256": "sha256:7520a6f0dc547a25721187b29ed9d366642930a896ebcb7554df03b1f86b72ab",
+          "raw_hash_status": "not reread in metadata-only OOF inventory; header and byte count checked"
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/toltec9_152385_000_0001_2026_02_19_06_17_55.nc",
+          "bytes": 31109016,
+          "network": 9,
+          "identity": [
+            152385,
+            0,
+            1
+          ],
+          "shape": [
+            7861,
+            488
+          ],
+          "tune": [
+            152384,
+            0,
+            1
+          ],
+          "kmp": {
+            "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/toltec9_152384_000_0001_2026_02_19_06_16_38_tune.txt",
+            "bytes": 99017,
+            "sha256": "41aaca938f3a08d675047f412e57e84eed814deffa655ab8acb2c780284c7a9a"
+          },
+          "declared_raw_sha256": "sha256:6ec0204d8a63a6592e4515b1a367b9955b214e83d9e094beca5dfc01cf2b657c",
+          "raw_hash_status": "not reread in metadata-only OOF inventory; header and byte count checked"
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/toltec11_152385_000_0001_2026_02_19_06_17_55.nc",
+          "bytes": 30978272,
+          "network": 11,
+          "identity": [
+            152385,
+            0,
+            1
+          ],
+          "shape": [
+            7860,
+            486
+          ],
+          "tune": [
+            152384,
+            0,
+            1
+          ],
+          "kmp": {
+            "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/toltec11_152384_000_0001_2026_02_19_06_16_38_tune.txt",
+            "bytes": 100646,
+            "sha256": "bef50e103da0e1abd8409a088f2b24d462239fe9bb16ecccd9efd52513d16063"
+          },
+          "declared_raw_sha256": "sha256:c6f5032e986fd803b11f0e1ae52468c7e878d4342d3a4d23b60cf85df843f724",
+          "raw_hash_status": "not reread in metadata-only OOF inventory; header and byte count checked"
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/toltec12_152385_000_0001_2026_02_19_06_17_55.nc",
+          "bytes": 31294776,
+          "network": 12,
+          "identity": [
+            152385,
+            0,
+            1
+          ],
+          "shape": [
+            7860,
+            491
+          ],
+          "tune": [
+            152384,
+            0,
+            1
+          ],
+          "kmp": {
+            "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/toltec12_152384_000_0001_2026_02_19_06_16_38_tune.txt",
+            "bytes": 102199,
+            "sha256": "be1ea9078513deffb46129ff157194ccddcb54cf479aa5b78b7426a32277db42"
+          },
+          "declared_raw_sha256": "sha256:5b135b83df0fd44b86662602a4b8ef3d8e0c6db07488bd50da1e436734b4d8be",
+          "raw_hash_status": "not reread in metadata-only OOF inventory; header and byte count checked"
+        }
+      ],
+      "networks": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        7,
+        8,
+        9,
+        11,
+        12
+      ],
+      "raw_bytes": 351642632,
+      "canonical_manifest": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152385_matched.apt-v2/manifest.ecsv",
+        "bytes": 7657,
+        "sha256": "704432f67e253ca2df35366f5e15c3bf8a169058e2c7716ef8a3710470b93c0e"
+      },
+      "matched_report": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152385_matched_match_report.json",
+        "bytes": 3085,
+        "sha256": "7ffbd494183ee67672f3716a4b78c7972984d933299158fb87f25b70132d847b"
+      },
+      "dependency_components": [
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152385_matched.apt-v2/sha256-983690601f9b487cc05528641f86a41c835a371235c2ac862039dd192860f532.apt.ecsv",
+          "bytes": 3318106,
+          "sha256": "983690601f9b487cc05528641f86a41c835a371235c2ac862039dd192860f532"
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152385_matched.apt-v2/sha256-a90f2ac296f66a121351c4bd07f43f6de4cf3ca1dd9e80743b102c0eea20d15c.baseline-apt.ecsv",
+          "bytes": 3150931,
+          "sha256": "a90f2ac296f66a121351c4bd07f43f6de4cf3ca1dd9e80743b102c0eea20d15c"
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152385_matched.apt-v2/sha256-4c0addc459aeb97658048a58d3fcf64682efcb02c9e605f5e2eb7a51abd12002.baseline-fields.ecsv",
+          "bytes": 10478,
+          "sha256": "4c0addc459aeb97658048a58d3fcf64682efcb02c9e605f5e2eb7a51abd12002"
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152385_matched.apt-v2/sha256-0d3d7a0b28302a27f152fd221bb0ec431df8994fa88b586a322f0b44228930de.baseline-manifest.ecsv",
+          "bytes": 3373,
+          "sha256": "0d3d7a0b28302a27f152fd221bb0ec431df8994fa88b586a322f0b44228930de"
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152385_matched.apt-v2/sha256-8b21c8135375876fa28459efcd075db132ad40aa4e7dfaa05061eaaaa60c0344.baseline-receipt.txt",
+          "bytes": 283,
+          "sha256": "8b21c8135375876fa28459efcd075db132ad40aa4e7dfaa05061eaaaa60c0344"
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152385_matched.apt-v2/sha256-4ad9b421100523cfdb9cbc3d06e1da55b77f518c82f6f5f2004a62866c6bd77d.baseline-sources.ecsv",
+          "bytes": 3425,
+          "sha256": "4ad9b421100523cfdb9cbc3d06e1da55b77f518c82f6f5f2004a62866c6bd77d"
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152385_matched.apt-v2/sha256-dde603df9fce39783bc1b6b6fefc8338013c975122c99af930c310a25e060540.exceptions.ecsv",
+          "bytes": 3274,
+          "sha256": "dde603df9fce39783bc1b6b6fefc8338013c975122c99af930c310a25e060540"
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152385_matched.apt-v2/sha256-2d76736064f6f7bd066fcaa7fdc8b4fd648a0069011826c7504cbe8a18a8ee22.fields.ecsv",
+          "bytes": 11158,
+          "sha256": "2d76736064f6f7bd066fcaa7fdc8b4fd648a0069011826c7504cbe8a18a8ee22"
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152385_matched.apt-v2/sha256-7d29f9c12bd58424da737098717d7fb61b2a52fedc178ffab6c9ff9cd8c4227d.relation.ecsv",
+          "bytes": 1597236,
+          "sha256": "7d29f9c12bd58424da737098717d7fb61b2a52fedc178ffab6c9ff9cd8c4227d"
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152385_matched.apt-v2/sha256-a64fecda75ca6d3cae4cc5a55cff4924deea71a405f7c94bf8559745addbd83f.sources.ecsv",
+          "bytes": 4754,
+          "sha256": "a64fecda75ca6d3cae4cc5a55cff4924deea71a405f7c94bf8559745addbd83f"
+        }
+      ],
+      "missing_paths": [],
+      "historical_root": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/refactor/1146+399/reduced/redu00/152385",
+      "requested_Z_offset_from_middle_mm": -2.0
+    },
+    {
+      "observation": 152386,
+      "source": "1146+399",
+      "mode": "Lissajous",
+      "goal": "Oof",
+      "date_UT": 2026.1349686776334,
+      "telescope": {
+        "binding": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/tel_toltec_2026-02-19_152386_00_0001.nc",
+          "bytes": 1360544,
+          "sha256": "35468feccdb9d07d0a370e8fca2d3b3bee379f983786fb4bce330a44dc7e96d8"
+        },
+        "headers": {
+          "Header.Source.SourceName": {
+            "value": "1146+399",
+            "unit": null
+          },
+          "Header.Telescope.ElActPos": {
+            "value": 0.989824590443351,
+            "unit": "rad"
+          },
+          "Header.M2.ZAct": {
+            "value": -19.003631591796875,
+            "unit": "mm"
+          },
+          "Header.M2.ZReq": {
+            "value": -1.5665967172690003,
+            "unit": "mm"
+          },
+          "Header.M2.ZDes": {
+            "value": -19.00413653028606,
+            "unit": "mm"
+          },
+          "Header.M2.ZPcor": {
+            "value": -17.43753981301706,
+            "unit": "mm"
+          },
+          "Header.M2.ZCmd": {
+            "value": -19.00413653028606,
+            "unit": "mm"
+          },
+          "Header.M2.ZCoeff": {
+            "value": [
+              -4.8571,
+              -15.7281,
+              1.0139
+            ],
+            "unit": "mm"
+          },
+          "Header.M2.ZCoeff_32m": {
+            "value": [
+              1.4695,
+              -22.251,
+              -0.234
+            ],
+            "unit": "mm"
+          },
+          "Header.TimePlace.UTDate": {
+            "value": 2026.1349686776334,
+            "unit": "year"
+          },
+          "Header.Dcs.ObsPgm": {
+            "value": "Lissajous",
+            "unit": null
+          },
+          "Header.Dcs.ObsNum": {
+            "value": 152386,
+            "unit": null
+          },
+          "Header.Dcs.SubObsNum": {
+            "value": 0,
+            "unit": null
+          },
+          "Header.Dcs.ScanNum": {
+            "value": 1,
+            "unit": null
+          }
+        },
+        "stream_extents": {
+          "Data.TelescopeBackend.AcuTime": {
+            "shape": [
+              3353
+            ],
+            "unit": "sec",
+            "min": 1771481981.2530377,
+            "max": 1771482048.283409
+          },
+          "Data.TelescopeBackend.TelElAct": {
+            "shape": [
+              3353
+            ],
+            "unit": "rad",
+            "min": 0.9902666959902503,
+            "max": 0.9936309862521578
+          },
+          "Data.TelescopeBackend.TelElEnc1Pos": {
+            "shape": [
+              3353
+            ],
+            "unit": "rad",
+            "min": 0.9939885870796985,
+            "max": 0.9973634688684996
+          },
+          "Data.TelescopeBackend.TelElEnc2Pos": {
+            "shape": [
+              3353
+            ],
+            "unit": "rad",
+            "min": 0.9902666959902503,
+            "max": 0.9936309862521578
+          },
+          "Data.TelescopeBackend.TelElCor": {
+            "shape": [
+              3353
+            ],
+            "unit": "rad",
+            "min": 0.001090960968361442,
+            "max": 0.0010916542233160313
+          },
+          "Data.TelescopeBackend.TelElDes": {
+            "shape": [
+              3353
+            ],
+            "unit": "rad",
+            "min": 0.9902703781640971,
+            "max": 0.9935864328231068
+          },
+          "Data.TelescopeBackend.TelElCmd": {
+            "shape": [
+              3353
+            ],
+            "unit": "rad",
+            "min": 0.9902683636959295,
+            "max": 0.9936059642467344
+          },
+          "Data.TelescopeBackend.PpsTime": {
+            "shape": [
+              3353
+            ],
+            "unit": "sec",
+            "min": 1771481980.9990377,
+            "max": 1771482047.998409
+          },
+          "Data.TelescopeBackend.BackendTime": {
+            "shape": [
+              3353
+            ],
+            "unit": "sec",
+            "min": 1771481981.258836,
+            "max": 1771482048.2872684
+          },
+          "Data.TelescopeBackend.TelTime": {
+            "shape": [
+              3353
+            ],
+            "unit": "sec",
+            "min": 1771481981.258836,
+            "max": 1771482048.2872684
+          },
+          "Data.TelescopeBackend.TelElSky": {
+            "shape": [
+              3353
+            ],
+            "unit": "rad",
+            "min": 0.9891751087992716,
+            "max": 0.9925400160883142
+          },
+          "Data.TelescopeBackend.TelElMap": {
+            "shape": [
+              3353
+            ],
+            "unit": "rad",
+            "min": -0.0003386824873687275,
+            "max": 0.00030820705005202265
+          }
+        }
+      },
+      "raw": [
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/toltec0_152386_000_0001_2026_02_19_06_19_32.nc",
+          "bytes": 40184120,
+          "network": 0,
+          "identity": [
+            152386,
+            0,
+            1
+          ],
+          "shape": [
+            7885,
+            630
+          ],
+          "tune": [
+            152384,
+            0,
+            1
+          ],
+          "kmp": {
+            "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/toltec0_152384_000_0001_2026_02_19_06_16_38_tune.txt",
+            "bytes": 130188,
+            "sha256": "1b50df705f63009c10c83afae6b5cd623a4c433ed8fc69d0ff7de464ce0a111b"
+          },
+          "declared_raw_sha256": "sha256:0a453085425a5fba0dda84f4f9871fcb99ed8609feca9939c0510bf7b6bdffb1",
+          "raw_hash_status": "not reread in metadata-only OOF inventory; header and byte count checked"
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/toltec1_152386_000_0001_2026_02_19_06_19_32.nc",
+          "bytes": 31585968,
+          "network": 1,
+          "identity": [
+            152386,
+            0,
+            1
+          ],
+          "shape": [
+            7886,
+            494
+          ],
+          "tune": [
+            152384,
+            0,
+            1
+          ],
+          "kmp": {
+            "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/toltec1_152384_000_0001_2026_02_19_06_16_38_tune.txt",
+            "bytes": 102352,
+            "sha256": "2623d62ce34e91e2079c7ca40ebeb90788c1661adc2e4e916a3f1209b3931ba9"
+          },
+          "declared_raw_sha256": "sha256:461c5d5c49c0a84fbdb6b5e6f2c0ac81392538927ae3b3cff270581a9f53da83",
+          "raw_hash_status": "not reread in metadata-only OOF inventory; header and byte count checked"
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/toltec2_152386_000_0001_2026_02_19_06_19_32.nc",
+          "bytes": 32594264,
+          "network": 2,
+          "identity": [
+            152386,
+            0,
+            1
+          ],
+          "shape": [
+            7885,
+            510
+          ],
+          "tune": [
+            152384,
+            0,
+            1
+          ],
+          "kmp": {
+            "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/toltec2_152384_000_0001_2026_02_19_06_16_38_tune.txt",
+            "bytes": 105588,
+            "sha256": "d09185b96f5862e115d388c7e114358681af1366e8fb2a8a6651af04fb6ffc0d"
+          },
+          "declared_raw_sha256": "sha256:6a2b5b86493c6fd994299ff5692fe5e1a31e9b5dc385045f62daa5b8642038a7",
+          "raw_hash_status": "not reread in metadata-only OOF inventory; header and byte count checked"
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/toltec3_152386_000_0001_2026_02_19_06_19_32.nc",
+          "bytes": 34053000,
+          "network": 3,
+          "identity": [
+            152386,
+            0,
+            1
+          ],
+          "shape": [
+            7886,
+            533
+          ],
+          "tune": [
+            152384,
+            0,
+            1
+          ],
+          "kmp": {
+            "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/toltec3_152384_000_0001_2026_02_19_06_16_38_tune.txt",
+            "bytes": 109905,
+            "sha256": "d50ecc57a2af6662a6c73ef6fed28516e9814826e17c035462a231566c048b8f"
+          },
+          "declared_raw_sha256": "sha256:a874fd72c99429f7f8cebee034f4bc0fb23014ab726c1695e6f787f527edd618",
+          "raw_hash_status": "not reread in metadata-only OOF inventory; header and byte count checked"
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/toltec4_152386_000_0001_2026_02_19_06_19_32.nc",
+          "bytes": 33985336,
+          "network": 4,
+          "identity": [
+            152386,
+            0,
+            1
+          ],
+          "shape": [
+            7885,
+            532
+          ],
+          "tune": [
+            152384,
+            0,
+            1
+          ],
+          "kmp": {
+            "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/toltec4_152384_000_0001_2026_02_19_06_16_38_tune.txt",
+            "bytes": 109734,
+            "sha256": "52968b17e53a60f684e61d9e2aa25df12a9002236bd529c4b3404eb7d50e7e22"
+          },
+          "declared_raw_sha256": "sha256:d7dacbd41fbcca68fa731d0a24b014d95520521af988d91c36e48ca4c09d38f0",
+          "raw_hash_status": "not reread in metadata-only OOF inventory; header and byte count checked"
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/toltec5_152386_000_0001_2026_02_19_06_19_32.nc",
+          "bytes": 30320976,
+          "network": 5,
+          "identity": [
+            152386,
+            0,
+            1
+          ],
+          "shape": [
+            7886,
+            474
+          ],
+          "tune": [
+            152384,
+            0,
+            1
+          ],
+          "kmp": {
+            "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/toltec5_152384_000_0001_2026_02_19_06_16_38_tune.txt",
+            "bytes": 98021,
+            "sha256": "89cb0d78146699c5ed505951a14d433076501acfaadd94d4b8a907a6a0dd63fd"
+          },
+          "declared_raw_sha256": "sha256:eff13f9ea6d3e1f5c859ab2f772ffed4ff392b2679f753df89bb31a98fc09bd9",
+          "raw_hash_status": "not reread in metadata-only OOF inventory; header and byte count checked"
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/toltec7_152386_000_0001_2026_02_19_06_19_32.nc",
+          "bytes": 26908672,
+          "network": 7,
+          "identity": [
+            152386,
+            0,
+            1
+          ],
+          "shape": [
+            7886,
+            420
+          ],
+          "tune": [
+            152384,
+            0,
+            1
+          ],
+          "kmp": {
+            "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/toltec7_152384_000_0001_2026_02_19_06_16_38_tune.txt",
+            "bytes": 85667,
+            "sha256": "5f9c76fd3ad4c55bf7d6ab5b9a02f4414597f627cccc5362cf53a7cdaf99ce56"
+          },
+          "declared_raw_sha256": "sha256:2f400f16a545330866a7a95514a14a339f5da9a3e449d33c039f5dbe34796cf0",
+          "raw_hash_status": "not reread in metadata-only OOF inventory; header and byte count checked"
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/toltec8_152386_000_0001_2026_02_19_06_19_32.nc",
+          "bytes": 29436864,
+          "network": 8,
+          "identity": [
+            152386,
+            0,
+            1
+          ],
+          "shape": [
+            7886,
+            460
+          ],
+          "tune": [
+            152384,
+            0,
+            1
+          ],
+          "kmp": {
+            "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/toltec8_152384_000_0001_2026_02_19_06_16_38_tune.txt",
+            "bytes": 95465,
+            "sha256": "37bf36425ab0b4b65af6a84668710517b4b81a15ba9594d1a00c5a82dd946664"
+          },
+          "declared_raw_sha256": "sha256:e076b8785f23fbe845e2c618dfdfb98c886ed4ef5637dd5975133dd19c08da45",
+          "raw_hash_status": "not reread in metadata-only OOF inventory; header and byte count checked"
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/toltec9_152386_000_0001_2026_02_19_06_19_32.nc",
+          "bytes": 31203672,
+          "network": 9,
+          "identity": [
+            152386,
+            0,
+            1
+          ],
+          "shape": [
+            7885,
+            488
+          ],
+          "tune": [
+            152384,
+            0,
+            1
+          ],
+          "kmp": {
+            "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/toltec9_152384_000_0001_2026_02_19_06_16_38_tune.txt",
+            "bytes": 99017,
+            "sha256": "41aaca938f3a08d675047f412e57e84eed814deffa655ab8acb2c780284c7a9a"
+          },
+          "declared_raw_sha256": "sha256:734abff4ce2c4ff0d320a0b4f2c431e4fbb417236daa9576eff3c1a0a1c7ecc9",
+          "raw_hash_status": "not reread in metadata-only OOF inventory; header and byte count checked"
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/toltec11_152386_000_0001_2026_02_19_06_19_32.nc",
+          "bytes": 31080400,
+          "network": 11,
+          "identity": [
+            152386,
+            0,
+            1
+          ],
+          "shape": [
+            7886,
+            486
+          ],
+          "tune": [
+            152384,
+            0,
+            1
+          ],
+          "kmp": {
+            "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/toltec11_152384_000_0001_2026_02_19_06_16_38_tune.txt",
+            "bytes": 100646,
+            "sha256": "bef50e103da0e1abd8409a088f2b24d462239fe9bb16ecccd9efd52513d16063"
+          },
+          "declared_raw_sha256": "sha256:2e1dc377c821f234516a7f634cf5bfd3be56c51799890dce5388681f0895dcd9",
+          "raw_hash_status": "not reread in metadata-only OOF inventory; header and byte count checked"
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/toltec12_152386_000_0001_2026_02_19_06_19_32.nc",
+          "bytes": 31397944,
+          "network": 12,
+          "identity": [
+            152386,
+            0,
+            1
+          ],
+          "shape": [
+            7886,
+            491
+          ],
+          "tune": [
+            152384,
+            0,
+            1
+          ],
+          "kmp": {
+            "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/toltec12_152384_000_0001_2026_02_19_06_16_38_tune.txt",
+            "bytes": 102199,
+            "sha256": "be1ea9078513deffb46129ff157194ccddcb54cf479aa5b78b7426a32277db42"
+          },
+          "declared_raw_sha256": "sha256:9f686b3a822b8bff9dba86a80690cbececeeec540f43fa360c239ea7d9989bcc",
+          "raw_hash_status": "not reread in metadata-only OOF inventory; header and byte count checked"
+        }
+      ],
+      "networks": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        7,
+        8,
+        9,
+        11,
+        12
+      ],
+      "raw_bytes": 352751216,
+      "canonical_manifest": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152386_matched.apt-v2/manifest.ecsv",
+        "bytes": 7657,
+        "sha256": "a1bfe20ad1a063a2b9bf746ad757579612f0abc4d9d6b55b9b5e84a09fb1ab79"
+      },
+      "matched_report": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152386_matched_match_report.json",
+        "bytes": 3085,
+        "sha256": "2cb20534389055ca5e10cd497a30512b2bd28e03d65c72ca51c4d946462722ed"
+      },
+      "dependency_components": [
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152386_matched.apt-v2/sha256-2df10cc72bc599c34351740af37dac3ffe08fa8063593ede274eccd416eec624.apt.ecsv",
+          "bytes": 3318106,
+          "sha256": "2df10cc72bc599c34351740af37dac3ffe08fa8063593ede274eccd416eec624"
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152386_matched.apt-v2/sha256-a90f2ac296f66a121351c4bd07f43f6de4cf3ca1dd9e80743b102c0eea20d15c.baseline-apt.ecsv",
+          "bytes": 3150931,
+          "sha256": "a90f2ac296f66a121351c4bd07f43f6de4cf3ca1dd9e80743b102c0eea20d15c"
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152386_matched.apt-v2/sha256-4c0addc459aeb97658048a58d3fcf64682efcb02c9e605f5e2eb7a51abd12002.baseline-fields.ecsv",
+          "bytes": 10478,
+          "sha256": "4c0addc459aeb97658048a58d3fcf64682efcb02c9e605f5e2eb7a51abd12002"
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152386_matched.apt-v2/sha256-0d3d7a0b28302a27f152fd221bb0ec431df8994fa88b586a322f0b44228930de.baseline-manifest.ecsv",
+          "bytes": 3373,
+          "sha256": "0d3d7a0b28302a27f152fd221bb0ec431df8994fa88b586a322f0b44228930de"
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152386_matched.apt-v2/sha256-8b21c8135375876fa28459efcd075db132ad40aa4e7dfaa05061eaaaa60c0344.baseline-receipt.txt",
+          "bytes": 283,
+          "sha256": "8b21c8135375876fa28459efcd075db132ad40aa4e7dfaa05061eaaaa60c0344"
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152386_matched.apt-v2/sha256-4ad9b421100523cfdb9cbc3d06e1da55b77f518c82f6f5f2004a62866c6bd77d.baseline-sources.ecsv",
+          "bytes": 3425,
+          "sha256": "4ad9b421100523cfdb9cbc3d06e1da55b77f518c82f6f5f2004a62866c6bd77d"
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152386_matched.apt-v2/sha256-1ec2bc9341b0be624a5d10f94f94cb93fc42e8c462db7e85a03ccc6538d05eec.exceptions.ecsv",
+          "bytes": 3274,
+          "sha256": "1ec2bc9341b0be624a5d10f94f94cb93fc42e8c462db7e85a03ccc6538d05eec"
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152386_matched.apt-v2/sha256-dd3e76106d2f761a5ae87968b10e1a0eb6056fe1986796cb5de213d84d0d64d3.fields.ecsv",
+          "bytes": 11158,
+          "sha256": "dd3e76106d2f761a5ae87968b10e1a0eb6056fe1986796cb5de213d84d0d64d3"
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152386_matched.apt-v2/sha256-538a6a9975feb6f4002417b8c0a0d98423e13c93314a9dc60e2604593157cb67.relation.ecsv",
+          "bytes": 1597236,
+          "sha256": "538a6a9975feb6f4002417b8c0a0d98423e13c93314a9dc60e2604593157cb67"
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152386_matched.apt-v2/sha256-7bcbe0d27a927e929706eb12d8e49fb3d55c08d16a94a2965a7b0a1efd85a394.sources.ecsv",
+          "bytes": 4754,
+          "sha256": "7bcbe0d27a927e929706eb12d8e49fb3d55c08d16a94a2965a7b0a1efd85a394"
+        }
+      ],
+      "missing_paths": [],
+      "historical_root": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/refactor/1146+399/reduced/redu00/152386",
+      "requested_Z_offset_from_middle_mm": 0.0
+    },
+    {
+      "observation": 152387,
+      "source": "1146+399",
+      "mode": "Lissajous",
+      "goal": "Oof",
+      "date_UT": 2026.1349716050954,
+      "telescope": {
+        "binding": {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/tel_toltec_2026-02-19_152387_00_0001.nc",
+          "bytes": 1326788,
+          "sha256": "e9fdcdf66c45e517fa4e3cf773e7ccff9173e1bc9c9ff611d48cd9419e775c3c"
+        },
+        "headers": {
+          "Header.Source.SourceName": {
+            "value": "1146+399",
+            "unit": null
+          },
+          "Header.Telescope.ElActPos": {
+            "value": 0.9943067841847115,
+            "unit": "rad"
+          },
+          "Header.M2.ZAct": {
+            "value": -17.04633140563965,
+            "unit": "mm"
+          },
+          "Header.M2.ZReq": {
+            "value": 0.4334032827309997,
+            "unit": "mm"
+          },
+          "Header.M2.ZDes": {
+            "value": -17.046778971433,
+            "unit": "mm"
+          },
+          "Header.M2.ZPcor": {
+            "value": -17.480182254164,
+            "unit": "mm"
+          },
+          "Header.M2.ZCmd": {
+            "value": -17.046778971433,
+            "unit": "mm"
+          },
+          "Header.M2.ZCoeff": {
+            "value": [
+              -4.8571,
+              -15.7281,
+              1.0139
+            ],
+            "unit": "mm"
+          },
+          "Header.M2.ZCoeff_32m": {
+            "value": [
+              1.4695,
+              -22.251,
+              -0.234
+            ],
+            "unit": "mm"
+          },
+          "Header.TimePlace.UTDate": {
+            "value": 2026.1349716050954,
+            "unit": "year"
+          },
+          "Header.Dcs.ObsPgm": {
+            "value": "Lissajous",
+            "unit": null
+          },
+          "Header.Dcs.ObsNum": {
+            "value": 152387,
+            "unit": null
+          },
+          "Header.Dcs.SubObsNum": {
+            "value": 0,
+            "unit": null
+          },
+          "Header.Dcs.ScanNum": {
+            "value": 1,
+            "unit": null
+          }
+        },
+        "stream_extents": {
+          "Data.TelescopeBackend.AcuTime": {
+            "shape": [
+              3266
+            ],
+            "unit": "sec",
+            "min": 1771482070.800409,
+            "max": 1771482136.0899692
+          },
+          "Data.TelescopeBackend.TelElAct": {
+            "shape": [
+              3266
+            ],
+            "unit": "rad",
+            "min": 0.994610368944521,
+            "max": 0.9977146108886581
+          },
+          "Data.TelescopeBackend.TelElEnc1Pos": {
+            "shape": [
+              3266
+            ],
+            "unit": "rad",
+            "min": 0.9983291001309178,
+            "max": 1.0014312120663318
+          },
+          "Data.TelescopeBackend.TelElEnc2Pos": {
+            "shape": [
+              3266
+            ],
+            "unit": "rad",
+            "min": 0.994610368944521,
+            "max": 0.9977146108886581
+          },
+          "Data.TelescopeBackend.TelElCor": {
+            "shape": [
+              3266
+            ],
+            "unit": "rad",
+            "min": 0.00108937267964338,
+            "max": 0.001090665432778694
+          },
+          "Data.TelescopeBackend.TelElDes": {
+            "shape": [
+              3266
+            ],
+            "unit": "rad",
+            "min": 0.9946101204361039,
+            "max": 0.9977246082970307
+          },
+          "Data.TelescopeBackend.TelElCmd": {
+            "shape": [
+              3266
+            ],
+            "unit": "rad",
+            "min": 0.9946094741043242,
+            "max": 0.9977183648664896
+          },
+          "Data.TelescopeBackend.PpsTime": {
+            "shape": [
+              3266
+            ],
+            "unit": "sec",
+            "min": 1771482069.999409,
+            "max": 1771482135.998969
+          },
+          "Data.TelescopeBackend.BackendTime": {
+            "shape": [
+              3266
+            ],
+            "unit": "sec",
+            "min": 1771482070.8042028,
+            "max": 1771482136.0936215
+          },
+          "Data.TelescopeBackend.TelTime": {
+            "shape": [
+              3266
+            ],
+            "unit": "sec",
+            "min": 1771482070.8042028,
+            "max": 1771482136.0936215
+          },
+          "Data.TelescopeBackend.TelElSky": {
+            "shape": [
+              3266
+            ],
+            "unit": "rad",
+            "min": 0.9935197035117423,
+            "max": 0.9966252382090147
+          },
+          "Data.TelescopeBackend.TelElMap": {
+            "shape": [
+              3266
+            ],
+            "unit": "rad",
+            "min": -0.0003267367536857054,
+            "max": 0.0002991422143559365
+          }
+        }
+      },
+      "raw": [
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/toltec0_152387_000_0001_2026_02_19_06_21_06.nc",
+          "bytes": 40102840,
+          "network": 0,
+          "identity": [
+            152387,
+            0,
+            1
+          ],
+          "shape": [
+            7869,
+            630
+          ],
+          "tune": [
+            152384,
+            0,
+            1
+          ],
+          "kmp": {
+            "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/toltec0_152384_000_0001_2026_02_19_06_16_38_tune.txt",
+            "bytes": 130188,
+            "sha256": "1b50df705f63009c10c83afae6b5cd623a4c433ed8fc69d0ff7de464ce0a111b"
+          },
+          "declared_raw_sha256": "sha256:d10eb319666c27fdf09f4bce805384bbfffe16b72ef592e29b5d078d06850677",
+          "raw_hash_status": "not reread in metadata-only OOF inventory; header and byte count checked"
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/toltec1_152387_000_0001_2026_02_19_06_21_06.nc",
+          "bytes": 31518104,
+          "network": 1,
+          "identity": [
+            152387,
+            0,
+            1
+          ],
+          "shape": [
+            7869,
+            494
+          ],
+          "tune": [
+            152384,
+            0,
+            1
+          ],
+          "kmp": {
+            "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/toltec1_152384_000_0001_2026_02_19_06_16_38_tune.txt",
+            "bytes": 102352,
+            "sha256": "2623d62ce34e91e2079c7ca40ebeb90788c1661adc2e4e916a3f1209b3931ba9"
+          },
+          "declared_raw_sha256": "sha256:f7c1d497e907323fde4e8ef1addcd7d8f97775024ee3bc3686bed993355d4bea",
+          "raw_hash_status": "not reread in metadata-only OOF inventory; header and byte count checked"
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/toltec2_152387_000_0001_2026_02_19_06_21_06.nc",
+          "bytes": 32528344,
+          "network": 2,
+          "identity": [
+            152387,
+            0,
+            1
+          ],
+          "shape": [
+            7869,
+            510
+          ],
+          "tune": [
+            152384,
+            0,
+            1
+          ],
+          "kmp": {
+            "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/toltec2_152384_000_0001_2026_02_19_06_16_38_tune.txt",
+            "bytes": 105588,
+            "sha256": "d09185b96f5862e115d388c7e114358681af1366e8fb2a8a6651af04fb6ffc0d"
+          },
+          "declared_raw_sha256": "sha256:2121a68f593cdd48a595cc8a7f944e051823f8a9db73b003b2dfec849f3afe62",
+          "raw_hash_status": "not reread in metadata-only OOF inventory; header and byte count checked"
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/toltec3_152387_000_0001_2026_02_19_06_21_06.nc",
+          "bytes": 33979832,
+          "network": 3,
+          "identity": [
+            152387,
+            0,
+            1
+          ],
+          "shape": [
+            7869,
+            533
+          ],
+          "tune": [
+            152384,
+            0,
+            1
+          ],
+          "kmp": {
+            "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/toltec3_152384_000_0001_2026_02_19_06_16_38_tune.txt",
+            "bytes": 109905,
+            "sha256": "d50ecc57a2af6662a6c73ef6fed28516e9814826e17c035462a231566c048b8f"
+          },
+          "declared_raw_sha256": "sha256:baab604f8b8ebbf7bac7676ad6e59830ae9ced2385dfbdf43926a997035c0414",
+          "raw_hash_status": "not reread in metadata-only OOF inventory; header and byte count checked"
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/toltec4_152387_000_0001_2026_02_19_06_21_06.nc",
+          "bytes": 33916600,
+          "network": 4,
+          "identity": [
+            152387,
+            0,
+            1
+          ],
+          "shape": [
+            7869,
+            532
+          ],
+          "tune": [
+            152384,
+            0,
+            1
+          ],
+          "kmp": {
+            "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/toltec4_152384_000_0001_2026_02_19_06_16_38_tune.txt",
+            "bytes": 109734,
+            "sha256": "52968b17e53a60f684e61d9e2aa25df12a9002236bd529c4b3404eb7d50e7e22"
+          },
+          "declared_raw_sha256": "sha256:823d1a1a8162e9ebc7671ca69de01ad38d9a84d9599e0d28139ee83242ea06fb",
+          "raw_hash_status": "not reread in metadata-only OOF inventory; header and byte count checked"
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/toltec5_152387_000_0001_2026_02_19_06_21_06.nc",
+          "bytes": 30255832,
+          "network": 5,
+          "identity": [
+            152387,
+            0,
+            1
+          ],
+          "shape": [
+            7869,
+            474
+          ],
+          "tune": [
+            152384,
+            0,
+            1
+          ],
+          "kmp": {
+            "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/toltec5_152384_000_0001_2026_02_19_06_16_38_tune.txt",
+            "bytes": 98021,
+            "sha256": "89cb0d78146699c5ed505951a14d433076501acfaadd94d4b8a907a6a0dd63fd"
+          },
+          "declared_raw_sha256": "sha256:0e700f910168fd675f9f1e7f1e3fa3f0652e95417d0cd6f50e92ed804c2ffa98",
+          "raw_hash_status": "not reread in metadata-only OOF inventory; header and byte count checked"
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/toltec7_152387_000_0001_2026_02_19_06_21_06.nc",
+          "bytes": 26850872,
+          "network": 7,
+          "identity": [
+            152387,
+            0,
+            1
+          ],
+          "shape": [
+            7869,
+            420
+          ],
+          "tune": [
+            152384,
+            0,
+            1
+          ],
+          "kmp": {
+            "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/toltec7_152384_000_0001_2026_02_19_06_16_38_tune.txt",
+            "bytes": 85667,
+            "sha256": "5f9c76fd3ad4c55bf7d6ab5b9a02f4414597f627cccc5362cf53a7cdaf99ce56"
+          },
+          "declared_raw_sha256": "sha256:9a00769babbe1fa3d278494cda35c3c1ffef5c8f9d4652bbd8021ed06617b604",
+          "raw_hash_status": "not reread in metadata-only OOF inventory; header and byte count checked"
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/toltec8_152387_000_0001_2026_02_19_06_21_06.nc",
+          "bytes": 29373624,
+          "network": 8,
+          "identity": [
+            152387,
+            0,
+            1
+          ],
+          "shape": [
+            7869,
+            460
+          ],
+          "tune": [
+            152384,
+            0,
+            1
+          ],
+          "kmp": {
+            "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/toltec8_152384_000_0001_2026_02_19_06_16_38_tune.txt",
+            "bytes": 95465,
+            "sha256": "37bf36425ab0b4b65af6a84668710517b4b81a15ba9594d1a00c5a82dd946664"
+          },
+          "declared_raw_sha256": "sha256:009496a49734db5b3dcdea845f86d7c8e839ded0d08d1373218111cebd95ba66",
+          "raw_hash_status": "not reread in metadata-only OOF inventory; header and byte count checked"
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/toltec9_152387_000_0001_2026_02_19_06_21_06.nc",
+          "bytes": 31136624,
+          "network": 9,
+          "identity": [
+            152387,
+            0,
+            1
+          ],
+          "shape": [
+            7868,
+            488
+          ],
+          "tune": [
+            152384,
+            0,
+            1
+          ],
+          "kmp": {
+            "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/toltec9_152384_000_0001_2026_02_19_06_16_38_tune.txt",
+            "bytes": 99017,
+            "sha256": "41aaca938f3a08d675047f412e57e84eed814deffa655ab8acb2c780284c7a9a"
+          },
+          "declared_raw_sha256": "sha256:fad1de19e81c07ff6ea26cfe4f12cccee832c25bd301267a3ec46eec25b0f3bc",
+          "raw_hash_status": "not reread in metadata-only OOF inventory; header and byte count checked"
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/toltec11_152387_000_0001_2026_02_19_06_21_06.nc",
+          "bytes": 31017552,
+          "network": 11,
+          "identity": [
+            152387,
+            0,
+            1
+          ],
+          "shape": [
+            7870,
+            486
+          ],
+          "tune": [
+            152384,
+            0,
+            1
+          ],
+          "kmp": {
+            "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/toltec11_152384_000_0001_2026_02_19_06_16_38_tune.txt",
+            "bytes": 100646,
+            "sha256": "bef50e103da0e1abd8409a088f2b24d462239fe9bb16ecccd9efd52513d16063"
+          },
+          "declared_raw_sha256": "sha256:0ba8b6ef1355e652f267d2e445842bf7b5cff6d4084dcb8ece4f2145b6876b36",
+          "raw_hash_status": "not reread in metadata-only OOF inventory; header and byte count checked"
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/toltec12_152387_000_0001_2026_02_19_06_21_06.nc",
+          "bytes": 31330488,
+          "network": 12,
+          "identity": [
+            152387,
+            0,
+            1
+          ],
+          "shape": [
+            7869,
+            491
+          ],
+          "tune": [
+            152384,
+            0,
+            1
+          ],
+          "kmp": {
+            "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/data/toltec12_152384_000_0001_2026_02_19_06_16_38_tune.txt",
+            "bytes": 102199,
+            "sha256": "be1ea9078513deffb46129ff157194ccddcb54cf479aa5b78b7426a32277db42"
+          },
+          "declared_raw_sha256": "sha256:c98914c14ac71c8fd006b6d5baa6a14bf6a89227b8dbe7936c3c95168c97a98d",
+          "raw_hash_status": "not reread in metadata-only OOF inventory; header and byte count checked"
+        }
+      ],
+      "networks": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        7,
+        8,
+        9,
+        11,
+        12
+      ],
+      "raw_bytes": 352010712,
+      "canonical_manifest": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152387_matched.apt-v2/manifest.ecsv",
+        "bytes": 7657,
+        "sha256": "b3de0111c424003dfbf21794f827b93fe98ef08bc8be5a61092dba1e39db470f"
+      },
+      "matched_report": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152387_matched_match_report.json",
+        "bytes": 3085,
+        "sha256": "ddad5cb9c905dd3becab8cb31dfea0ad1fabbf6341faea7df7fe2f23a6abf701"
+      },
+      "dependency_components": [
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152387_matched.apt-v2/sha256-052759419eb500c74886bfe65ff59199d8b1683dba96bcaa4e90b09ffd01d0de.apt.ecsv",
+          "bytes": 3318106,
+          "sha256": "052759419eb500c74886bfe65ff59199d8b1683dba96bcaa4e90b09ffd01d0de"
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152387_matched.apt-v2/sha256-a90f2ac296f66a121351c4bd07f43f6de4cf3ca1dd9e80743b102c0eea20d15c.baseline-apt.ecsv",
+          "bytes": 3150931,
+          "sha256": "a90f2ac296f66a121351c4bd07f43f6de4cf3ca1dd9e80743b102c0eea20d15c"
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152387_matched.apt-v2/sha256-4c0addc459aeb97658048a58d3fcf64682efcb02c9e605f5e2eb7a51abd12002.baseline-fields.ecsv",
+          "bytes": 10478,
+          "sha256": "4c0addc459aeb97658048a58d3fcf64682efcb02c9e605f5e2eb7a51abd12002"
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152387_matched.apt-v2/sha256-0d3d7a0b28302a27f152fd221bb0ec431df8994fa88b586a322f0b44228930de.baseline-manifest.ecsv",
+          "bytes": 3373,
+          "sha256": "0d3d7a0b28302a27f152fd221bb0ec431df8994fa88b586a322f0b44228930de"
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152387_matched.apt-v2/sha256-8b21c8135375876fa28459efcd075db132ad40aa4e7dfaa05061eaaaa60c0344.baseline-receipt.txt",
+          "bytes": 283,
+          "sha256": "8b21c8135375876fa28459efcd075db132ad40aa4e7dfaa05061eaaaa60c0344"
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152387_matched.apt-v2/sha256-4ad9b421100523cfdb9cbc3d06e1da55b77f518c82f6f5f2004a62866c6bd77d.baseline-sources.ecsv",
+          "bytes": 3425,
+          "sha256": "4ad9b421100523cfdb9cbc3d06e1da55b77f518c82f6f5f2004a62866c6bd77d"
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152387_matched.apt-v2/sha256-1c8074a0334c138cb0a2707b0e9586006a86fc6495be0d2d012117308cec3f95.exceptions.ecsv",
+          "bytes": 3274,
+          "sha256": "1c8074a0334c138cb0a2707b0e9586006a86fc6495be0d2d012117308cec3f95"
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152387_matched.apt-v2/sha256-a6bd8b33a88f4f2a0693661e13c95281e1f0937f5fda63ffc3219bf5e7c4ce95.fields.ecsv",
+          "bytes": 11158,
+          "sha256": "a6bd8b33a88f4f2a0693661e13c95281e1f0937f5fda63ffc3219bf5e7c4ce95"
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152387_matched.apt-v2/sha256-5b157f8965eea760e701a235afcddf7bb64c0dbe7214391fd1a37b7ae73c59f4.relation.ecsv",
+          "bytes": 1597236,
+          "sha256": "5b157f8965eea760e701a235afcddf7bb64c0dbe7214391fd1a37b7ae73c59f4"
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/apts/v2/apt_152387_matched.apt-v2/sha256-2e9af5320cf1542d92b5e8f11397853b52933feb6801c009f8db072a2b483d92.sources.ecsv",
+          "bytes": 4754,
+          "sha256": "2e9af5320cf1542d92b5e8f11397853b52933feb6801c009f8db072a2b483d92"
+        }
+      ],
+      "missing_paths": [],
+      "historical_root": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/refactor/1146+399/reduced/redu00/152387",
+      "requested_Z_offset_from_middle_mm": 2.0
+    }
+  ],
+  "source_project": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/project.yaml",
+    "bytes": 6228,
+    "sha256": "1153cf741661bfa25b8b6c33e10c443767fcddd83fc644073f4ba765c08de12d"
+  },
+  "historical_config": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/refactor/1146+399/reduced/redu00/citlali_o152385_0_1_c3.yaml",
+    "bytes": 21662,
+    "sha256": "26298ac72682ff0a99d70cdc36beb85ea8b601cf18826c0e2f021ac5402e2d43"
+  },
+  "historical_settings": {
+    "runtime": {
+      "interp_over_gaps": true,
+      "meta": {
+        "version": "tolteca..."
+      },
+      "n_threads": 6,
+      "output_dir": "/work/toltec/citlali-validation/v2/oof/refactor/1146+399/reduced/",
+      "parallel_policy": "omp",
+      "reduction_type": "oof",
+      "use_subdir": true,
+      "verbose": true
+    },
+    "mapmaking": {
+      "coverage_cut": 0.5,
+      "crpix1": 0,
+      "crpix2": 0,
+      "crval1_J2000": 0,
+      "crval2_J2000": 0,
+      "cunit": "mJy/beam",
+      "enabled": true,
+      "grouping": "auto",
+      "jinc_filter": {
+        "r_max": 1.5,
+        "shape_params": {
+          "a1100": [
+            1.1,
+            1.67,
+            2.0
+          ],
+          "a1400": [
+            1.1,
+            2.17,
+            2.0
+          ],
+          "a2000": [
+            1.1,
+            3.17,
+            2.0
+          ]
+        },
+        "subpixel_n": 1
+      },
+      "maximum_likelihood": {
+        "max_iterations": 50,
+        "tolerance": "1e-20"
+      },
+      "method": "jinc",
+      "pixel_axes": "altaz",
+      "pixel_size_arcsec": 1.0,
+      "tan_dec": 0,
+      "tan_ra": 0,
+      "x_size_pix": 0,
+      "y_size_pix": 0
+    },
+    "pointing": {
+      "source_strategy": {
+        "fit_gaussian": true,
+        "fruitloops_center_mode": "map_center",
+        "header_max_radius_arcsec": 40.0,
+        "header_require_coverage": true,
+        "mode": "psf_preserve"
+      }
+    },
+    "source": {
+      "map_regime": "source_dominant"
+    }
+  },
+  "historical_timestream": {
+    "fruit_loops": {
+      "adaptive_support_radius_arcsec": 18.0,
+      "adaptive_support_radius_fwhm": 1.5,
+      "array_flux_limit": [
+        12,
+        18,
+        10
+      ],
+      "center_keep_radius_arcsec": 40.0,
+      "enabled": false,
+      "interp_mode_override": "auto",
+      "legacy_center": false,
+      "local_sigma_edge_guard_arcsec": 5.0,
+      "local_sigma_inner_fwhm": 1.5,
+      "local_sigma_inner_radius_arcsec": 10.0,
+      "local_sigma_min_pixels": 50,
+      "local_sigma_outer_fwhm": 4.0,
+      "local_sigma_outer_radius_arcsec": 35.0,
+      "local_snr_floor": 0.0,
+      "max_iters": 1,
+      "mode": "upper",
+      "path": null,
+      "peak_fraction_limit": 0.0,
+      "recompute_weights_after_addback": false,
+      "save_all_iters": false,
+      "sig2noise_limit": 100,
+      "type": "obsnum/raw",
+      "weight_feedback": {
+        "enabled": true,
+        "high_relative_weight": 0.1,
+        "low_relative_weight": 0.02,
+        "reference": "p95"
+      }
+    },
+    "chunking": {
+      "chunk_mode": "duration",
+      "force_chunking": false,
+      "value": 10
+    },
+    "raw_time_chunk": {
+      "IIR_filter": {
+        "enabled": false,
+        "freq_Hz": 0.1,
+        "order": 1,
+        "zero_phase": false
+      },
+      "despike": {
+        "enabled": false,
+        "legacy": {
+          "enabled": false
+        },
+        "local_residual": {
+          "compact_delta_gate": {
+            "enabled": true,
+            "half_peak_frac": 0.5,
+            "max_step_shift_z": 3.0,
+            "max_width_sec": 0.1,
+            "window_sec": 0.12
+          },
+          "compact_raw_gate": {
+            "candidate_rel_sigma_scale": 1.0,
+            "enabled": true,
+            "half_peak_frac": 0.5,
+            "max_step_shift_z": 3.0,
+            "max_width_sec": 0.18,
+            "window_sec": 0.18
+          },
+          "delta_sigma_scale": 0.75,
+          "enabled": true,
+          "event_padding_sec": 0.25,
+          "expand_with_filter": false,
+          "high_score_event_override": 20.0,
+          "max_added_flagged_fraction": 0.25,
+          "sigma_scale": 0.75,
+          "window_sec": 0.25
+        },
+        "min_spike_sigma": 8.0,
+        "source_protection": {
+          "enabled": true,
+          "radius_arcsec": 20.0
+        },
+        "time_constant_sec": 0.015,
+        "window_size": 32
+      },
+      "downsample": {
+        "downsampled_freq_Hz": 0,
+        "enabled": true,
+        "factor": 2
+      },
+      "extinction_correction": {
+        "enabled": true
+      },
+      "filter": {
+        "a_gibbs": 50.0,
+        "edge_guard": {
+          "apply_downsample": true,
+          "apply_dynamic_notch": true,
+          "apply_fir": true,
+          "apply_iir_highpass": true,
+          "apply_notch": true,
+          "combine": "sum",
+          "enabled": true,
+          "extra_samples": 0,
+          "iir_settle_attenuation": 0.01,
+          "max_samples": 128,
+          "min_samples": 0,
+          "mode": "flag"
+        },
+        "enabled": true,
+        "freq_high_Hz": 16.0,
+        "freq_low_Hz": 0.0,
+        "n_terms": 32,
+        "notch": {
+          "delta_f_Hz": [
+            1.0
+          ],
+          "enabled": false,
+          "freqs_Hz": [
+            10.5
+          ]
+        }
+      },
+      "flagging": {
+        "delta_f_min_Hz": "60e3",
+        "impulsive_capture": {
+          "enabled": false,
+          "max_events_per_network": 3,
+          "min_event_z": 6.0,
+          "min_good_frac": 0.8,
+          "near_event_z": 4.0,
+          "snippet_post_window_sec": 0.25,
+          "snippet_pre_window_sec": 0.25
+        },
+        "impulsive_coincidence": {
+          "cluster_tol_sec": 0.03,
+          "enabled": false,
+          "event_score_thresh": 6.0,
+          "high_score_min_networks_aligned": 0,
+          "high_score_override_thresh": 0.0,
+          "mask_post_window_sec": 0.03,
+          "mask_pre_window_sec": 0.03,
+          "max_flagged_fraction": 0.1,
+          "min_alignment_frac": 0.5,
+          "min_det_used": 32,
+          "min_good_frac": 0.8,
+          "min_impulsive_det_frac": 0.05,
+          "min_networks_aligned": 3
+        },
+        "lower_tod_inv_var_factor": 0.0,
+        "network_step_mask": {
+          "cluster_tol_sec": 0.25,
+          "enabled": false,
+          "mask_half_width_sec": 0.5,
+          "max_flagged_fraction": 0.3,
+          "min_alignment_frac": 0.5,
+          "min_det_used": 32,
+          "min_good_frac": 0.8,
+          "min_step_det_frac": 0.05,
+          "step_score_thresh": 2.5,
+          "step_window_sec": 0.5
+        },
+        "upper_tod_inv_var_factor": 10
+      },
+      "flux_calibration": {
+        "enabled": true
+      },
+      "kernel": {
+        "enabled": true,
+        "filepath": null,
+        "fwhm_arcsec": 0,
+        "image_ext_name": "signal",
+        "type": "gaussian"
+      },
+      "output": {
+        "enabled": false,
+        "indices": "all",
+        "mode": "mini",
+        "outer_context_samples": 0
+      }
+    },
+    "processed_time_chunk": {
+      "clean": {
+        "adaptive_selector": {
+          "candidate_offsets": [
+            -2,
+            0,
+            2,
+            4
+          ],
+          "clip_z": 50.0,
+          "enabled": false,
+          "grouping": [],
+          "log_candidates": false,
+          "low_band_Hz": [
+            0.05,
+            0.5
+          ],
+          "low_weight": 1.0,
+          "max_det": 120,
+          "max_pairs": 2000,
+          "max_samples": 1024,
+          "mid_band_Hz": [
+            0.5,
+            2.0
+          ],
+          "min_good_frac": 0.7,
+          "reg_weight": 0.3,
+          "seed": 12345,
+          "tail_weight": 0.0,
+          "topmode_weight": 0.1
+        },
+        "enabled": true,
+        "grouping": [
+          "nw"
+        ],
+        "marchenko_pastur": {
+          "band_high_Hz": 0.0,
+          "band_low_Hz": 0.0,
+          "bulk_keep_frac": 0.8,
+          "clip_z": 12.0,
+          "enabled": false,
+          "grouping": [],
+          "max_modes": 64,
+          "max_samples": 20000,
+          "min_good_frac": 0.8,
+          "q_grid_size": 64
+        },
+        "mask_radius_arcsec": 0.0,
+        "null_model": {
+          "enabled": false,
+          "max_modes": 64,
+          "max_samples": 20000,
+          "min_good_frac": 0.8,
+          "n_surrogates": 16,
+          "quantile": 0.99,
+          "seed": 12345
+        },
+        "standard_pca": {
+          "enabled": true,
+          "n_calc": 64,
+          "n_eig_to_cut": {
+            "a1100": [
+              3
+            ],
+            "a1400": [
+              3
+            ],
+            "a2000": [
+              3
+            ]
+          },
+          "stddev_limit": 0.0
+        },
+        "tau": 0.0
+      },
+      "flagging": {
+        "lower_tod_inv_var_factor": 0.0,
+        "second_pass_local": {
+          "baseline_window_sec": 0.25,
+          "cluster_events_sec": 0.08,
+          "delta_half_peak_frac": 0.5,
+          "delta_max_width_sec": 0.1,
+          "delta_sigma_scale": 0.75,
+          "delta_window_sec": 0.12,
+          "enabled": true,
+          "high_score_cluster_override": 9.0,
+          "high_score_event_override": 20.0,
+          "max_auto_flag_clusters_per_network": 3,
+          "max_step_shift_z": 3.0,
+          "merge_within_detector_sec": 0.08,
+          "min_cluster_detectors": 3,
+          "min_good_frac": 0.5,
+          "min_spike_sigma": 8.0,
+          "raw_candidate_rel_sigma_scale": 1.0,
+          "raw_half_peak_frac": 0.5,
+          "raw_max_width_sec": 0.18,
+          "raw_window_sec": 0.18,
+          "selective_busy_network_acceptance_enabled": true,
+          "sigma_scale": 0.75,
+          "source_protection": {
+            "enabled": true,
+            "radius_arcsec": 20.0
+          }
+        },
+        "upper_tod_inv_var_factor": 10
+      },
+      "output": {
+        "enabled": false,
+        "indices": "all",
+        "mode": "mini"
+      },
+      "weighting": {
+        "busy_row_suppression": {
+          "enabled": false,
+          "factor": 0.0,
+          "min_candidate_clusters": 5,
+          "min_max_unflagged_residual_z": 25.0,
+          "require_busy_veto": true
+        },
+        "corr_penalty": {
+          "cm_el_corr": {
+            "enabled": false,
+            "ref": 0.05,
+            "span": 0.25,
+            "weight": 0.5
+          },
+          "cm_low_mid_ratio": {
+            "enabled": false,
+            "low_band_Hz": [
+              0.05,
+              0.5
+            ],
+            "mid_band_Hz": [
+              0.5,
+              2.0
+            ],
+            "ref": 0.6,
+            "span": 2.0,
+            "weight": 0.5
+          },
+          "enabled": false,
+          "exponent": 2.0,
+          "floor": 0.05,
+          "max_pairs": 4000,
+          "max_samples": 20000,
+          "min_good_frac": 0.7,
+          "min_overlap": 200,
+          "pair_corr": {
+            "enabled": true,
+            "ref": 0.05,
+            "span": 0.15,
+            "weight": 1.0
+          },
+          "seed": 12345
+        },
+        "hybrid_correction_max_factor": 2.0,
+        "hybrid_correction_min_factor": 0.5,
+        "lower_map_weight_factor": 0.0,
+        "median_map_weight_factor": 10,
+        "source_mask_radius_arcsec": 30.0,
+        "type": "validated",
+        "upper_map_weight_factor": 11,
+        "validation": {
+          "accumulation_iters": 1,
+          "apply_start_iter": 1,
+          "atmospheric_correlation_enabled": true,
+          "atmospheric_grouping": "array",
+          "atmospheric_min_detectors": 8,
+          "atmospheric_power": 1.0,
+          "atmospheric_ref": 0.0,
+          "atmospheric_span": 0.15,
+          "enabled": true,
+          "high_weight_apply_caps": true,
+          "high_weight_cap_median_factor": 4.0,
+          "high_weight_grouping": "array",
+          "high_weight_log_robust_z": 6.0,
+          "high_weight_max_median_factor": 8.0,
+          "high_weight_min_group_detectors": 20,
+          "high_weight_min_validated_factor": 0.95,
+          "high_weight_validation_enabled": true,
+          "max_samples": 5000,
+          "min_factor": 0.1,
+          "min_good_frac": 0.5,
+          "min_overlap": 200,
+          "min_valid_scans": 2,
+          "ratio_power": 1.0,
+          "require_fruitloops_model": true,
+          "transient_ratio_enabled": false,
+          "transient_ratio_power": 1.0,
+          "unvalidated_factor": 1.0,
+          "upward_enabled": true,
+          "upward_max_factor": 1.1,
+          "upward_min_atmospheric_factor": 0.9,
+          "upward_min_base_factor": 0.95,
+          "upward_power": 1.0,
+          "upward_require_atmospheric": true
+        }
+      }
+    }
+  },
+  "total_raw_bytes": 1056404560,
+  "missing_raw_bytes": 0,
+  "new_oof_starts": 0,
+  "limits": "No best-focus/optical sign inference from actuator values; offsets are requested physical Z relative to the middle acquisition. Focus states stay distinct. No successor OOF admission or morphology policy implied."
+}

@@ -46,10 +46,10 @@ def map_values(ref,k,values,valid):
     result=np.divide(numerator,count,out=np.zeros_like(numerator),where=count>0);support=im['SCI_SUPPORT'].astype(bool)&(actualcount==count)
     return result,support,dict(reference_contributions=int(count.sum()),available_contributions=int(actualcount.sum()),lost_contributions=int((count-actualcount).sum()),lost_science_pixels=int((im['SCI_SUPPORT'].astype(bool)&~support).sum()))
 
-def response(root,family,dest,reference_name=None):
-    start=time.monotonic();dest.mkdir(parents=True,exist_ok=True);ref=root/(reference_name or f'{family}-REF-rep1');prospective=read(ref/'freeze/prospective.json');array=prospective['array'];ctx=context(ref/f'freeze/{array}');rs=read(ref/f'run/BASE-POINT/REF/{array}/SUMMARY.json');networks={nw:load_network(root,family,nw) for nw in prospective['networks']};records=[];maps={};native=[]
+def response(root,family,dest,reference_name=None,*,branches=BRANCHES,network_loader=None):
+    start=time.monotonic();dest.mkdir(parents=True,exist_ok=True);ref=root/(reference_name or f'{family}-REF-rep1');prospective=read(ref/'freeze/prospective.json');array=prospective['array'];ctx=context(ref/f'freeze/{array}');rs=read(ref/f'run/BASE-POINT/REF/{array}/SUMMARY.json');networks={nw:(network_loader or load_network)(root,family,nw) for nw in prospective['networks']};records=[];maps={};native=[]
     sigmas={x['name']:x['conditional_sigma'] for x in rs['endpoint_uncertainty']};require(all(x is not None and np.isfinite(x) for x in sigmas.values()),'nonfinite REF endpoint')
-    for branch in BRANCHES:
+    for branch in branches:
         out=root/f'{family}-{branch}';bs=read(out/f'run/BASE-POINT/REF/{array}/SUMMARY.json');known={};delta={};valid={};idealvalid={}
         for nw,a in networks.items():
             p=out/f'upstream/products/network{nw}';probe=p/'source-probe';pr=yread(probe/'receipt.yaml');increment=arr(probe/'increment-x.f64','<f8',a['shape']);known[nw]=increment*a['mult'];idealvalid[nw]=a['valid']&a['mapping'];delta[nw]=np.zeros(a['shape']);valid[nw]=np.zeros(a['shape'],bool);statechanges=0;centerchanges=0

@@ -1,0 +1,717 @@
+{
+  "schema": "point-quality-independent-152430-saved-feedback-audit-v1",
+  "reviewed_HEAD": "9cc300e383805b47cf86d5cc3706e705ae897843",
+  "reviewer": "independent amplitude_milestone_review",
+  "environment": {
+    "python": "3.13.2 (main, Feb  4 2025, 14:51:09) [Clang 16.0.0 (clang-1600.0.26.6)]",
+    "numpy": "2.2.3",
+    "scipy": "1.17.1",
+    "platform": "macOS-27.0.1-arm64-arm-64bit-Mach-O"
+  },
+  "inputs": [
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/B-REF-rep1/run/BASE-POINT/REF/a1100/SUMMARY.json",
+      "bytes": 171737,
+      "sha256": "6d51b5c0b9c2589d1e9d2658c6adcd7797c8f726c49538c0afbb6c97f14928e3"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/B-REF-rep1/freeze/a1100/BASE.json",
+      "bytes": 2476,
+      "sha256": "3a74a1a6f74d57ac60b2f3e2ce0e4bfd79316a852760c3154566dfcbd101087d"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/B-REF-rep1/freeze/a1100/BASE.npz",
+      "bytes": 9015,
+      "sha256": "db8335fd8fe1d5aea49e5b1e7aab2a44a08369b1c4dd53cffc72b224b64fad72"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/B-REF-rep1/freeze/a1100/C0.json",
+      "bytes": 5370,
+      "sha256": "4bbf379ec8855152669540fd3c14e2452b122469dd19de65bdd6df5fc34dbdc1"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/B-REF-rep1/freeze/a1100/C0.npz",
+      "bytes": 108720,
+      "sha256": "148153bb9506d298a66213ec0d7413820e42d3f12affde94f46c5eb83e868f86"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/B-REF-rep1/freeze/a1100/context.npz",
+      "bytes": 118630,
+      "sha256": "999d74ecad0eb6511c5644bcacdb6e2e066c09647b7f4cac2cb4d36c3be8f765"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/B-REF-rep1/freeze/a1100/continuation-sanity.json",
+      "bytes": 1590,
+      "sha256": "f0afd1ad2ac67362fbb17d3f965c2dde34cd21160e9cb55d1a75bfec6e1771fc"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/B-REF-rep1/freeze/a1100/geometry.json",
+      "bytes": 3263,
+      "sha256": "af10079272c211b2c65959b043381bc95e71b17ada69245cb852117d1ed3d070"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/B-REF-rep1/freeze/a1100/guard.json",
+      "bytes": 2034,
+      "sha256": "cbdc4110b56be774d7d848140b052c51387c4b7088ba88e7b3e4bb3e8724dd58"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/B-REF-rep1/freeze/a1100/measurement-geometry.json",
+      "bytes": 24040,
+      "sha256": "a6293579fd6d0b4eda0528f0f78b873374e914c87d576513d77bc36aa888af98"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/B-REF-rep1/M0/products/a1100/map.fits",
+      "bytes": 1071360,
+      "sha256": "f49c56d40e28411057cac1e47f824bc3b8401809d5f4aa4eeeb3a97daf27610a"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/B-REF-rep1/run/BASE-POINT/REF/a1100/cycle-01/native/products/total.fits",
+      "bytes": 1071360,
+      "sha256": "5fd4c55471e9400012d12e7e398a8aa5a9e4d4c6151724772b589bb64920fec4"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/B-REF-rep1/run/BASE-POINT/REF/a1100/cycle-02/native/products/total.fits",
+      "bytes": 1071360,
+      "sha256": "f3daabd544ca21475c1370faa24819cb8763e0e9b183625f2441abea87007fae"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/B-REF-rep1/run/BASE-POINT/REF/a1100/cycle-03/native/products/total.fits",
+      "bytes": 1071360,
+      "sha256": "6600349a367efd4f99c80250a58a73b8f77469d684008b6b980c17cb39055aff"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/B-REF-rep1/run/BASE-POINT/REF/a1100/cycle-04/native/products/total.fits",
+      "bytes": 1071360,
+      "sha256": "68a194d152560a5761428859ac7a2539ec12d19c1aabec4bdebfcd734dfe71aa"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/B-REF-rep1/run/BASE-POINT/REF/a1100/cycle-05/native/products/total.fits",
+      "bytes": 1071360,
+      "sha256": "032ac678e22ed053fd5867a3deb4c11a9dd941f5fe30c6e03338b40856afecdf"
+    }
+  ],
+  "measurement_sources": [
+    {
+      "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/tools/timestream_successor/inspect_forward_map.py",
+      "bytes": 18200,
+      "sha256": "42bf8d8daff17d47be96295dd23d12056f33417fb612419164bda50f0e19aab3"
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/tools/timestream_successor/inspect_point_source.py",
+      "bytes": 8495,
+      "sha256": "35259649e727068047d0956070b817678fb1309e67937af27303d923cc729032"
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/tools/timestream_successor/point_additive.py",
+      "bytes": 17285,
+      "sha256": "b65e0e6eaf524d78c5f2c2c93a2f2ca91cc4a30185c261e2343cb94f5f124b1f"
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/tools/timestream_successor/point_additive_diagnostics.py",
+      "bytes": 9651,
+      "sha256": "f581d30e995afd3712b1963671f754571b37d3707c6729f8eaff48e7c1ed3530"
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/tools/timestream_successor/point_admission.py",
+      "bytes": 8477,
+      "sha256": "785ef372b42937c20611b32380f46c2591e6671ece486cb9f168164f513af24a"
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/tools/timestream_successor/point_corr_admission.py",
+      "bytes": 7752,
+      "sha256": "cbb3cd4f2c9b264c2917505e267d854f1d8ca0dddcada0a64e77492780de773d"
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/tools/timestream_successor/point_empirical.py",
+      "bytes": 13654,
+      "sha256": "dcf11caf277cae6ed5a07c8bb0c66afae67ccb0b55a9f6b065c8c8fb3c2ef52a"
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/tools/timestream_successor/point_empirical_io.py",
+      "bytes": 7335,
+      "sha256": "85ac398f574848d99097c404d0bc22f06fba8008542f149f85f9b82b999c9c5d"
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/tools/timestream_successor/point_expected.py",
+      "bytes": 9024,
+      "sha256": "33ca2e4baf9cf48a55f956ab21778c04df4a6771e20f1aa29526303a26bd354b"
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/tools/timestream_successor/point_fruit_diagnostics.py",
+      "bytes": 12731,
+      "sha256": "ca664e600c6e644c0af1eb1e6dd6f6e75fb60f24630dd7a06e04e266d1ffd8d1"
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/tools/timestream_successor/point_fruit_trajectory.py",
+      "bytes": 11848,
+      "sha256": "30e3d8b7ddeb5302e63b3e528ba6e3ce90d3e8e4edba3563e2ec2d1940b6358c"
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/tools/timestream_successor/point_guarded_feedback.py",
+      "bytes": 7866,
+      "sha256": "96e3bd23de3585ca5ff523907fa6313acd3ea259048a3aa3fead7628225cbff3"
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/tools/timestream_successor/point_reference.py",
+      "bytes": 11191,
+      "sha256": "9f345ba9daa60db2527e55996ad5d6093320adbd17b9c85ed088961c64c1148b"
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/tools/timestream_successor/point_response_cd.py",
+      "bytes": 12361,
+      "sha256": "bb6492bcb4b377dca05283923bbbe5a5386e60e5da539f5197c1f992c899fc27"
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/tools/timestream_successor/point_timing.py",
+      "bytes": 1825,
+      "sha256": "943438a739439434bcb4d4338148e13eaa96ffbd2716fccf2123979df3df5bc6"
+    }
+  ],
+  "recipe": "Read B-REF-rep1 SUMMARY histories and own frozen point_reference.context. Per unchanged map use patch_map then measure_expected with fixed,scale,psd. Compare point_expected.candidate from executed guard versus new guard on original map/context. Array hashes use C-contiguous native dtype bytes. No covariance relearning or observation processing.",
+  "records": [
+    {
+      "cycle": 0,
+      "map": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/B-REF-rep1/M0/products/a1100/map.fits",
+        "bytes": 1071360,
+        "sha256": "f49c56d40e28411057cac1e47f824bc3b8401809d5f4aa4eeeb3a97daf27610a"
+      },
+      "old_accepted": true,
+      "new_accepted": true,
+      "old_parameters": [
+        359.7981726440579,
+        4.10695865054711,
+        7.323022188692336,
+        2.461337965831881,
+        1.7474914943230089,
+        2.872885295610701,
+        -1.9916025686073504
+      ],
+      "new_parameters": [
+        359.7981767915855,
+        4.106958669210032,
+        7.323022273084892,
+        2.4613379770174664,
+        1.7474914470936478,
+        -0.2687074198175372,
+        -1.9916025836515314
+      ],
+      "old_sigma_A": 16.52519702073028,
+      "new_sigma_A": 16.525197152689568,
+      "old_cost": 252217.5330914287,
+      "new_cost": 252217.53309142723,
+      "old_active": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "new_active": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "applied_as_feedback": true,
+      "old_selected": 15,
+      "new_selected": 15,
+      "membership_changed": 0,
+      "validity_changed": 0,
+      "maxabs_candidate_change": 1.504417923570145e-08,
+      "l2_candidate_change": 5.8265855637231135e-08,
+      "constant_change": -1.504418101205829e-08,
+      "old_candidate": {
+        "shape": [
+          41,
+          41
+        ],
+        "dtype": "float64",
+        "sha256": "4925328b6e5823062503b6cf2ee28c24f2584ef6ae753370b5836bc33b095bc7"
+      },
+      "new_candidate": {
+        "shape": [
+          41,
+          41
+        ],
+        "dtype": "float64",
+        "sha256": "54ed3fccdad3c6cf74fbc8b5642eb1eafb9f8e5a9b01e92a0a5837fa98c68bac"
+      },
+      "old_selected_mask": {
+        "shape": [
+          41,
+          41
+        ],
+        "dtype": "bool",
+        "sha256": "77e82e4e00d42386c55007c2f8935da7d800296eade79dc22d3b56e92e2f998e"
+      },
+      "new_selected_mask": {
+        "shape": [
+          41,
+          41
+        ],
+        "dtype": "bool",
+        "sha256": "77e82e4e00d42386c55007c2f8935da7d800296eade79dc22d3b56e92e2f998e"
+      }
+    },
+    {
+      "cycle": 1,
+      "map": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/B-REF-rep1/run/BASE-POINT/REF/a1100/cycle-01/native/products/total.fits",
+        "bytes": 1071360,
+        "sha256": "5fd4c55471e9400012d12e7e398a8aa5a9e4d4c6151724772b589bb64920fec4"
+      },
+      "old_accepted": true,
+      "new_accepted": true,
+      "old_parameters": [
+        414.78549616851984,
+        4.15284035051259,
+        7.283284889249871,
+        2.570116461494812,
+        1.9034313763036639,
+        2.947909566178959,
+        -1.0314000278058677
+      ],
+      "new_parameters": [
+        414.7854934485996,
+        4.152840343575503,
+        7.283284851923271,
+        2.5701164582352574,
+        1.9034314008194086,
+        -0.19368307504453885,
+        -1.0313999195311516
+      ],
+      "old_sigma_A": 15.7154652371765,
+      "new_sigma_A": 15.715465168711512,
+      "old_cost": 249842.39900603626,
+      "new_cost": 249842.3990060368,
+      "old_active": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "new_active": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "applied_as_feedback": true,
+      "old_selected": 17,
+      "new_selected": 17,
+      "membership_changed": 0,
+      "validity_changed": 0,
+      "maxabs_candidate_change": 1.0827471896845964e-07,
+      "l2_candidate_change": 4.4642810289102716e-07,
+      "constant_change": 1.0827471608187977e-07,
+      "old_candidate": {
+        "shape": [
+          41,
+          41
+        ],
+        "dtype": "float64",
+        "sha256": "b30cf14c11bed085054f7318a28b24be3066f4354f3618c1d6a49627962b69a5"
+      },
+      "new_candidate": {
+        "shape": [
+          41,
+          41
+        ],
+        "dtype": "float64",
+        "sha256": "b7525e3f855f167c7e13571699e4ef951a3b1d74bc3eb54e65472224e4846ab6"
+      },
+      "old_selected_mask": {
+        "shape": [
+          41,
+          41
+        ],
+        "dtype": "bool",
+        "sha256": "60f1135f7fe8727643f75440de7c057e137213fa545ea54ab217d0fa72b1de36"
+      },
+      "new_selected_mask": {
+        "shape": [
+          41,
+          41
+        ],
+        "dtype": "bool",
+        "sha256": "60f1135f7fe8727643f75440de7c057e137213fa545ea54ab217d0fa72b1de36"
+      }
+    },
+    {
+      "cycle": 2,
+      "map": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/B-REF-rep1/run/BASE-POINT/REF/a1100/cycle-02/native/products/total.fits",
+        "bytes": 1071360,
+        "sha256": "f3daabd544ca21475c1370faa24819cb8763e0e9b183625f2441abea87007fae"
+      },
+      "old_accepted": true,
+      "new_accepted": true,
+      "old_parameters": [
+        426.72964490282266,
+        4.149663501770607,
+        7.266455241386058,
+        2.62115807393361,
+        1.949759923095047,
+        -0.15276224985647538,
+        -0.7365147507754213
+      ],
+      "new_parameters": [
+        426.72965882156996,
+        4.149663593734732,
+        7.266455264978742,
+        2.621157872291865,
+        1.9497599448380454,
+        -0.15276235763676604,
+        -0.7365146604063308
+      ],
+      "old_sigma_A": 15.456635628223326,
+      "new_sigma_A": 15.45663601566519,
+      "old_cost": 249869.654925555,
+      "new_cost": 249869.65492555668,
+      "old_active": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "new_active": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "applied_as_feedback": true,
+      "old_selected": 17,
+      "new_selected": 17,
+      "membership_changed": 0,
+      "validity_changed": 0,
+      "maxabs_candidate_change": 9.036909887072397e-08,
+      "l2_candidate_change": 3.726013399358806e-07,
+      "constant_change": 9.036909043302899e-08,
+      "old_candidate": {
+        "shape": [
+          41,
+          41
+        ],
+        "dtype": "float64",
+        "sha256": "5c48e1369cf99f7fc2322800d11f43cda2f3f06b0c2bf6100540f91d383b80cb"
+      },
+      "new_candidate": {
+        "shape": [
+          41,
+          41
+        ],
+        "dtype": "float64",
+        "sha256": "02ead2af1d2b0b9d99a48595dec9ce5fc45297a8d34e1222a8bc18b92830ad50"
+      },
+      "old_selected_mask": {
+        "shape": [
+          41,
+          41
+        ],
+        "dtype": "bool",
+        "sha256": "60f1135f7fe8727643f75440de7c057e137213fa545ea54ab217d0fa72b1de36"
+      },
+      "new_selected_mask": {
+        "shape": [
+          41,
+          41
+        ],
+        "dtype": "bool",
+        "sha256": "60f1135f7fe8727643f75440de7c057e137213fa545ea54ab217d0fa72b1de36"
+      }
+    },
+    {
+      "cycle": 3,
+      "map": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/B-REF-rep1/run/BASE-POINT/REF/a1100/cycle-03/native/products/total.fits",
+        "bytes": 1071360,
+        "sha256": "6600349a367efd4f99c80250a58a73b8f77469d684008b6b980c17cb39055aff"
+      },
+      "old_accepted": true,
+      "new_accepted": true,
+      "old_parameters": [
+        430.09166685100996,
+        4.149469936796944,
+        7.261574979840945,
+        2.6337191686932617,
+        1.9610678651000788,
+        2.999853117176874,
+        -0.6645222118762958
+      ],
+      "new_parameters": [
+        430.09167709328636,
+        4.149469986798233,
+        7.261575010972821,
+        2.6337190618948765,
+        1.9610678500339527,
+        -0.14173959499055933,
+        -0.6645221440913119
+      ],
+      "old_sigma_A": 15.395003099354831,
+      "new_sigma_A": 15.395003381168296,
+      "old_cost": 249901.79376305122,
+      "new_cost": 249901.79376305037,
+      "old_active": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "new_active": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "applied_as_feedback": true,
+      "old_selected": 17,
+      "new_selected": 17,
+      "membership_changed": 0,
+      "validity_changed": 0,
+      "maxabs_candidate_change": 6.77849811836495e-08,
+      "l2_candidate_change": 2.7948463725069253e-07,
+      "constant_change": 6.778498384818477e-08,
+      "old_candidate": {
+        "shape": [
+          41,
+          41
+        ],
+        "dtype": "float64",
+        "sha256": "2c023b867e06d3e8eaa716c37416cd5c5b3d8b9bfac90945ccb52627a7bafcf3"
+      },
+      "new_candidate": {
+        "shape": [
+          41,
+          41
+        ],
+        "dtype": "float64",
+        "sha256": "d93cb831b8e9345bd2103b97b7b07c071ebe3c443375d27d9ba9a3a5717a3d40"
+      },
+      "old_selected_mask": {
+        "shape": [
+          41,
+          41
+        ],
+        "dtype": "bool",
+        "sha256": "60f1135f7fe8727643f75440de7c057e137213fa545ea54ab217d0fa72b1de36"
+      },
+      "new_selected_mask": {
+        "shape": [
+          41,
+          41
+        ],
+        "dtype": "bool",
+        "sha256": "60f1135f7fe8727643f75440de7c057e137213fa545ea54ab217d0fa72b1de36"
+      }
+    },
+    {
+      "cycle": 4,
+      "map": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/B-REF-rep1/run/BASE-POINT/REF/a1100/cycle-04/native/products/total.fits",
+        "bytes": 1071360,
+        "sha256": "68a194d152560a5761428859ac7a2539ec12d19c1aabec4bdebfcd734dfe71aa"
+      },
+      "old_accepted": true,
+      "new_accepted": true,
+      "old_parameters": [
+        430.99557612487837,
+        4.149220356247717,
+        7.260242310666767,
+        2.637327473673433,
+        1.9637694499913694,
+        3.003104567241917,
+        -0.6448111293154696
+      ],
+      "new_parameters": [
+        430.9955672511826,
+        4.149220335721622,
+        7.2602422827701325,
+        2.63732751363232,
+        1.9637695017992602,
+        -0.13848805711822565,
+        -0.6448111877377535
+      ],
+      "old_sigma_A": 15.379025520010998,
+      "new_sigma_A": 15.379025279509419,
+      "old_cost": 249979.71936674224,
+      "new_cost": 249979.71936674317,
+      "old_active": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "new_active": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "applied_as_feedback": true,
+      "old_selected": 17,
+      "new_selected": 17,
+      "membership_changed": 0,
+      "validity_changed": 0,
+      "maxabs_candidate_change": 5.842230166308582e-08,
+      "l2_candidate_change": 2.4088123103601874e-07,
+      "constant_change": -5.8422283899517424e-08,
+      "old_candidate": {
+        "shape": [
+          41,
+          41
+        ],
+        "dtype": "float64",
+        "sha256": "fa52f0312d03afed854c31a788e04fc54c11910005431cf5595a4c2723e9280c"
+      },
+      "new_candidate": {
+        "shape": [
+          41,
+          41
+        ],
+        "dtype": "float64",
+        "sha256": "655a2a63755f9a3a7a71e6437835f61775064d49553993fb17248b1cc9aea4fa"
+      },
+      "old_selected_mask": {
+        "shape": [
+          41,
+          41
+        ],
+        "dtype": "bool",
+        "sha256": "60f1135f7fe8727643f75440de7c057e137213fa545ea54ab217d0fa72b1de36"
+      },
+      "new_selected_mask": {
+        "shape": [
+          41,
+          41
+        ],
+        "dtype": "bool",
+        "sha256": "60f1135f7fe8727643f75440de7c057e137213fa545ea54ab217d0fa72b1de36"
+      }
+    },
+    {
+      "cycle": 5,
+      "map": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/B-REF-rep1/run/BASE-POINT/REF/a1100/cycle-05/native/products/total.fits",
+        "bytes": 1071360,
+        "sha256": "032ac678e22ed053fd5867a3deb4c11a9dd941f5fe30c6e03338b40856afecdf"
+      },
+      "old_accepted": true,
+      "new_accepted": true,
+      "old_parameters": [
+        429.4505143543425,
+        4.148068330268084,
+        7.25366195587248,
+        2.6340724901587667,
+        1.9805237939158362,
+        -3.1415926535897927,
+        -0.6459092184198083
+      ],
+      "new_parameters": [
+        431.19963263685645,
+        4.148947812354447,
+        7.259976898925939,
+        2.6385985846819295,
+        1.964225314623898,
+        -0.13747624691671634,
+        -0.6389691768194549
+      ],
+      "old_sigma_A": 15.334995590170887,
+      "new_sigma_A": 15.374858792928482,
+      "old_cost": 250688.3158498617,
+      "new_cost": 250065.32144936244,
+      "old_active": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        -1,
+        0
+      ],
+      "new_active": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "applied_as_feedback": false,
+      "old_selected": 17,
+      "new_selected": 17,
+      "membership_changed": 0,
+      "validity_changed": 0,
+      "maxabs_candidate_change": 0.006940041600387303,
+      "l2_candidate_change": 0.028614524564474084,
+      "constant_change": 0.0069400416003534415,
+      "old_candidate": {
+        "shape": [
+          41,
+          41
+        ],
+        "dtype": "float64",
+        "sha256": "8034d27b808d0a8bf6c0e070c725450ca9574c04c6d3a79bdbb2c33e24eea415"
+      },
+      "new_candidate": {
+        "shape": [
+          41,
+          41
+        ],
+        "dtype": "float64",
+        "sha256": "36dd998f18090328d38586f1ac000e1bc88b8d85a5809fe0313286384eea59e6"
+      },
+      "old_selected_mask": {
+        "shape": [
+          41,
+          41
+        ],
+        "dtype": "bool",
+        "sha256": "60f1135f7fe8727643f75440de7c057e137213fa545ea54ab217d0fa72b1de36"
+      },
+      "new_selected_mask": {
+        "shape": [
+          41,
+          41
+        ],
+        "dtype": "bool",
+        "sha256": "60f1135f7fe8727643f75440de7c057e137213fa545ea54ab217d0fa72b1de36"
+      }
+    }
+  ],
+  "max_applied_candidate_change": 1.0827471896845964e-07,
+  "applied_membership_changes": 0,
+  "conclusion": "Applied M0-through-T4 candidates differ by <=1.083e-7 mJy/beam with unchanged membership/admission. T5 repaired peak changes but m5 was never applied. Supports original-executed152430 reuse with repaired endpoint measurements; not exact rerun or a bound on nonlinear propagation. Recompute endpoint sensitivities and response claims.",
+  "new_observation_starts": 0
+}

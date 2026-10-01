@@ -78,14 +78,15 @@ def prepare_role(name):
     return out
 
 
-def compact_completed_role(out):
+def compact_completed_role(out, *, root=None, roles=None, authority=None):
     """Release explicitly dead payloads only after the sole numerical child exits.
 
     M0/T5 native comparison inputs, source probes, filtered RTC, maps, receipts,
     fit/feedback products and warm bases remain. Removed derivatives are logged
     by exact digest; this compacted role is evidence, not a replay checkpoint.
     """
-    require(out.parent==ROOT and out.name in ROLES,'foreign cleanup role')
+    root=ROOT if root is None else root;roles=ROLES if roles is None else roles
+    require(out.parent==root and out.name in roles,'foreign cleanup role')
     require(read(out/'freeze/prospective.json')['campaign_scope']=='rtc-point-transfer-v1','foreign cleanup scope')
     launch=read(out/'LAUNCH.json');execution=read(out/'EXECUTION.json')
     require(launch['status']=='completed' and launch['exit_code']==0 and execution['status']=='completed' and execution['completed_cycle']==5,
@@ -113,7 +114,7 @@ def compact_completed_role(out):
     require(not manifest.exists(),'completed cleanup already recorded')
     before=tree_bytes(out)
     save_json(manifest,dict(schema='point-transfer-completed-scratch-v1',source_revision=read(out/'freeze/prospective.json')['source_revision'],
-        authority=bound(D/'COMPLETION_AUTHORITY.md'),exited_launch=bound(out/'LAUNCH.json'),completed_execution=bound(out/'EXECUTION.json'),
+        authority=bound(authority or D/'COMPLETION_AUTHORITY.md'),exited_launch=bound(out/'LAUNCH.json'),completed_execution=bound(out/'EXECUTION.json'),
         reason='completed sole child; intermediate projection unused by M0/T5 response; conditioned/centered duplicates no longer consumed',
         removed_bytes=sum(r['bytes'] for r in files),before_bytes=before,files=files,
         preserved='M0/T5 operator and causes; T5 cleaned residual; original PTC input/eligibility/slots/cleaned; source-probe arrays; filtered RTC; all maps, receipts, bases, fits and logs',

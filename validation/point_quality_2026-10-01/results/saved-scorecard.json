@@ -1,0 +1,3524 @@
+{
+  "schema": "point-quality-saved-v1",
+  "records": [
+    {
+      "observation": 152420,
+      "role": "R-saved-V2",
+      "input": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/science/pointings/reduced/redu00/152420/raw/toltec_commissioning_a1100_pointing_152420_citlali.fits",
+        "sha256": "603724c8ce3f8a957efec2b21e5b4a227bbc2e1feb97f12fd79b7585d12c927d",
+        "bytes": 7776000
+      },
+      "native_frame": {
+        "CTYPE1": "AZOFFSET",
+        "CTYPE2": "ELOFFSET",
+        "CUNIT1": "arcsec",
+        "CUNIT2": "arcsec",
+        "CRPIX1": 182.0,
+        "CRPIX2": 186.0,
+        "CRVAL1": 0.0,
+        "CRVAL2": 0.0,
+        "CDELT1": -1.0,
+        "CDELT2": 1.0,
+        "BUNIT": "mJy/beam"
+      },
+      "fit": {
+        "parameters": [
+          251.70174879250592,
+          8.46139050351392,
+          -2.7856412253821157,
+          2.5208233296665243,
+          3.4634077910478918,
+          -0.4534912540210907,
+          -1.6079909300373574
+        ],
+        "fwhm_major_minor_arcsec": [
+          8.155702090475938,
+          5.9360853066803925
+        ],
+        "axis_ratio": 1.3739192867221126,
+        "centroid_radial_offset_arcsec": 8.908138205568205,
+        "aperture_outer_extent_arcsec": 33.375244476996016,
+        "constant": -1.6079909300373574,
+        "amplitude": 251.70174879250592,
+        "fit_radius_arcsec": 40.0,
+        "fit_center_arcsec": [
+          0.0,
+          0.0
+        ],
+        "fit_pixels": 5025,
+        "residual_rms": 20.6654517845482,
+        "residual_rms_over_peak": 0.08210293287069718,
+        "cost": 1072990.5048669595,
+        "nfev": 19,
+        "active_mask": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "major_angle_native_radians": 1.1173050727738059,
+        "converged": true,
+        "status": "converged",
+        "centroid_native_arcsec": [
+          8.46139050351392,
+          -2.7856412253821157
+        ],
+        "gaussian_angular_integral_mJy_arcsec2_per_beam": 13807.40743524867
+      },
+      "background": {
+        "n": 20120,
+        "available": true,
+        "median": -0.46410776929890657,
+        "std": 28.83380292089629,
+        "robust_scale": 22.553248203757295,
+        "quantiles": [
+          -72.52984036553053,
+          -30.926352977732684,
+          -0.46410776929890657,
+          30.920075154617678,
+          78.00977527444114
+        ],
+        "positive_5mad": 59,
+        "negative_5mad": 35
+      },
+      "spatial_scales_FWHM_arcsec": {
+        "0.0": {
+          "n": 20120,
+          "available": true,
+          "median": -0.46410776929890657,
+          "std": 28.83380292089629,
+          "robust_scale": 22.553248203757295,
+          "quantiles": [
+            -72.52984036553053,
+            -30.926352977732684,
+            -0.46410776929890657,
+            30.920075154617678,
+            78.00977527444114
+          ],
+          "positive_5mad": 59,
+          "negative_5mad": 35,
+          "supported_background_pixels": 20120,
+          "expected_background_pixels": 20120
+        },
+        "6.0": {
+          "n": 20120,
+          "available": true,
+          "median": -0.4371847634081174,
+          "std": 16.463072438544813,
+          "robust_scale": 16.262753661133107,
+          "quantiles": [
+            -34.025762959776046,
+            -19.689829850878688,
+            -0.4371847634081174,
+            21.040516498790847,
+            45.235979921828104
+          ],
+          "positive_5mad": 2,
+          "negative_5mad": 0,
+          "supported_background_pixels": 20120,
+          "expected_background_pixels": 20120
+        },
+        "12.0": {
+          "n": 20120,
+          "available": true,
+          "median": -0.7830715905763483,
+          "std": 11.480761922247066,
+          "robust_scale": 11.820464859833562,
+          "quantiles": [
+            -20.29085817719597,
+            -14.375237826755306,
+            -0.7830715905763483,
+            15.764224377651427,
+            30.29626666003442
+          ],
+          "positive_5mad": 0,
+          "negative_5mad": 0,
+          "supported_background_pixels": 20120,
+          "expected_background_pixels": 20120
+        }
+      },
+      "native_axis_correlations": [
+        {
+          "axis": "native-y",
+          "requested_lag_arcsec": 2.0,
+          "actual_lag_arcsec": 2.0,
+          "pairs": 19484,
+          "correlation": 0.6183347713654952
+        },
+        {
+          "axis": "native-x",
+          "requested_lag_arcsec": 2.0,
+          "actual_lag_arcsec": 2.0,
+          "pairs": 19484,
+          "correlation": 0.6763922695400092
+        },
+        {
+          "axis": "native-y",
+          "requested_lag_arcsec": 6.0,
+          "actual_lag_arcsec": 6.0,
+          "pairs": 18212,
+          "correlation": 0.06428511082494505
+        },
+        {
+          "axis": "native-x",
+          "requested_lag_arcsec": 6.0,
+          "actual_lag_arcsec": 6.0,
+          "pairs": 18212,
+          "correlation": 0.16021956631981324
+        },
+        {
+          "axis": "native-y",
+          "requested_lag_arcsec": 12.0,
+          "actual_lag_arcsec": 12.0,
+          "pairs": 16304,
+          "correlation": 0.028457354692192502
+        },
+        {
+          "axis": "native-x",
+          "requested_lag_arcsec": 12.0,
+          "actual_lag_arcsec": 12.0,
+          "pairs": 16304,
+          "correlation": 0.12990799948977277
+        }
+      ],
+      "apertures": [
+        {
+          "radius_arcsec": 10.0,
+          "pixels": 316,
+          "supported": 316,
+          "complete": true,
+          "integral_minus_fit_constant": 14179.517199610664
+        },
+        {
+          "radius_arcsec": 20.0,
+          "pixels": 1258,
+          "supported": 1258,
+          "complete": true,
+          "integral_minus_fit_constant": 14163.254420637651
+        },
+        {
+          "radius_arcsec": 40.0,
+          "pixels": 5033,
+          "supported": 5033,
+          "complete": true,
+          "integral_minus_fit_constant": 14498.643618512757
+        }
+      ],
+      "radial_profiles": [
+        {
+          "inner": 0,
+          "outer": 10,
+          "expected_pixels": 305,
+          "supported": 305,
+          "signal": {
+            "n": 305,
+            "available": true,
+            "median": 14.396325601010037,
+            "std": 56.163658129889775,
+            "robust_scale": 27.410418212345476,
+            "quantiles": [
+              -40.214958552032215,
+              -17.123108874111033,
+              14.396325601010037,
+              88.04687841846491,
+              252.98947154809716
+            ],
+            "positive_5mad": 16,
+            "negative_5mad": 0
+          },
+          "gaussian_residual": {
+            "n": 305,
+            "available": true,
+            "median": 6.9606104265626865,
+            "std": 20.013135060209365,
+            "robust_scale": 21.39723974886449,
+            "quantiles": [
+              -40.93887750694923,
+              -24.793430104456824,
+              6.9606104265626865,
+              28.494849213578302,
+              43.50763235335162
+            ],
+            "positive_5mad": 0,
+            "negative_5mad": 0
+          }
+        },
+        {
+          "inner": 10,
+          "outer": 20,
+          "expected_pixels": 940,
+          "supported": 940,
+          "signal": {
+            "n": 940,
+            "available": true,
+            "median": -1.2010903652965563,
+            "std": 32.68193939631864,
+            "robust_scale": 17.930619365248262,
+            "quantiles": [
+              -53.20274008989717,
+              -23.96192166121134,
+              -1.2010903652965563,
+              30.849763761414344,
+              138.63792184402294
+            ],
+            "positive_5mad": 26,
+            "negative_5mad": 0
+          },
+          "gaussian_residual": {
+            "n": 940,
+            "available": true,
+            "median": -1.9479293914755629,
+            "std": 20.056880276657324,
+            "robust_scale": 16.45129408135569,
+            "quantiles": [
+              -52.49766549491602,
+              -24.151129850082242,
+              -1.9479293914755629,
+              22.134311440936624,
+              51.65233138155203
+            ],
+            "positive_5mad": 4,
+            "negative_5mad": 0
+          }
+        },
+        {
+          "inner": 20,
+          "outer": 40,
+          "expected_pixels": 3768,
+          "supported": 3768,
+          "signal": {
+            "n": 3768,
+            "available": true,
+            "median": -2.128285979949463,
+            "std": 20.834806980848608,
+            "robust_scale": 15.557919298666201,
+            "quantiles": [
+              -47.81051273321171,
+              -24.513302690045894,
+              -2.128285979949463,
+              20.76903163995662,
+              63.33909631423952
+            ],
+            "positive_5mad": 16,
+            "negative_5mad": 3
+          },
+          "gaussian_residual": {
+            "n": 3768,
+            "available": true,
+            "median": -0.5206253620311765,
+            "std": 20.83488950664193,
+            "robust_scale": 15.558081503800365,
+            "quantiles": [
+              -46.20252180317435,
+              -22.905311760008672,
+              -0.5206253620311765,
+              22.377022558549733,
+              64.9470872442768
+            ],
+            "positive_5mad": 16,
+            "negative_5mad": 3
+          }
+        },
+        {
+          "inner": 40,
+          "outer": 60,
+          "expected_pixels": 6264,
+          "supported": 6264,
+          "signal": {
+            "n": 6264,
+            "available": true,
+            "median": -0.6151162902437748,
+            "std": 23.20246035720632,
+            "robust_scale": 19.69051564383068,
+            "quantiles": [
+              -58.92077443255485,
+              -25.664653635929874,
+              -0.6151162902437748,
+              27.68935793639991,
+              63.667017979914185
+            ],
+            "positive_5mad": 7,
+            "negative_5mad": 6
+          },
+          "gaussian_residual": {
+            "n": 6264,
+            "available": true,
+            "median": 0.9928746397935826,
+            "std": 23.20246035720632,
+            "robust_scale": 19.690515643830683,
+            "quantiles": [
+              -57.31278350251749,
+              -24.056662705892517,
+              0.9928746397935826,
+              29.297348866437268,
+              65.27500890995154
+            ],
+            "positive_5mad": 7,
+            "negative_5mad": 6
+          }
+        },
+        {
+          "inner": 60,
+          "outer": 80,
+          "expected_pixels": 8792,
+          "supported": 8792,
+          "signal": {
+            "n": 8792,
+            "available": true,
+            "median": -4.891060422665153,
+            "std": 23.455724767670276,
+            "robust_scale": 19.62708885118986,
+            "quantiles": [
+              -73.76759525703694,
+              -32.016609015132396,
+              -4.891060422665153,
+              21.081598101278992,
+              55.01929836241628
+            ],
+            "positive_5mad": 3,
+            "negative_5mad": 22
+          },
+          "gaussian_residual": {
+            "n": 8792,
+            "available": true,
+            "median": -3.2830694926277957,
+            "std": 23.455724767670276,
+            "robust_scale": 19.62708885118986,
+            "quantiles": [
+              -72.15960432699958,
+              -30.40861808509504,
+              -3.2830694926277957,
+              22.68958903131635,
+              56.62728929245364
+            ],
+            "positive_5mad": 3,
+            "negative_5mad": 22
+          }
+        },
+        {
+          "inner": 80,
+          "outer": 100,
+          "expected_pixels": 11328,
+          "supported": 11328,
+          "signal": {
+            "n": 11328,
+            "available": true,
+            "median": 4.127198861224128,
+            "std": 31.740302292098562,
+            "robust_scale": 24.370153145590283,
+            "quantiles": [
+              -71.75593671207862,
+              -30.0394339677085,
+              4.127198861224128,
+              37.21646302228874,
+              91.13376896710399
+            ],
+            "positive_5mad": 42,
+            "negative_5mad": 22
+          },
+          "gaussian_residual": {
+            "n": 11328,
+            "available": true,
+            "median": 5.735189791261485,
+            "std": 31.740302292098566,
+            "robust_scale": 24.370153145590283,
+            "quantiles": [
+              -70.14794578204126,
+              -28.431443037671144,
+              5.735189791261485,
+              38.8244539523261,
+              92.74175989714135
+            ],
+            "positive_5mad": 42,
+            "negative_5mad": 22
+          }
+        }
+      ],
+      "artifact_diagnostic": {
+        "available": true,
+        "positive_local_extrema": 7,
+        "negative_local_extrema": 9,
+        "rule": "5 descriptive background MAD; 5 arcsec isolation; not significance or source catalog"
+      },
+      "support": {
+        "total_pixels": 134673,
+        "science_pixels": 97278,
+        "science_area_arcsec2": 97278.0,
+        "fit_expected": 5025,
+        "fit_supported": 5025,
+        "background_expected": 20120,
+        "background_supported": 20120
+      },
+      "uncertainty": "Descriptive spatial scatter only; no independent pixels, no paired-test significance; endpoint conditional uncertainty requires its own compatible estimator/operator binding."
+    },
+    {
+      "observation": 152420,
+      "role": "B-executed-M0",
+      "input": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-completion-20260930/B-REF/M0/products/a1100/map.fits",
+        "sha256": "2b3d95996a837593e7b572b325524f10145fe4c2af95f37a61ac73034c04e525",
+        "bytes": 1209600
+      },
+      "native_frame": {
+        "CTYPE1": "RA---TAN",
+        "CTYPE2": "DEC--TAN",
+        "CUNIT1": "deg",
+        "CUNIT2": "deg",
+        "CRPIX1": 87.0,
+        "CRPIX2": 101.0,
+        "CRVAL1": 176.7429079166667,
+        "CRVAL2": 39.97619555555556,
+        "CDELT1": -0.0005555555555555556,
+        "CDELT2": 0.0005555555555555556,
+        "BUNIT": "mJy/beam"
+      },
+      "fit": {
+        "parameters": [
+          223.27795359526573,
+          4.7221987560769865,
+          7.463589661259536,
+          4.592243647795891,
+          2.05601536216982,
+          -0.2336458666173562,
+          -2.0350237827599784
+        ],
+        "fwhm_major_minor_arcsec": [
+          10.81390739349581,
+          4.841546187729059
+        ],
+        "axis_ratio": 2.2335648518450064,
+        "centroid_radial_offset_arcsec": 8.832006098478152,
+        "aperture_outer_extent_arcsec": 41.273728278965585,
+        "constant": -2.0350237827599784,
+        "amplitude": 223.27795359526573,
+        "fit_radius_arcsec": 40.0,
+        "fit_center_arcsec": [
+          0.0,
+          0.0
+        ],
+        "fit_pixels": 1257,
+        "residual_rms": 22.973977389554836,
+        "residual_rms_over_peak": 0.10289407001283966,
+        "cost": 331724.58591469575,
+        "nfev": 11,
+        "active_mask": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "major_angle_native_radians": -0.2336458666173562,
+        "converged": true,
+        "status": "converged",
+        "centroid_native_arcsec": [
+          4.7221987560769865,
+          7.463589661259536
+        ],
+        "gaussian_angular_integral_mJy_arcsec2_per_beam": 13245.763264194818
+      },
+      "background": {
+        "n": 4382,
+        "available": true,
+        "median": 0.055990955542093275,
+        "std": 29.488031154127498,
+        "robust_scale": 24.52880784234797,
+        "quantiles": [
+          -79.68561521235054,
+          -34.29478823495451,
+          0.055990955542093275,
+          33.510062992009736,
+          76.35176375749343
+        ],
+        "positive_5mad": 4,
+        "negative_5mad": 10
+      },
+      "spatial_scales_FWHM_arcsec": {
+        "0.0": {
+          "n": 4382,
+          "available": true,
+          "median": 0.055990955542093275,
+          "std": 29.488031154127498,
+          "robust_scale": 24.52880784234797,
+          "quantiles": [
+            -79.68561521235054,
+            -34.29478823495451,
+            0.055990955542093275,
+            33.510062992009736,
+            76.35176375749343
+          ],
+          "positive_5mad": 4,
+          "negative_5mad": 10,
+          "supported_background_pixels": 4382,
+          "expected_background_pixels": 5016
+        },
+        "6.0": {
+          "n": 1402,
+          "available": true,
+          "median": -1.3777028091518293,
+          "std": 9.735247237775674,
+          "robust_scale": 9.003803972738936,
+          "quantiles": [
+            -24.183054638610873,
+            -13.734780737818266,
+            -1.3777028091518293,
+            10.113361631700938,
+            23.428910063243844
+          ],
+          "positive_5mad": 0,
+          "negative_5mad": 0,
+          "supported_background_pixels": 1402,
+          "expected_background_pixels": 5016
+        },
+        "12.0": {
+          "n": 321,
+          "available": true,
+          "median": 0.6901655365190358,
+          "std": 6.953444773810403,
+          "robust_scale": 6.5466082052900285,
+          "quantiles": [
+            -16.365210301886705,
+            -12.744879371046947,
+            0.6901655365190358,
+            7.66568606990422,
+            8.763657690841413
+          ],
+          "positive_5mad": 0,
+          "negative_5mad": 0,
+          "supported_background_pixels": 321,
+          "expected_background_pixels": 5016
+        }
+      },
+      "native_axis_correlations": [
+        {
+          "axis": "native-y",
+          "requested_lag_arcsec": 2.0,
+          "actual_lag_arcsec": 2.0,
+          "pairs": 3946,
+          "correlation": 0.16781172253162907
+        },
+        {
+          "axis": "native-x",
+          "requested_lag_arcsec": 2.0,
+          "actual_lag_arcsec": 2.0,
+          "pairs": 3970,
+          "correlation": 0.17517198358305078
+        },
+        {
+          "axis": "native-y",
+          "requested_lag_arcsec": 6.0,
+          "actual_lag_arcsec": 6.0,
+          "pairs": 3683,
+          "correlation": 0.07207226379578162
+        },
+        {
+          "axis": "native-x",
+          "requested_lag_arcsec": 6.0,
+          "actual_lag_arcsec": 6.0,
+          "pairs": 3749,
+          "correlation": 0.03950110892732834
+        },
+        {
+          "axis": "native-y",
+          "requested_lag_arcsec": 12.0,
+          "actual_lag_arcsec": 12.0,
+          "pairs": 3312,
+          "correlation": 0.047644282488044046
+        },
+        {
+          "axis": "native-x",
+          "requested_lag_arcsec": 12.0,
+          "actual_lag_arcsec": 12.0,
+          "pairs": 3344,
+          "correlation": 0.007608944777141503
+        }
+      ],
+      "apertures": [
+        {
+          "radius_arcsec": 10.0,
+          "pixels": 79,
+          "supported": 79,
+          "complete": true,
+          "integral_minus_fit_constant": 13239.638892509622
+        },
+        {
+          "radius_arcsec": 20.0,
+          "pixels": 315,
+          "supported": 315,
+          "complete": true,
+          "integral_minus_fit_constant": 13160.69534792383
+        },
+        {
+          "radius_arcsec": 40.0,
+          "pixels": 1256,
+          "supported": 1256,
+          "complete": true,
+          "integral_minus_fit_constant": 9565.82450893466
+        }
+      ],
+      "radial_profiles": [
+        {
+          "inner": 0,
+          "outer": 10,
+          "expected_pixels": 69,
+          "supported": 69,
+          "signal": {
+            "n": 69,
+            "available": true,
+            "median": 6.059482312807196,
+            "std": 54.88300184510716,
+            "robust_scale": 30.9009266049927,
+            "quantiles": [
+              -54.94173665201401,
+              -27.518987741364956,
+              6.059482312807196,
+              89.1109340584997,
+              211.82011050653256
+            ],
+            "positive_5mad": 3,
+            "negative_5mad": 0
+          },
+          "gaussian_residual": {
+            "n": 69,
+            "available": true,
+            "median": 0.9074553081692742,
+            "std": 23.654013948205442,
+            "robust_scale": 25.803196345079083,
+            "quantiles": [
+              -54.807366361760295,
+              -36.2889896649018,
+              0.9074553081692742,
+              27.443473816475002,
+              45.79990511498347
+            ],
+            "positive_5mad": 0,
+            "negative_5mad": 0
+          }
+        },
+        {
+          "inner": 10,
+          "outer": 20,
+          "expected_pixels": 236,
+          "supported": 236,
+          "signal": {
+            "n": 236,
+            "available": true,
+            "median": 2.024361577950138,
+            "std": 33.92272799646685,
+            "robust_scale": 25.02120826200653,
+            "quantiles": [
+              -55.24237718629018,
+              -30.240615533186784,
+              2.024361577950138,
+              33.789746634417824,
+              131.73155050276557
+            ],
+            "positive_5mad": 3,
+            "negative_5mad": 0
+          },
+          "gaussian_residual": {
+            "n": 236,
+            "available": true,
+            "median": -1.1958100252488648,
+            "std": 21.71730897815578,
+            "robust_scale": 21.460471391675192,
+            "quantiles": [
+              -54.923107857356925,
+              -28.38277266453626,
+              -1.1958100252488648,
+              24.816137984363138,
+              50.788577933930796
+            ],
+            "positive_5mad": 0,
+            "negative_5mad": 0
+          }
+        },
+        {
+          "inner": 20,
+          "outer": 40,
+          "expected_pixels": 940,
+          "supported": 940,
+          "signal": {
+            "n": 940,
+            "available": true,
+            "median": -1.926811733047661,
+            "std": 23.206740379089347,
+            "robust_scale": 20.021990891316392,
+            "quantiles": [
+              -65.44192811842129,
+              -28.336312203792406,
+              -1.926811733047661,
+              26.117408775134866,
+              52.209285784889985
+            ],
+            "positive_5mad": 1,
+            "negative_5mad": 0
+          },
+          "gaussian_residual": {
+            "n": 940,
+            "available": true,
+            "median": 0.10819139383722154,
+            "std": 23.205671700771934,
+            "robust_scale": 19.953665551763564,
+            "quantiles": [
+              -63.414079612431564,
+              -26.301288421044806,
+              0.10819139383722154,
+              28.152432557839198,
+              54.244309567649964
+            ],
+            "positive_5mad": 1,
+            "negative_5mad": 0
+          }
+        },
+        {
+          "inner": 40,
+          "outer": 60,
+          "expected_pixels": 1564,
+          "supported": 1564,
+          "signal": {
+            "n": 1564,
+            "available": true,
+            "median": -1.4630639853140164,
+            "std": 22.798389270967782,
+            "robust_scale": 20.13267449169305,
+            "quantiles": [
+              -58.26241366156877,
+              -28.970214864279484,
+              -1.4630639853140164,
+              26.929841198303446,
+              55.93504397385916
+            ],
+            "positive_5mad": 2,
+            "negative_5mad": 0
+          },
+          "gaussian_residual": {
+            "n": 1564,
+            "available": true,
+            "median": 0.571959797445962,
+            "std": 22.798389270967796,
+            "robust_scale": 20.13267449169305,
+            "quantiles": [
+              -56.22738987880879,
+              -26.935191081519505,
+              0.571959797445962,
+              28.964864981063425,
+              57.97006775661914
+            ],
+            "positive_5mad": 2,
+            "negative_5mad": 0
+          }
+        },
+        {
+          "inner": 60,
+          "outer": 80,
+          "expected_pixels": 2204,
+          "supported": 2128,
+          "signal": {
+            "n": 2128,
+            "available": true,
+            "median": -1.4298116692251965,
+            "std": 27.91938745194061,
+            "robust_scale": 23.453666700987394,
+            "quantiles": [
+              -74.97355997272528,
+              -34.77706555528063,
+              -1.4298116692251965,
+              31.43233228930871,
+              67.19095783735952
+            ],
+            "positive_5mad": 0,
+            "negative_5mad": 4
+          },
+          "gaussian_residual": {
+            "n": 2128,
+            "available": true,
+            "median": 0.6052121135347818,
+            "std": 27.91938745194061,
+            "robust_scale": 23.453666700987394,
+            "quantiles": [
+              -72.9385361899653,
+              -32.74204177252065,
+              0.6052121135347818,
+              33.46735607206869,
+              69.2259816201195
+            ],
+            "positive_5mad": 0,
+            "negative_5mad": 4
+          }
+        },
+        {
+          "inner": 80,
+          "outer": 100,
+          "expected_pixels": 2812,
+          "supported": 2254,
+          "signal": {
+            "n": 2254,
+            "available": true,
+            "median": 1.6474909513699947,
+            "std": 30.812648599710307,
+            "robust_scale": 25.5011148944806,
+            "quantiles": [
+              -81.4681552032025,
+              -33.608233942967686,
+              1.6474909513699947,
+              36.31869848065484,
+              80.06250442554959
+            ],
+            "positive_5mad": 3,
+            "negative_5mad": 6
+          },
+          "gaussian_residual": {
+            "n": 2254,
+            "available": true,
+            "median": 3.682514734129973,
+            "std": 30.812648599710307,
+            "robust_scale": 25.5011148944806,
+            "quantiles": [
+              -79.43313142044252,
+              -31.57321016020771,
+              3.682514734129973,
+              38.35372226341482,
+              82.09752820830957
+            ],
+            "positive_5mad": 3,
+            "negative_5mad": 6
+          }
+        }
+      ],
+      "artifact_diagnostic": {
+        "available": true,
+        "positive_local_extrema": 0,
+        "negative_local_extrema": 5,
+        "rule": "5 descriptive background MAD; 5 arcsec isolation; not significance or source catalog"
+      },
+      "support": {
+        "total_pixels": 34773,
+        "science_pixels": 9351,
+        "science_area_arcsec2": 37404.0,
+        "fit_expected": 1257,
+        "fit_supported": 1257,
+        "background_expected": 5016,
+        "background_supported": 4382
+      },
+      "uncertainty": "Descriptive spatial scatter only; no independent pixels, no paired-test significance; endpoint conditional uncertainty requires its own compatible estimator/operator binding."
+    },
+    {
+      "observation": 152420,
+      "role": "B-executed-T5",
+      "input": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-completion-20260930/B-REF/run/BASE-POINT/REF/a1100/cycle-05/native/products/total.fits",
+        "sha256": "1f3a65e0adf496ea3e111ab748fccd00eb607a1a59661f4288d6a7d424b5fb23",
+        "bytes": 1209600
+      },
+      "native_frame": {
+        "CTYPE1": "RA---TAN",
+        "CTYPE2": "DEC--TAN",
+        "CUNIT1": "deg",
+        "CUNIT2": "deg",
+        "CRPIX1": 87.0,
+        "CRPIX2": 101.0,
+        "CRVAL1": 176.7429079166667,
+        "CRVAL2": 39.97619555555556,
+        "CDELT1": -0.0005555555555555556,
+        "CDELT2": 0.0005555555555555556,
+        "BUNIT": "mJy/beam"
+      },
+      "fit": {
+        "parameters": [
+          291.8103139168147,
+          4.729004208442198,
+          7.408721706750306,
+          4.662854288690922,
+          2.205154432073818,
+          -0.2487844100167369,
+          -0.8684530373449295
+        ],
+        "fwhm_major_minor_arcsec": [
+          10.980182746067912,
+          5.192741859036265
+        ],
+        "axis_ratio": 2.114525051338823,
+        "centroid_radial_offset_arcsec": 8.78934799240178,
+        "aperture_outer_extent_arcsec": 41.72989623060552,
+        "constant": -0.8684530373449295,
+        "amplitude": 291.8103139168147,
+        "fit_radius_arcsec": 40.0,
+        "fit_center_arcsec": [
+          0.0,
+          0.0
+        ],
+        "fit_pixels": 1257,
+        "residual_rms": 23.061873773962418,
+        "residual_rms_over_peak": 0.07903035867517891,
+        "cost": 334267.73880574125,
+        "nfev": 12,
+        "active_mask": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "major_angle_native_radians": -0.2487844100167369,
+        "converged": true,
+        "status": "converged",
+        "centroid_native_arcsec": [
+          4.729004208442198,
+          7.408721706750306
+        ],
+        "gaussian_angular_integral_mJy_arcsec2_per_beam": 18852.604636202617
+      },
+      "background": {
+        "n": 4382,
+        "available": true,
+        "median": 0.14878371187979975,
+        "std": 29.45700155585476,
+        "robust_scale": 24.545905280963332,
+        "quantiles": [
+          -79.37433428055489,
+          -34.10241756753713,
+          0.14878371187979975,
+          33.51589791638794,
+          76.88935638192467
+        ],
+        "positive_5mad": 4,
+        "negative_5mad": 9
+      },
+      "spatial_scales_FWHM_arcsec": {
+        "0.0": {
+          "n": 4382,
+          "available": true,
+          "median": 0.14878371187979975,
+          "std": 29.45700155585476,
+          "robust_scale": 24.545905280963332,
+          "quantiles": [
+            -79.37433428055489,
+            -34.10241756753713,
+            0.14878371187979975,
+            33.51589791638794,
+            76.88935638192467
+          ],
+          "positive_5mad": 4,
+          "negative_5mad": 9,
+          "supported_background_pixels": 4382,
+          "expected_background_pixels": 5016
+        },
+        "6.0": {
+          "n": 1402,
+          "available": true,
+          "median": -1.3008851584170378,
+          "std": 9.667731728218143,
+          "robust_scale": 9.006424412094907,
+          "quantiles": [
+            -23.59649872843532,
+            -13.378368378641975,
+            -1.3008851584170378,
+            10.171925605024223,
+            23.45958981214404
+          ],
+          "positive_5mad": 0,
+          "negative_5mad": 0,
+          "supported_background_pixels": 1402,
+          "expected_background_pixels": 5016
+        },
+        "12.0": {
+          "n": 321,
+          "available": true,
+          "median": 0.6859100018634362,
+          "std": 6.813335390242656,
+          "robust_scale": 6.80962857375125,
+          "quantiles": [
+            -15.84280477535584,
+            -11.842841649246125,
+            0.6859100018634362,
+            7.862713808635114,
+            9.242015089674213
+          ],
+          "positive_5mad": 0,
+          "negative_5mad": 0,
+          "supported_background_pixels": 321,
+          "expected_background_pixels": 5016
+        }
+      },
+      "native_axis_correlations": [
+        {
+          "axis": "native-y",
+          "requested_lag_arcsec": 2.0,
+          "actual_lag_arcsec": 2.0,
+          "pairs": 3946,
+          "correlation": 0.16773085057088397
+        },
+        {
+          "axis": "native-x",
+          "requested_lag_arcsec": 2.0,
+          "actual_lag_arcsec": 2.0,
+          "pairs": 3970,
+          "correlation": 0.17454912215061233
+        },
+        {
+          "axis": "native-y",
+          "requested_lag_arcsec": 6.0,
+          "actual_lag_arcsec": 6.0,
+          "pairs": 3683,
+          "correlation": 0.0713402607145069
+        },
+        {
+          "axis": "native-x",
+          "requested_lag_arcsec": 6.0,
+          "actual_lag_arcsec": 6.0,
+          "pairs": 3749,
+          "correlation": 0.039054613603907475
+        },
+        {
+          "axis": "native-y",
+          "requested_lag_arcsec": 12.0,
+          "actual_lag_arcsec": 12.0,
+          "pairs": 3312,
+          "correlation": 0.04656605283898021
+        },
+        {
+          "axis": "native-x",
+          "requested_lag_arcsec": 12.0,
+          "actual_lag_arcsec": 12.0,
+          "pairs": 3344,
+          "correlation": 0.008287716612931137
+        }
+      ],
+      "apertures": [
+        {
+          "radius_arcsec": 10.0,
+          "pixels": 80,
+          "supported": 80,
+          "complete": true,
+          "integral_minus_fit_constant": 18999.394998466152
+        },
+        {
+          "radius_arcsec": 20.0,
+          "pixels": 317,
+          "supported": 317,
+          "complete": true,
+          "integral_minus_fit_constant": 20204.134283761432
+        },
+        {
+          "radius_arcsec": 40.0,
+          "pixels": 1258,
+          "supported": 1258,
+          "complete": true,
+          "integral_minus_fit_constant": 15252.6673397001
+        }
+      ],
+      "radial_profiles": [
+        {
+          "inner": 0,
+          "outer": 10,
+          "expected_pixels": 69,
+          "supported": 69,
+          "signal": {
+            "n": 69,
+            "available": true,
+            "median": 10.584863737902328,
+            "std": 70.48571516235884,
+            "robust_scale": 30.526598197763963,
+            "quantiles": [
+              -52.16140065442978,
+              -24.457225237453446,
+              10.584863737902328,
+              122.12549150519177,
+              285.7949954537856
+            ],
+            "positive_5mad": 5,
+            "negative_5mad": 0
+          },
+          "gaussian_residual": {
+            "n": 69,
+            "available": true,
+            "median": 4.7218620446594946,
+            "std": 25.26024078032779,
+            "robust_scale": 26.486634856336675,
+            "quantiles": [
+              -60.89258810832072,
+              -34.01839799055544,
+              4.7218620446594946,
+              30.28799225960666,
+              49.703466033839305
+            ],
+            "positive_5mad": 0,
+            "negative_5mad": 0
+          }
+        },
+        {
+          "inner": 10,
+          "outer": 20,
+          "expected_pixels": 236,
+          "supported": 236,
+          "signal": {
+            "n": 236,
+            "available": true,
+            "median": 4.769093437772052,
+            "std": 41.4235097009917,
+            "robust_scale": 26.488199910430968,
+            "quantiles": [
+              -51.15954696821727,
+              -27.218913254657462,
+              4.769093437772052,
+              42.21730743820139,
+              177.02007130067696
+            ],
+            "positive_5mad": 6,
+            "negative_5mad": 0
+          },
+          "gaussian_residual": {
+            "n": 236,
+            "available": true,
+            "median": -0.5676367501274685,
+            "std": 21.99120334677318,
+            "robust_scale": 22.185230670417123,
+            "quantiles": [
+              -52.81901652768708,
+              -27.57766959477655,
+              -0.5676367501274685,
+              25.368983160518784,
+              54.08237365112429
+            ],
+            "positive_5mad": 0,
+            "negative_5mad": 0
+          }
+        },
+        {
+          "inner": 20,
+          "outer": 40,
+          "expected_pixels": 940,
+          "supported": 940,
+          "signal": {
+            "n": 940,
+            "available": true,
+            "median": -1.2843151669353101,
+            "std": 23.14272322992304,
+            "robust_scale": 20.35454293317202,
+            "quantiles": [
+              -63.993057812197186,
+              -27.20593898406382,
+              -1.2843151669353101,
+              27.067382797447785,
+              52.83624309057443
+            ],
+            "positive_5mad": 1,
+            "negative_5mad": 0
+          },
+          "gaussian_residual": {
+            "n": 940,
+            "available": true,
+            "median": -0.4158621449391021,
+            "std": 23.140756237267357,
+            "robust_scale": 20.35454293317202,
+            "quantiles": [
+              -63.14165131641715,
+              -26.33748594671889,
+              -0.4158621449391021,
+              27.935835832476883,
+              53.70469612791935
+            ],
+            "positive_5mad": 1,
+            "negative_5mad": 0
+          }
+        },
+        {
+          "inner": 40,
+          "outer": 60,
+          "expected_pixels": 1564,
+          "supported": 1564,
+          "signal": {
+            "n": 1564,
+            "available": true,
+            "median": -1.1963860603330518,
+            "std": 22.794475951532245,
+            "robust_scale": 20.25043136248442,
+            "quantiles": [
+              -58.51868761106305,
+              -28.948384365908883,
+              -1.1963860603330518,
+              27.40348958506541,
+              55.866327692143
+            ],
+            "positive_5mad": 2,
+            "negative_5mad": 0
+          },
+          "gaussian_residual": {
+            "n": 1564,
+            "available": true,
+            "median": -0.32793302298812244,
+            "std": 22.794475951532284,
+            "robust_scale": 20.25043136248442,
+            "quantiles": [
+              -57.65023457371812,
+              -28.07993132856395,
+              -0.32793302298812244,
+              28.27194262241034,
+              56.73478072948793
+            ],
+            "positive_5mad": 2,
+            "negative_5mad": 0
+          }
+        },
+        {
+          "inner": 60,
+          "outer": 80,
+          "expected_pixels": 2204,
+          "supported": 2128,
+          "signal": {
+            "n": 2128,
+            "available": true,
+            "median": -1.3105231628995901,
+            "std": 27.887623293138684,
+            "robust_scale": 23.448927839595186,
+            "quantiles": [
+              -75.32159334237033,
+              -34.30273616706699,
+              -1.3105231628995901,
+              31.543810164088306,
+              67.68358078757942
+            ],
+            "positive_5mad": 0,
+            "negative_5mad": 4
+          },
+          "gaussian_residual": {
+            "n": 2128,
+            "available": true,
+            "median": -0.4420701255546605,
+            "std": 27.887623293138684,
+            "robust_scale": 23.448927839595182,
+            "quantiles": [
+              -74.4531403050254,
+              -33.43428312972206,
+              -0.4420701255546605,
+              32.412263201433234,
+              68.55203382492435
+            ],
+            "positive_5mad": 0,
+            "negative_5mad": 4
+          }
+        },
+        {
+          "inner": 80,
+          "outer": 100,
+          "expected_pixels": 2812,
+          "supported": 2254,
+          "signal": {
+            "n": 2254,
+            "available": true,
+            "median": 1.664523263382458,
+            "std": 30.78684680636103,
+            "robust_scale": 25.36337955762945,
+            "quantiles": [
+              -81.17040417452459,
+              -33.63090472506991,
+              1.664523263382458,
+              36.40528845306363,
+              80.29776937202078
+            ],
+            "positive_5mad": 3,
+            "negative_5mad": 6
+          },
+          "gaussian_residual": {
+            "n": 2254,
+            "available": true,
+            "median": 2.5329763007273876,
+            "std": 30.78684680636103,
+            "robust_scale": 25.363379557629447,
+            "quantiles": [
+              -80.30195113717966,
+              -32.76245168772498,
+              2.5329763007273876,
+              37.27374149040856,
+              81.16622240936572
+            ],
+            "positive_5mad": 3,
+            "negative_5mad": 6
+          }
+        }
+      ],
+      "artifact_diagnostic": {
+        "available": true,
+        "positive_local_extrema": 0,
+        "negative_local_extrema": 4,
+        "rule": "5 descriptive background MAD; 5 arcsec isolation; not significance or source catalog"
+      },
+      "support": {
+        "total_pixels": 34773,
+        "science_pixels": 9351,
+        "science_area_arcsec2": 37404.0,
+        "fit_expected": 1257,
+        "fit_supported": 1257,
+        "background_expected": 5016,
+        "background_supported": 4382
+      },
+      "uncertainty": "Descriptive spatial scatter only; no independent pixels, no paired-test significance; endpoint conditional uncertainty requires its own compatible estimator/operator binding."
+    },
+    {
+      "observation": 152430,
+      "role": "R-saved-V2",
+      "input": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/science/pointings/reduced/redu00/152430/raw/toltec_commissioning_a1100_pointing_152430_citlali.fits",
+        "sha256": "ab1d25fd8c2435c03a7c8967ed1611dbbb0c18188e9d4b8171fb7e920e6de83e",
+        "bytes": 7735680
+      },
+      "native_frame": {
+        "CTYPE1": "AZOFFSET",
+        "CTYPE2": "ELOFFSET",
+        "CUNIT1": "arcsec",
+        "CUNIT2": "arcsec",
+        "CRPIX1": 183.0,
+        "CRPIX2": 184.0,
+        "CRVAL1": 0.0,
+        "CRVAL2": 0.0,
+        "CDELT1": -1.0,
+        "CDELT2": 1.0,
+        "BUNIT": "mJy/beam"
+      },
+      "fit": {
+        "parameters": [
+          298.4885136243444,
+          8.925127052335327,
+          -0.8520217459107442,
+          2.1250399542693104,
+          2.7321942436930016,
+          -0.2966739265149365,
+          -0.6797653327015207
+        ],
+        "fwhm_major_minor_arcsec": [
+          6.433825771966455,
+          5.004086680805024
+        ],
+        "axis_ratio": 1.285714293608404,
+        "centroid_radial_offset_arcsec": 8.965703204759382,
+        "aperture_outer_extent_arcsec": 28.267180520658748,
+        "constant": -0.6797653327015207,
+        "amplitude": 298.4885136243444,
+        "fit_radius_arcsec": 40.0,
+        "fit_center_arcsec": [
+          0.0,
+          0.0
+        ],
+        "fit_pixels": 5025,
+        "residual_rms": 11.561830198129183,
+        "residual_rms_over_peak": 0.038734590010656315,
+        "cost": 335860.7427950594,
+        "nfev": 12,
+        "active_mask": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "major_angle_native_radians": 1.27412240027996,
+        "converged": true,
+        "status": "converged",
+        "centroid_native_arcsec": [
+          8.925127052335327,
+          -0.8520217459107442
+        ],
+        "gaussian_angular_integral_mJy_arcsec2_per_beam": 10888.954012292676
+      },
+      "background": {
+        "n": 20120,
+        "available": true,
+        "median": 0.4829193483772646,
+        "std": 11.624291085764982,
+        "robust_scale": 10.06427814355333,
+        "quantiles": [
+          -34.463145880097194,
+          -12.945378184964143,
+          0.4829193483772646,
+          13.576735803370205,
+          26.027709651241597
+        ],
+        "positive_5mad": 0,
+        "negative_5mad": 81
+      },
+      "spatial_scales_FWHM_arcsec": {
+        "0.0": {
+          "n": 20120,
+          "available": true,
+          "median": 0.4829193483772646,
+          "std": 11.624291085764982,
+          "robust_scale": 10.06427814355333,
+          "quantiles": [
+            -34.463145880097194,
+            -12.945378184964143,
+            0.4829193483772646,
+            13.576735803370205,
+            26.027709651241597
+          ],
+          "positive_5mad": 0,
+          "negative_5mad": 81,
+          "supported_background_pixels": 20120,
+          "expected_background_pixels": 20120
+        },
+        "6.0": {
+          "n": 20120,
+          "available": true,
+          "median": 0.6564710075533104,
+          "std": 7.462137672929807,
+          "robust_scale": 6.8675206007944904,
+          "quantiles": [
+            -23.889362093601395,
+            -8.85387158747805,
+            0.6564710075533104,
+            9.170083500706737,
+            14.247808436689477
+          ],
+          "positive_5mad": 0,
+          "negative_5mad": 30,
+          "supported_background_pixels": 20120,
+          "expected_background_pixels": 20120
+        },
+        "12.0": {
+          "n": 20120,
+          "available": true,
+          "median": 0.40967417698881314,
+          "std": 5.77108479453819,
+          "robust_scale": 5.30340078631439,
+          "quantiles": [
+            -19.15604633409285,
+            -6.678086475319076,
+            0.40967417698881314,
+            7.278809279346619,
+            10.653444345111234
+          ],
+          "positive_5mad": 0,
+          "negative_5mad": 0,
+          "supported_background_pixels": 20120,
+          "expected_background_pixels": 20120
+        }
+      },
+      "native_axis_correlations": [
+        {
+          "axis": "native-y",
+          "requested_lag_arcsec": 2.0,
+          "actual_lag_arcsec": 2.0,
+          "pairs": 19484,
+          "correlation": 0.6794141010175033
+        },
+        {
+          "axis": "native-x",
+          "requested_lag_arcsec": 2.0,
+          "actual_lag_arcsec": 2.0,
+          "pairs": 19484,
+          "correlation": 0.7164124967111657
+        },
+        {
+          "axis": "native-y",
+          "requested_lag_arcsec": 6.0,
+          "actual_lag_arcsec": 6.0,
+          "pairs": 18212,
+          "correlation": 0.21533064056612397
+        },
+        {
+          "axis": "native-x",
+          "requested_lag_arcsec": 6.0,
+          "actual_lag_arcsec": 6.0,
+          "pairs": 18212,
+          "correlation": 0.28625851348016695
+        },
+        {
+          "axis": "native-y",
+          "requested_lag_arcsec": 12.0,
+          "actual_lag_arcsec": 12.0,
+          "pairs": 16304,
+          "correlation": 0.14492758867449862
+        },
+        {
+          "axis": "native-x",
+          "requested_lag_arcsec": 12.0,
+          "actual_lag_arcsec": 12.0,
+          "pairs": 16304,
+          "correlation": 0.17306500193752677
+        }
+      ],
+      "apertures": [
+        {
+          "radius_arcsec": 10.0,
+          "pixels": 313,
+          "supported": 313,
+          "complete": true,
+          "integral_minus_fit_constant": 10151.722959437942
+        },
+        {
+          "radius_arcsec": 20.0,
+          "pixels": 1254,
+          "supported": 1254,
+          "complete": true,
+          "integral_minus_fit_constant": 9089.28900103542
+        },
+        {
+          "radius_arcsec": 40.0,
+          "pixels": 5027,
+          "supported": 5027,
+          "complete": true,
+          "integral_minus_fit_constant": 9695.507987222409
+        }
+      ],
+      "radial_profiles": [
+        {
+          "inner": 0,
+          "outer": 10,
+          "expected_pixels": 305,
+          "supported": 305,
+          "signal": {
+            "n": 305,
+            "available": true,
+            "median": 2.547204844628923,
+            "std": 55.31259490537471,
+            "robust_scale": 9.274842429782472,
+            "quantiles": [
+              -18.17426536510174,
+              -7.7081235162761965,
+              2.547204844628923,
+              67.31585551325193,
+              265.4661613157128
+            ],
+            "positive_5mad": 37,
+            "negative_5mad": 0
+          },
+          "gaussian_residual": {
+            "n": 305,
+            "available": true,
+            "median": 0.910181296044704,
+            "std": 8.41944416594755,
+            "robust_scale": 8.32954886910528,
+            "quantiles": [
+              -19.65075063243316,
+              -10.713803213230806,
+              0.910181296044704,
+              11.738297817681637,
+              17.04160242148475
+            ],
+            "positive_5mad": 0,
+            "negative_5mad": 0
+          }
+        },
+        {
+          "inner": 10,
+          "outer": 20,
+          "expected_pixels": 940,
+          "supported": 940,
+          "signal": {
+            "n": 940,
+            "available": true,
+            "median": 0.9390718798666763,
+            "std": 26.124168471790746,
+            "robust_scale": 10.061802894893846,
+            "quantiles": [
+              -21.66801332169834,
+              -12.323214837125445,
+              0.9390718798666763,
+              14.263848459765715,
+              148.5982255913394
+            ],
+            "positive_5mad": 31,
+            "negative_5mad": 0
+          },
+          "gaussian_residual": {
+            "n": 940,
+            "available": true,
+            "median": 0.7496153445271136,
+            "std": 9.566955569805305,
+            "robust_scale": 9.4653476948435,
+            "quantiles": [
+              -22.264581679360315,
+              -12.562562873925842,
+              0.7496153445271136,
+              11.77499278338343,
+              20.50213225626686
+            ],
+            "positive_5mad": 0,
+            "negative_5mad": 0
+          }
+        },
+        {
+          "inner": 20,
+          "outer": 40,
+          "expected_pixels": 3768,
+          "supported": 3768,
+          "signal": {
+            "n": 3768,
+            "available": true,
+            "median": 0.016576527830933354,
+            "std": 12.19941447392927,
+            "robust_scale": 11.174099644587347,
+            "quantiles": [
+              -32.21566732563387,
+              -16.787032881776714,
+              0.016576527830933354,
+              13.450514743941,
+              28.910246668461358
+            ],
+            "positive_5mad": 0,
+            "negative_5mad": 0
+          },
+          "gaussian_residual": {
+            "n": 3768,
+            "available": true,
+            "median": 0.6963418591754219,
+            "std": 12.199415328260816,
+            "robust_scale": 11.174099644587347,
+            "quantiles": [
+              -31.535901992932356,
+              -16.107267764496658,
+              0.6963418591754219,
+              14.130280076636065,
+              29.59001200116288
+            ],
+            "positive_5mad": 0,
+            "negative_5mad": 0
+          }
+        },
+        {
+          "inner": 40,
+          "outer": 60,
+          "expected_pixels": 6264,
+          "supported": 6264,
+          "signal": {
+            "n": 6264,
+            "available": true,
+            "median": -0.8677487634469346,
+            "std": 11.386047446572919,
+            "robust_scale": 9.46474036010962,
+            "quantiles": [
+              -33.740375016135786,
+              -14.581116639645346,
+              -0.8677487634469346,
+              11.562515555420038,
+              24.57850957519165
+            ],
+            "positive_5mad": 9,
+            "negative_5mad": 12
+          },
+          "gaussian_residual": {
+            "n": 6264,
+            "available": true,
+            "median": -0.1879834307454139,
+            "std": 11.386047446572919,
+            "robust_scale": 9.46474036010962,
+            "quantiles": [
+              -33.060609683434265,
+              -13.901351306943825,
+              -0.1879834307454139,
+              12.24228088812156,
+              25.25827490789317
+            ],
+            "positive_5mad": 9,
+            "negative_5mad": 12
+          }
+        },
+        {
+          "inner": 60,
+          "outer": 80,
+          "expected_pixels": 8792,
+          "supported": 8792,
+          "signal": {
+            "n": 8792,
+            "available": true,
+            "median": 1.5141531901638876,
+            "std": 11.08497578121522,
+            "robust_scale": 9.737391051477422,
+            "quantiles": [
+              -29.71300433601307,
+              -11.460619816376726,
+              1.5141531901638876,
+              13.678510233427662,
+              24.700275384980447
+            ],
+            "positive_5mad": 0,
+            "negative_5mad": 33
+          },
+          "gaussian_residual": {
+            "n": 8792,
+            "available": true,
+            "median": 2.1939185228654083,
+            "std": 11.08497578121522,
+            "robust_scale": 9.737391051477422,
+            "quantiles": [
+              -29.03323900331155,
+              -10.780854483675204,
+              2.1939185228654083,
+              14.358275566129183,
+              25.38004071768197
+            ],
+            "positive_5mad": 0,
+            "negative_5mad": 33
+          }
+        },
+        {
+          "inner": 80,
+          "outer": 100,
+          "expected_pixels": 11328,
+          "supported": 11328,
+          "signal": {
+            "n": 11328,
+            "available": true,
+            "median": -0.3074669049407368,
+            "std": 11.975938535803888,
+            "robust_scale": 10.275137090437035,
+            "quantiles": [
+              -38.744194780067744,
+              -14.090790751949463,
+              -0.3074669049407368,
+              13.476786547733774,
+              26.87646167326334
+            ],
+            "positive_5mad": 0,
+            "negative_5mad": 40
+          },
+          "gaussian_residual": {
+            "n": 11328,
+            "available": true,
+            "median": 0.3722984277607839,
+            "std": 11.975938535803888,
+            "robust_scale": 10.275137090437035,
+            "quantiles": [
+              -38.06442944736622,
+              -13.411025419247942,
+              0.3722984277607839,
+              14.156551880435295,
+              27.55622700596486
+            ],
+            "positive_5mad": 0,
+            "negative_5mad": 40
+          }
+        }
+      ],
+      "artifact_diagnostic": {
+        "available": true,
+        "positive_local_extrema": 0,
+        "negative_local_extrema": 7,
+        "rule": "5 descriptive background MAD; 5 arcsec isolation; not significance or source catalog"
+      },
+      "support": {
+        "total_pixels": 133955,
+        "science_pixels": 98094,
+        "science_area_arcsec2": 98094.0,
+        "fit_expected": 5025,
+        "fit_supported": 5025,
+        "background_expected": 20120,
+        "background_supported": 20120
+      },
+      "uncertainty": "Descriptive spatial scatter only; no independent pixels, no paired-test significance; endpoint conditional uncertainty requires its own compatible estimator/operator binding."
+    },
+    {
+      "observation": 152430,
+      "role": "B-executed-M0",
+      "input": {
+        "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_two_stage_2026-09-28/compact/B-REF-rep1/M0/products/a1100/map.fits.gz",
+        "sha256": "b1e5e259a87d59ecd488ff24c1e360fe76a840bc8ebc5daa27bee2bcb92dbf1e",
+        "bytes": 323404
+      },
+      "native_frame": {
+        "CTYPE1": "RA---TAN",
+        "CTYPE2": "DEC--TAN",
+        "CUNIT1": "deg",
+        "CUNIT2": "deg",
+        "CRPIX1": 77.0,
+        "CRPIX2": 101.0,
+        "CRVAL1": 176.7429079166667,
+        "CRVAL2": 39.97619555555556,
+        "CDELT1": -0.0005555555555555556,
+        "CDELT2": 0.0005555555555555556,
+        "BUNIT": "mJy/beam"
+      },
+      "fit": {
+        "parameters": [
+          359.7981767915855,
+          4.106958669210032,
+          7.323022273084892,
+          2.4613379770174664,
+          1.7474914470936478,
+          -0.2687074198175372,
+          -1.9916025836515314
+        ],
+        "fwhm_major_minor_arcsec": [
+          5.796008005876656,
+          4.115027888136263
+        ],
+        "axis_ratio": 1.408497867678298,
+        "centroid_radial_offset_arcsec": 8.39605649830305,
+        "aperture_outer_extent_arcsec": 25.784080515933017,
+        "constant": -1.9916025836515314,
+        "amplitude": 359.7981767915855,
+        "fit_radius_arcsec": 40.0,
+        "fit_center_arcsec": [
+          0.0,
+          0.0
+        ],
+        "fit_pixels": 1257,
+        "residual_rms": 20.032492821461062,
+        "residual_rms_over_peak": 0.05567702704915307,
+        "cost": 252217.53309142723,
+        "nfev": 13,
+        "active_mask": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "major_angle_native_radians": -0.2687074198175372,
+        "converged": true,
+        "status": "converged",
+        "centroid_native_arcsec": [
+          4.106958669210032,
+          7.323022273084892
+        ],
+        "gaussian_angular_integral_mJy_arcsec2_per_beam": 9723.556412180982
+      },
+      "background": {
+        "n": 4017,
+        "available": true,
+        "median": -0.6892855754163192,
+        "std": 24.462850006088992,
+        "robust_scale": 22.529428092766384,
+        "quantiles": [
+          -58.800327228094595,
+          -29.039115666659903,
+          -0.6892855754163192,
+          29.381221246490863,
+          62.27717749119912
+        ],
+        "positive_5mad": 3,
+        "negative_5mad": 0
+      },
+      "spatial_scales_FWHM_arcsec": {
+        "0.0": {
+          "n": 4017,
+          "available": true,
+          "median": -0.6892855754163192,
+          "std": 24.462850006088992,
+          "robust_scale": 22.529428092766384,
+          "quantiles": [
+            -58.800327228094595,
+            -29.039115666659903,
+            -0.6892855754163192,
+            29.381221246490863,
+            62.27717749119912
+          ],
+          "positive_5mad": 3,
+          "negative_5mad": 0,
+          "supported_background_pixels": 4017,
+          "expected_background_pixels": 5016
+        },
+        "6.0": {
+          "n": 1671,
+          "available": true,
+          "median": 0.3976421560110579,
+          "std": 8.71709143710456,
+          "robust_scale": 8.062130353371574,
+          "quantiles": [
+            -19.087729272460763,
+            -11.697970828068538,
+            0.3976421560110579,
+            11.326162404128025,
+            21.32810112458617
+          ],
+          "positive_5mad": 0,
+          "negative_5mad": 0,
+          "supported_background_pixels": 1671,
+          "expected_background_pixels": 5016
+        },
+        "12.0": {
+          "n": 580,
+          "available": true,
+          "median": 1.097330933562885,
+          "std": 6.374943891957232,
+          "robust_scale": 5.200719527686683,
+          "quantiles": [
+            -13.369984580306783,
+            -9.83501299701137,
+            1.097330933562885,
+            9.238545323465795,
+            12.179603257221917
+          ],
+          "positive_5mad": 0,
+          "negative_5mad": 0,
+          "supported_background_pixels": 580,
+          "expected_background_pixels": 5016
+        }
+      },
+      "native_axis_correlations": [
+        {
+          "axis": "native-y",
+          "requested_lag_arcsec": 2.0,
+          "actual_lag_arcsec": 2.0,
+          "pairs": 3618,
+          "correlation": 0.16867624809312265
+        },
+        {
+          "axis": "native-x",
+          "requested_lag_arcsec": 2.0,
+          "actual_lag_arcsec": 2.0,
+          "pairs": 3685,
+          "correlation": 0.2067973235944985
+        },
+        {
+          "axis": "native-y",
+          "requested_lag_arcsec": 6.0,
+          "actual_lag_arcsec": 6.0,
+          "pairs": 3374,
+          "correlation": 0.13883474864982906
+        },
+        {
+          "axis": "native-x",
+          "requested_lag_arcsec": 6.0,
+          "actual_lag_arcsec": 6.0,
+          "pairs": 3435,
+          "correlation": 0.033102697860800945
+        },
+        {
+          "axis": "native-y",
+          "requested_lag_arcsec": 12.0,
+          "actual_lag_arcsec": 12.0,
+          "pairs": 2954,
+          "correlation": 0.07420206431242146
+        },
+        {
+          "axis": "native-x",
+          "requested_lag_arcsec": 12.0,
+          "actual_lag_arcsec": 12.0,
+          "pairs": 3045,
+          "correlation": 0.031159704235650326
+        }
+      ],
+      "apertures": [
+        {
+          "radius_arcsec": 10.0,
+          "pixels": 78,
+          "supported": 78,
+          "complete": true,
+          "integral_minus_fit_constant": 9609.10247162933
+        },
+        {
+          "radius_arcsec": 20.0,
+          "pixels": 312,
+          "supported": 312,
+          "complete": true,
+          "integral_minus_fit_constant": 5253.075723867275
+        },
+        {
+          "radius_arcsec": 40.0,
+          "pixels": 1255,
+          "supported": 1255,
+          "complete": true,
+          "integral_minus_fit_constant": 7632.975322257225
+        }
+      ],
+      "radial_profiles": [
+        {
+          "inner": 0,
+          "outer": 10,
+          "expected_pixels": 69,
+          "supported": 69,
+          "signal": {
+            "n": 69,
+            "available": true,
+            "median": 2.24669802535438,
+            "std": 70.90983693496268,
+            "robust_scale": 32.3167234885085,
+            "quantiles": [
+              -45.66556295278474,
+              -31.270267096026043,
+              2.24669802535438,
+              76.24809055849347,
+              289.2560300724432
+            ],
+            "positive_5mad": 4,
+            "negative_5mad": 0
+          },
+          "gaussian_residual": {
+            "n": 69,
+            "available": true,
+            "median": -2.0675491165537547,
+            "std": 24.561422525695683,
+            "robust_scale": 23.628475174010273,
+            "quantiles": [
+              -48.83827162191658,
+              -30.64217805109952,
+              -2.0675491165537547,
+              30.70166470531381,
+              57.87889423808187
+            ],
+            "positive_5mad": 0,
+            "negative_5mad": 0
+          }
+        },
+        {
+          "inner": 10,
+          "outer": 20,
+          "expected_pixels": 236,
+          "supported": 236,
+          "signal": {
+            "n": 236,
+            "available": true,
+            "median": -4.870350651537305,
+            "std": 28.782243273670808,
+            "robust_scale": 20.33987449473955,
+            "quantiles": [
+              -46.93512765352124,
+              -26.74818595727949,
+              -4.870350651537305,
+              25.577748696880967,
+              103.12665089245971
+            ],
+            "positive_5mad": 4,
+            "negative_5mad": 0
+          },
+          "gaussian_residual": {
+            "n": 236,
+            "available": true,
+            "median": -3.3645668775224737,
+            "std": 20.217486619146403,
+            "robust_scale": 19.31027114056609,
+            "quantiles": [
+              -45.623438462152386,
+              -24.756583375328514,
+              -3.3645668775224737,
+              25.615207615132217,
+              45.58298027654382
+            ],
+            "positive_5mad": 0,
+            "negative_5mad": 0
+          }
+        },
+        {
+          "inner": 20,
+          "outer": 40,
+          "expected_pixels": 940,
+          "supported": 940,
+          "signal": {
+            "n": 940,
+            "available": true,
+            "median": -1.0403735834142398,
+            "std": 19.512935414018752,
+            "robust_scale": 19.398817511172574,
+            "quantiles": [
+              -47.687561293298074,
+              -26.0208282689948,
+              -1.0403735834142398,
+              22.362006382505122,
+              44.67650757460409
+            ],
+            "positive_5mad": 0,
+            "negative_5mad": 0
+          },
+          "gaussian_residual": {
+            "n": 940,
+            "available": true,
+            "median": 0.9512290002372917,
+            "std": 19.512935414473898,
+            "robust_scale": 19.39881751117257,
+            "quantiles": [
+              -45.69595870964654,
+              -24.02922568534327,
+              0.9512290002372917,
+              24.353608966156653,
+              46.66811015825562
+            ],
+            "positive_5mad": 0,
+            "negative_5mad": 0
+          }
+        },
+        {
+          "inner": 40,
+          "outer": 60,
+          "expected_pixels": 1564,
+          "supported": 1564,
+          "signal": {
+            "n": 1564,
+            "available": true,
+            "median": -1.4610235782504197,
+            "std": 21.612793949339213,
+            "robust_scale": 20.806061035086344,
+            "quantiles": [
+              -52.383881249136486,
+              -29.770766954508375,
+              -1.4610235782504197,
+              25.382237718171005,
+              51.23078693920222
+            ],
+            "positive_5mad": 0,
+            "negative_5mad": 0
+          },
+          "gaussian_residual": {
+            "n": 1564,
+            "available": true,
+            "median": 0.5305790054011117,
+            "std": 21.612793949339213,
+            "robust_scale": 20.806061035086344,
+            "quantiles": [
+              -50.39227866548495,
+              -27.779164370856844,
+              0.5305790054011117,
+              27.373840301822536,
+              53.22238952285375
+            ],
+            "positive_5mad": 0,
+            "negative_5mad": 0
+          }
+        },
+        {
+          "inner": 60,
+          "outer": 80,
+          "expected_pixels": 2204,
+          "supported": 2087,
+          "signal": {
+            "n": 2087,
+            "available": true,
+            "median": 0.4830296499995013,
+            "std": 23.70035605080885,
+            "robust_scale": 21.80170126347547,
+            "quantiles": [
+              -55.07825139915116,
+              -26.25221482557319,
+              0.4830296499995013,
+              29.28290618099117,
+              60.81192698806774
+            ],
+            "positive_5mad": 2,
+            "negative_5mad": 0
+          },
+          "gaussian_residual": {
+            "n": 2087,
+            "available": true,
+            "median": 2.474632233651033,
+            "std": 23.70035605080885,
+            "robust_scale": 21.80170126347547,
+            "quantiles": [
+              -53.08664881549963,
+              -24.26061224192166,
+              2.474632233651033,
+              31.2745087646427,
+              62.803529571719274
+            ],
+            "positive_5mad": 2,
+            "negative_5mad": 0
+          }
+        },
+        {
+          "inner": 80,
+          "outer": 100,
+          "expected_pixels": 2812,
+          "supported": 1930,
+          "signal": {
+            "n": 1930,
+            "available": true,
+            "median": -1.6717882844192657,
+            "std": 25.215333396571808,
+            "robust_scale": 23.236492418758864,
+            "quantiles": [
+              -60.219735145923934,
+              -33.08728340136284,
+              -1.6717882844192657,
+              29.66646419105584,
+              62.492219255921576
+            ],
+            "positive_5mad": 1,
+            "negative_5mad": 0
+          },
+          "gaussian_residual": {
+            "n": 1930,
+            "available": true,
+            "median": 0.3198142992322658,
+            "std": 25.215333396571808,
+            "robust_scale": 23.236492418758868,
+            "quantiles": [
+              -58.2281325622724,
+              -31.095680817711305,
+              0.3198142992322658,
+              31.658066774707372,
+              64.48382183957311
+            ],
+            "positive_5mad": 1,
+            "negative_5mad": 0
+          }
+        }
+      ],
+      "artifact_diagnostic": {
+        "available": true,
+        "positive_local_extrema": 1,
+        "negative_local_extrema": 0,
+        "rule": "5 descriptive background MAD; 5 arcsec isolation; not significance or source catalog"
+      },
+      "support": {
+        "total_pixels": 30753,
+        "science_pixels": 8345,
+        "science_area_arcsec2": 33380.0,
+        "fit_expected": 1257,
+        "fit_supported": 1257,
+        "background_expected": 5016,
+        "background_supported": 4017
+      },
+      "uncertainty": "Descriptive spatial scatter only; no independent pixels, no paired-test significance; endpoint conditional uncertainty requires its own compatible estimator/operator binding."
+    },
+    {
+      "observation": 152430,
+      "role": "B-executed-T5",
+      "input": {
+        "path": "/Users/gwilson/.codex/worktrees/ptc-rank-response/citlali-refactor/validation/rtc_two_stage_2026-09-28/compact/B-REF-rep1/run/BASE-POINT/REF/a1100/cycle-05/native/products/total.fits.gz",
+        "sha256": "d2b77b8e90c39ea2a99f48101900f3f3b43b6af8f9b0037d1507bc13626be7bb",
+        "bytes": 323428
+      },
+      "native_frame": {
+        "CTYPE1": "RA---TAN",
+        "CTYPE2": "DEC--TAN",
+        "CUNIT1": "deg",
+        "CUNIT2": "deg",
+        "CRPIX1": 77.0,
+        "CRPIX2": 101.0,
+        "CRVAL1": 176.7429079166667,
+        "CRVAL2": 39.97619555555556,
+        "CDELT1": -0.0005555555555555556,
+        "CDELT2": 0.0005555555555555556,
+        "BUNIT": "mJy/beam"
+      },
+      "fit": {
+        "parameters": [
+          431.19963263685645,
+          4.148947812354447,
+          7.259976898925939,
+          2.6385985846819295,
+          1.964225314623898,
+          -0.13747624691671634,
+          -0.6389691768194549
+        ],
+        "fwhm_major_minor_arcsec": [
+          6.213424837999301,
+          4.625397143833578
+        ],
+        "axis_ratio": 1.3433278580808627,
+        "centroid_radial_offset_arcsec": 8.361879724235397,
+        "aperture_outer_extent_arcsec": 27.0021542382333,
+        "constant": -0.6389691768194549,
+        "amplitude": 431.19963263685645,
+        "fit_radius_arcsec": 40.0,
+        "fit_center_arcsec": [
+          0.0,
+          0.0
+        ],
+        "fit_pixels": 1257,
+        "residual_rms": 19.946839510130413,
+        "residual_rms_over_peak": 0.046258943654826926,
+        "cost": 250065.32144936244,
+        "nfev": 11,
+        "active_mask": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "major_angle_native_radians": -0.13747624691671634,
+        "converged": true,
+        "status": "converged",
+        "centroid_native_arcsec": [
+          4.148947812354447,
+          7.259976898925939
+        ],
+        "gaussian_angular_integral_mJy_arcsec2_per_beam": 14041.803121511844
+      },
+      "background": {
+        "n": 4017,
+        "available": true,
+        "median": -0.6049516690427639,
+        "std": 24.500913201077164,
+        "robust_scale": 22.532011886804842,
+        "quantiles": [
+          -58.28328192372949,
+          -29.114979451468614,
+          -0.6049516690427639,
+          29.546673566094228,
+          62.378680294177244
+        ],
+        "positive_5mad": 3,
+        "negative_5mad": 0
+      },
+      "spatial_scales_FWHM_arcsec": {
+        "0.0": {
+          "n": 4017,
+          "available": true,
+          "median": -0.6049516690427639,
+          "std": 24.500913201077164,
+          "robust_scale": 22.532011886804842,
+          "quantiles": [
+            -58.28328192372949,
+            -29.114979451468614,
+            -0.6049516690427639,
+            29.546673566094228,
+            62.378680294177244
+          ],
+          "positive_5mad": 3,
+          "negative_5mad": 0,
+          "supported_background_pixels": 4017,
+          "expected_background_pixels": 5016
+        },
+        "6.0": {
+          "n": 1671,
+          "available": true,
+          "median": 0.6278871596255231,
+          "std": 8.749987071704947,
+          "robust_scale": 8.110195162704978,
+          "quantiles": [
+            -18.985716879151163,
+            -11.685774597968992,
+            0.6278871596255231,
+            11.472039845166625,
+            21.456355393758212
+          ],
+          "positive_5mad": 0,
+          "negative_5mad": 0,
+          "supported_background_pixels": 1671,
+          "expected_background_pixels": 5016
+        },
+        "12.0": {
+          "n": 580,
+          "available": true,
+          "median": 1.454401270008369,
+          "std": 6.386983984580428,
+          "robust_scale": 5.130401838568162,
+          "quantiles": [
+            -13.271054467835599,
+            -9.86983339214542,
+            1.454401270008369,
+            9.291615794146535,
+            12.134043856879206
+          ],
+          "positive_5mad": 0,
+          "negative_5mad": 0,
+          "supported_background_pixels": 580,
+          "expected_background_pixels": 5016
+        }
+      },
+      "native_axis_correlations": [
+        {
+          "axis": "native-y",
+          "requested_lag_arcsec": 2.0,
+          "actual_lag_arcsec": 2.0,
+          "pairs": 3618,
+          "correlation": 0.16978023882054089
+        },
+        {
+          "axis": "native-x",
+          "requested_lag_arcsec": 2.0,
+          "actual_lag_arcsec": 2.0,
+          "pairs": 3685,
+          "correlation": 0.2076141142658701
+        },
+        {
+          "axis": "native-y",
+          "requested_lag_arcsec": 6.0,
+          "actual_lag_arcsec": 6.0,
+          "pairs": 3374,
+          "correlation": 0.14018528026409605
+        },
+        {
+          "axis": "native-x",
+          "requested_lag_arcsec": 6.0,
+          "actual_lag_arcsec": 6.0,
+          "pairs": 3435,
+          "correlation": 0.033899874825675254
+        },
+        {
+          "axis": "native-y",
+          "requested_lag_arcsec": 12.0,
+          "actual_lag_arcsec": 12.0,
+          "pairs": 2954,
+          "correlation": 0.07404758313547344
+        },
+        {
+          "axis": "native-x",
+          "requested_lag_arcsec": 12.0,
+          "actual_lag_arcsec": 12.0,
+          "pairs": 3045,
+          "correlation": 0.031075945160509058
+        }
+      ],
+      "apertures": [
+        {
+          "radius_arcsec": 10.0,
+          "pixels": 78,
+          "supported": 78,
+          "complete": true,
+          "integral_minus_fit_constant": 14923.960660983537
+        },
+        {
+          "radius_arcsec": 20.0,
+          "pixels": 312,
+          "supported": 312,
+          "complete": true,
+          "integral_minus_fit_constant": 11898.223847727175
+        },
+        {
+          "radius_arcsec": 40.0,
+          "pixels": 1254,
+          "supported": 1254,
+          "complete": true,
+          "integral_minus_fit_constant": 12138.363894503233
+        }
+      ],
+      "radial_profiles": [
+        {
+          "inner": 0,
+          "outer": 10,
+          "expected_pixels": 69,
+          "supported": 69,
+          "signal": {
+            "n": 69,
+            "available": true,
+            "median": 8.149059166201951,
+            "std": 86.52325609194838,
+            "robust_scale": 31.74581877902924,
+            "quantiles": [
+              -39.63115729969255,
+              -26.884804545106768,
+              8.149059166201951,
+              108.49038546215812,
+              362.8860428108772
+            ],
+            "positive_5mad": 5,
+            "negative_5mad": 0
+          },
+          "gaussian_residual": {
+            "n": 69,
+            "available": true,
+            "median": 1.7010562860937106,
+            "std": 24.573360601520577,
+            "robust_scale": 25.469837258086695,
+            "quantiles": [
+              -42.896531642510254,
+              -27.74146988829795,
+              1.7010562860937106,
+              36.71505310378221,
+              58.871005711463695
+            ],
+            "positive_5mad": 0,
+            "negative_5mad": 0
+          }
+        },
+        {
+          "inner": 10,
+          "outer": 20,
+          "expected_pixels": 236,
+          "supported": 236,
+          "signal": {
+            "n": 236,
+            "available": true,
+            "median": -0.47061341734743706,
+            "std": 35.29641806058887,
+            "robust_scale": 20.507583669232027,
+            "quantiles": [
+              -42.25436517623058,
+              -23.17562187900068,
+              -0.47061341734743706,
+              31.73141244841392,
+              143.67106909400766
+            ],
+            "positive_5mad": 6,
+            "negative_5mad": 0
+          },
+          "gaussian_residual": {
+            "n": 236,
+            "available": true,
+            "median": -2.211843920074726,
+            "std": 20.247227788455636,
+            "robust_scale": 19.383053406205,
+            "quantiles": [
+              -41.61974560465323,
+              -23.18600525581815,
+              -2.211843920074726,
+              25.92791391163561,
+              48.27353542320504
+            ],
+            "positive_5mad": 0,
+            "negative_5mad": 0
+          }
+        },
+        {
+          "inner": 20,
+          "outer": 40,
+          "expected_pixels": 940,
+          "supported": 940,
+          "signal": {
+            "n": 940,
+            "available": true,
+            "median": -0.4352869853246091,
+            "std": 19.401007937452878,
+            "robust_scale": 19.384240802789492,
+            "quantiles": [
+              -45.77478109019619,
+              -25.146892810665726,
+              -0.4352869853246091,
+              23.214164918545283,
+              46.06109432111958
+            ],
+            "positive_5mad": 0,
+            "negative_5mad": 0
+          },
+          "gaussian_residual": {
+            "n": 940,
+            "available": true,
+            "median": 0.2036821914948458,
+            "std": 19.401007973357082,
+            "robust_scale": 19.384240802789428,
+            "quantiles": [
+              -45.135811913376735,
+              -24.50792363384627,
+              0.2036821914948458,
+              23.853134095364737,
+              46.70006346182916
+            ],
+            "positive_5mad": 0,
+            "negative_5mad": 0
+          }
+        },
+        {
+          "inner": 40,
+          "outer": 60,
+          "expected_pixels": 1564,
+          "supported": 1564,
+          "signal": {
+            "n": 1564,
+            "available": true,
+            "median": -1.3902561287324704,
+            "std": 21.641344304757183,
+            "robust_scale": 20.740821581667188,
+            "quantiles": [
+              -51.16403446017784,
+              -29.574118078305965,
+              -1.3902561287324704,
+              25.619487692271587,
+              51.87827632039035
+            ],
+            "positive_5mad": 0,
+            "negative_5mad": 0
+          },
+          "gaussian_residual": {
+            "n": 1564,
+            "available": true,
+            "median": -0.7512869519130156,
+            "std": 21.641344304757187,
+            "robust_scale": 20.740821581667188,
+            "quantiles": [
+              -50.52506528335838,
+              -28.93514890148651,
+              -0.7512869519130156,
+              26.25845686909104,
+              52.51724549720981
+            ],
+            "positive_5mad": 0,
+            "negative_5mad": 0
+          }
+        },
+        {
+          "inner": 60,
+          "outer": 80,
+          "expected_pixels": 2204,
+          "supported": 2087,
+          "signal": {
+            "n": 2087,
+            "available": true,
+            "median": 0.6075419076337635,
+            "std": 23.733348821401425,
+            "robust_scale": 21.940717706781125,
+            "quantiles": [
+              -54.896832165753544,
+              -26.293595860061114,
+              0.6075419076337635,
+              29.27561514730936,
+              61.84307509603332
+            ],
+            "positive_5mad": 2,
+            "negative_5mad": 0
+          },
+          "gaussian_residual": {
+            "n": 2087,
+            "available": true,
+            "median": 1.2465110844532183,
+            "std": 23.733348821401425,
+            "robust_scale": 21.94071770678113,
+            "quantiles": [
+              -54.257862988934086,
+              -25.65462668324166,
+              1.2465110844532183,
+              29.914584324128814,
+              62.482044272852775
+            ],
+            "positive_5mad": 2,
+            "negative_5mad": 0
+          }
+        },
+        {
+          "inner": 80,
+          "outer": 100,
+          "expected_pixels": 2812,
+          "supported": 1930,
+          "signal": {
+            "n": 1930,
+            "available": true,
+            "median": -1.5456787401006566,
+            "std": 25.259502469823982,
+            "robust_scale": 23.229851169160327,
+            "quantiles": [
+              -60.17649834548719,
+              -32.86785650934657,
+              -1.5456787401006566,
+              29.783225897078893,
+              62.75294737936899
+            ],
+            "positive_5mad": 1,
+            "negative_5mad": 0
+          },
+          "gaussian_residual": {
+            "n": 1930,
+            "available": true,
+            "median": -0.9067095632812018,
+            "std": 25.259502469823982,
+            "robust_scale": 23.229851169160327,
+            "quantiles": [
+              -59.53752916866773,
+              -32.228887332527115,
+              -0.9067095632812018,
+              30.422195073898347,
+              63.39191655618845
+            ],
+            "positive_5mad": 1,
+            "negative_5mad": 0
+          }
+        }
+      ],
+      "artifact_diagnostic": {
+        "available": true,
+        "positive_local_extrema": 1,
+        "negative_local_extrema": 0,
+        "rule": "5 descriptive background MAD; 5 arcsec isolation; not significance or source catalog"
+      },
+      "support": {
+        "total_pixels": 30753,
+        "science_pixels": 8345,
+        "science_area_arcsec2": 33380.0,
+        "fit_expected": 1257,
+        "fit_supported": 1257,
+        "background_expected": 5016,
+        "background_supported": 4017
+      },
+      "uncertainty": "Descriptive spatial scatter only; no independent pixels, no paired-test significance; endpoint conditional uncertainty requires its own compatible estimator/operator binding."
+    },
+    {
+      "observation": 152420,
+      "role": "historical-redu09",
+      "input": {
+        "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/pointings/reduced/redu09/152420/raw/toltec_commissioning_a1100_pointing_152420_citlali.fits",
+        "sha256": "816b029974ff6e5dfe92dbffe75aeb62bba5f4ef02ccf3305b7d5262654c4dd0",
+        "bytes": 7208640
+      },
+      "native_frame": {
+        "CTYPE1": "AZOFFSET",
+        "CTYPE2": "ELOFFSET",
+        "CUNIT1": "arcsec",
+        "CUNIT2": "arcsec",
+        "CRPIX1": 176.0,
+        "CRPIX2": 182.0,
+        "CRVAL1": 0.0,
+        "CRVAL2": 0.0,
+        "CDELT1": -1.0,
+        "CDELT2": 1.0,
+        "BUNIT": "mJy/beam"
+      },
+      "fit": {
+        "parameters": [
+          574.5877126226618,
+          7.352551268519448,
+          -4.943218536730114,
+          3.104930954119984,
+          5.336623662800029,
+          -0.5698099819292106,
+          32.59244293750635
+        ],
+        "fwhm_major_minor_arcsec": [
+          12.566788373947995,
+          7.3115536491988085
+        ],
+        "axis_ratio": 1.718757596112975,
+        "centroid_radial_offset_arcsec": 8.859764085915558,
+        "aperture_outer_extent_arcsec": 46.560129207759545,
+        "constant": 32.59244293750635,
+        "amplitude": 574.5877126226618,
+        "fit_radius_arcsec": 40.0,
+        "fit_center_arcsec": [
+          0.0,
+          0.0
+        ],
+        "fit_pixels": 5025,
+        "residual_rms": 50.41978041132705,
+        "residual_rms_over_peak": 0.08774949290368533,
+        "cost": 6387162.570025176,
+        "nfev": 22,
+        "active_mask": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "major_angle_native_radians": 1.000986344865686,
+        "converged": true,
+        "status": "converged",
+        "centroid_native_arcsec": [
+          7.352551268519448,
+          -4.943218536730114
+        ],
+        "gaussian_angular_integral_mJy_arcsec2_per_beam": 59821.14583754841
+      },
+      "background": {
+        "n": 20120,
+        "available": true,
+        "median": 52.28565805662096,
+        "std": 75.83415175240513,
+        "robust_scale": 54.62735173219859,
+        "quantiles": [
+          -92.05931994985015,
+          -19.11206704623809,
+          52.28565805662096,
+          136.2957094403726,
+          306.11306492686225
+        ],
+        "positive_5mad": 164,
+        "negative_5mad": 39
+      },
+      "spatial_scales_FWHM_arcsec": {
+        "0.0": {
+          "n": 20120,
+          "available": true,
+          "median": 52.28565805662096,
+          "std": 75.83415175240513,
+          "robust_scale": 54.62735173219859,
+          "quantiles": [
+            -92.05931994985015,
+            -19.11206704623809,
+            52.28565805662096,
+            136.2957094403726,
+            306.11306492686225
+          ],
+          "positive_5mad": 164,
+          "negative_5mad": 39,
+          "supported_background_pixels": 20120,
+          "expected_background_pixels": 20120
+        },
+        "6.0": {
+          "n": 20120,
+          "available": true,
+          "median": 51.54983211649076,
+          "std": 55.68330198988477,
+          "robust_scale": 40.58582949382512,
+          "quantiles": [
+            -44.674565475871965,
+            -0.5196482211718346,
+            51.54983211649076,
+            117.8768221504105,
+            254.41243454465635
+          ],
+          "positive_5mad": 202,
+          "negative_5mad": 0,
+          "supported_background_pixels": 20120,
+          "expected_background_pixels": 20120
+        },
+        "12.0": {
+          "n": 20108,
+          "available": true,
+          "median": 52.094416827820254,
+          "std": 44.86423894366303,
+          "robust_scale": 30.313940424479306,
+          "quantiles": [
+            -32.321015317598786,
+            13.275599408594989,
+            52.094416827820254,
+            108.8326291197279,
+            219.6710541794537
+          ],
+          "positive_5mad": 251,
+          "negative_5mad": 0,
+          "supported_background_pixels": 20108,
+          "expected_background_pixels": 20120
+        }
+      },
+      "native_axis_correlations": [
+        {
+          "axis": "native-y",
+          "requested_lag_arcsec": 2.0,
+          "actual_lag_arcsec": 2.0,
+          "pairs": 19484,
+          "correlation": 0.7745725517286243
+        },
+        {
+          "axis": "native-x",
+          "requested_lag_arcsec": 2.0,
+          "actual_lag_arcsec": 2.0,
+          "pairs": 19484,
+          "correlation": 0.7996232059494862
+        },
+        {
+          "axis": "native-y",
+          "requested_lag_arcsec": 6.0,
+          "actual_lag_arcsec": 6.0,
+          "pairs": 18212,
+          "correlation": 0.31322164794430535
+        },
+        {
+          "axis": "native-x",
+          "requested_lag_arcsec": 6.0,
+          "actual_lag_arcsec": 6.0,
+          "pairs": 18212,
+          "correlation": 0.426951059373554
+        },
+        {
+          "axis": "native-y",
+          "requested_lag_arcsec": 12.0,
+          "actual_lag_arcsec": 12.0,
+          "pairs": 16304,
+          "correlation": 0.09923133598646967
+        },
+        {
+          "axis": "native-x",
+          "requested_lag_arcsec": 12.0,
+          "actual_lag_arcsec": 12.0,
+          "pairs": 16304,
+          "correlation": 0.28975458099275503
+        }
+      ],
+      "apertures": [
+        {
+          "radius_arcsec": 10.0,
+          "pixels": 312,
+          "supported": 312,
+          "complete": true,
+          "integral_minus_fit_constant": 56742.90626359979
+        },
+        {
+          "radius_arcsec": 20.0,
+          "pixels": 1254,
+          "supported": 1254,
+          "complete": true,
+          "integral_minus_fit_constant": 74622.7574534415
+        },
+        {
+          "radius_arcsec": 40.0,
+          "pixels": 5023,
+          "supported": 5023,
+          "complete": true,
+          "integral_minus_fit_constant": 56504.0372164196
+        }
+      ],
+      "radial_profiles": [
+        {
+          "inner": 0,
+          "outer": 10,
+          "expected_pixels": 305,
+          "supported": 305,
+          "signal": {
+            "n": 305,
+            "available": true,
+            "median": 71.81235219968987,
+            "std": 160.62244194241265,
+            "robust_scale": 98.95800711676034,
+            "quantiles": [
+              -52.241976959275945,
+              -11.869452625412151,
+              71.81235219968987,
+              363.04369783847034,
+              652.7346719421886
+            ],
+            "positive_5mad": 11,
+            "negative_5mad": 0
+          },
+          "gaussian_residual": {
+            "n": 305,
+            "available": true,
+            "median": -4.208142056423561,
+            "std": 52.494657504269504,
+            "robust_scale": 55.19353947013697,
+            "quantiles": [
+              -116.16861948991985,
+              -60.4457092617112,
+              -4.208142056423561,
+              68.39912809408195,
+              115.24381508724403
+            ],
+            "positive_5mad": 0,
+            "negative_5mad": 0
+          }
+        },
+        {
+          "inner": 10,
+          "outer": 20,
+          "expected_pixels": 940,
+          "supported": 940,
+          "signal": {
+            "n": 940,
+            "available": true,
+            "median": 62.29453391764383,
+            "std": 105.68950879907092,
+            "robust_scale": 84.59880814573509,
+            "quantiles": [
+              -132.46261079310827,
+              -33.087470183261566,
+              62.29453391764383,
+              180.14162395035663,
+              475.18496166208877
+            ],
+            "positive_5mad": 7,
+            "negative_5mad": 0
+          },
+          "gaussian_residual": {
+            "n": 940,
+            "available": true,
+            "median": 2.160016153956896,
+            "std": 67.77467521626129,
+            "robust_scale": 64.80133599705191,
+            "quantiles": [
+              -165.05803508370096,
+              -75.07281474915548,
+              2.160016153956896,
+              89.96348756236394,
+              179.3708858820245
+            ],
+            "positive_5mad": 0,
+            "negative_5mad": 0
+          }
+        },
+        {
+          "inner": 20,
+          "outer": 40,
+          "expected_pixels": 3768,
+          "supported": 3768,
+          "signal": {
+            "n": 3768,
+            "available": true,
+            "median": 33.54250088308905,
+            "std": 44.7454548172414,
+            "robust_scale": 41.253511886475906,
+            "quantiles": [
+              -83.16358402380558,
+              -27.19192176017033,
+              33.54250088308905,
+              85.58963997389368,
+              137.59353693970442
+            ],
+            "positive_5mad": 0,
+            "negative_5mad": 1
+          },
+          "gaussian_residual": {
+            "n": 3768,
+            "available": true,
+            "median": 0.9066178337527759,
+            "std": 44.73311190555035,
+            "robust_scale": 41.28955045161266,
+            "quantiles": [
+              -115.75602762176507,
+              -59.78436473569617,
+              0.9066178337527759,
+              52.75694368444125,
+              104.8960325530689
+            ],
+            "positive_5mad": 0,
+            "negative_5mad": 1
+          }
+        },
+        {
+          "inner": 40,
+          "outer": 60,
+          "expected_pixels": 6264,
+          "supported": 6264,
+          "signal": {
+            "n": 6264,
+            "available": true,
+            "median": 39.10213568656971,
+            "std": 52.98436875995694,
+            "robust_scale": 51.55489597319755,
+            "quantiles": [
+              -80.73695985716111,
+              -18.916061557458814,
+              39.10213568656971,
+              108.43002780749319,
+              176.6619161322946
+            ],
+            "positive_5mad": 0,
+            "negative_5mad": 1
+          },
+          "gaussian_residual": {
+            "n": 6264,
+            "available": true,
+            "median": 6.509692749063365,
+            "std": 52.98436875996015,
+            "robust_scale": 51.55489597319757,
+            "quantiles": [
+              -113.32940279466746,
+              -51.50850449496516,
+              6.509692749063365,
+              75.83758486998684,
+              144.06947319478826
+            ],
+            "positive_5mad": 0,
+            "negative_5mad": 1
+          }
+        },
+        {
+          "inner": 60,
+          "outer": 80,
+          "expected_pixels": 8792,
+          "supported": 8792,
+          "signal": {
+            "n": 8792,
+            "available": true,
+            "median": 40.8824281296029,
+            "std": 60.63837975340119,
+            "robust_scale": 54.30250606734623,
+            "quantiles": [
+              -90.22997450795248,
+              -27.963733050682556,
+              40.8824281296029,
+              112.89818376755707,
+              211.3628497363353
+            ],
+            "positive_5mad": 4,
+            "negative_5mad": 14
+          },
+          "gaussian_residual": {
+            "n": 8792,
+            "available": true,
+            "median": 8.289985192096552,
+            "std": 60.63837975340119,
+            "robust_scale": 54.302506067346215,
+            "quantiles": [
+              -122.82241744545883,
+              -60.556175988188905,
+              8.289985192096552,
+              80.30574083005072,
+              178.77040679882896
+            ],
+            "positive_5mad": 4,
+            "negative_5mad": 14
+          }
+        },
+        {
+          "inner": 80,
+          "outer": 100,
+          "expected_pixels": 11328,
+          "supported": 11328,
+          "signal": {
+            "n": 11328,
+            "available": true,
+            "median": 60.41693912838882,
+            "std": 83.8086869086804,
+            "robust_scale": 54.08405375053837,
+            "quantiles": [
+              -93.34334938011193,
+              -8.143466387892778,
+              60.41693912838882,
+              153.30436702106124,
+              369.84875421871664
+            ],
+            "positive_5mad": 156,
+            "negative_5mad": 27
+          },
+          "gaussian_residual": {
+            "n": 11328,
+            "available": true,
+            "median": 27.82449619088247,
+            "std": 83.8086869086804,
+            "robust_scale": 54.08405375053837,
+            "quantiles": [
+              -125.93579231761828,
+              -40.73590932539913,
+              27.82449619088247,
+              120.71192408355488,
+              337.2563112812103
+            ],
+            "positive_5mad": 156,
+            "negative_5mad": 27
+          }
+        }
+      ],
+      "artifact_diagnostic": {
+        "available": true,
+        "positive_local_extrema": 6,
+        "negative_local_extrema": 7,
+        "rule": "5 descriptive background MAD; 5 arcsec isolation; not significance or source catalog"
+      },
+      "support": {
+        "total_pixels": 127413,
+        "science_pixels": 77135,
+        "science_area_arcsec2": 77135.0,
+        "fit_expected": 5025,
+        "fit_supported": 5025,
+        "background_expected": 20120,
+        "background_supported": 20120
+      },
+      "uncertainty": "Descriptive spatial scatter only; no independent pixels, no paired-test significance; endpoint conditional uncertainty requires its own compatible estimator/operator binding."
+    }
+  ],
+  "within_successor_common_support": {
+    "152420": {
+      "common_pixels": 9351,
+      "lost_from_M0": 0,
+      "gained_after_M0": 0,
+      "M0_original_pixels": 9351,
+      "T5_original_pixels": 9351,
+      "background_common_pixels": 4382,
+      "same_domain_all_scales_pixels": 321,
+      "scales": [
+        {
+          "fwhm_arcsec": 0.0,
+          "M0": {
+            "n": 321,
+            "available": true,
+            "median": -0.37161212627772644,
+            "std": 25.02762587530763,
+            "robust_scale": 21.498505890690105,
+            "quantiles": [
+              -58.648030926195986,
+              -30.512460009774827,
+              -0.37161212627772644,
+              26.750918028483525,
+              60.58242079603778
+            ],
+            "positive_5mad": 0,
+            "negative_5mad": 1
+          },
+          "T5": {
+            "n": 321,
+            "available": true,
+            "median": -0.11657084746129606,
+            "std": 24.91538875827962,
+            "robust_scale": 21.50476783489268,
+            "quantiles": [
+              -58.48770832114982,
+              -30.38644415700194,
+              -0.11657084746129606,
+              26.692927919679295,
+              62.47162522832285
+            ],
+            "positive_5mad": 0,
+            "negative_5mad": 1
+          },
+          "paired_delta": {
+            "n": 321,
+            "available": true,
+            "median": 0.0593518752565636,
+            "std": 0.6525234444859941,
+            "robust_scale": 0.3564901253507399,
+            "quantiles": [
+              -1.0516344176932775,
+              -0.29973093452166566,
+              0.0593518752565636,
+              0.9726566394411247,
+              2.330040562825343
+            ],
+            "positive_5mad": 10,
+            "negative_5mad": 2
+          }
+        },
+        {
+          "fwhm_arcsec": 6.0,
+          "M0": {
+            "n": 321,
+            "available": true,
+            "median": 1.1805606249469325,
+            "std": 10.61297824954738,
+            "robust_scale": 9.089947598270275,
+            "quantiles": [
+              -27.217896674423606,
+              -18.0386519782739,
+              1.1805606249469325,
+              10.377221310393743,
+              16.949632223257186
+            ],
+            "positive_5mad": 0,
+            "negative_5mad": 0
+          },
+          "T5": {
+            "n": 321,
+            "available": true,
+            "median": 1.1967720058586382,
+            "std": 10.510641822189742,
+            "robust_scale": 9.019494150843059,
+            "quantiles": [
+              -26.128021523755194,
+              -16.985383173889264,
+              1.1967720058586382,
+              10.547148308940992,
+              18.166667047815398
+            ],
+            "positive_5mad": 0,
+            "negative_5mad": 0
+          },
+          "paired_delta": {
+            "n": 321,
+            "available": true,
+            "median": 0.05417657501715745,
+            "std": 0.4138404467153024,
+            "robust_scale": 0.15747797593157117,
+            "quantiles": [
+              -0.16046448266578928,
+              -0.08100274843703748,
+              0.05417657501715745,
+              0.8007299109031005,
+              1.633756786192864
+            ],
+            "positive_5mad": 31,
+            "negative_5mad": 0
+          }
+        },
+        {
+          "fwhm_arcsec": 12.0,
+          "M0": {
+            "n": 321,
+            "available": true,
+            "median": 0.6901655365190358,
+            "std": 6.953444773810403,
+            "robust_scale": 6.5466082052900285,
+            "quantiles": [
+              -16.365210301886705,
+              -12.744879371046947,
+              0.6901655365190358,
+              7.66568606990422,
+              8.763657690841413
+            ],
+            "positive_5mad": 0,
+            "negative_5mad": 0
+          },
+          "T5": {
+            "n": 321,
+            "available": true,
+            "median": 0.6859100018634362,
+            "std": 6.813335390242656,
+            "robust_scale": 6.80962857375125,
+            "quantiles": [
+              -15.84280477535584,
+              -11.842841649246125,
+              0.6859100018634362,
+              7.862713808635114,
+              9.242015089674213
+            ],
+            "positive_5mad": 0,
+            "negative_5mad": 0
+          },
+          "paired_delta": {
+            "n": 321,
+            "available": true,
+            "median": 0.08087789130647138,
+            "std": 0.344784813730157,
+            "robust_scale": 0.16175238889692514,
+            "quantiles": [
+              -0.13684021714187314,
+              -0.058983060261143194,
+              0.08087789130647138,
+              0.7598186430962404,
+              1.273407155264642
+            ],
+            "positive_5mad": 25,
+            "negative_5mad": 0
+          }
+        }
+      ],
+      "qualification": "Same-grid conditional M0/T5 diagnostic, not independent noise realizations or R/S sensitivity improvement. Fixed12arcsec kernel-safe domain for every scale; small domain limits interpretation."
+    },
+    "152430": {
+      "common_pixels": 8345,
+      "lost_from_M0": 0,
+      "gained_after_M0": 0,
+      "M0_original_pixels": 8345,
+      "T5_original_pixels": 8345,
+      "background_common_pixels": 4017,
+      "same_domain_all_scales_pixels": 580,
+      "scales": [
+        {
+          "fwhm_arcsec": 0.0,
+          "M0": {
+            "n": 580,
+            "available": true,
+            "median": 0.8637375305771666,
+            "std": 23.206847218955602,
+            "robust_scale": 22.51329869751018,
+            "quantiles": [
+              -57.38384562668489,
+              -26.969130944822343,
+              0.8637375305771666,
+              30.46458917697415,
+              55.39898635698438
+            ],
+            "positive_5mad": 0,
+            "negative_5mad": 0
+          },
+          "T5": {
+            "n": 580,
+            "available": true,
+            "median": 1.071768467179556,
+            "std": 23.242734319517304,
+            "robust_scale": 22.59515111595762,
+            "quantiles": [
+              -56.03749946350814,
+              -26.612118969472988,
+              1.071768467179556,
+              30.952833805314416,
+              55.23674478116326
+            ],
+            "positive_5mad": 0,
+            "negative_5mad": 0
+          },
+          "paired_delta": {
+            "n": 580,
+            "available": true,
+            "median": 0.11732228983184867,
+            "std": 0.546585553123014,
+            "robust_scale": 0.41578453580963154,
+            "quantiles": [
+              -1.0898291525776664,
+              -0.29947335545113096,
+              0.11732228983184867,
+              0.9318302266820276,
+              1.7243461146855703
+            ],
+            "positive_5mad": 1,
+            "negative_5mad": 2
+          }
+        },
+        {
+          "fwhm_arcsec": 6.0,
+          "M0": {
+            "n": 580,
+            "available": true,
+            "median": 1.32363683419839,
+            "std": 8.722584929472669,
+            "robust_scale": 8.329575380709576,
+            "quantiles": [
+              -17.2932873548079,
+              -12.440540663366033,
+              1.32363683419839,
+              12.132297307077948,
+              18.743124843664223
+            ],
+            "positive_5mad": 0,
+            "negative_5mad": 0
+          },
+          "T5": {
+            "n": 580,
+            "available": true,
+            "median": 1.5863232756534074,
+            "std": 8.749157466481336,
+            "robust_scale": 8.578992548953153,
+            "quantiles": [
+              -17.311176837232573,
+              -12.302589248865537,
+              1.5863232756534074,
+              12.332419955248278,
+              18.613253897972545
+            ],
+            "positive_5mad": 0,
+            "negative_5mad": 0
+          },
+          "paired_delta": {
+            "n": 580,
+            "available": true,
+            "median": 0.10552721110380578,
+            "std": 0.35619541336320476,
+            "robust_scale": 0.296279910951493,
+            "quantiles": [
+              -0.29484128151526684,
+              -0.13003325000525023,
+              0.10552721110380578,
+              0.7517384899714649,
+              1.17281703767911
+            ],
+            "positive_5mad": 0,
+            "negative_5mad": 0
+          }
+        },
+        {
+          "fwhm_arcsec": 12.0,
+          "M0": {
+            "n": 580,
+            "available": true,
+            "median": 1.097330933562885,
+            "std": 6.374943891957232,
+            "robust_scale": 5.200719527686683,
+            "quantiles": [
+              -13.369984580306783,
+              -9.83501299701137,
+              1.097330933562885,
+              9.238545323465795,
+              12.179603257221917
+            ],
+            "positive_5mad": 0,
+            "negative_5mad": 0
+          },
+          "T5": {
+            "n": 580,
+            "available": true,
+            "median": 1.454401270008369,
+            "std": 6.386983984580428,
+            "robust_scale": 5.130401838568162,
+            "quantiles": [
+              -13.271054467835599,
+              -9.86983339214542,
+              1.454401270008369,
+              9.291615794146535,
+              12.134043856879206
+            ],
+            "positive_5mad": 0,
+            "negative_5mad": 0
+          },
+          "paired_delta": {
+            "n": 580,
+            "available": true,
+            "median": 0.12067651227893783,
+            "std": 0.30216280581774074,
+            "robust_scale": 0.2412199800604865,
+            "quantiles": [
+              -0.137721643389546,
+              -0.05744535808361297,
+              0.12067651227893783,
+              0.6949120885707416,
+              1.0496862430296705
+            ],
+            "positive_5mad": 0,
+            "negative_5mad": 0
+          }
+        }
+      ],
+      "qualification": "Same-grid conditional M0/T5 diagnostic, not independent noise realizations or R/S sensitivity improvement. Fixed12arcsec kernel-safe domain for every scale; small domain limits interpretation."
+    }
+  },
+  "recipe": {
+    "fit": "free7parameter Gaussian+constant inside40arcsec around commanded origin; 1.5arcsec sigma floor",
+    "background": "fixed60\u2013100arcsec commanded-origin annulus, no final-map selection",
+    "scales": "native and6/12arcsec Gaussian FWHM; require complete4sigma measured kernel support; zero padding excluded from reported domain",
+    "apertures": "10/20/40arcsec around freely fitted centroid, complete support, fitted constant removed; brightness angular integral not flux density",
+    "cross_frame": "no pixel differences or common-pixel claim across AltAz and FK5; same angular region does not prove identical measured sky support"
+  },
+  "evaluation_wall_seconds": 2.3898541669987026,
+  "new_observation_starts": 0
+}

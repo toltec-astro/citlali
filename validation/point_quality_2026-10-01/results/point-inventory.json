@@ -1,0 +1,331 @@
+{
+  "records": [
+    {
+      "observation": 152420,
+      "executed_source": "518e05891cf8eb2e84621cdcfcea83525f3d1c49",
+      "prospective": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-completion-20260930/B-REF/freeze/prospective.json",
+        "sha256": "a223386c4c5a535853054b49e84f8a7bbfb81eefd5f8dd780d19d1a78b759494"
+      },
+      "dependencies": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-completion-20260930/B-REF/freeze/dependencies.json",
+        "sha256": "e12e278495b05ac3dc7d6a6c7bbc70d08cb2b8551e5a77aca6b71bb1136b1820"
+      },
+      "networks": [
+        {
+          "network": 1,
+          "identity": [
+            152420,
+            0,
+            2
+          ],
+          "tune_identity": [
+            152420,
+            0,
+            1
+          ],
+          "raw": {
+            "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec1_152420_000_0002_2026_02_19_09_33_45.nc",
+            "sha256": "31e72ad01cc5fb318c0372d92dcf97d28ce77d538b8b42e7b366209a97c48abf"
+          },
+          "raw_bytes": 30807528,
+          "raw_hash_status": "Preserved existing execution binding; 152420 originals rehashed at fresh preparation; metadata-only inventory does not assert new152430rawhash",
+          "processed_tune": {
+            "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec1_152420_000_0001_2026_02_19_09_32_42_tune.txt",
+            "sha256": "90160f69961b650e69a9562d7de10849c2c053ed642c6cb40e418b4ae50cf72d"
+          },
+          "network_input": {
+            "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-completion-20260930/B-REF/inputs/network1-input.json",
+            "sha256": "a3585b3fb9c93874f34f1d5182c0214ffe0c0cfa7ad3863a0cbaa852a0f87d26"
+          },
+          "channels": 494,
+          "canonical_manifest": {
+            "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/science/apts/v2/apt_152420_matched.apt-v2/manifest.ecsv",
+            "sha256": "3861c9d10e70b04dacac4d35cb74cbf2b782fb3a77758d5f9315ccfdf59a5d3c"
+          }
+        },
+        {
+          "network": 2,
+          "identity": [
+            152420,
+            0,
+            2
+          ],
+          "tune_identity": [
+            152420,
+            0,
+            1
+          ],
+          "raw": {
+            "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec2_152420_000_0002_2026_02_19_09_33_45.nc",
+            "sha256": "dc521d4256a7e75110b17006b8a64d449434767545b104886af47971cb32e2a6"
+          },
+          "raw_bytes": 31794984,
+          "raw_hash_status": "Preserved existing execution binding; 152420 originals rehashed at fresh preparation; metadata-only inventory does not assert new152430rawhash",
+          "processed_tune": {
+            "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec2_152420_000_0001_2026_02_19_09_32_42_tune.txt",
+            "sha256": "6b612197e25f97dd7170cae08e60e9b1a35548bf4b51a555c2435863ad982524"
+          },
+          "network_input": {
+            "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-completion-20260930/B-REF/inputs/network2-input.json",
+            "sha256": "afb82332fef4bb4c445a892549f2f17bb3996ade7c682c682f72b3c1e32aa704"
+          },
+          "channels": 510,
+          "canonical_manifest": {
+            "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/science/apts/v2/apt_152420_matched.apt-v2/manifest.ecsv",
+            "sha256": "3861c9d10e70b04dacac4d35cb74cbf2b782fb3a77758d5f9315ccfdf59a5d3c"
+          }
+        },
+        {
+          "network": 3,
+          "identity": [
+            152420,
+            0,
+            2
+          ],
+          "tune_identity": [
+            152420,
+            0,
+            1
+          ],
+          "raw": {
+            "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec3_152420_000_0002_2026_02_19_09_33_45.nc",
+            "sha256": "e2c4a75d3d4de784dd9f100da661325957be64c5ccd2fe7ce25d2ae677a63c0f"
+          },
+          "raw_bytes": 33213720,
+          "raw_hash_status": "Preserved existing execution binding; 152420 originals rehashed at fresh preparation; metadata-only inventory does not assert new152430rawhash",
+          "processed_tune": {
+            "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec3_152420_000_0001_2026_02_19_09_32_42_tune.txt",
+            "sha256": "3033d886d1c3b058fe253573a416cd80cdcd3380d4713f6c1b99a1ad6bc2993c"
+          },
+          "network_input": {
+            "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-completion-20260930/B-REF/inputs/network3-input.json",
+            "sha256": "07600b709e679f94dcf22a2f085819e68a70778337331ea87cc81a4078340507"
+          },
+          "channels": 533,
+          "canonical_manifest": {
+            "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/science/apts/v2/apt_152420_matched.apt-v2/manifest.ecsv",
+            "sha256": "3861c9d10e70b04dacac4d35cb74cbf2b782fb3a77758d5f9315ccfdf59a5d3c"
+          }
+        },
+        {
+          "network": 4,
+          "identity": [
+            152420,
+            0,
+            2
+          ],
+          "tune_identity": [
+            152420,
+            0,
+            1
+          ],
+          "raw": {
+            "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec4_152420_000_0002_2026_02_19_09_33_45.nc",
+            "sha256": "5b1efdfaf1c6af136f929734156e81a28ff3c6ffdb424e9b33985b746baa684a"
+          },
+          "raw_bytes": 33151912,
+          "raw_hash_status": "Preserved existing execution binding; 152420 originals rehashed at fresh preparation; metadata-only inventory does not assert new152430rawhash",
+          "processed_tune": {
+            "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec4_152420_000_0001_2026_02_19_09_32_42_tune.txt",
+            "sha256": "d697d4c36e9f516a3b4bff489b5fec843fc4a83f0ede2ccda73323fb7f4b2b7d"
+          },
+          "network_input": {
+            "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-completion-20260930/B-REF/inputs/network4-input.json",
+            "sha256": "146ed223f3a5d498249c121ec319ae99bdecd300cc32039f824da4e2bc3ef250"
+          },
+          "channels": 532,
+          "canonical_manifest": {
+            "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/science/apts/v2/apt_152420_matched.apt-v2/manifest.ecsv",
+            "sha256": "3861c9d10e70b04dacac4d35cb74cbf2b782fb3a77758d5f9315ccfdf59a5d3c"
+          }
+        }
+      ],
+      "execution": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-completion-20260930/B-REF/EXECUTION.json",
+        "sha256": "40faea90cc136f68c3372d791cb714cab518dafa399cf7f27a288828ad1dcfab"
+      },
+      "launch": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-completion-20260930/B-REF/LAUNCH.json",
+        "sha256": "b551800cf15dcfc0dbf4065118b8304898947d5a566118132c65a2fb5a16a596"
+      },
+      "cost": {
+        "exit_seconds": 174.507868417,
+        "analysis_complete_seconds": 174.2132425,
+        "aggregate_tree_sampled_RSS": 3257073664,
+        "cpu_seconds": {
+          "user": 187.960963,
+          "system": 11.652262999999998
+        }
+      },
+      "R_effective_config": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/science/pointings/reduced/redu00/citlali_o152389_0_2_c8.yaml",
+        "sha256": "acf93c30b130abb00477162673fd6bded25e3645579fd7c669907c8cd6965893"
+      }
+    },
+    {
+      "observation": 152430,
+      "executed_source": "9d28b2c6e134375b6f377ae59acc4e9f967ac3d4",
+      "prospective": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/B-REF-rep1/freeze/prospective.json",
+        "sha256": "3ab88e6f7aec635fa812d18dcd80c0a823f05995e8b4ab3da5b770f8836d1d8f"
+      },
+      "dependencies": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/B-REF-rep1/freeze/dependencies.json",
+        "sha256": "9df84ed14690ee14d57f6b41156b3820a128adafd533eb22e65fa9741e76b92c"
+      },
+      "networks": [
+        {
+          "network": 1,
+          "identity": [
+            152430,
+            0,
+            2
+          ],
+          "tune_identity": [
+            152430,
+            0,
+            1
+          ],
+          "raw": {
+            "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec1_152430_000_0002_2026_02_19_10_07_51.nc",
+            "sha256": "3e4f1848fc3c998eba60ba802443840615b347958383414e2cb31f9838252c67"
+          },
+          "raw_bytes": 31322496,
+          "raw_hash_status": "Preserved existing execution binding; 152420 originals rehashed at fresh preparation; metadata-only inventory does not assert new152430rawhash",
+          "processed_tune": {
+            "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec1_152430_000_0001_2026_02_19_10_06_46_tune.txt",
+            "sha256": "2ca5364b88e9cb9aaec2b8cfe893bbcdc5ec016e66ada76cee3f27e032e370a1"
+          },
+          "network_input": {
+            "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/B-REF-rep1/inputs/network1-input.json",
+            "sha256": "51979117e5c37bbd973aa5807b6d92c8d711e1905265cf6a6b7c6b4a50f39c27"
+          },
+          "channels": 494,
+          "canonical_manifest": {
+            "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/science/apts/v2/apt_152430_matched.apt-v2/manifest.ecsv",
+            "sha256": "dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd"
+          }
+        },
+        {
+          "network": 2,
+          "identity": [
+            152430,
+            0,
+            2
+          ],
+          "tune_identity": [
+            152430,
+            0,
+            1
+          ],
+          "raw": {
+            "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec2_152430_000_0002_2026_02_19_10_07_51.nc",
+            "sha256": "3e5cb06261306e59cfd474f42dc4278866f1abf379549ede83029d1dee51cd84"
+          },
+          "raw_bytes": 32330584,
+          "raw_hash_status": "Preserved existing execution binding; 152420 originals rehashed at fresh preparation; metadata-only inventory does not assert new152430rawhash",
+          "processed_tune": {
+            "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec2_152430_000_0001_2026_02_19_10_06_46_tune.txt",
+            "sha256": "65e0e684671dd9774fd2557fac485c64227cc08821cd6cefa9b2d69298c9829e"
+          },
+          "network_input": {
+            "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/B-REF-rep1/inputs/network2-input.json",
+            "sha256": "5cfda787a93b95ff9662a51188b1f26f4e89bfb553544eadfdc7b0bfd2cef049"
+          },
+          "channels": 510,
+          "canonical_manifest": {
+            "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/science/apts/v2/apt_152430_matched.apt-v2/manifest.ecsv",
+            "sha256": "dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd"
+          }
+        },
+        {
+          "network": 3,
+          "identity": [
+            152430,
+            0,
+            2
+          ],
+          "tune_identity": [
+            152430,
+            0,
+            1
+          ],
+          "raw": {
+            "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec3_152430_000_0002_2026_02_19_10_07_51.nc",
+            "sha256": "af7cef4a93e6fdbdf1e97b3aa1d13c6a4e35c303efa5e3949a42a72f2619d537"
+          },
+          "raw_bytes": 33773240,
+          "raw_hash_status": "Preserved existing execution binding; 152420 originals rehashed at fresh preparation; metadata-only inventory does not assert new152430rawhash",
+          "processed_tune": {
+            "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec3_152430_000_0001_2026_02_19_10_06_46_tune.txt",
+            "sha256": "90adcffb614dc2943ff7335f00ceaa86223620c982a593aaed88c1be19c12afa"
+          },
+          "network_input": {
+            "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/B-REF-rep1/inputs/network3-input.json",
+            "sha256": "fbb2b7dd7279ea3e2bb8d84088bf4e73bda02435e05a04025df3e65000c028c4"
+          },
+          "channels": 533,
+          "canonical_manifest": {
+            "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/science/apts/v2/apt_152430_matched.apt-v2/manifest.ecsv",
+            "sha256": "dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd"
+          }
+        },
+        {
+          "network": 4,
+          "identity": [
+            152430,
+            0,
+            2
+          ],
+          "tune_identity": [
+            152430,
+            0,
+            1
+          ],
+          "raw": {
+            "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec4_152430_000_0002_2026_02_19_10_07_51.nc",
+            "sha256": "75b45cdc440b9c6ec92f5874603421735b6d8b872c8f4807469fa25401ec7c37"
+          },
+          "raw_bytes": 33710392,
+          "raw_hash_status": "Preserved existing execution binding; 152420 originals rehashed at fresh preparation; metadata-only inventory does not assert new152430rawhash",
+          "processed_tune": {
+            "path": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/toltec4_152430_000_0001_2026_02_19_10_06_46_tune.txt",
+            "sha256": "d8951bbfb3d28bb361164cc6c8086c3a6f5a7cd130c015d62f3d55f876b19ae8"
+          },
+          "network_input": {
+            "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/B-REF-rep1/inputs/network4-input.json",
+            "sha256": "eb5e759b4cbd0a13c70b24f73dc52aceca72eac8d6bf0fe90fc550b6fe47c647"
+          },
+          "channels": 532,
+          "canonical_manifest": {
+            "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/science/apts/v2/apt_152430_matched.apt-v2/manifest.ecsv",
+            "sha256": "dde3e24c5187ecd517c6006ed5ea3ee94aebbb6d60def7881f36774bc09f4acd"
+          }
+        }
+      ],
+      "execution": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/B-REF-rep1/EXECUTION.json",
+        "sha256": "34eafe92bef4fdf75df39bb47784528c70518f4a6920773b726380fecbd9ff98"
+      },
+      "launch": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-two-stage-20260928/B-REF-rep1/LAUNCH.json",
+        "sha256": "99cf56142ae889d16daad7568df52692ab45aba3fe73a5f0249acced3ee02976"
+      },
+      "cost": {
+        "exit_seconds": 165.4348215,
+        "analysis_complete_seconds": 165.105017667,
+        "aggregate_tree_sampled_RSS": 2781560832,
+        "cpu_seconds": {
+          "user": 161.602336,
+          "system": 12.580767999999999
+        }
+      },
+      "R_effective_config": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/science/pointings/reduced/redu00/citlali_o152389_0_2_c8.yaml",
+        "sha256": "acf93c30b130abb00477162673fd6bded25e3645579fd7c669907c8cd6965893"
+      }
+    }
+  ],
+  "new_observation_starts": 0
+}

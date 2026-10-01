@@ -1,0 +1,303 @@
+{
+  "anchor": 152420,
+  "selection": "Single preregistered alternating six10s scheduled segments, even0/2/4 vs odd1/3/5; no outcome search. Groups alternate time to balance drift and repeated coverage. Original physical gaps must be retained.",
+  "groups": [
+    {
+      "name": "even",
+      "scans": [
+        0,
+        2,
+        4
+      ],
+      "contributions": 4101358,
+      "source_disk_contributions": 573561,
+      "reached_pixels": 19621,
+      "source_disk_reached": 1257,
+      "source_disk_expected": 1257
+    },
+    {
+      "name": "odd",
+      "scans": [
+        1,
+        3,
+        5
+      ],
+      "contributions": 4062357,
+      "source_disk_contributions": 667577,
+      "reached_pixels": 19181,
+      "source_disk_reached": 1257,
+      "source_disk_expected": 1257
+    }
+  ],
+  "common_reached_pixels": 18360,
+  "bindings": [
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-completion-20260930/B-REF/M0/products/a1100/plan.yaml",
+      "sha256": "834e2d21517e5d1362e780c56987bccd97772b5e28b6a3b57ebaf12e8f4909db"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-completion-20260930/B-REF/M0/products/a1100/operator-pixel.i32",
+      "sha256": "653f68d56e7ade7e0c6135c22918aee6aa1b93422b9c1c89378eacee235e4fc0"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-completion-20260930/B-REF/M0/products/a1100/map.fits",
+      "sha256": "2b3d95996a837593e7b572b325524f10145fe4c2af95f37a61ac73034c04e525"
+    }
+  ],
+  "intervals": [
+    {
+      "network": 1,
+      "binding": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-completion-20260930/B-REF/upstream/products/network1/donor-continuity/ptc/receipt.yaml",
+        "sha256": "f8e81cba681c9f7431d92e9d01428646ec3f6ea16db30da4e67a2c602e4e95fb"
+      },
+      "scans": [
+        {
+          "scan": 0,
+          "native_interval": [
+            33,
+            1221
+          ],
+          "scheduled_times": 1188,
+          "retained": 291267
+        },
+        {
+          "scan": 1,
+          "native_interval": [
+            1221,
+            2441
+          ],
+          "scheduled_times": 1220,
+          "retained": 314261
+        },
+        {
+          "scan": 2,
+          "native_interval": [
+            2441,
+            3661
+          ],
+          "scheduled_times": 1220,
+          "retained": 317854
+        },
+        {
+          "scan": 3,
+          "native_interval": [
+            3661,
+            4881
+          ],
+          "scheduled_times": 1220,
+          "retained": 317987
+        },
+        {
+          "scan": 4,
+          "native_interval": [
+            4881,
+            6101
+          ],
+          "scheduled_times": 1220,
+          "retained": 314812
+        },
+        {
+          "scan": 5,
+          "native_interval": [
+            6101,
+            7289
+          ],
+          "scheduled_times": 1188,
+          "retained": 298363
+        }
+      ]
+    },
+    {
+      "network": 2,
+      "binding": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-completion-20260930/B-REF/upstream/products/network2/donor-continuity/ptc/receipt.yaml",
+        "sha256": "c20b4569d96ce0993a9ba2a5010ea52a5c69b315e453ae7dc1803ad818161d84"
+      },
+      "scans": [
+        {
+          "scan": 0,
+          "native_interval": [
+            33,
+            1221
+          ],
+          "scheduled_times": 1188,
+          "retained": 348095
+        },
+        {
+          "scan": 1,
+          "native_interval": [
+            1221,
+            2441
+          ],
+          "scheduled_times": 1220,
+          "retained": 351970
+        },
+        {
+          "scan": 2,
+          "native_interval": [
+            2441,
+            3661
+          ],
+          "scheduled_times": 1220,
+          "retained": 367955
+        },
+        {
+          "scan": 3,
+          "native_interval": [
+            3661,
+            4881
+          ],
+          "scheduled_times": 1220,
+          "retained": 370701
+        },
+        {
+          "scan": 4,
+          "native_interval": [
+            4881,
+            6101
+          ],
+          "scheduled_times": 1220,
+          "retained": 368762
+        },
+        {
+          "scan": 5,
+          "native_interval": [
+            6101,
+            7289
+          ],
+          "scheduled_times": 1188,
+          "retained": 350174
+        }
+      ]
+    },
+    {
+      "network": 3,
+      "binding": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-completion-20260930/B-REF/upstream/products/network3/donor-continuity/ptc/receipt.yaml",
+        "sha256": "6d4a60f3b2bf2ac43c68de593c4a4b2206efb8b9222b24d23d2e72d6ad96e24b"
+      },
+      "scans": [
+        {
+          "scan": 0,
+          "native_interval": [
+            32,
+            1220
+          ],
+          "scheduled_times": 1188,
+          "retained": 241380
+        },
+        {
+          "scan": 1,
+          "native_interval": [
+            1220,
+            2440
+          ],
+          "scheduled_times": 1220,
+          "retained": 247519
+        },
+        {
+          "scan": 2,
+          "native_interval": [
+            2440,
+            3660
+          ],
+          "scheduled_times": 1220,
+          "retained": 258032
+        },
+        {
+          "scan": 3,
+          "native_interval": [
+            3660,
+            4880
+          ],
+          "scheduled_times": 1220,
+          "retained": 257537
+        },
+        {
+          "scan": 4,
+          "native_interval": [
+            4880,
+            6100
+          ],
+          "scheduled_times": 1220,
+          "retained": 256542
+        },
+        {
+          "scan": 5,
+          "native_interval": [
+            6100,
+            7288
+          ],
+          "scheduled_times": 1188,
+          "retained": 243260
+        }
+      ]
+    },
+    {
+      "network": 4,
+      "binding": {
+        "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-rtc-point-transfer-completion-20260930/B-REF/upstream/products/network4/donor-continuity/ptc/receipt.yaml",
+        "sha256": "9516b749c1046c6a1909e82e58a32b4ca3970d5cb4962e71d93034c3c9d8c566"
+      },
+      "scans": [
+        {
+          "scan": 0,
+          "native_interval": [
+            32,
+            1220
+          ],
+          "scheduled_times": 1188,
+          "retained": 430639
+        },
+        {
+          "scan": 1,
+          "native_interval": [
+            1220,
+            2440
+          ],
+          "scheduled_times": 1220,
+          "retained": 428558
+        },
+        {
+          "scan": 2,
+          "native_interval": [
+            2440,
+            3660
+          ],
+          "scheduled_times": 1220,
+          "retained": 456354
+        },
+        {
+          "scan": 3,
+          "native_interval": [
+            3660,
+            4880
+          ],
+          "scheduled_times": 1220,
+          "retained": 455385
+        },
+        {
+          "scan": 4,
+          "native_interval": [
+            4880,
+            6100
+          ],
+          "scheduled_times": 1220,
+          "retained": 449666
+        },
+        {
+          "scan": 5,
+          "native_interval": [
+            6100,
+            7288
+          ],
+          "scheduled_times": 1188,
+          "retained": 426642
+        }
+      ]
+    }
+  ],
+  "qualification": "Geometry/support audit from saved S M0 operator, conditional on full-observation decisions. No subset map or independent reduction generated. Same split is specified for R/S; current legacy interface cannot supply subset-relearned R, retained R samples purged. Stability not established; geometry is not claimed impossible.",
+  "new_starts": 0
+}

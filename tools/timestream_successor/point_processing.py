@@ -79,6 +79,9 @@ def rtc_experiment(out):
     return p.exists() and read(p).get('campaign_scope') in ('rtc-cost-response-v1','rtc-fixed11-v1','rtc-step-point-v1','rtc-step-consequences-v1','rtc-retained-residuals-v1','rtc-point-transfer-v1')
 
 def experiment_consume(out,kind,identity):
+    if read(out/'freeze/prospective.json').get('accounting_scope')=='point-map-quality-v1':
+        from point_quality_experiment import consume
+        return consume(Path(read(out/'freeze/budget.json')['campaign_root']),kind,identity)
     if read(out/'freeze/prospective.json').get('campaign_scope')=='rtc-point-transfer-v1':
         from point_transfer_experiment import consume
         return consume(Path(read(out/'freeze/budget.json')['campaign_root']),kind,identity)
