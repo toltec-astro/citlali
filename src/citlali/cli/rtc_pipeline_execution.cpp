@@ -1,4 +1,5 @@
 #include "rtc_binary_output.h"
+#include "oof_development_scope.h"
 // Shared application-boundary RTC execution. Scientific owners remain the
 // existing typed components; YAML and file checks stop at this boundary.
 #include <citlali/core/cli/successor_development_execution.h>
@@ -149,7 +150,10 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
         read_netcdf_scalar<int>(raw_file, "Header.Toltec.ScanNum");
     require(cfg["network"].as<int>()==nw && cfg["observation"].as<int>()==obs,"requested raw scope mismatch");
     const bool reference=cfg["development_reference"] && cfg["development_reference"].as<std::string>()=="bright-point-base-v1";
-    if(development) require((reference || obs==152390 || obs==152389 || (obs==152430 && (nw==11 || nw==12))) && sub==0 && scan==2 && nw>=0 && nw<13 &&
+    const bool oof=citlali::cli::detail::oof_network_scope(cfg,obs,sub,scan,nw);
+    require(!citlali::cli::detail::oof_request(cfg) || oof,"OOF network identity outside bounded scan-1 scope");
+    if(oof) require(!cfg["rtc_source_probe"] && !cfg["point_transfer_runtime_profile"] && !cfg["rtc_whole_run_quarantine"] && !cfg["rtc_point_run_selection"],"POINT-only experiment field in OOF");
+    if(development) require((oof || ((reference || obs==152390 || obs==152389 || (obs==152430 && (nw==11 || nw==12))) && sub==0 && scan==2 && nw>=0 && nw<13)) &&
         ((obs==152390 && nw==12) || cfg["filter_plan"]),
         "successor.unsupported_native_domain: selected POINT or 152390/0/2 requires an explicit array plan outside the preserved network12 input; no legacy fallback");
     require(obs == relation.observation().observation &&
@@ -223,7 +227,7 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
         }
       require(matches==1,"census observation absent or duplicated in selection");
     }
-    require((obs == 152390 || (development && (reference || obs == 152389 || obs == 152430)) || (census && obs == 152392)) && sub == 0 && scan == 2 &&
+    require((oof || ((obs == 152390 || (development && (reference || obs == 152389 || obs == 152430)) || (census && obs == 152392)) && sub == 0 && scan == 2)) &&
             (nw == 12 || (full_health && nw == 0) || (development && cfg["filter_plan"])),
             "bounded caller requires selected 152389/152390 development scope or preserved comparison scope");
     const auto network_binding=std::find_if(relation.bindings().begin(),relation.bindings().end(),
@@ -440,22 +444,23 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
     require(cfg["source_protection_authority"] && cfg["source_protection_authority"].IsScalar(),
         "successor.source_protection_selection_required: no observation-specific treatment selected");
     const auto protection_authority=cfg["source_protection_authority"].as<std::string>();
-    if (obs == 152390 || (development && (reference || obs == 152389 || obs == 152430))) caller::require_no_mask_scope(parent->scope(),protection_authority,reference);
+    if (oof) require(protection_authority==citlali::cli::detail::oof_no_mask_authority,"OOF requires explicit cold-M0 no-spatial-mask authority");
+    else if (obs == 152390 || (development && (reference || obs == 152389 || obs == 152430))) caller::require_no_mask_scope(parent->scope(),protection_authority,reference);
     else require(census && protection_authority == "rtc-census-source-membership-unavailable",
                  "repeat source membership must remain unavailable");
     auto protection=RtcSpikeSourceProtection::admit(parent,protection_authority,
-                        (obs==152390 || (development && (reference || obs==152389 || obs==152430))) ? RtcSpikeProtection::outside_source : RtcSpikeProtection::unavailable);
+                        (oof || obs==152390 || (development && (reference || obs==152389 || obs==152430))) ? RtcSpikeProtection::outside_source : RtcSpikeProtection::unavailable);
     std::shared_ptr<const AstScanMotionNetworkView> motion;
     if(argc==4 || recovered_scans){
-      const auto telescope=common?common->telescope:load_telescope(checked("telescope"),parent->scope(),census && obs==152392,development && (reference || obs==152389 || obs==152430),reference?cfg["telescope"]["sha256"].as<std::string>():"");
-      const auto motion_identity = reference ? AstScanMotionIdentityBinding{std::uint64_t(obs)*10000+1,std::uint64_t(obs)*10000+2,std::uint64_t(obs)*10000+3,std::uint64_t(obs)*10000+4} : census && obs==152392
+      const auto telescope=common?common->telescope:load_telescope(checked("telescope"),parent->scope(),census && obs==152392,development && (reference || oof || obs==152389 || obs==152430),(reference || oof)?cfg["telescope"]["sha256"].as<std::string>():"",oof);
+      const auto motion_identity = (reference || oof) ? AstScanMotionIdentityBinding{std::uint64_t(obs)*10000+1,std::uint64_t(obs)*10000+2,std::uint64_t(obs)*10000+3,std::uint64_t(obs)*10000+4} : census && obs==152392
           ? AstScanMotionIdentityBinding{1523920001,1523920002,1523920003,1523920004}
           : obs==152430 ? AstScanMotionIdentityBinding{1524300001,1524300002,1524300003,1524300004}
           : obs==152389 ? AstScanMotionIdentityBinding{1523890001,1523890002,1523890003,1523890004}
           : ast_identity_binding;
       auto ast=common?common->motion:build_ast_scan_motion_product(telescope.source,motion_identity);
       const auto accepted_ast=YAML::LoadFile(checked("ast_acceptance").string());
-      if (development && (reference || obs == 152389 || obs == 152430)) {
+      if (development && (reference || oof || obs == 152389 || obs == 152430)) {
         require(accepted_ast["schema"].as<std::string>()=="citlali-ast-motion-source-binding-v1" &&
           accepted_ast["authority_policy_id"].as<std::string>()==std::string(ast_scan_motion_policy_id) &&
           accepted_ast["observation"].as<int>()==obs && accepted_ast["subobservation"].as<int>()==sub &&
@@ -1227,10 +1232,12 @@ namespace {
 int execute_successor_observation(const YAML::Node &request,const fs::path &output,
     citlali::cli::DevelopmentTerminal terminal,citlali::cli::DevelopmentPtcRequest ptc,unsigned workers) {
   const bool reference=request["development_reference"] && request["development_reference"].as<std::string>()=="bright-point-base-v1";
+  const bool oof=citlali::cli::detail::oof_scope(request,request["observation"].as<int>(),request["subobservation"].as<int>(),request["scan"].as<int>());
+  require(!citlali::cli::detail::oof_request(request) || oof,"OOF observation identity outside bounded scan-1 scope");
   require(workers>=1 && workers<=12,"successor.network_workers_must_be_1_to_12");
   require(request["schema"].as<std::string>()=="citlali-observation-networks-v1" &&
-          (reference || request["observation"].as<int>()==152390 || request["observation"].as<int>()==152389 || request["observation"].as<int>()==152430) && request["subobservation"].as<int>()==0 &&
-          request["scan"].as<int>()==2,"successor.observation_scope_unsupported");
+          (oof || ((reference || request["observation"].as<int>()==152390 || request["observation"].as<int>()==152389 || request["observation"].as<int>()==152430) && request["subobservation"].as<int>()==0 &&
+          request["scan"].as<int>()==2)),"successor.observation_scope_unsupported");
   require(request["networks"].IsSequence() && request["networks"].size()>0,"successor.empty_network_request");
   require(!fs::exists(output),"preserve previous output");
   std::vector<fs::path> inputs;std::vector<int> ids;std::vector<YAML::Node> configs;
@@ -1238,6 +1245,7 @@ int execute_successor_observation(const YAML::Node &request,const fs::path &outp
     const int nw=entry["network"].as<int>();
     require((reference || request["observation"].as<int>()!=152430 || nw==11 || nw==12) && nw>=0 && nw<13 && (ids.empty() || nw>ids.back()),"successor.network_order_duplicate_or_invalid");
     const auto path=checked_file(entry["input"]);const auto cfg=YAML::LoadFile(path.string());
+    require(!oof || citlali::cli::detail::oof_network_scope(cfg,request["observation"].as<int>(),0,1,nw),"OOF observation/network identity differs");
     require(!reference || (cfg["development_reference"] && cfg["development_reference"].as<std::string>()=="bright-point-base-v1"),"reference network scope differs");
     require(cfg["network"].as<int>()==nw && cfg["observation"].as<int>()==request["observation"].as<int>() &&
             cfg["decision_apply"] && cfg["filter_plan"],"successor.network_binding_incomplete");
@@ -1254,15 +1262,71 @@ int execute_successor_observation(const YAML::Node &request,const fs::path &outp
 #endif
   const auto began=std::chrono::steady_clock::now();
   RtcPerformanceTrace trace(output);
-  const auto &cfg=configs.front();const NativeObservationScope scope{request["observation"].as<int>(),0,2};
+  const auto &cfg=configs.front();const NativeObservationScope scope{request["observation"].as<int>(),request["subobservation"].as<int>(),request["scan"].as<int>()};
   auto verified=apt::verify_bundle_filesystem(checked_file(cfg["manifest"]),true);
   auto relation=pipeline::admit_canonical_apt_detector_relation_v2(verified);
+  require(relation.observation().observation==scope.observation && relation.observation().subobservation==scope.subobservation && relation.observation().scan==scope.scan,"observation/APT scope mismatch");
   auto processing=prepare_processing_scans(cfg,scope,verified,trace);
-  auto telescope=load_telescope(checked_file(cfg["telescope"]),scope,false,reference || scope.observation==152389 || scope.observation==152430,reference?cfg["telescope"]["sha256"].as<std::string>():"");
-  auto motion=build_ast_scan_motion_product(telescope.source,reference ? AstScanMotionIdentityBinding{std::uint64_t(scope.observation)*10000+1,std::uint64_t(scope.observation)*10000+2,std::uint64_t(scope.observation)*10000+3,std::uint64_t(scope.observation)*10000+4} : scope.observation==152430
+  auto telescope=load_telescope(checked_file(cfg["telescope"]),scope,false,reference || oof || scope.observation==152389 || scope.observation==152430,(reference || oof)?cfg["telescope"]["sha256"].as<std::string>():"",oof);
+  auto motion=build_ast_scan_motion_product(telescope.source,(reference || oof) ? AstScanMotionIdentityBinding{std::uint64_t(scope.observation)*10000+1,std::uint64_t(scope.observation)*10000+2,std::uint64_t(scope.observation)*10000+3,std::uint64_t(scope.observation)*10000+4} : scope.observation==152430
       ? AstScanMotionIdentityBinding{1524300001,1524300002,1524300003,1524300004} : scope.observation==152389
       ? AstScanMotionIdentityBinding{1523890001,1523890002,1523890003,1523890004} : ast_identity_binding);
   auto cal=prepare_cal_observation(cfg,scope);
+  if(terminal==citlali::cli::DevelopmentTerminal::prepare) {
+    require(oof,"metadata-only preparation requires explicit OOF cold-M0 scope");
+    YAML::Node record;record["schema"]="citlali-oof-native-preparation-v1";
+    record["source_revision"]=std::string(CITLALI_GIT_REVISION);
+    record["observation"]=scope.observation;record["subobservation"]=scope.subobservation;record["scan"]=scope.scan;
+    record["mode"]="OOF";record["detector_signal_processed"]=false;record["reduction_started"]=false;
+    record["APT_manifest"]=cfg["manifest"];record["telescope"]=cfg["telescope"];
+    record["AST_goal"]=telescope.source->metadata().dcs_observation_goal;
+    record["AST_program"]=telescope.source->metadata().dcs_observation_program;
+    record["AST_offset_identity"]=cal.offset_identity;record["AST_center_ra_rad"]=cal.ra0;record["AST_center_dec_rad"]=cal.dec0;
+    record["processing_grid_rows"]=processing.grid.size();record["processing_segments"]=processing.indices.cols();
+    record["context_inner"]=processing.inner_context;record["context_outer"]=processing.outer_context;
+    record["input_signal_unit"]="raw I/Q; not read or solved";
+    record["calibration_realized"]=false;
+    record["flxscale_unit"]="mJy/beam/xs";record["detector_geometry_unit"]="arcsec";
+    if(cal.opacity.tau225)record["telescope_tau225"]=*cal.opacity.tau225;
+    for(const auto &[name,unit]:std::array<std::pair<std::string,std::string>,3>{{{"flxscale","mJy/beam/xs"},{"x_t","arcsec"},{"y_t","arcsec"}}}) {
+      const auto f=std::find_if(verified.fields.begin(),verified.fields.end(),[&](const auto &f){return f.name==name;});
+      require(f!=verified.fields.end() && f->unit==unit,"OOF APT field convention differs");
+    }
+    for(std::size_t i=0;i<ids.size();++i) {
+      const auto &n=configs[i];const auto nw=ids[i];YAML::Node row;
+      require(n["source_protection_authority"].as<std::string>()==citlali::cli::detail::oof_no_mask_authority,"OOF source policy mismatch");
+      require(!n["rtc_source_probe"] && !n["point_transfer_runtime_profile"] && !n["rtc_whole_run_quarantine"] && !n["rtc_point_run_selection"],"POINT-only experiment field in OOF");
+      const auto source=std::find_if(relation.raw_sources().begin(),relation.raw_sources().end(),[&](const auto &s){return s.network==nw;});
+      require(source!=relation.raw_sources().end(),"OOF raw source missing");
+      verify_raw_file(checked_file(n["raw"]),*source);
+      const auto tune_path=checked_file(n["tune"]);const auto tune=read_tune_facts(tune_path,source->channel_count);
+      const auto kmp=std::find_if(verified.sources.begin(),verified.sources.end(),[&](const auto &s){return s.role==apt::SourceRole::kmp && s.network==nw;});
+      require(kmp!=verified.sources.end() && kmp->content_sha256=="sha256:"+citlali::utils::sha256_file(tune_path) && kmp->byte_count==fs::file_size(tune_path),"OOF KMP source mismatch");
+      netCDF::NcFile raw(checked_file(n["raw"]).string(),netCDF::NcFile::read);
+      require(tune.network==nw && tune.observation==read_netcdf_scalar<int>(raw,"Header.Toltec.TargSweepObsNum") && tune.subobservation==read_netcdf_scalar<int>(raw,"Header.Toltec.TargSweepSubObsNum") && tune.scan==read_netcdf_scalar<int>(raw,"Header.Toltec.TargSweepScanNum"),"OOF Tune association mismatch");
+      row["network"]=nw;row["array"]=0;row["raw"]=n["raw"];row["tune"]=n["tune"];
+      row["rows"]=processing.native_timing.at(nw)->row_count();row["channels"]=source->channel_count;
+      row["nominal_interval_seconds"]=1/std::get<1>(processing.cadence.at(nw));
+      std::set<int> channels;
+      for(const auto &d:n["detectors"]) {
+        const int ch=d["channel"].as<int>();require(ch>=0 && ch<source->channel_count && channels.insert(ch).second,"OOF duplicate/foreign detector channel");
+        const auto b=std::find_if(relation.bindings().begin(),relation.bindings().end(),[&](const auto &b){return b.network==nw && b.channel==ch;});
+        require(b!=relation.bindings().end() && b->array==0,"OOF detector/APT identity mismatch");
+        YAML::Node det;det["channel"]=ch;det["output_uid"]=b->output_uid;det["raw_source_uid"]=b->raw_source_uid;det["relation_uid"]=b->relation_uid;
+        const auto apt_row=std::find_if(verified.apt.rows.begin(),verified.apt.rows.end(),[&](const auto &r){return r.uid==b->output_uid;});
+        require(apt_row!=verified.apt.rows.end(),"OOF child APT row absent");
+        det["matched"]=b->disposition==apt::RelationDisposition::matched;
+        for(const auto *name:{"flxscale","x_t","y_t"}) {
+          const double v=field(*apt_row,name);if(std::isfinite(v))det[name]=v;else det[name]=YAML::Node(YAML::NodeType::Null);
+        }
+        row["detectors"].push_back(det);
+      }
+      require(channels.size()==source->channel_count,"OOF requires all selected-network detector identities");
+      (void)citlali::cli::detail::read_rtc_array_filter(YAML::LoadFile(checked_file(n["filter_plan"]).string()),0);
+      record["networks"].push_back(row);
+    }
+    fs::create_directories(output);write_yaml(output/"PREPARED.yaml",record);return 0;
+  }
   SharedObservationPreparation common{std::move(verified),std::move(relation),std::move(processing),
       std::move(cal),std::move(telescope),std::move(motion)};
   trace.mark("shared_observation_preparation_complete");
@@ -1285,7 +1349,7 @@ int execute_successor_observation(const YAML::Node &request,const fs::path &outp
   trace.mark("all_networks_finished");
   YAML::Node record;record["schema"]="citlali-observation-networks-result-v1";
   record["source_revision"]=std::string(CITLALI_GIT_REVISION);
-  record["observation"]=scope.observation;record["subobservation"]=0;record["scan"]=2;
+  record["observation"]=scope.observation;record["subobservation"]=scope.subobservation;record["scan"]=scope.scan;
   record["requested_network_workers"]=workers;record["observed_Eigen_threads"]=Eigen::nbThreads();
   record["started_network_workers"]=threads.size();
   record["requested_internal_threads"]=1;
@@ -1319,6 +1383,7 @@ int citlali::cli::run_successor_rtc(const fs::path &input,const fs::path &output
     return execute_successor_observation(request,output,terminal,ptc,network_workers);
   }
   require(network_workers==1,"successor.network_workers_require_observation_request");
+  require(terminal!=DevelopmentTerminal::prepare,"preparation requires an observation request");
   return execute_successor_network(input,output,invocation,reviewed_selection,terminal,ptc);
 }
 

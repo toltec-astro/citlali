@@ -134,6 +134,9 @@ def upstream(out,binary):
     if rank_experiment(out) and not speed_experiment(out):
         from point_rank_experiment import consume
         consume(Path(read(out/'freeze/budget.json')['campaign_root']),'noise',dict(rank=expected_rank(out)))
+    if read(out/'freeze/prospective.json').get('mode')=='OOF':
+        save_json(out/'UPSTREAM.json',dict(status='completed-cold-M0',source_gate='not-requested',feedback_applications=0,seconds=time.perf_counter()-t,initial_physical_inputs=1,parent=p))
+        return
     noise_reference=read(out/'freeze/prospective.json').get('noise_reference')
     if rtc_experiment(out) and noise_reference:
         # Same RTC variant's unperturbed M0 noise/guard conditioning only.

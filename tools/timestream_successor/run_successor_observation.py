@@ -49,5 +49,5 @@ def run(binary,input_path,output,workers,terminal='ptc',ptc=None):
 if __name__=='__main__':
     p=argparse.ArgumentParser(description=__doc__)
     for name in ('binary','input','output'):p.add_argument('--'+name,type=Path,required=True)
-    p.add_argument('--workers',type=int,choices=[1,2,4,8,12],default=1);p.add_argument('--terminal',choices=['rtc-only','cal','ptc','map'],default='ptc')
+    p.add_argument('--workers',type=int,choices=[1,2,4,8,12],default=1);p.add_argument('--terminal',choices=['prepare','rtc-only','cal','ptc','map'],default='ptc')
     a=p.parse_args();raise SystemExit(run(a.binary,a.input,a.output.resolve(),a.workers,a.terminal))

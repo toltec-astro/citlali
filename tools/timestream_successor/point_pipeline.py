@@ -39,6 +39,9 @@ def validate_environment(out, binary):
 
 
 def execute(mode,out,binary):
+    from observation_mode import validate_recipe
+    oof=validate_recipe(read(out/'freeze/prospective.json'))
+    require(not oof or mode=='forward','OOF supports cold M0 forward only; feedback is not admitted')
     identity=validate_environment(out,binary)
     attempt=out/'EXECUTION.json'
     require(not attempt.exists(),'execution already attempted; no implicit retry')
@@ -48,7 +51,10 @@ def execute(mode,out,binary):
         upstream(out,binary)
         initial=read(out/'UPSTREAM.json')
         if initial['status']=='failed':raise RuntimeError('upstream processing failed; see UPSTREAM.json')
-        if initial['status']!='accepted':
+        if oof:
+            require(initial['status']=='completed-cold-M0','OOF cold M0 did not complete')
+            record.update(status='completed',completed_cycle=0,source_gate='not-requested',feedback_applications=0)
+        elif initial['status']!='accepted':
             record.update(status='source_rejected' if initial['guard']['complete'] else 'processing_failed',reason=initial['guard']['message'])
         elif mode=='feedback':
             r=execute_branch(out,binary,'BASE-POINT','REF')
@@ -65,6 +71,8 @@ def inspect_saved(out):
     execution=read(out/'EXECUTION.json');p=read(out/'freeze/prospective.json');a=p['array']
     initial=read(out/'UPSTREAM.json');summary=out/f'run/BASE-POINT/REF/{a}/SUMMARY.json'
     require((out/f'M0/products/{a}/map.fits').is_file() or (out/f'M0/products/{a}/map.fits.gz').is_file(),'required saved M0 absent; reporting never regenerates')
+    if p.get('mode')=='OOF':
+        return dict(schema='citlali-oof-cold-m0-report-v1',observation=p['observation'],array=a,status=execution['status'],execution=execution,initial=initial,limitations=['cold M0 only; no source admission or feedback','no solver inversion or uncertainty admission'])
     result=dict(schema='citlali-bright-point-report-v1',observation=p['observation'],array=a,status=execution['status'],execution=execution,initial=initial,units=dict(peak='mJy/nominal beam',centroid_sigma='arcsec',aperture='mJy/nominal beam arcsec^2'),limitations=['bright POINT development reference only','conditional covariance transfer, not full adaptive uncertainty','existing injection controls bypass RTC/CAL','shoulder response limitation remains','local evidence does not qualify all modes or production'])
     if execution['mode']=='feedback' and initial['status']=='accepted':
         r=read(summary);result.update(histories=r['histories'],endpoint_uncertainty=r.get('endpoint_uncertainty'),completed_cycle=r['completed_cycle'],m10_applied=r['m10_applied'])

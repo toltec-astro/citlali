@@ -29,6 +29,12 @@ YAML::Node execute_connected_ptc(const PtcCalSource &source,const ProcessingScan
             "PTC transfer runtime profile outside approved scope");
         request.iteration_limit=500;
     }
+    if(citlali::cli::detail::oof_request(cfg)) {
+        require(citlali::cli::detail::oof_network_scope(cfg,cfg["observation"].as<int>(),0,1,cfg["network"].as<int>()) &&
+            source.detector_factors().front().array==0 && request.rank==3 && request.method==PtcMethod::observed_als,
+            "OOF cold-M0 PTC requires declared rank3 observed ALS control");
+        request.iteration_limit=500;
+    }
     if(request.method==PtcMethod::masked_covariance_count)
         require(cfg["observation"].as<int>()==152430 && (cfg["network"].as<int>()==11 || cfg["network"].as<int>()==12) && (request.rank==10 || request.rank==15),"experimental masked covariance scope");
     const auto evidence=PtcEvidence::learn(source,scans,request);

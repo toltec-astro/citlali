@@ -106,7 +106,9 @@ SavedMapNetwork load_saved_map_network(const YAML::Node &request,MapFileLedger &
     require(YAML::Dump(final["PTC"])==YAML::Dump(out.ptc) && YAML::Dump(final["CAL"])==YAML::Dump(out.cal),"MAP final receipt differs from required child publication");
     out.network=out.learn["network"].as<int>();out.array=out.cal["detectors"][0]["array"].as<int>();
     out.obsnum=out.learn["observation"].as<int>();
-    require(((out.input["development_reference"] && out.input["development_reference"].as<std::string>()=="bright-point-base-v1") || out.obsnum==152389 || out.obsnum==152390 || (out.obsnum==152430 && out.array==2 && (out.network==11 || out.network==12))) && out.input["observation"].as<int>()==out.obsnum &&
+    const bool oof=citlali::cli::detail::oof_network_scope(out.input,out.obsnum,0,1,out.network);
+    require(!citlali::cli::detail::oof_request(out.input) || (oof && out.array==0),"MAP OOF acquisition or array differs");
+    require((oof || (out.input["development_reference"] && out.input["development_reference"].as<std::string>()=="bright-point-base-v1") || out.obsnum==152389 || out.obsnum==152390 || (out.obsnum==152430 && out.array==2 && (out.network==11 || out.network==12))) && out.input["observation"].as<int>()==out.obsnum &&
         out.array>=0 && out.array<3,"MAP owner binding requires selected observation and known array");
     const auto telescope=checked_file(out.input["telescope"]),effective=checked_file(out.input["effective_config"]),manifest=checked_file(out.input["manifest"]);
     ledger.bind(telescope);ledger.bind(effective);const auto aptsha=ledger.bind(manifest);
@@ -117,13 +119,13 @@ SavedMapNetwork load_saved_map_network(const YAML::Node &request,MapFileLedger &
     for(const auto &entry:effective_cfg["interface_sync_offset"]){const auto offset=entry["toltec"+std::to_string(out.network)];
         if(offset){require(offset.as<double>()==0,"saved MAP adapter only supports verified zero interface offset");++offset_count;}}
     require(offset_count==1,"saved MAP interface offset absent or duplicated");
-    out.observation=prepare_cal_observation(out.input,NativeObservationScope{out.obsnum,0,2});
+    out.observation=prepare_cal_observation(out.input,NativeObservationScope{out.obsnum,0,oof?1:2});
     require(out.cal["AST_center_ra_rad"].as<double>()==out.observation.ra0 && out.cal["AST_center_dec_rad"].as<double>()==out.observation.dec0 &&
         out.cal["AST_pointing_offset"].as<std::string>()==out.observation.offset_identity,"MAP AST center/offset generation differs");
     const auto verified=apt::verify_bundle_filesystem(manifest,true);
     const auto apt_relation=pipeline::admit_canonical_apt_detector_relation_v2(verified);
     require(apt_relation.observation().observation==out.obsnum && apt_relation.observation().subobservation==0 &&
-        apt_relation.observation().scan==2,"MAP selected APT observation differs from PTC source");
+        apt_relation.observation().scan==(oof?1:2),"MAP selected APT observation differs from PTC source");
     for(const auto &[name,unit]:std::array<std::pair<std::string,std::string>,3>{{{"flxscale","mJy/beam/xs"},{"x_t","arcsec"},{"y_t","arcsec"}}}) {
         const auto f=std::find_if(verified.fields.begin(),verified.fields.end(),[&](const auto &v){return v.name==name;});
         require(f!=verified.fields.end() && f->unit==unit,"MAP selected APT field units differ");

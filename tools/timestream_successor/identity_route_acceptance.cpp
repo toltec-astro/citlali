@@ -441,7 +441,7 @@ TelescopeInput load_telescope(
     const pipeline::NativeObservationScope &scope,
     bool bounded_repeat_census = false,
     bool bounded_point_map = false,
-    const std::string &configured_digest = "") {
+    const std::string &configured_digest = "", bool bounded_oof = false) {
     const bool configured_point = !configured_digest.empty();
     require(!configured_point || (bounded_point_map && !bounded_repeat_census),"configured telescope requires POINT route");
     // One explicitly selected repeat for the offline common-mode census.
@@ -450,7 +450,7 @@ TelescopeInput load_telescope(
                 (scope.observation == 152392 && scope.subobservation == 0 && scope.scan == 2),
             "repeat telescope binding is outside the fixed census scope");
     require(!bounded_point_map || (!bounded_repeat_census && (configured_point || scope.observation == 152389 || scope.observation == 152430) &&
-        scope.subobservation == 0 && scope.scan == 2), "POINT telescope binding outside selected scope");
+        scope.subobservation == 0 && (bounded_oof ? (configured_point && scope.observation>=152385 && scope.observation<=152387 && scope.scan==1) : scope.scan==2)), "configured telescope binding outside selected scope");
     const bool independent_point = bounded_point_map && scope.observation == 152430;
     const std::string_view expected_filename = independent_point
         ? "tel_toltec_2026-02-19_152430_00_0002.nc" : bounded_point_map
@@ -502,7 +502,7 @@ TelescopeInput load_telescope(
     const auto time_variable =
         file.getVar(std::string{pipeline::ast_scan_motion_time_field});
     if(configured_point) {
-        require(metadata.dcs_observation_goal=="Pointing" || metadata.dcs_observation_program=="Pointing", "configured reference requires POINT acquisition");
+        require(bounded_oof ? metadata.dcs_observation_goal=="Oof" && metadata.dcs_observation_program=="Lissajous" : metadata.dcs_observation_goal=="Pointing" || metadata.dcs_observation_program=="Pointing", "configured reference acquisition mode differs");
         require(!time_variable.isNull() && time_variable.getDimCount()==1 && time_variable.getDim(0).getSize()>1,"configured telescope time cardinality");
         expected_records=time_variable.getDim(0).getSize();
     }

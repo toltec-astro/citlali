@@ -11,7 +11,7 @@ namespace citlali::cli {
 // request file binds native x/r, timing, VAL, motion and explicit finite plans;
 // this function does not choose scientific policy from command-line defaults.
 enum class RtcInvocation { development_default, comparison };
-enum class DevelopmentTerminal { rtc_only, cal, ptc };
+enum class DevelopmentTerminal { rtc_only, cal, ptc, prepare };
 struct DevelopmentPtcRequest {
     std::string method="observed-als";
     int rank=0; // zero means recover the explicitly configured effective rank
