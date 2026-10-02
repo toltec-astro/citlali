@@ -13,6 +13,29 @@
 
 namespace engine_utils {
 
+// Source-relative tangent AltAz, radians. Inputs have already been unwrapped
+// on telescope support and interpolated to the requested occurrence times.
+// TelAzCor is a tangent-angle correction (no additional cosine factor).
+// Preserve the validated historical positive 2pi branch convention.
+template<class TelescopeData>
+void calc_source_offset_altaz(TelescopeData &tel_data) {
+    // use loop to avoid annoying eigen aliasing issues with select
+    for (Eigen::Index i=0; i<tel_data["TelAzAct"].size(); ++i) {
+        if ((tel_data["TelAzAct"](i) - tel_data["SourceAz"](i)) > 0.9*2.0*pi) {
+            tel_data["TelAzAct"](i) = tel_data["TelAzAct"](i) - 2.0*pi;
+        }
+    }
+
+    // subtract source az
+    auto az_diff = tel_data["TelAzAct"].array() - tel_data["SourceAz"].array();
+
+    // tangent plane lat (alt)
+    tel_data["alt_phys"] = (tel_data["TelElAct"].array() - tel_data["SourceEl"].array() - tel_data["TelElCor"].array()).matrix();
+
+    // tangent plane lon (az)
+    tel_data["az_phys"] = (cos(tel_data["TelElAct"].array() - tel_data["TelElCor"].array()) * az_diff - tel_data["TelAzCor"].array()).matrix();
+}
+
 // get a single detector's pointing
 template <typename tel_data_t, typename pointing_offset_t, typename MapGroupingT>
 auto calc_det_pointing(tel_data_t &tel_data, double az_off, double el_off,

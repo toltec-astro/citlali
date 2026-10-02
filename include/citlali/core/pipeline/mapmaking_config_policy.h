@@ -62,13 +62,14 @@ void enforce_map_grouping_polarization_policy(
 void enforce_beammap_pixel_axes_policy(
     citlali::config::ReductionType reduction_type,
     citlali::config::MapPixelAxes pixel_axes) {
-    if (!citlali::config::is_beammap_reduction_type(reduction_type) ||
+    if ((!citlali::config::is_beammap_reduction_type(reduction_type) &&
+         !citlali::config::is_pointing_family_reduction_type(reduction_type)) ||
         citlali::config::is_altaz_map_pixel_axes(pixel_axes)) {
         return;
     }
     throw citlali::error::invalid_config(fmt::format(
-        "beammap reductions require mapmaking.pixel_axes='altaz'; got '{}'",
-        citlali::config::to_string(pixel_axes)));
+        "{} reductions require delta-source mapmaking.pixel_axes='altaz'; got '{}'",
+        citlali::config::to_string(reduction_type),citlali::config::to_string(pixel_axes)));
 }
 
 template <class RtcProc, class PtcProc>

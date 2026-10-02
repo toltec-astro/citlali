@@ -55,6 +55,8 @@ class Contract(unittest.TestCase):
   f=self.fixture('rtc-point-transfer-v1',1,'a1100',152420);f['owner']['observation']=152430;self.reject(f,'FRUIT')
   f=self.fixture('rtc-point-transfer-v1',1,'a1100',152420);f['parent']['observation']='obs:152430_0_2';self.reject(f,'FRUIT')
   self.reject(self.fixture('rtc-point-transfer-v1',1,'a2000',152420),'FRUIT')
+ def test_altaz_parent_cannot_enter_historical_fk5_feedback(self):
+  f=self.fixture();f['parent']['WCS']={'ASTFRAME':'delta-source-AltAz'};self.reject(f,'FRUIT AltAz feedback requires separate frame-aware validation')
  def test_previous_a2000_routes(self):
   for scope,obs in [('rtc-cost-response-v1',152430),('rtc-fixed11-v1',152430),('rtc-step-point-v1',152420),('rtc-step-point-v1',152430)]:
    for cycle in (1,5):

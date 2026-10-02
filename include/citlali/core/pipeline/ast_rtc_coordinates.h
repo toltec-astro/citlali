@@ -5,6 +5,8 @@
 
 namespace citlali::pipeline {
 
+enum class AstRtcMapFrame { fk5_tan, delta_source_altaz };
+
 enum class AstRtcCoordinateCause { available, missing_detector_geometry, outside_telescope_support };
 
 struct AstRtcDetectorGeometry {
@@ -18,6 +20,7 @@ struct AstRtcDetectorGeometry {
 // The caller binds exact stable slots and parent identities before supplying
 // their assigned UNIX times. This helper does not establish an identity join.
 struct AstRtcScheduleEvaluation {
+    AstRtcMapFrame frame = AstRtcMapFrame::fk5_tan;
     NativeTelescopeData telescope;
     NativePointingOffsetsArcsec offsets;
     Eigen::VectorXd elevation_deg;
@@ -25,7 +28,8 @@ struct AstRtcScheduleEvaluation {
 };
 AstRtcScheduleEvaluation evaluate_ast_rtc_schedule(const RawTelescopeTrajectory &,
     const NativePointingOffsetModel &, double center_ra_rad, double center_dec_rad,
-    const Eigen::VectorXd &exact_assigned_times_unix_sec);
+    const Eigen::VectorXd &exact_assigned_times_unix_sec,
+    AstRtcMapFrame frame = AstRtcMapFrame::fk5_tan);
 
 // Explicit centered TAN grid request for already declared FK5/J2000 tangent
 // coordinates. Axis1 runs toward decreasing RA; axis2 toward increasing Dec.
@@ -34,6 +38,7 @@ struct AstRtcTanGrid {
     double crpix1, crpix2, cdelt1_deg, cdelt2_deg, crval1_deg, crval2_deg;
     static AstRtcTanGrid centered(double ra_rad,double dec_rad,double pixel_arcsec,
                                  double max_abs_lon_deg,double max_abs_lat_deg);
+    static AstRtcTanGrid source_offset(double pixel_arcsec,double max_abs_az_deg,double max_abs_el_deg);
     std::pair<double,double> continuous_pixel(double lon_deg,double lat_deg) const;
 };
 

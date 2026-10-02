@@ -185,14 +185,14 @@ def publish(state,out):
         return np.fromfile(out/n,dtype=dtype).reshape(shape)
     causes=plane('causes.u8','u1');valid=causes==0;m=plane('m.f64')
     require(valid.any() and np.isfinite(m[valid]).all(),'no finite certified JINC support')
-    h['OBSID']=state['identity'];h['NUMPROF']=PROFILE;h['HISTORY']='Shared SCI-JINC r0.3; original FK5 frame. No AltAz conversion.'
+    h['OBSID']=state['identity'];h['NUMPROF']=PROFILE;h['HISTORY']='Shared SCI-JINC r0.3; sample coordinate frame: '+q['frame']
     hdus=[fits.PrimaryHDU(np.where(valid,m,np.nan),h)]
     for name,file in [('NUMERATOR','N.f64'),('NORMALIZATION','C.f64'),('QUADRATIC','Q.f64'),('COEFFSQ_TIME','T.f64')]:
         ih=h.copy();ih['BUNIT']='mJy/beam' if name=='NUMERATOR' else ('s' if name=='COEFFSQ_TIME' else '1');hdus.append(fits.ImageHDU(plane(file),ih,name=name))
     hdus.append(fits.ImageHDU(valid.astype('u1'),name='LOCAL_VALID'))
     fits.HDUList(hdus).writeto(out/'map.fits',checksum=True)
     fits.HDUList([fits.PrimaryHDU(causes),fits.ImageHDU(plane('error-4.f64'),name='SIGNAL_ERROR'),fits.ImageHDU(plane('members.u64','<u8'),name='MEMBERS')]).writeto(out/'numerical-diagnostics.fits',checksum=True)
-    save_json(out/'BUNDLE.json',dict(observation=state['identity'],array='a2000',frame='FK5',schema='oof-jinc-saved-comparison-v1',base_roles=['N','C','Q','N/C with LOCAL_VALID','coefficient-squared time'],map=bound(out/'map.fits'),diagnostics=bound(out/'numerical-diagnostics.fits'),receipt=bound(out/'receipt.yaml'),parent=state,profile=PROFILE,unit='mJy/nominal-beam',numerical_supported_pixels=int(valid.sum()),numerical_unavailable_pixels=int((~valid).sum()),not_authorized=['variance','precision','physical exposure','optical inference','feedback'],uniform_coefficients=1,upstream_reexecuted=False))
+    save_json(out/'BUNDLE.json',dict(observation=state['identity'],array='a2000',frame=q['frame'],schema='oof-jinc-saved-comparison-v1',base_roles=['N','C','Q','N/C with LOCAL_VALID','coefficient-squared time'],map=bound(out/'map.fits'),diagnostics=bound(out/'numerical-diagnostics.fits'),receipt=bound(out/'receipt.yaml'),parent=state,profile=PROFILE,unit='mJy/nominal-beam',numerical_supported_pixels=int(valid.sum()),numerical_unavailable_pixels=int((~valid).sum()),not_authorized=['variance','precision','physical exposure','optical inference','feedback'],uniform_coefficients=1,upstream_reexecuted=False))
 def run():
     p,storage=check();start=time.perf_counter()
     with (ROOT/'LAUNCHED.json').open('x') as f:json.dump(dict(source_revision=p['source_revision'],roles=list(OBS),time=time.time()),f)

@@ -525,3 +525,12 @@ TEST(session_failure_boundaries, classifies_invalid_mapmaking_policies) {
                      "gaussian", no_fwhm, "a1100"),
                  citlali::error::Error);
 }
+
+TEST(session_failure_boundaries, pointing_and_oof_require_source_offset_altaz) {
+    for(auto mode:{citlali::config::ReductionType::pointing,citlali::config::ReductionType::oof}) {
+        EXPECT_NO_THROW(citlali::pipeline::enforce_beammap_pixel_axes_policy(mode,citlali::config::MapPixelAxes::altaz));
+        EXPECT_THROW(citlali::pipeline::enforce_beammap_pixel_axes_policy(mode,citlali::config::MapPixelAxes::radec),citlali::error::Error);
+        EXPECT_THROW(citlali::pipeline::enforce_beammap_pixel_axes_policy(mode,citlali::config::MapPixelAxes::galactic),citlali::error::Error);
+    }
+    EXPECT_NO_THROW(citlali::pipeline::enforce_beammap_pixel_axes_policy(citlali::config::ReductionType::science,citlali::config::MapPixelAxes::radec));
+}

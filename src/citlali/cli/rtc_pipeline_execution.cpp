@@ -1394,7 +1394,7 @@ int run_successor_saved_fruit(const std::filesystem::path &input,const std::file
 }
 int run_successor_saved_map(const std::filesystem::path &input,const std::filesystem::path &output) {
     const auto request=YAML::LoadFile(input.string());
-    if(request["schema"] && request["schema"].as<std::string>()=="point-152389-jinc-ast-v1")return execute_jinc_ast(input,output);
+    if(request["schema"] && (request["schema"].as<std::string>()=="point-152389-jinc-ast-v1" || request["schema"].as<std::string>()=="oof-a2000-altaz-ast-v1"))return execute_jinc_ast(input,output);
     return execute_saved_map(input,output);
 }
 }

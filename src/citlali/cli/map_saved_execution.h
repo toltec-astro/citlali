@@ -68,7 +68,7 @@ struct SavedMapNetwork {
     std::int64_t first;
     std::size_t scheduled;
 };
-SavedMapNetwork load_saved_map_network(const YAML::Node &request,MapFileLedger &ledger) {
+SavedMapNetwork load_saved_map_network(const YAML::Node &request,MapFileLedger &ledger,bool source_offset_altaz=false) {
     SavedMapNetwork out;out.root=request["root"].as<std::string>();out.ptcroot=out.root/"donor-continuity"/"ptc";
     require(out.root.is_absolute(),"MAP source root must be absolute");
     ledger.bind(out.root/"receipt.yaml",request["receipt_sha256"].as<std::string>());
@@ -120,7 +120,7 @@ SavedMapNetwork load_saved_map_network(const YAML::Node &request,MapFileLedger &
     for(const auto &entry:effective_cfg["interface_sync_offset"]){const auto offset=entry["toltec"+std::to_string(out.network)];
         if(offset){require(offset.as<double>()==0,"saved MAP adapter only supports verified zero interface offset");++offset_count;}}
     require(offset_count==1,"saved MAP interface offset absent or duplicated");
-    out.observation=prepare_cal_observation(out.input,NativeObservationScope{out.obsnum,0,oof?1:2});
+    out.observation=prepare_cal_observation(out.input,NativeObservationScope{out.obsnum,0,oof?1:2},source_offset_altaz);
     require(out.cal["AST_center_ra_rad"].as<double>()==out.observation.ra0 && out.cal["AST_center_dec_rad"].as<double>()==out.observation.dec0 &&
         out.cal["AST_pointing_offset"].as<std::string>()==out.observation.offset_identity,"MAP AST center/offset generation differs");
     const auto verified=apt::verify_bundle_filesystem(manifest,true);
@@ -165,7 +165,7 @@ struct SavedSegmentPlan {
     fs::path coordinates,publication,coefficient;
     std::string identity,support,coordinate_sha;
 };
-std::shared_ptr<const PtcMapPublication> load_map_segment(const SavedMapNetwork &n,std::size_t index,MapFileLedger &ledger) {
+std::shared_ptr<const PtcMapPublication> load_map_segment(const SavedMapNetwork &n,std::size_t index,MapFileLedger &ledger,bool published_only=false) {
     const auto s=n.ptc["segments"][index];const auto times=s["scheduled_times"].as<std::size_t>();
     const auto cols=s["output_detector_indices"].as<std::vector<std::size_t>>();
     require(times>0 && cols.size()==s["output_detectors"].as<std::size_t>() && s["network"].as<int>()==n.network,"MAP PTC segment domain mismatch");
@@ -174,7 +174,8 @@ std::shared_ptr<const PtcMapPublication> load_map_segment(const SavedMapNetwork 
     require(s["files"].size()==expected.size(),"MAP PTC component inventory incomplete");
     for(const auto &entry:s["files"]) {
         const auto name=entry.first.as<std::string>();require(expected.erase(name)==1,"MAP unexpected or repeated PTC component");
-        ledger.bind(n.ptcroot/name,entry.second.as<std::string>());
+        if(!published_only || name==stem+"-cleaned.f64" || name==stem+"-causes.u8" || name==stem+"-slots.i64")
+            ledger.bind(n.ptcroot/name,entry.second.as<std::string>());
     }
     require(expected.empty(),"MAP required PTC component absent");
     PtcMapPublicationIdentity id;id.publication="sha256:"+n.ptc_sha+":"+stem;
@@ -207,10 +208,10 @@ void map_fits(const fs::path &path,const AstRtcTanGrid &wcs,const mapmaking::For
         long axes[2]{static_cast<long>(wcs.columns),static_cast<long>(wcs.rows)};
         fits_create_img(f,bitpix,2,axes,&status);
         if(*name)fits_update_key_str(f,"EXTNAME",name,nullptr,&status);
-        fits_update_key_str(f,"CTYPE1","RA---TAN",nullptr,&status);fits_update_key_str(f,"CTYPE2","DEC--TAN",nullptr,&status);
-        fits_update_key_str(f,"CUNIT1","deg",nullptr,&status);fits_update_key_str(f,"CUNIT2","deg",nullptr,&status);
-        fits_update_key_str(f,"RADESYS","FK5",nullptr,&status);fits_update_key_dbl(f,"EQUINOX",2000,15,nullptr,&status);
-        for(const auto &[key,value]:std::array<std::pair<const char*,double>,6>{{{"CRPIX1",wcs.crpix1},{"CRPIX2",wcs.crpix2},{"CRVAL1",wcs.crval1_deg},{"CRVAL2",wcs.crval2_deg},{"CDELT1",wcs.cdelt1_deg},{"CDELT2",wcs.cdelt2_deg}}})
+        fits_update_key_str(f,"CTYPE1","AZOFFSET",nullptr,&status);fits_update_key_str(f,"CTYPE2","ELOFFSET",nullptr,&status);
+        fits_update_key_str(f,"CUNIT1","arcsec",nullptr,&status);fits_update_key_str(f,"CUNIT2","arcsec",nullptr,&status);
+        fits_update_key_str(f,"ASTFRAME","delta-source-AltAz",nullptr,&status);
+        for(const auto &[key,value]:std::array<std::pair<const char*,double>,6>{{{"CRPIX1",wcs.crpix1},{"CRPIX2",wcs.crpix2},{"CRVAL1",wcs.crval1_deg},{"CRVAL2",wcs.crval2_deg},{"CDELT1",3600*wcs.cdelt1_deg},{"CDELT2",3600*wcs.cdelt2_deg}}})
             fits_update_key_dbl(f,key,value,15,nullptr,&status);
         fits_update_key_str(f,"BUNIT",unit,nullptr,&status);fits_update_key_str(f,"ARRAY",array.c_str(),nullptr,&status);
         fits_update_key_dbl(f,"NOMBFWHM",beam,15,"Fixed nominal calibration FWHM, arcsec; not measured PSF",&status);
@@ -240,10 +241,10 @@ int execute_saved_map(const fs::path &input,const fs::path &output) {
     for(const auto &entry:request)require(fields.contains(entry.first.as<std::string>()),"MAP unknown request field");
     const auto owner_path=checked_file(request["owner_binding"]);const auto owner_sha=ledger.bind(owner_path);
     const auto owner=YAML::LoadFile(owner_path.string());
-    require(owner["identity"].as<std::string>()=="SCI-MAP-FIRST-FORWARD-OWNER-2026-09-22" &&
-        owner["frame"]["reference_system"].as<std::string>()=="FK5" && owner["frame"]["equinox"].as<double>()==2000 &&
-        owner["frame"]["source_already_in_frame"].as<bool>() && owner["frame"]["transformation"].as<std::string>()=="identity" &&
-        owner["frame"]["source_fields"].as<std::vector<std::string>>()==std::vector<std::string>{"SourceRaAct","SourceDecAct"} &&
+    require(owner["identity"].as<std::string>()=="POINT-OOF-DELTA-SOURCE-ALTAZ-2026-10-02" &&
+        owner["frame"]["reference_system"].as<std::string>()=="delta-source-AltAz" &&
+        owner["frame"]["source_already_in_frame"].as<bool>() && owner["frame"]["transformation"].as<std::string>()=="source-offset-corrected-elevation-detector-rotation" &&
+        owner["frame"]["source_fields"].as<std::vector<std::string>>()==std::vector<std::string>{"TelAzAct","TelElAct","SourceAz","SourceEl","TelAzCor","TelElCor"} &&
         owner["measured_beams_are_separate"].as<bool>() && !owner["realized_response_inferred"].as<bool>() &&
         owner["coefficient_family"].as<std::string>()==std::string(PtcUniformCoefficients::family),"MAP selected owner frame/coefficient binding differs");
     const std::array<std::string,3> arrays{"a1100","a1400","a2000"};const std::array<double,3> beams{5,7.5,10};
@@ -260,7 +261,7 @@ int execute_saved_map(const fs::path &input,const fs::path &output) {
     try {
         std::vector<SavedMapNetwork> networks;std::set<int> seen;
         for(const auto &n:request["networks"]) {
-            networks.push_back(load_saved_map_network(n,ledger));require(seen.insert(networks.back().network).second,"MAP repeated network publication");
+            networks.push_back(load_saved_map_network(n,ledger,true));require(seen.insert(networks.back().network).second,"MAP repeated network publication");
         }
         std::sort(networks.begin(),networks.end(),[](const auto &a,const auto &b){return a.network<b.network;});
         for(const auto &n:networks)require(n.observation_identity==networks.front().observation_identity,"MAP cannot combine different observations in a base observation map");
@@ -340,7 +341,7 @@ int execute_saved_map(const fs::path &input,const fs::path &output) {
                     qc["lifecycle_evidence"]="new write-once q and g links; exact immutable input generation; source nonmutation checked before final product publication";
                     write_yaml(directory/"handoff"/(name+"-coefficient-qc.yaml"),qc);
                     Eigen::VectorXd times(q->identity().slots.size());for(Eigen::Index t=0;t<times.size();++t)times[t]=n.native_times[n.first+q->identity().slots[t]*n.factor];
-                    const auto schedule=evaluate_ast_rtc_schedule(*n.observation.trajectory,*n.observation.offsets,ra0,dec0,times);
+                    const auto schedule=evaluate_ast_rtc_schedule(*n.observation.trajectory,*n.observation.offsets,ra0,dec0,times,AstRtcMapFrame::delta_source_altaz);
                     const auto cols=n.ptc["segments"][si]["output_detector_indices"].as<std::vector<std::size_t>>();
                     PtcMatrix coordinate(times.size(),2*cols.size());
                     for(std::size_t d=0;d<cols.size();++d) {
@@ -368,6 +369,7 @@ int execute_saved_map(const fs::path &input,const fs::path &output) {
                     binding["PTC_publication"]=q->identity().publication;binding["CAL_parent"]=q->identity().cal_parent;
                     binding["RTC_grid"]=q->identity().rtc_grid;binding["AST_telescope"]=n.cal["AST_telescope"].as<std::string>();
                     binding["AST_pointing_offset"]=n.observation.offset_identity;binding["owner_frame_binding"]="sha256:"+owner_sha;
+                    binding["AST_method"]="source-offset-altaz-detector-offset-v1";binding["frame"]="delta-source-AltAz";
                     binding["coordinates_file"]=coords.filename().string();binding["sha256"]=citlali::utils::sha256_file(coords);
                     binding["layout"]="little-endian f64 pairs tangent_lon_deg,tangent_lat_deg in exact PTC retained-support order";
                     binding["MAP_admitted"]=local_admitted;binding["MAP_profile"]=std::string(mapmaking::ForwardMapAdmission::profile);
@@ -419,17 +421,17 @@ int execute_saved_map(const fs::path &input,const fs::path &output) {
             }
             require(retained==expected_retained,"MAP aggregate PTC support differs");
             const auto coordinates_done=std::chrono::steady_clock::now();
-            const auto wcs=AstRtcTanGrid::centered(ra0,dec0,pixel,extent_x,extent_y);
+            const auto wcs=AstRtcTanGrid::source_offset(pixel,extent_x,extent_y);
             YAML::Node plan;plan["schema"]="citlali-forward-map-plan-v1";plan["role"]="SCI-MAP:base_observation_map@1";
             plan["observation"]=observation_identity;plan["array"]=arrays[array];plan["sources"]=sources;
             plan["request_identity"]="sha256:"+request_sha;plan["owner_binding"]="sha256:"+owner_sha;
             plan["coverage_cut"]=cut;plan["pixel_size_arcsec"]=pixel;plan["projection"]="SCI-MAP:one_hot_containing_pixel@1";
             plan["target_grid_policy"]="pre-accumulation centered odd grid enclosing all MAP-admitted valid AST coordinates with half-pixel margin";
-            auto frame=plan["WCS"];frame["RADESYS"]="FK5";frame["EQUINOX"]=2000.;frame["CTYPE1"]="RA---TAN";frame["CTYPE2"]="DEC--TAN";
-            frame["CUNIT1"]="deg";frame["CUNIT2"]="deg";frame["CRPIX1"]=wcs.crpix1;frame["CRPIX2"]=wcs.crpix2;
-            frame["CRVAL1"]=wcs.crval1_deg;frame["CRVAL2"]=wcs.crval2_deg;frame["CDELT1"]=wcs.cdelt1_deg;frame["CDELT2"]=wcs.cdelt2_deg;
-            frame["rows"]=wcs.rows;frame["columns"]=wcs.columns;frame["axis_order"]="x=RA,y=Dec;storage(y,x)";
-            frame["source_to_target_frame"]="identity;owner-declared source FK5/J2000.0";
+            auto frame=plan["WCS"];frame["ASTFRAME"]="delta-source-AltAz";frame["CTYPE1"]="AZOFFSET";frame["CTYPE2"]="ELOFFSET";
+            frame["CUNIT1"]="arcsec";frame["CUNIT2"]="arcsec";frame["CRPIX1"]=wcs.crpix1;frame["CRPIX2"]=wcs.crpix2;
+            frame["CRVAL1"]=wcs.crval1_deg;frame["CRVAL2"]=wcs.crval2_deg;frame["CDELT1"]=3600*wcs.cdelt1_deg;frame["CDELT2"]=3600*wcs.cdelt2_deg;
+            frame["rows"]=wcs.rows;frame["columns"]=wcs.columns;frame["axis_order"]="x=source-offset azimuth,y=source-offset elevation;storage(y,x)";
+            frame["source_to_target_frame"]="delta-source AltAz from telescope source azimuth/elevation and corrections; no RA/Dec image rotation";
             frame["time_scale"]="UNIX UTC assigned RTC times; zero verified interface offset";
             frame["site_model_state"]="no new celestial frame, EOP or refraction transform; existing telescope/pointing-offset realization retained";
             std::size_t offset=0;

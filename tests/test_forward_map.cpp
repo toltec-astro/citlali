@@ -214,3 +214,40 @@ TEST(ForwardMap, AstCenteredTanGridPreservesOrientationAndMargin) {
     auto [x,y]=w.continuous_pixel(2./3600,2./3600);EXPECT_DOUBLE_EQ(x,3);EXPECT_DOUBLE_EQ(y,4);
     EXPECT_THROW(AstRtcTanGrid::centered(1,0.5,0,0,0),std::invalid_argument);
 }
+
+TEST(ForwardMap, SourceOffsetAltAzUsesCorrectedElevationAndTelescopeCorrections) {
+    NativeTelescopeData d;
+    auto v=[](double a,double b){Eigen::VectorXd x(2);x<<a,b;return x;};
+    d["TelTime"]=v(10,12);d["TelAzAct"]=v(2*pi+0.42,2*pi+0.44);
+    d["SourceAz"]=v(.4,.42);d["TelElAct"]=v(.62,.66);d["SourceEl"]=v(.6,.64);
+    d["TelAzCor"]=v(.001,.003);d["TelElCor"]=v(.01,.01);
+    const RawTelescopeTrajectory tr(d);
+    NativePointingOffsetModel offsets({{"az",v(2,4)},{"alt",v(-3,-1)}},v(10,12));
+    const auto times=v(10,11);
+    auto s=evaluate_ast_rtc_schedule(tr,offsets,0,0,times,AstRtcMapFrame::delta_source_altaz);
+    const auto xy=s.detector_tangent_deg(5,7);
+    for(int i=0;i<2;++i){const double el=.61+.02*i;
+        const double az=.02*std::cos(el)-(.001+.001*i)+(std::cos(el)*5-std::sin(el)*7+2+i)*pi/180/3600;
+        const double alt=.01+(std::cos(el)*7+std::sin(el)*5-3+i)*pi/180/3600;
+        EXPECT_NEAR(xy(i,0),az*180/pi,1e-12);EXPECT_NEAR(xy(i,1),alt*180/pi,1e-12);
+        EXPECT_NEAR(s.elevation_deg[i],el*180/pi,1e-13);
+    }
+    EXPECT_TRUE(s.detector_tangent_deg(NAN,0).array().isNaN().all());
+    EXPECT_EQ(tr.telescope_data().at("TelAzAct")[0],2*pi+.42);
+    auto bad=d;bad.erase("SourceAz");
+    EXPECT_THROW(evaluate_ast_rtc_schedule(RawTelescopeTrajectory(bad),offsets,0,0,times,AstRtcMapFrame::delta_source_altaz),std::invalid_argument);
+    EXPECT_THROW(evaluate_ast_rtc_schedule(tr,offsets,0,0,v(9,11),AstRtcMapFrame::delta_source_altaz),std::invalid_argument);
+    const auto grid=AstRtcTanGrid::source_offset(1,2./3600,3./3600);
+    EXPECT_EQ(grid.crval1_deg,0);EXPECT_EQ(grid.crval2_deg,0);EXPECT_EQ(grid.cdelt1_deg,-1./3600);
+}
+TEST(ForwardMap, SourceOffsetZeroAndDetectorRotationSign) {
+    auto v=[](double a){return Eigen::VectorXd::Constant(2,a).eval();};
+    NativeTelescopeData d{{"TelTime",v(1)},{"TelAzAct",v(.7)},{"SourceAz",v(.7)},
+      {"TelElAct",v(pi/2)},{"SourceEl",v(pi/2)},{"TelAzCor",v(0)},{"TelElCor",v(0)}};
+    d["TelTime"][1]=2;
+    NativePointingOffsetModel off({{"az",v(0)},{"alt",v(0)}},d["TelTime"]);
+    const auto s=evaluate_ast_rtc_schedule(RawTelescopeTrajectory(d),off,0,0,d["TelTime"],AstRtcMapFrame::delta_source_altaz);
+    EXPECT_TRUE(s.detector_tangent_deg(0,0).isZero());
+    const auto xy=s.detector_tangent_deg(4,3);
+    EXPECT_NEAR(xy(0,0)*3600,-3,1e-14);EXPECT_NEAR(xy(0,1)*3600,4,1e-14);
+}

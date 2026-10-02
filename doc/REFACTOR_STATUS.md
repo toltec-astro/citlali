@@ -1,3 +1,16 @@
+## Delta-source AltAz repair and OOF JINC preparation — 2026-10-02
+
+The owner resumed the coordinate repair and requests three same-sample a2000
+JINC maps for152385–152387 in the historical R delta-source AltAz frame.
+[Work order](../validation/oof_altaz_2026-10-02/WORK_ORDER.md) owns native AST
+and ordinary POINT/OOF MAP frame enforcement, exact saved-slot/detector checks,
+and the existing JINC runner. CAL/RTC/PTC, numerical rule, coefficient family
+and support remain fixed. Original FK5 maps are preserved. POINT campaigns
+remain closed; its historical FK5 feedback reader must reject new AltAz parents
+until separately validated. This is not an optical solver or production claim.
+Exact-source gates, review and freeze precede the owner foreground launch and
+manual resume. No observational map accumulation has occurred at this checkpoint.
+
 ## OOF a2000 JINC run completed; coordinate repair deferred — 2026-10-02
 
 The [saved assessment](../validation/oof_jinc_2026-10-02/COMPLETION.md) records

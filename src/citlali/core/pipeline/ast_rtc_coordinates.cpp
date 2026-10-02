@@ -11,7 +11,7 @@ template<class Map> struct ReadOnlyPointingSeries {
 }
 
 AstRtcScheduleEvaluation evaluate_ast_rtc_schedule(const RawTelescopeTrajectory &trajectory,
-    const NativePointingOffsetModel &offsets,double ra0,double dec0,const Eigen::VectorXd &times) {
+    const NativePointingOffsetModel &offsets,double ra0,double dec0,const Eigen::VectorXd &times,AstRtcMapFrame frame) {
     if(!std::isfinite(ra0) || !std::isfinite(dec0) || std::abs(dec0)>std::numbers::pi/2 ||
        !times.size() || !times.array().isFinite().all())
         throw std::invalid_argument("AST RTC schedule or center invalid");
@@ -21,10 +21,15 @@ AstRtcScheduleEvaluation evaluate_ast_rtc_schedule(const RawTelescopeTrajectory 
            times[i]>trajectory.support_end_unix_sec() ||
            (offsets.source_value_count()==2 && (times[i]<support[0] || times[i]>support[1])))
             throw std::invalid_argument("AST RTC schedule outside exact telescope/offset support");
-    AstRtcScheduleEvaluation out;
+    AstRtcScheduleEvaluation out;out.frame=frame;
     out.telescope=evaluate_raw_telescope_trajectory_at(trajectory,times);
     out.offsets=offsets.evaluate_at(times);
     auto &evaluated=out.telescope;
+    if(frame==AstRtcMapFrame::delta_source_altaz) {
+        for(const auto *key:{"SourceAz","SourceEl","TelAzCor","TelElCor"})
+            if(!evaluated.contains(key))throw std::invalid_argument("AST source-offset AltAz missing "+std::string(key));
+        engine_utils::calc_source_offset_altaz(evaluated);
+    } else {
     const auto &ra=evaluated.at("TelRa"),&dec=evaluated.at("TelDec");
     for(Eigen::Index i=0;i<ra.size();++i) {
         const double denominator=std::sin(dec0)*std::sin(dec[i])+std::cos(dec0)*std::cos(dec[i])*std::cos(ra[i]-ra0);
@@ -33,6 +38,7 @@ AstRtcScheduleEvaluation evaluate_ast_rtc_schedule(const RawTelescopeTrajectory 
     Eigen::VectorXd lon(ra.size()),lat(ra.size());
     engine_utils::gnomonic_projection(ra,dec,ra0,dec0,lon,lat);
     evaluated["ra_phys"]=std::move(lon);evaluated["dec_phys"]=std::move(lat);
+    }
     evaluated["TelElAct"]-=evaluated.at("TelElCor");
     out.elevation_deg=evaluated.at("TelElAct")*180/std::numbers::pi;
     if(!out.elevation_deg.array().isFinite().all())throw std::invalid_argument("AST nonfinite scheduled elevation");
@@ -44,7 +50,7 @@ Eigen::Matrix<double,Eigen::Dynamic,2> AstRtcScheduleEvaluation::detector_tangen
     // Give the legacy numerical helper checked, read-only lookup without
     // copying shared telescope vectors for each detector.
     ReadOnlyPointingSeries evaluated{telescope};ReadOnlyPointingSeries correction{offsets};
-    auto [y,x]=engine_utils::calc_det_pointing(evaluated,x_t,y_t,"radec",correction,"array",true);
+    auto [y,x]=engine_utils::calc_det_pointing(evaluated,x_t,y_t,frame==AstRtcMapFrame::delta_source_altaz?"altaz":"radec",correction,"array",true);
     for(Eigen::Index i=0;i<x.size();++i) {
         if(!std::isfinite(x[i]) || !std::isfinite(y[i]))throw std::invalid_argument("AST V2 pointing produced nonfinite coordinates");
         out(i,0)=x[i]*180/std::numbers::pi;out(i,1)=y[i]*180/std::numbers::pi;
@@ -62,6 +68,9 @@ AstRtcTanGrid AstRtcTanGrid::centered(double ra,double dec,double pixel,double x
         throw std::invalid_argument("AST target grid exceeds bounded MAP realization capacity");
     return {static_cast<std::size_t>(2*hy+1),static_cast<std::size_t>(2*hx+1),
             hx+1,hy+1,-scale,scale,ra*180/std::numbers::pi,dec*180/std::numbers::pi};
+}
+AstRtcTanGrid AstRtcTanGrid::source_offset(double pixel,double x,double y) {
+    return centered(0,0,pixel,x,y);
 }
 std::pair<double,double> AstRtcTanGrid::continuous_pixel(double lon,double lat) const {
     return {lon/cdelt1_deg+crpix1,lat/cdelt2_deg+crpix2};

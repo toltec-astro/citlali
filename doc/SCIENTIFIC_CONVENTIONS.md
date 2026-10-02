@@ -735,9 +735,19 @@ retroactively relabeled as carrying this successor bundle. See
 
 | Product family | Frame | Spatial axis units |
 | --- | --- | --- |
-| Point and OOF maps | AltAz tangent-plane azimuth/elevation offsets around the configured map center | arcsec |
+| Point and OOF maps | Delta-source AltAz tangent-plane azimuth/elevation offsets around the telescope source | arcsec |
 | Beammap detector maps | AltAz tangent-plane azimuth/elevation offsets around the Beammap source | arcsec |
 | Science maps | Equatorial J2000 TAN projection centered on the configured field | deg |
+
+Owner direction 2026-10-02 makes delta-source AltAz mandatory for new POINT
+and OOF maps. At exact assigned sample times, source-relative offsets are
+`az = cos(TelElAct - TelElCor) * (TelAzAct - SourceAz) - TelAzCor` and
+`el = TelElAct - SourceEl - TelElCor`, using the existing telescope azimuth
+unwrap convention. APT detector offsets rotate by corrected elevation; selected
+pointing offsets are then added in tangent azimuth/elevation. The published
+reference is zero, not absolute telescope azimuth/elevation. Existing frozen
+FK5 products retain their historical identity. This does not alter CAL's
+already-published elevation, reproject a finished image, or reopen POINT runs.
 
 The validated AltAz FITS axes are `AZOFFSET` and `ELOFFSET`. Science products
 use their recorded equatorial WCS. FITS WCS is authoritative for persisted map

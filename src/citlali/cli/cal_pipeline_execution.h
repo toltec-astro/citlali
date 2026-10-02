@@ -12,7 +12,7 @@ struct CalObservationInput {
     std::string offset_identity;
     citlali::cli::detail::CalOpacityHeader opacity;
 };
-CalObservationInput prepare_cal_observation(const YAML::Node &cfg,const NativeObservationScope &scope) {
+CalObservationInput prepare_cal_observation(const YAML::Node &cfg,const NativeObservationScope &scope,bool source_offset_altaz=false) {
     const auto telescope_path=checked_file(cfg["telescope"]);
     netCDF::NcFile tel(telescope_path.string(),netCDF::NcFile::read);
     require(read_netcdf_scalar<int>(tel,"Header.Dcs.ObsNum")==scope.observation &&
@@ -33,6 +33,14 @@ CalObservationInput prepare_cal_observation(const YAML::Node &cfg,const NativeOb
         {"TelTime","TelTime"},{"SourceRaAct","TelRa"},{"SourceDecAct","TelDec"},
         {"TelAzAct","TelAzAct"},{"TelElAct","TelElAct"},{"TelElCor","TelElCor"},{"ActParAng","ActParAng"}}})
         data[key]=series("Data.TelescopeBackend."+source_name,key=="TelTime"?"sec":"rad");
+    if(source_offset_altaz) {
+        for(const auto *key:{"SourceAz","SourceEl","TelAzCor"})
+            data[key]=series("Data.TelescopeBackend."+std::string(key),"rad");
+        // Same telescope-support unwrap as the historical input owner, before
+        // interpolation. CAL's already-published elevation is not recomputed.
+        for(const auto *key:{"TelAzAct","TelElAct","TelAzCor","TelElCor","SourceAz","SourceEl"})
+            engine_utils::fix_periodic_boundary(data.at(key),M_PI,1.99*M_PI,2*M_PI);
+    }
     auto center=[&](const std::string &name) {auto v=series(name,"rad");require(v.size()>0 && v.array().isFinite().all() &&
         (v.array()==v[0]).all(),"AST bounded V2 adapter requires a fixed source center");return v[0];};
     const double ra0=center("Header.Source.Ra"),dec0=center("Header.Source.Dec");

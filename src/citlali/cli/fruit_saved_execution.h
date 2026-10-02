@@ -62,6 +62,7 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output,bool valida
         owner["gain"].as<double>()==1 && (speed_experiment?(owner["nonzero_cycles"].as<int>()>=0 && owner["nonzero_cycles"].as<int>()<=10 && cycle<=owner["nonzero_cycles"].as<int>()):owner["nonzero_cycles"].as<int>()==((continuation || campaign)?10:1)),"FRUIT owner choices absent");
     const auto map_path=checked_file(request["map_request"]);ledger.bind(map_path);const auto mr=YAML::LoadFile(map_path.string());
     const auto pp=checked_file(request["parent_plan"]);ledger.bind(pp);const auto parent=YAML::LoadFile(pp.string());
+    require(!parent["WCS"] || !parent["WCS"]["ASTFRAME"],"FRUIT AltAz feedback requires separate frame-aware validation; POINT remains closed");
     const auto array=request["array"].as<std::string>();const std::array<std::string,3> arrays{"a1100","a1400","a2000"};
     require(!four_network_rtc || array=="a1100","FRUIT step consequence request array");
     const auto ai=std::find(arrays.begin(),arrays.end(),array)-arrays.begin();require(ai<3 && parent["array"].as<std::string>()==array && parent["observation"].as<std::string>()==((reference || step_experiment || point_transfer)?("obs:"+std::to_string(owner["observation"].as<int>())+"_0_2"):independent?"obs:152430_0_2":"obs:152389_0_2") && (reference || four_network_rtc || !independent || array=="a2000"),"FRUIT foreign array/observation");
