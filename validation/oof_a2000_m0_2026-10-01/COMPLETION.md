@@ -40,7 +40,7 @@ S CAL availability is2,696,463/3,839,610;2,807,927/3,852,311;2,828,439/3,844,495
 
 ## Cost, evidence and disposition
 
-Numerical wall times total106.72s; peak sampled aggregate process-treeRSS2.061GB. The roles retain0.543/0.537/0.531GB (1.610GB total); shared derived storage at assessment is21.710GB, below30GB. The runner already released439,213,552bytes of recorded conditioned/centered duplicates after successful completion. No additional cleanup was performed. These actual disk counts are distinct from the29.330GB conservative launch reservation and RAM usage.
+Numerical wall times total106.72s; peak sampled aggregate process-treeRSS2.061GB. The roles retain0.542/0.538/0.531GB (1.610GB total); shared derived storage at assessment is21.710GB, below30GB. The runner already released439,213,552bytes of recorded conditioned/centered duplicates after successful completion. No additional cleanup was performed. These actual disk counts are distinct from the29.330GB conservative launch reservation and RAM usage.
 
 Figures and machine measurements are in
 `~/work_toltec/local_data/citlali-validation/successor-oof-a2000-m0-20261001/report/`:
