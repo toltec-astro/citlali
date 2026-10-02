@@ -1,3 +1,5 @@
+> **Run completed and assessed; the three-map allowance is consumed. The command below is historical, not a retry. See COMPLETION.md.**
+
 # OOF a2000 JINC readiness
 
 The comparison is three new JINC maps of the existing cold-M0 samples for

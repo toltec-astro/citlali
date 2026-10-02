@@ -1,3 +1,19 @@
+## OOF a2000 JINC run completed; coordinate repair deferred — 2026-10-02
+
+The [saved assessment](../validation/oof_jinc_2026-10-02/COMPLETION.md) records
+three successful map-only applications at524845cd7. Central100″ support is
+complete and JINC removes much of the ordinary pixel grain. Central peaks are
+137.31/554.33/227.05mJy/nominal beam. Equal recovered morphology remains
+unestablished across FK5/AltAz. Full maps expose large signed-C cancellation
+artifacts outside central comparison windows; numerical support is not blanket
+scientific-quality admission. Prior outputs and all frozen parents are preserved.
+The launch allowance is consumed; no new reductions or feedback.
+
+Owner now requires delta-source(offset) AltAz for POINT and OOF. Implement that
+through shared native AST/MAP after discussion of these results; this assessment
+makes no coordinate change. POINT scientific campaigns stay closed. No optical
+inference, remote access, integration, push or production claim.
+
 ## OOF a2000 saved-sample JINC preparation — 2026-10-02
 
 Owner requests a new map-only comparison for152385–152387, selecting historical
