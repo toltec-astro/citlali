@@ -20,7 +20,7 @@ old receipts. Future native ordinary MAP publications derive the validated scope
 
 The OOF-approved arithmetic certificate uses each original central32″ peak as
 fixed P (exact values in PREPARED.json), never a new JINC peak. Signal bound is
-10^-6 P + 10^-6 |exact N/C|; denominator must be separated from zero; Q/T relative
+10^-6 P + 10^-6 |computed N/C|; denominator must be separated from zero; Q/T relative
 bounds10^-6. Unavailable values remain NaN with explicit local causes. Retain
 five base roles only; certificate planes are separate diagnostics. Neither Q nor
 coefficient-squared time establishes variance, precision or physical exposure.

@@ -22,6 +22,7 @@ ROOT=PARENT.with_name('successor-oof-a2000-jinc-20261002')
 HELPER=W/'build/bin/citlali_jinc_diagnostic'
 PROFILE='OOF-A2000-JINC-NUMERICAL-ADEQUACY-v1'
 RESERVE=1_000_000_000
+MANDATORY_GATES=('configure','build','ctest','baseline','point-tools','oof-tools','config','native-point-contract','saved-preparation')
 
 def read(p):return json.loads(Path(p).read_text())
 def yread(p):return yaml.load(Path(p).read_text(),Loader=yaml.CSafeLoader)
@@ -66,7 +67,7 @@ def selected_values(values,causes,coordinates,bits):
     z=values[retained];require(np.isfinite(z).all() and np.isfinite(coordinates).all(),'nonfinite admitted sample')
     return z
 
-def replay(z,xy,h,original,normalization,pixels):
+def replay(z,xy,h,original,normalization,pixels,numerator=None,support=None):
     px=xy[:,0]/h['CDELT1']+h['CRPIX1'];py=xy[:,1]/h['CDELT2']+h['CRPIX2']
     nx=h['NAXIS1'];ny=h['NAXIS2'];ix=np.floor(px-.5).astype('i8');iy=np.floor(py-.5).astype('i8')
     require(np.all((ix>=0)&(ix<nx)&(iy>=0)&(iy<ny)),'original AST outside destination')
@@ -74,9 +75,12 @@ def replay(z,xy,h,original,normalization,pixels):
     n=np.bincount(actual,weights=z,minlength=nx*ny).reshape(ny,nx)
     c=np.bincount(actual,minlength=nx*ny).reshape(ny,nx)
     require(np.array_equal(c,normalization),'original uniform normalization differs')
-    ok=c>0;delta=float(np.max(np.abs(n[ok]/c[ok]-original[ok])))
+    if numerator is not None:require(np.allclose(n,numerator,rtol=1e-11,atol=1e-7),'original full numerator replay failed')
+    ok=np.isfinite(original) if support is None else support
+    require(ok.any() and np.array_equal(np.isfinite(original),ok) and np.all(c[ok]>0),'original signal support/missingness differs')
+    delta=float(np.max(np.abs(n[ok]/c[ok]-original[ok])))
     require(np.allclose(n[ok]/c[ok],original[ok],rtol=1e-11,atol=1e-9),'original signal replay failed')
-    return dict(samples=len(z),membership_exact=True,normalization_exact=True,max_signal_difference=delta)
+    return dict(samples=len(z),membership_exact=True,normalization_exact=True,max_signal_difference=delta,max_numerator_difference=float(np.max(np.abs(n-numerator))) if numerator is not None else None,published_signal_pixels=int(ok.sum()),positive_normalization_pixels=int((c>0).sum()))
 
 def prepare():
     rev=revision();capacity();out=ROOT/'prepared'/rev;out.mkdir(parents=True,exist_ok=False)
@@ -87,7 +91,7 @@ def prepare():
         require(plan['observation']==bundle['observation']==f'obs:{obs}_0_2','unrecognized predecessor identity; reassess')
         require(bundle['array']=='a2000' and bundle['AST_invalid_coordinates']==0 and bundle['MAP_route_admitted']==bundle['PTC_retained'],'parent population/admission differs')
         with fits.open(auth.get(base/'map.fits',bundle['files']['map.fits'])) as f:
-            h=f[0].header.copy();original=f[0].data.copy();norm=f['NORMALIZATION'].data.copy()
+            h=f[0].header.copy();original=f[0].data.copy();norm=f['NORMALIZATION'].data.copy();numerator=f['NUMERATOR'].data.copy();support=f['SCI_SUPPORT'].data.astype(bool)
         require(h['RADESYS']=='FK5' and h['CDELT1']==-2/3600 and h['CDELT2']==2/3600,'original grid differs')
         zs=[];xys=[];frequencies=[];segments=[];seen=set();cursor=0
         for e in plan['ordered_column_domain']:
@@ -120,7 +124,7 @@ def prepare():
             segments.append(dict(network=nw,publication=bound(base/e['publication_file']),input=bound(role/f'inputs/network{nw}-input.json'),slots=bound(ptcroot/(stem+'-slots.i64')),frequency_hz=frequency,samples=len(z)))
         z=np.concatenate(zs);xy=np.concatenate(xys);fs=np.concatenate(frequencies)
         pixels=np.fromfile(auth.get(base/'operator-pixel.i32',bundle['files']['operator-pixel.i32']),dtype='<i4')
-        checks=replay(z,xy,h,original,norm,pixels)
+        checks=replay(z,xy,h,original,norm,pixels,numerator,support)
         # Preserve reference center and full center-to-center extent; halve cell size.
         nh=h.copy();nh['CDELT1']=-1/3600;nh['CDELT2']=1/3600
         for i in (1,2):nh['NAXIS'+str(i)]=2*h['NAXIS'+str(i)]-1;nh['CRPIX'+str(i)]=2*h['CRPIX'+str(i)]-1
@@ -139,7 +143,7 @@ def prepare():
         require(peak==float(np.nanmax(Cutout2D(original,(original.shape[1]/2,original.shape[0]/2),(16,16)).data)), 'frozen old central peak differs')
         request.update(mode='accumulate',profile=PROFILE,cache_sha256=digest(dest/'cache/cache.f64'),coefficient_errors=bound(dest/'coefficient-errors.f64'),samples=len(z),geometry_payload=bound(dest/'geometry.f64'),value_payload=bound(dest/'values.f64'),workers=1,frozen_peak=peak)
         save_json(dest/'request.json',request)
-        state=dict(observation=obs,identity=f'obs:{obs}_0_1',predecessor_identity=plan['observation'],identity_repair='scan1 authenticated from actual OOF input and CAL/AST; original erroneous scan2 strings preserved',request=bound(dest/'request.json'),header=bound(dest/'header.json'),ordinary_replay=checks,segments=segments,peak_scale=peak,certificate=dict(max_coefficient_error=float(enclosure['errors'].max()),unique_radii=enclosure['unique_radii'],precision=enclosure['precision'],cache=bound(dest/'cache/cache.f64'),errors=bound(dest/'coefficient-errors.f64')))
+        state=dict(observation=obs,identity=f'obs:{obs}_0_1',predecessor_identity=plan['observation'],identity_repair='scan1 authenticated from actual OOF input and CAL/AST; original erroneous scan2 strings preserved',request=bound(dest/'request.json'),header=bound(dest/'header.json'),ordinary_replay=checks,segments=segments,peak_scale=peak,peak_scale_hex=float(peak).hex(),certificate=dict(max_coefficient_error=float(enclosure['errors'].max()),unique_radii=enclosure['unique_radii'],precision=enclosure['precision'],cache=bound(dest/'cache/cache.f64'),errors=bound(dest/'coefficient-errors.f64')))
         states.append(state);bindings.extend(auth.used.values());print(str(obs)+' saved replay/cache passed',flush=True)
     refs={r['path']:r for r in bindings}
     for p in out.rglob('*'):
@@ -147,8 +151,17 @@ def prepare():
     for b in refs.values():verified(b)
     save_json(ROOT/'PREPARED.json',dict(source_revision=rev,helper=bound(HELPER),states=states,bindings=list(refs.values()),storage=capacity(),observational_accumulations=0,RTC_CAL_PTC_executions=0))
 
+def execution_identity(prepared):
+    require(revision()==prepared['source_revision'],'execution source changed')
+    require(Path(prepared['helper']['path'])==HELPER,'selected helper path differs')
+    verified(prepared['helper'])
+def validate_gates(gates,rev):
+    require(gates['source_revision']==rev and gates.get('complete') is True,'gates incomplete or wrong source')
+    require(tuple(g['name'] for g in gates['gates'])==MANDATORY_GATES,'mandatory gate inventory differs')
+    require(all(g['exit_code']==0 for g in gates['gates']),'gate failure')
+    for g in gates['gates']:verified(g['log'])
 def check(frozen=True):
-    rev=revision();p=read(ROOT/'PREPARED.json');require(p['source_revision']==rev,'prepared source differs');verified(p['helper'])
+    rev=revision();p=read(ROOT/'PREPARED.json');execution_identity(p)
     for b in p['bindings']:verified(b)
     if frozen:
         f=read(ROOT/'FREEZE.json');require(f['source_revision']==rev,'freeze source differs')
@@ -158,12 +171,14 @@ def check(frozen=True):
 def freeze():
     p,storage=check(False);review=read(ROOT/'review.json');gates=read(ROOT/'GATES.json')
     require(review['source_revision']==gates['source_revision']==p['source_revision'] and review['verdict']=='pass','exact source review/gates missing')
-    require(all(g['exit_code']==0 for g in gates['gates']),'gate failure')
+    validate_gates(gates,p['source_revision'])
     require(not (ROOT/'FREEZE.json').exists(),'preserve existing freeze')
     refs=[bound(ROOT/n) for n in ('PREPARED.json','GATES.json','review.json')]+[g['log'] for g in gates['gates']]
     save_json(ROOT/'FREEZE.json',dict(source_revision=p['source_revision'],bindings=refs,storage=storage,roles=list(OBS),new_map_only_starts=3,new_upstream_starts=0,manual_resume='owner foreground once, then done; no retry'))
 def publish(state,out):
-    q=read(verified(state['request']));h=fits.Header(read(verified(state['header'])));shape=(h['NAXIS2'],h['NAXIS1']);receipt=yread(out/'receipt.yaml')
+    q=read(verified(state['request']));raw_header=read(verified(state['header']));shape=(raw_header['NAXIS2'],raw_header['NAXIS1'])
+    structural={'SIMPLE','XTENSION','BITPIX','NAXIS','NAXIS1','NAXIS2','EXTEND','PCOUNT','GCOUNT','CHECKSUM','DATASUM','EXTNAME'}
+    h=fits.Header({k:v for k,v in raw_header.items() if k not in structural});receipt=yread(out/'receipt.yaml')
     require(receipt['request_sha256']==digest(verified(state['request'])) and receipt['observation']==state['identity'],'native receipt binding differs')
     def plane(n,dtype='<f8'):
         require(digest(out/n)==receipt['files'][n],'native output digest differs')
@@ -186,9 +201,11 @@ def run():
         for state in p['states']:
             capacity();out=ROOT/str(state['observation']);save_json(ROOT/'STATUS.json',dict(state='RUNNING',observation=state['observation'],completed=done))
             with (ROOT/'attempts.jsonl').open('a') as f:f.write(json.dumps(dict(observation=state['observation'],request=state['request'],start=time.time()))+'\n')
-            t=time.perf_counter();invoke(verified(state['request']),out);publish(state,out)
+            execution_identity(p)
+            t=time.perf_counter();invoke(verified(state['request']),out);execution_identity(p);publish(state,out)
             done.append(dict(observation=state['observation'],seconds=time.perf_counter()-t,child_peak_rss_bytes_so_far=resource.getrusage(resource.RUSAGE_CHILDREN).ru_maxrss,bundle=bound(out/'BUNDLE.json')))
         for b in p['bindings']:verified(b)
+        execution_identity(p)
         save_json(ROOT/'STATUS.json',dict(state='COMPLETE_PENDING_OWNER_REVIEW',completed=done,seconds=time.perf_counter()-start,storage=capacity()))
         print('Three map-only JINC applications completed. Say done for saved-map assessment.')
     except BaseException as e:
