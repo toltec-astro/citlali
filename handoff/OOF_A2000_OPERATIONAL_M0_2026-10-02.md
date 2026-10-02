@@ -1,3 +1,5 @@
+> **Assessed:** three S completed; improvement not established, scan-label provenance defect found. See validation/oof_a2000_m0_2026-10-01/COMPLETION.md. No automatic relaunch.
+
 # OOF a2000 operational M0 handoff
 
 Active work order, readiness and owner manual-resume command are in

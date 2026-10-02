@@ -1,3 +1,5 @@
+> **Executed and assessed:** see [COMPLETION.md](COMPLETION.md). The launch below is consumed; do not rerun it. Original readiness evidence is preserved.
+
 # a2000 OOF cold-M0 readiness — 2026-10-02
 
 **Reuse the three historical a2000 maps; propose exactly three new successor maps and no R reductions.** The former unstarted a1100 proposal is superseded. POINT stays closed. Launch admission requires the exact source/binary gates, independent review and FREEZE.json described below; no observations are run by preparation.

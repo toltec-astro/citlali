@@ -1,3 +1,5 @@
+> **Batch completed and assessed. This launch is consumed, not a retry command.** See COMPLETION.md and saved report measurements.
+
 # Owner launch and manual resume
 
 After exact-source gates, review, freeze and check-only pass, run once on the Mac:

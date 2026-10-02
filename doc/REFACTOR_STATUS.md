@@ -1,3 +1,20 @@
+## a2000 OOF M0 assessed; improvement not established — 2026-10-02
+
+The [completion assessment](../validation/oof_a2000_m0_2026-10-01/COMPLETION.md)
+closes the bounded three-S/zero-R batch from exactf79db1faa. All36 ALS fits
+converged; central32″ support is complete; native peaks148.11/564.85/245.77mJy/beam
+preserve the focus pattern. Native texture/negative tails are worse than the
+operational historical R maps. FK5/AltAz limits prevent exact consumer or paired
+pixel assessment. MAP published scan2 identity strings despite bound scan1
+inputs/AST: this is a provenance conformance defect, preserved and not silently
+corrected. No extra attempt, optical inference or feedback was performed.
+
+Numerical runtime106.72s; peak sampled process-treeRSS2.061GB; role retention
+1.610GB and shared derived storage21.710GB. The launch allowance is consumed;
+original launch commands are historical, not a retry authorization. Original
+products remain unchanged. No quality-improvement/production claim; POINT stays
+closed. See completion and external report measurements for bounded findings.
+
 ## a2000 OOF operational M0 supersedes unstarted a1100 proposal — 2026-10-02
 
 Owner work order adopts a2000 networks11/12 for152385–152387: three serial S
