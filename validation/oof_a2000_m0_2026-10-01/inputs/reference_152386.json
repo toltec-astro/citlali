@@ -1,0 +1,45 @@
+{
+  "schema": "citlali-oof-cold-m0-v1",
+  "mode": "OOF",
+  "observation": 152386,
+  "subobservation": 0,
+  "scan": 1,
+  "tune": [
+    152384,
+    0,
+    1
+  ],
+  "array": "a2000",
+  "networks": [
+    11,
+    12
+  ],
+  "cycles": 0,
+  "feedback": false,
+  "source_gate": "none",
+  "ptc": {
+    "method": "observed-als",
+    "rank": 3
+  },
+  "effective_config": "oof_152386.yaml",
+  "input_manifest": "oof_152386_inputs.json",
+  "rtc_plans": {
+    "a2000": "../../../data/development/bright_point_base_v1/a2000-rtc.json"
+  },
+  "map_owner": "../../../data/development/bright_point_base_v1/map-owner.json",
+  "resource_limits": {
+    "maximum_retained_bytes": 2700000000,
+    "free_space_reserve_bytes": 2000000000,
+    "network_workers": 2
+  },
+  "processing_scope": "declared10s forced engineering segments; native clocks and physical gaps retained; differs from R unforced segmentation",
+  "solver_settings": {
+    "iteration_limit": 500,
+    "relative_objective_tolerance": 1e-05
+  },
+  "scientific_recipe": {
+    "RTC": "existing native Learn/Consider/Apply; genuine a2000 F2 lowpass235arcsec/s; no spatial protection; full-stretch diagnostic grid",
+    "CAL": "exact canonical148670 matched APT; current native atmosphere on supported original telescope WVR",
+    "MAP": "ordinary2arcsec FK5 uniform coefficients full acquisition support; not a LMTOOF AltAz product"
+  }
+}

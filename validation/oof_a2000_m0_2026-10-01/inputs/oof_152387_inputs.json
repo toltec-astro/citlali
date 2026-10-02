@@ -1,0 +1,58 @@
+[
+  {
+    "path": "citlali-validation/v1/oof/data/hwpr_152387_000_0001_2026_02_19_06_21_06.nc",
+    "sha256": "8d631250418b1de7e44f44943bd3458ee53ac8f8ab088cc565c72b98a7beedba"
+  },
+  {
+    "path": "citlali-validation/v2/oof/refactor/1146+399/reduced/tel_toltec_2026-02-19_152387_00_0001_recomputed.nc",
+    "sha256": "d0d53f777ec22e2d4f42c44af9164cf2befd872be7ed79dd3b32c61be55f77f0"
+  },
+  {
+    "path": "citlali-validation/v1/oof/data/toltec0_152387_000_0001_2026_02_19_06_21_06.nc",
+    "sha256": "d10eb319666c27fdf09f4bce805384bbfffe16b72ef592e29b5d078d06850677"
+  },
+  {
+    "path": "citlali-validation/v1/oof/data/toltec1_152387_000_0001_2026_02_19_06_21_06.nc",
+    "sha256": "f7c1d497e907323fde4e8ef1addcd7d8f97775024ee3bc3686bed993355d4bea"
+  },
+  {
+    "path": "citlali-validation/v1/oof/data/toltec2_152387_000_0001_2026_02_19_06_21_06.nc",
+    "sha256": "2121a68f593cdd48a595cc8a7f944e051823f8a9db73b003b2dfec849f3afe62"
+  },
+  {
+    "path": "citlali-validation/v1/oof/data/toltec3_152387_000_0001_2026_02_19_06_21_06.nc",
+    "sha256": "baab604f8b8ebbf7bac7676ad6e59830ae9ced2385dfbdf43926a997035c0414"
+  },
+  {
+    "path": "citlali-validation/v1/oof/data/toltec4_152387_000_0001_2026_02_19_06_21_06.nc",
+    "sha256": "823d1a1a8162e9ebc7671ca69de01ad38d9a84d9599e0d28139ee83242ea06fb"
+  },
+  {
+    "path": "citlali-validation/v1/oof/data/toltec5_152387_000_0001_2026_02_19_06_21_06.nc",
+    "sha256": "0e700f910168fd675f9f1e7f1e3fa3f0652e95417d0cd6f50e92ed804c2ffa98"
+  },
+  {
+    "path": "citlali-validation/v1/oof/data/toltec7_152387_000_0001_2026_02_19_06_21_06.nc",
+    "sha256": "9a00769babbe1fa3d278494cda35c3c1ffef5c8f9d4652bbd8021ed06617b604"
+  },
+  {
+    "path": "citlali-validation/v1/oof/data/toltec8_152387_000_0001_2026_02_19_06_21_06.nc",
+    "sha256": "009496a49734db5b3dcdea845f86d7c8e839ded0d08d1373218111cebd95ba66"
+  },
+  {
+    "path": "citlali-validation/v1/oof/data/toltec9_152387_000_0001_2026_02_19_06_21_06.nc",
+    "sha256": "fad1de19e81c07ff6ea26cfe4f12cccee832c25bd301267a3ec46eec25b0f3bc"
+  },
+  {
+    "path": "citlali-validation/v1/oof/data/toltec11_152387_000_0001_2026_02_19_06_21_06.nc",
+    "sha256": "0ba8b6ef1355e652f267d2e445842bf7b5cff6d4084dcb8ece4f2145b6876b36"
+  },
+  {
+    "path": "citlali-validation/v1/oof/data/toltec12_152387_000_0001_2026_02_19_06_21_06.nc",
+    "sha256": "c98914c14ac71c8fd006b6d5baa6a14bf6a89227b8dbe7936c3c95168c97a98d"
+  },
+  {
+    "path": "citlali-validation/v2/oof/apts/v2/apt_152387_matched.apt-v2/manifest.ecsv",
+    "sha256": "b3de0111c424003dfbf21794f827b93fe98ef08bc8be5a61092dba1e39db470f"
+  }
+]

@@ -1,3 +1,23 @@
+## a2000 OOF operational M0 supersedes unstarted a1100 proposal — 2026-10-02
+
+Owner work order adopts a2000 networks11/12 for152385–152387: three serial S
+cold-M0 starts, historical complete-band R reuse, zero R starts and feedback.
+[Readiness](../validation/oof_a2000_m0_2026-10-01/READINESS.md) records977 detector
+identities,853 positive calibration factors per acquisition and the genuine
+existing a2000F2 filter. Shared RTC/CAL/PTC/AST/MAP owners remain authoritative.
+Operational preprocessing gives LM600/600/600 and ML1024/1024/1024 supported
+samples; unequal outer-map counts do not trigger the fixed-count defect in this
+invocation. General solver defect and writer/reader half-cell discrepancy remain
+unrepaired and optical inference unexecuted. Native S remainsFK5 with explicit
+cross-frame limitations. The earlier six-role42.332GB proposal is superseded;
+three-role shared peak reservation29.330GB is below30GB, with2GB free reserve.
+
+Exact-source gates, independent review and freeze receipts govern launch; the
+owner runs the foreground command and manually resumes with “done”. No Codex
+observational launch, retry, sibling edit, remote access, push or merge. POINT
+stays closed. The older status below is preserved as historical evidence, not
+an active veto on this owner-approved M0 comparison.
+
 ## OOF engineering preparation validated; launch remains gated — 2026-10-01
 
 The [OOF readiness report](../validation/oof_preparation_2026-10-01/READINESS.md)

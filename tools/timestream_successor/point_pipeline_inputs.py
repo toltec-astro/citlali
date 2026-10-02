@@ -16,7 +16,7 @@ def prepare(out, reference_path, input_root):
     from observation_mode import validate_recipe
     oof=validate_recipe(r)
     sub,scan=r['subobservation'],r['scan']
-    development='oof-cold-m0-v1' if oof else 'bright-point-base-v1'
+    development=('oof-a2000-m0-v1' if r['array']=='a2000' else 'oof-cold-m0-v1') if oof else 'bright-point-base-v1'
     require(r['ptc']['method']=='observed-als' and isinstance(r['ptc']['rank'],int) and r['ptc']['rank']>0,'unsupported upstream PTC request')
     OBS=r['observation'];array=r['array'];memberships={'a1100':range(7),'a1400':range(7,11),'a2000':range(11,13)}
     require(array in memberships and r['networks'] and len(set(r['networks']))==len(r['networks']) and all(n in memberships[array] for n in r['networks']),'array/network selection differs')

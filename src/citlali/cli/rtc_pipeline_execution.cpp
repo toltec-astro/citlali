@@ -1245,7 +1245,8 @@ int execute_successor_observation(const YAML::Node &request,const fs::path &outp
     const int nw=entry["network"].as<int>();
     require((reference || request["observation"].as<int>()!=152430 || nw==11 || nw==12) && nw>=0 && nw<13 && (ids.empty() || nw>ids.back()),"successor.network_order_duplicate_or_invalid");
     const auto path=checked_file(entry["input"]);const auto cfg=YAML::LoadFile(path.string());
-    require(!oof || citlali::cli::detail::oof_network_scope(cfg,request["observation"].as<int>(),0,1,nw),"OOF observation/network identity differs");
+    require(!oof || (citlali::cli::detail::oof_network_scope(cfg,request["observation"].as<int>(),0,1,nw) &&
+        cfg["development_reference"].as<std::string>()==request["development_reference"].as<std::string>()),"OOF observation/network identity differs");
     require(!reference || (cfg["development_reference"] && cfg["development_reference"].as<std::string>()=="bright-point-base-v1"),"reference network scope differs");
     require(cfg["network"].as<int>()==nw && cfg["observation"].as<int>()==request["observation"].as<int>() &&
             cfg["decision_apply"] && cfg["filter_plan"],"successor.network_binding_incomplete");
@@ -1304,14 +1305,14 @@ int execute_successor_observation(const YAML::Node &request,const fs::path &outp
       require(kmp!=verified.sources.end() && kmp->content_sha256=="sha256:"+citlali::utils::sha256_file(tune_path) && kmp->byte_count==fs::file_size(tune_path),"OOF KMP source mismatch");
       netCDF::NcFile raw(checked_file(n["raw"]).string(),netCDF::NcFile::read);
       require(tune.network==nw && tune.observation==read_netcdf_scalar<int>(raw,"Header.Toltec.TargSweepObsNum") && tune.subobservation==read_netcdf_scalar<int>(raw,"Header.Toltec.TargSweepSubObsNum") && tune.scan==read_netcdf_scalar<int>(raw,"Header.Toltec.TargSweepScanNum"),"OOF Tune association mismatch");
-      row["network"]=nw;row["array"]=0;row["raw"]=n["raw"];row["tune"]=n["tune"];
+      row["network"]=nw;row["array"]=citlali::cli::detail::oof_array(n);row["raw"]=n["raw"];row["tune"]=n["tune"];
       row["rows"]=processing.native_timing.at(nw)->row_count();row["channels"]=source->channel_count;
       row["nominal_interval_seconds"]=1/std::get<1>(processing.cadence.at(nw));
       std::set<int> channels;
       for(const auto &d:n["detectors"]) {
         const int ch=d["channel"].as<int>();require(ch>=0 && ch<source->channel_count && channels.insert(ch).second,"OOF duplicate/foreign detector channel");
         const auto b=std::find_if(relation.bindings().begin(),relation.bindings().end(),[&](const auto &b){return b.network==nw && b.channel==ch;});
-        require(b!=relation.bindings().end() && b->array==0,"OOF detector/APT identity mismatch");
+        require(b!=relation.bindings().end() && b->array==citlali::cli::detail::oof_array(n),"OOF detector/APT identity mismatch");
         YAML::Node det;det["channel"]=ch;det["output_uid"]=b->output_uid;det["raw_source_uid"]=b->raw_source_uid;det["relation_uid"]=b->relation_uid;
         const auto apt_row=std::find_if(verified.apt.rows.begin(),verified.apt.rows.end(),[&](const auto &r){return r.uid==b->output_uid;});
         require(apt_row!=verified.apt.rows.end(),"OOF child APT row absent");
@@ -1322,7 +1323,7 @@ int execute_successor_observation(const YAML::Node &request,const fs::path &outp
         row["detectors"].push_back(det);
       }
       require(channels.size()==source->channel_count,"OOF requires all selected-network detector identities");
-      (void)citlali::cli::detail::read_rtc_array_filter(YAML::LoadFile(checked_file(n["filter_plan"]).string()),0);
+      (void)citlali::cli::detail::read_rtc_array_filter(YAML::LoadFile(checked_file(n["filter_plan"]).string()),citlali::cli::detail::oof_array(n));
       record["networks"].push_back(row);
     }
     fs::create_directories(output);write_yaml(output/"PREPARED.yaml",record);return 0;

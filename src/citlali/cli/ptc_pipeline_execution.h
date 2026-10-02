@@ -31,7 +31,7 @@ YAML::Node execute_connected_ptc(const PtcCalSource &source,const ProcessingScan
     }
     if(citlali::cli::detail::oof_request(cfg)) {
         require(citlali::cli::detail::oof_network_scope(cfg,cfg["observation"].as<int>(),0,1,cfg["network"].as<int>()) &&
-            source.detector_factors().front().array==0 && request.rank==3 && request.method==PtcMethod::observed_als,
+            source.detector_factors().front().array==citlali::cli::detail::oof_array(cfg) && request.rank==3 && request.method==PtcMethod::observed_als,
             "OOF cold-M0 PTC requires declared rank3 observed ALS control");
         request.iteration_limit=500;
     }

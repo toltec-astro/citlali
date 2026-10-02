@@ -89,7 +89,8 @@ def launch(root,out,binary,review,cache,*,attempt_consumer=None,child_mode='spee
     identity=dict(run=out.name);counter=attempt_consumer or consume;counter(root,'parent',identity);counter(root,'trajectory',dict(**identity,branch='REF',cycle=0))
     env=dict(os.environ,CITLALI_POINT_TIMING=str(out/'timing.jsonl'),OMP_NUM_THREADS='1',OPENBLAS_NUM_THREADS='1',VECLIB_MAXIMUM_THREADS='1',MKL_NUM_THREADS='1',BLIS_NUM_THREADS='1',MPLBACKEND='Agg',MPLCONFIGDIR='/private/tmp/point-speed-mpl',XDG_CACHE_HOME='/private/tmp/point-speed-cache')
     command=[sys.executable,str(REPO/'tools/timestream_successor/point_pipeline.py'),child_mode,'--output',str(out),'--binary',str(binary)]
-    rec=dict(command=command,cache=cache,policy=dict(independent_workloads=1,network_workers=read(out/'freeze/budget.json')['network_workers'],feedback_segment_workers=1,numeric_threads=1),preflight_review=bound(review),scope=f"POINT{p['observation']}/{p['subobservation']}/{p['scan']} {p['array']} networks{p['networks']} partial-array subset on local Mac; not full instrument or Unity")
+    if child_mode=='forward':command+=['--config',p['reference']['path'],'--input-root',p['input_root']]
+    rec=dict(command=command,cache=cache,policy=dict(independent_workloads=1,network_workers=read(out/'freeze/budget.json')['network_workers'],feedback_segment_workers=1,numeric_threads=1),preflight_review=bound(review),scope=f"{p.get('mode','POINT')}{p['observation']}/{p['subobservation']}/{p['scan']} {p['array']} networks{p['networks']} partial-array subset on local Mac; not full instrument or Unity")
     save_json(out/'LAUNCH.json',dict(**rec,status='starting'))
     before=resource.getrusage(resource.RUSAGE_CHILDREN);started=time.monotonic_ns();samples=[];seen={};ready_seen={}
     with (out/'outer.log').open('w') as log:

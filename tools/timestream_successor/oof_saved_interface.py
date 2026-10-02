@@ -71,7 +71,11 @@ def attach_historical(path, destination, *, requested_focus_mm, pupil_stop_m):
 
 
 def require_lm_sequence(records):
-    """Check current OOFLM storage preconditions; does not admit optical inference.
+    """Check current OOFLM storage preconditions at the actual consumer boundary.
+
+    Call after the established preprocessing/window, preserving separate parent
+    support diagnostics. Whole-map inequality alone is not an invocation veto.
+    This check does not admit optical inference.
 
     OOFLM allocates maps * first_count and uses map_index * first_count offsets.
     Different counts can leave uninitialized residuals or write out of bounds.
@@ -83,4 +87,4 @@ def require_lm_sequence(records):
             len({r['wavelength_m'] for r in records})==1,'LMTOOF sequence scale/wavelength differs')
     counts=[r['supported_pixels'] for r in records]
     require(min(counts)>=5,'existing LMTOOF reader minimum structural cardinality')
-    require(len(set(counts))==1,'OOFLM unequal valid-pixel counts require residual-vector repair in the existing solver; full support must not be silently cropped')
+    require(len(set(counts))==1,'OOFLM unequal valid-pixel counts require residual-vector repair in the existing solver; do not change established consumer support to satisfy allocation')

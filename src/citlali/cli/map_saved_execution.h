@@ -107,7 +107,7 @@ SavedMapNetwork load_saved_map_network(const YAML::Node &request,MapFileLedger &
     out.network=out.learn["network"].as<int>();out.array=out.cal["detectors"][0]["array"].as<int>();
     out.obsnum=out.learn["observation"].as<int>();
     const bool oof=citlali::cli::detail::oof_network_scope(out.input,out.obsnum,0,1,out.network);
-    require(!citlali::cli::detail::oof_request(out.input) || (oof && out.array==0),"MAP OOF acquisition or array differs");
+    require(!citlali::cli::detail::oof_request(out.input) || (oof && out.array==citlali::cli::detail::oof_array(out.input)),"MAP OOF acquisition or array differs");
     require((oof || (out.input["development_reference"] && out.input["development_reference"].as<std::string>()=="bright-point-base-v1") || out.obsnum==152389 || out.obsnum==152390 || (out.obsnum==152430 && out.array==2 && (out.network==11 || out.network==12))) && out.input["observation"].as<int>()==out.obsnum &&
         out.array>=0 && out.array<3,"MAP owner binding requires selected observation and known array");
     const auto telescope=checked_file(out.input["telescope"]),effective=checked_file(out.input["effective_config"]),manifest=checked_file(out.input["manifest"]);

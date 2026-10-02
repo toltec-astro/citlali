@@ -56,3 +56,10 @@ def test_joint_lm_sequence_rejects_unequal_support_without_cropping():
     require_lm_sequence(records)
     records[0]['angular_pixel_arcsec']=2
     with pytest.raises(ValueError,match='scale/wavelength'):require_lm_sequence(records)
+
+
+def test_a2000_is_explicit_complete_population():
+    r=recipe();r.update(array='a2000',networks=[11,12]);assert validate_recipe(r)
+    for networks in ([11],[12],[1,2,3,4],[10,11,12],[12,11]):
+        q=copy.deepcopy(r);q['networks']=networks
+        with pytest.raises(ValueError):validate_recipe(q)
