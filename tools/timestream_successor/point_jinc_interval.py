@@ -75,25 +75,27 @@ def kernel_radius(radius,a,b,rmax=3):
     a,b=I(str(a)),I(str(b));r=as_i(radius)
     return jinc(2*pi()*r/a)*(-(2*r/b)*(2*r/b)).exp()*jinc(first_root()*r/rmax)
 
-def enclose_cache(production,half,cdelt_deg,scale_numerator,b):
+def enclose_cache(production,half,cdelt_deg,scale_numerator,b,*,phases=16,rmax="3"):
     """Current original diagonal square WCS only; each binary64 CDELT is exact.
 
-    c=2,a=1.1,rmax=3,nsub=16 are explicit full-run selected constants.
+    c=2,a=1.1 are fixed; phases and rmax are explicit selected constants.
+    Defaults preserve the original POINT certificate exactly.
     Distinct radii are memoized; cache symmetries change no coefficients.
     """
     if abs(cdelt_deg[0])!=abs(cdelt_deg[1]):raise ValueError('selected diagonal square WCS required')
     step=I(D.from_float(abs(float(cdelt_deg[0]))))*pi()/180
     scale=I(str(scale_numerator))/1000/45
-    side=2*half+1;expected=(16,16,side,side)
+    if phases not in (1,16) or str(rmax) not in ("1.5","3"):raise ValueError("unreviewed enclosure realization")
+    side=2*half+1;expected=(phases,phases,side,side)
     production=np.asarray(production).reshape(expected)
     errors=np.empty(expected);lower=np.empty(expected);upper=np.empty(expected);cache={}
-    for qy in range(16):
-        for qx in range(16):
+    for qy in range(phases):
+        for qx in range(phases):
             for iy,dy in enumerate(range(-half,half+1)):
                 for ix,dx in enumerate(range(-half,half+1)):
-                    # dx - (-1/2+(q+1/2)/16) = (32dx+15-2q)/32.
-                    n=(32*dx+15-2*qx)**2+(32*dy+15-2*qy)**2
-                    if n not in cache:cache[n]=kernel_radius(I(n).sqrt()*step/32/scale,'1.1',str(b))
+                    # Exact midpoint phase displacement in units of 1/(2*phases).
+                    n=(2*phases*dx+phases-1-2*qx)**2+(2*phases*dy+phases-1-2*qy)**2
+                    if n not in cache:cache[n]=kernel_radius(I(n).sqrt()*step/(2*phases)/scale,'1.1',str(b),rmax=I(str(rmax)))
                     v=cache[n];index=(qy,qx,iy,ix);actual=D.from_float(float(production[index]))
                     e=max(HI.subtract(actual,v.lo).copy_abs(),HI.subtract(v.hi,actual).copy_abs())
                     # abs difference needs upper rounding regardless of sign.

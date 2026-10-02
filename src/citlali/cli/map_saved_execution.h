@@ -57,7 +57,7 @@ template<class T> void map_write_array(const fs::path &p,std::span<const T> data
 struct SavedMapNetwork {
     fs::path root,ptcroot;
     YAML::Node input,learn,cal,ptc,apply;
-    std::string ptc_sha,cal_sha,rtc_identity;
+    std::string ptc_sha,cal_sha,rtc_identity,observation_identity;
     std::vector<double> native_times;
     std::vector<int> channels;
     std::vector<std::string> detectors;
@@ -107,6 +107,7 @@ SavedMapNetwork load_saved_map_network(const YAML::Node &request,MapFileLedger &
     out.network=out.learn["network"].as<int>();out.array=out.cal["detectors"][0]["array"].as<int>();
     out.obsnum=out.learn["observation"].as<int>();
     const bool oof=citlali::cli::detail::oof_network_scope(out.input,out.obsnum,0,1,out.network);
+    out.observation_identity=citlali::cli::detail::saved_map_observation_identity(out.input,out.obsnum,out.network,out.array);
     require(!citlali::cli::detail::oof_request(out.input) || (oof && out.array==citlali::cli::detail::oof_array(out.input)),"MAP OOF acquisition or array differs");
     require((oof || (out.input["development_reference"] && out.input["development_reference"].as<std::string>()=="bright-point-base-v1") || out.obsnum==152389 || out.obsnum==152390 || (out.obsnum==152430 && out.array==2 && (out.network==11 || out.network==12))) && out.input["observation"].as<int>()==out.obsnum &&
         out.array>=0 && out.array<3,"MAP owner binding requires selected observation and known array");
@@ -178,7 +179,7 @@ std::shared_ptr<const PtcMapPublication> load_map_segment(const SavedMapNetwork 
     require(expected.empty(),"MAP required PTC component absent");
     PtcMapPublicationIdentity id;id.publication="sha256:"+n.ptc_sha+":"+stem;
     id.application="sha256:"+n.ptc_sha;id.cal_parent="sha256:"+n.cal_sha;id.rtc_grid=n.rtc_identity;
-    id.processing=n.ptc["processing_generation"].as<std::string>();id.observation="obs:"+std::to_string(n.obsnum)+"_0_2";
+    id.processing=n.ptc["processing_generation"].as<std::string>();id.observation=n.observation_identity;
     id.segment="scan="+s["scan"].as<std::string>()+":"+stem;id.network=n.network;id.array=n.array;id.rank=n.ptc["rank"].as<int>();
     id.support_reference=id.publication+":complete-retained-support:causes="+s["files"][stem+"-causes.u8"].as<std::string>();
     id.slots=map_read_array<std::int64_t>(n.ptcroot/(stem+"-slots.i64"),times);
@@ -262,8 +263,8 @@ int execute_saved_map(const fs::path &input,const fs::path &output) {
             networks.push_back(load_saved_map_network(n,ledger));require(seen.insert(networks.back().network).second,"MAP repeated network publication");
         }
         std::sort(networks.begin(),networks.end(),[](const auto &a,const auto &b){return a.network<b.network;});
-        for(const auto &n:networks)require(n.obsnum==networks.front().obsnum,"MAP cannot combine different observations in a base observation map");
-        const auto observation_identity="obs:"+std::to_string(networks.front().obsnum)+"_0_2";
+        for(const auto &n:networks)require(n.observation_identity==networks.front().observation_identity,"MAP cannot combine different observations in a base observation map");
+        const auto &observation_identity=networks.front().observation_identity;
         const auto loaded=std::chrono::steady_clock::now();
         attempt["input_loading_seconds"]=std::chrono::duration<double>(loaded-started).count();
         attempt["reached_stages"].push_back("effective");

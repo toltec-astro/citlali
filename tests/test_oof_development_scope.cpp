@@ -24,3 +24,16 @@ TEST(OofDevelopmentScope, A2000KeepsPopulationAndAcquisitionExplicit) {
   for(int nw: {0,1,4,10,13}) {n["network"]=nw;EXPECT_FALSE(oof_network_scope(n,152387,0,1,nw));}
   n["network"]=11;n["mode"]="POINT";EXPECT_FALSE(oof_network_scope(n,152387,0,1,11));
 }
+
+TEST(OofDevelopmentScope, MapPublishesValidatedAcquisitionIdentity) {
+  auto n=YAML::Load("{development_reference: oof-a2000-m0-v1, mode: OOF, observation: 152385, subobservation: 0, scan: 1, network: 11}");
+  EXPECT_EQ(saved_map_observation_identity(n,152385,11,2),"obs:152385_0_1");
+  EXPECT_THROW(saved_map_observation_identity(n,152386,11,2),std::invalid_argument);
+  EXPECT_THROW(saved_map_observation_identity(n,152385,12,2),std::invalid_argument);
+  EXPECT_THROW(saved_map_observation_identity(n,152385,11,0),std::invalid_argument);
+  n["scan"]=2;EXPECT_THROW(saved_map_observation_identity(n,152385,11,2),std::invalid_argument);
+  n["development_reference"]="bright-point-base-v1";
+  EXPECT_THROW(saved_map_observation_identity(n,152385,11,2),std::invalid_argument);
+  n["mode"]="POINT";EXPECT_EQ(saved_map_observation_identity(n,152385,11,2),"obs:152385_0_2");
+  n["scan"]=1;EXPECT_THROW(saved_map_observation_identity(n,152385,11,2),std::invalid_argument);
+}

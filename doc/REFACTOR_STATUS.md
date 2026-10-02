@@ -1,3 +1,16 @@
+## OOF a2000 saved-sample JINC preparation — 2026-10-02
+
+Owner requests a new map-only comparison for152385–152387, selecting historical
+1″ numeric JINC settings and an OOF-specific numerical-accuracy rule. The
+[work order](../validation/oof_jinc_2026-10-02/WORK_ORDER.md) preserves existing
+cold-M0 samples, calibration, uniform coefficients and native FK5 coordinates.
+Shared JINC retains accepted exact-root/ceil-square semantics. Scan1 publication
+identity is repaired for future MAP outputs; original defective scan2 strings
+remain preserved with explicit descendant lineage. No morphology equivalence
+was established by the prior focus-order assessment. Preparation/gates/review
+and owner foreground launch remain required; no upstream reruns or feedback.
+POINT remains closed; no integration, push or optical inference.
+
 ## a2000 OOF M0 assessed; improvement not established — 2026-10-02
 
 The [completion assessment](../validation/oof_a2000_m0_2026-10-01/COMPLETION.md)
