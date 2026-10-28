@@ -37,3 +37,16 @@ with its existing regression. Native scope/header tests cover mode/scan/identity
 exclusion. These paths are within the explicitly authorized input compatibility
 work. The native default development protocol remains available; the new frozen
 launcher is selected through TolProj's existing executable option.
+
+## Owner-run correction — 2026-10-28, controlling execution rule
+
+Grant explicitly reaffirmed: “I am the one who should trigger the reductions
+from the shell. You just set them up and I'll let you know when they are done.”
+The earlier local-run clause in this work order incorrectly inferred launch
+authority from implementation authority and is superseded. Codex must prepare
+commands and wait for Grant's completion message; it must not launch further
+reductions or scientific reprocessing. Read-only inspection, source/setup work
+and appropriate non-observational engineering checks remain separate. The two
+local trials and saved-map diagnostic checks already run are preserved as
+evidence; they do not imply owner operational acceptance. No computation was
+left running when this correction was applied.

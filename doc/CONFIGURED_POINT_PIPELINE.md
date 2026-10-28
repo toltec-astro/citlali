@@ -42,6 +42,11 @@ OOF are outside this POINT profile. Unknown new-profile controls are rejected.
 
 ## Execution and preservation
 
+Grant triggers all reductions from the shell. Codex prepares the exact command
+and configuration, then waits for Grant's completion notice. Implementation,
+review and successful engineering checks do not authorize an automatic run.
+
+
 `package_configured_point.py` freezes a clean source checkout, matching native
 binary and required Python/data files into a new runtime directory. Its launcher
 pins the runtime manifest and verifies the bound files. TolProj can snapshot

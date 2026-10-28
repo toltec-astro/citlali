@@ -1,21 +1,27 @@
-## Configurable local POINT implementation — 2026-10-28
+## Configurable local POINT candidate and owner-run boundary — 2026-10-28
 
-Grant approved the revised goal: a useful configurable pipeline that can surpass
-past results, with quiet ordinary operation. The bounded
-[work order](../validation/configured_point_2026-10-28/WORK_ORDER.md) recovers
-native source6e2a467b85f07f15b8fdfe947bed81df833d11bb and the pilot's immutable-input
-fix. The [new POINT interface](CONFIGURED_POINT_PIPELINE.md) passes actual
-observation/APT/KMP selection, per-array ALS ranks, map pixels/coverage and worker
-count through existing stage owners. No fixed bright-source experiment is
-substituted for the request. All three arrays are required at publication.
+Reviewed source87e9217fc0016839d43684f539e93774199a32a1 connects ordinary
+TolTECA-prepared YAML to all-array forward POINT with configured inputs, ALS
+ranks, map pixels/coverage and resources. [Handoff](../handoff/CONFIGURABLE_POINT_LOCAL_RESULT_2026-10-28.md)
+and [evidence](../validation/configured_point_2026-10-28/LOCAL_EVIDENCE.json)
+record the exact source/runtime and outcomes. POINT152389 produced all three
+maps and accepted qualified fits in111.83s; all11networks/66segments completed.
+Independent152418 stopped correctly at network11/channel92's nonempty but
+spectrally insufficient RTC support. Its failure and reference reductions are
+preserved; no scientific guard or threshold was altered.
 
-This is a local implementation candidate pending exact-source gates, review and
-observational evidence. Qualified fits remain inspection products; conventional
-flux-calibration PPT, corrected-frame feedback, SCIENCE/coadds and old image
-analysis compatibility are still open. Previous reductions and sealed pilot
-preparation remain preserved. No Unity access, push, integration or production
-activation is performed. Historical closed-POINT campaign allowances below are
-not the authority for this separately authorized local integration work.
+Grant alone triggers reductions from the shell. Codex prepares commands and
+waits for his completion notice. The two local trials were launched by Codex
+before Grant reaffirmed this boundary; no further reduction or scientific
+reprocessing is running or authorized for Codex. The work order records this
+correction explicitly. Source review does not authorize operational launches.
+
+168 focused tests were independently reproduced;1332 enabled native tests,
+207 baseline-tool tests and the full config gate passed. One inherited native
+test is disabled. Local AppleClang/Homebrew evidence remains supplemental.
+Conventional POINT flux-calibration compatibility, corrected-frame feedback,
+SCIENCE/coadds, downstream analysis and Unity/Spack qualification remain open.
+No push, canonical integration or production activation occurred.
 
 ## Delta-source AltAz repair and OOF JINC preparation — 2026-10-02
 

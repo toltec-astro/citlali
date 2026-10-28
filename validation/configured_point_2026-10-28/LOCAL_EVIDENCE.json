@@ -1,0 +1,249 @@
+{
+  "schema": "configured-point-local-evidence-v1",
+  "source_revision": "87e9217fc0016839d43684f539e93774199a32a1",
+  "source_tree": "d942fe4edcdcf4f8184ff7d9b278d022c19a8edb",
+  "runtime_manifest": {
+    "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/software/configured-point-87e9217fc/manifest.json",
+    "sha256": "44b98db5e36ecfdd0e78c4ab95fa22640b3108e84f08377e40a986f896347f5a",
+    "bytes": 46714
+  },
+  "native": {
+    "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/software/configured-point-87e9217fc/bin/citlali-native",
+    "sha256": "028cf480bd50d80bf49f4a744f02649a106e512c1fbe20d8acf50ec896eff735",
+    "bytes": 8553224
+  },
+  "launcher": {
+    "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/software/configured-point-87e9217fc/bin/citlali",
+    "sha256": "ebff492fe20541e4784157382d3253f66b7602e9434d1aa71d89fd1ed3d2409f",
+    "bytes": 1928
+  },
+  "trials": [
+    {
+      "observation": 152389,
+      "directory": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-20261028",
+      "run": {
+        "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-20261028/reduced/redu00/RUN.json",
+        "sha256": "f473183703ade10817da32e25ec49f12f7fbd51ead46e8da5fceba7b1acf9d82",
+        "bytes": 18127
+      },
+      "status": "completed",
+      "seconds": 111.82639149995521,
+      "error": null,
+      "plan": {
+        "workers": 6,
+        "verbose": false,
+        "cleaning_method": "observed-als",
+        "ranks": {
+          "a1100": 5,
+          "a1400": 5,
+          "a2000": 5
+        },
+        "pixel_size_arcsec": 1.0,
+        "coverage_cut": 0.1,
+        "fit_diagnostics": true,
+        "retain_intermediates": false
+      },
+      "products": [
+        {
+          "schema": "citlali-configured-point-product-v1",
+          "observation": 152389,
+          "array": "a1100",
+          "map": "toltec_point_152389_a1100_successor.fits",
+          "sha256": "82b0727542712587c4d3741644dbe0266d21e6c9c7744decc67e534cbc39164a",
+          "native_bundle_sha256": "3d86e2c2f688ead4d9aef4b0b65099c1ff663a473c60c42f8e6897a2977ae457",
+          "native_product_identity": "SCI-MAP-base:8e086008c501e06d8e9f0c5303e95b8a0ae7af04ee1e8a63212e17f43fa718ad:82b0727542712587c4d3741644dbe0266d21e6c9c7744decc67e534cbc39164a",
+          "nominal_beam_fwhm_arcsec": 5,
+          "frame": "delta-source-AltAz",
+          "axis_units": "arcsec",
+          "signal_units": "mJy/nominal beam",
+          "planes": [
+            "PRIMARY",
+            "NUMERATOR",
+            "NORMALIZATION",
+            "HITS",
+            "NORM_SUPPORT",
+            "SCI_SUPPORT"
+          ],
+          "normalization": "dimensionless gridding sum; not inverse variance",
+          "calibration_eligible": false,
+          "legacy_analysis_compatible": false,
+          "fit_status": "accepted",
+          "fit": "point-fit-a1100.json"
+        },
+        {
+          "schema": "citlali-configured-point-product-v1",
+          "observation": 152389,
+          "array": "a1400",
+          "map": "toltec_point_152389_a1400_successor.fits",
+          "sha256": "d03dfae5b66ba43556ac1256ec7017eb1316a4da6ea3f0dbac339cd6c252df52",
+          "native_bundle_sha256": "e59af2f6037ef29d23581b7f54ec1e61f992433cdcb6e02c1ada0fbbb5185ffb",
+          "native_product_identity": "SCI-MAP-base:fd577401d592e3b8d3eb351d45ea422efc0fed7d2872c10f71aa10019c1e443d:d03dfae5b66ba43556ac1256ec7017eb1316a4da6ea3f0dbac339cd6c252df52",
+          "nominal_beam_fwhm_arcsec": 7.5,
+          "frame": "delta-source-AltAz",
+          "axis_units": "arcsec",
+          "signal_units": "mJy/nominal beam",
+          "planes": [
+            "PRIMARY",
+            "NUMERATOR",
+            "NORMALIZATION",
+            "HITS",
+            "NORM_SUPPORT",
+            "SCI_SUPPORT"
+          ],
+          "normalization": "dimensionless gridding sum; not inverse variance",
+          "calibration_eligible": false,
+          "legacy_analysis_compatible": false,
+          "fit_status": "accepted",
+          "fit": "point-fit-a1400.json"
+        },
+        {
+          "schema": "citlali-configured-point-product-v1",
+          "observation": 152389,
+          "array": "a2000",
+          "map": "toltec_point_152389_a2000_successor.fits",
+          "sha256": "726089afb1caab9f5e76c308006707fa16a0478b38c6b24ccbc1de92e78f57bd",
+          "native_bundle_sha256": "a3a09c0e35763ac1ca9e038336e7ff738efbaddf94d9a4e2d8175f291fa32c7d",
+          "native_product_identity": "SCI-MAP-base:16894400fd83b6e660a68e2d6a0d9183b5e35d66150d5f86e5358226a185f01e:726089afb1caab9f5e76c308006707fa16a0478b38c6b24ccbc1de92e78f57bd",
+          "nominal_beam_fwhm_arcsec": 10,
+          "frame": "delta-source-AltAz",
+          "axis_units": "arcsec",
+          "signal_units": "mJy/nominal beam",
+          "planes": [
+            "PRIMARY",
+            "NUMERATOR",
+            "NORMALIZATION",
+            "HITS",
+            "NORM_SUPPORT",
+            "SCI_SUPPORT"
+          ],
+          "normalization": "dimensionless gridding sum; not inverse variance",
+          "calibration_eligible": false,
+          "legacy_analysis_compatible": false,
+          "fit_status": "accepted",
+          "fit": "point-fit-a2000.json"
+        }
+      ],
+      "stages": [
+        {
+          "terminal": "ptc",
+          "seconds": 48.04633937496692,
+          "return_code": 0,
+          "request": {
+            "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-20261028/reduced/redu00/.point-work/upstream/development.yaml",
+            "sha256": "f3368d8b6b36758c36c44a10308a1bb42a99da401b7d34d1a5dca06ef8ecfba6"
+          },
+          "unexpected_error_lines": []
+        },
+        {
+          "terminal": "map",
+          "seconds": 45.599208125146106,
+          "return_code": 0,
+          "request": {
+            "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-20261028/reduced/redu00/.point-work/map/development.yaml",
+            "sha256": "48684d2f6c5fca4e9a6c6188e1ca1ee30604856246124ce0b3380749dd994ab8"
+          },
+          "unexpected_error_lines": []
+        }
+      ],
+      "transport_retention": {
+        "files": 61386,
+        "bytes": 3730191280,
+        "native_receipts_retained": true,
+        "replay_payloads_retained": false
+      },
+      "received_config": {
+        "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-20261028/reduced/citlali_o152389_0_2_c1.yaml",
+        "sha256": "09ca7eedb3cf912e8c58700b1ae69a3b7fcceed7b599a514ef433bc5969b4f62",
+        "bytes": 17366
+      },
+      "effective_config": {
+        "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-20261028/reduced/redu00/.point-work/inputs/effective-point.yaml",
+        "sha256": "ebedf4c95b6665543fcccfb7ef5f9f880fbab06db2a5817ef8f498b5cc7a158a",
+        "bytes": 4959
+      },
+      "input_bindings": {
+        "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-20261028/reduced/redu00/.point-work/input-bindings.json",
+        "sha256": "f55132c254cecf87032396dfaec459eb01e9c6e75f82d790d2588e90be84aadb",
+        "bytes": 18352
+      },
+      "observation_receipt": {
+        "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-20261028/reduced/redu00/.point-work/upstream/products/observation-receipt.yaml",
+        "sha256": "24faf3857cfd7886df617eee91364359fb3de66c4c3f2f04fec7802be7e81ebb",
+        "bytes": 6942
+      }
+    },
+    {
+      "observation": 152418,
+      "directory": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418",
+      "run": {
+        "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/RUN.json",
+        "sha256": "7675ccb92b44cc7bdbfbddeef88f37ff0c91ebda2a01baeb0f99fe2c6a86c051",
+        "bytes": 15940
+      },
+      "status": "failed",
+      "seconds": 79.08763033291325,
+      "error": "ptc failed; see /Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/native.log\nPASS-runtime-decision-Apply;natural-isolated-policy-unavailable detectors=474 events=722 jumps=9\nRTC reassessment plan=1001 disposition=retain qualification=unresolved revision_executed=0\nTimestream Successor: RTC complete; CAL and PTC executed (see availability); MAP not implemented. No legacy fallback.\nPASS-runtime-decision-Apply;natural-isolated-policy-unavailable detectors=533 events=353 jumps=12\nTimestream Successor: RTC complete; CAL and PTC executed (see availability); MAP not implemented. No legacy fallback.\nPASS-runtime-decision-Apply;natural-isolated-policy-unavailable detectors=532 events=1174 jumps=4\nRTC reassessment plan=1001 disposition=retain qualification=unresolved revision_executed=0\nTimestream Successor: RTC complete; CAL and PTC executed (see availability); MAP not implemented. No legacy fallback.\nPASS-runtime-decision-Apply;natural-isolated-policy-unavailable detectors=420 events=74 jumps=0\nRTC reassessment plan=1001 disposition=retain qualification=unresolved revision_executed=0\nRTC reassessment plan=1001 disposition=retain qualification=unresolved revision_executed=0\nTimestream Successor: RTC complete; CAL and PTC executed (see availability); MAP not implemented. No legacy fallback.\nPASS-runtime-decision-Apply;natural-isolated-policy-unavailable detectors=460 events=336 jumps=0\nTimestream Successor: RTC complete; CAL and PTC executed (see availability); MAP not implemented. No legacy fallback.\nPASS-runtime-decision-Apply;natural-isolated-policy-unavailable detectors=488 events=1625 jumps=21\nRTC reassessment plan=1001 disposition=unavailable qualification=unresolved revision_executed=0\nRTC multi-detector caller FAIL: required RTC terminal failed: RTC finalization lacks its exact admitted final decision\nRTC reassessment plan=1001 disposition=retain qualification=unresolved revision_executed=0\nTimestream Successor: RTC complete; CAL and PTC executed (see availability); MAP not implemented. No legacy fallback.\nPASS-runtime-decision-Apply;natural-isolated-policy-unavailable detectors=491 events=223 jumps=3",
+      "plan": {
+        "workers": 3,
+        "verbose": false,
+        "cleaning_method": "observed-als",
+        "ranks": {
+          "a1100": 3,
+          "a1400": 4,
+          "a2000": 6
+        },
+        "pixel_size_arcsec": 2.0,
+        "coverage_cut": 0.15,
+        "fit_diagnostics": true,
+        "retain_intermediates": false
+      },
+      "products": [],
+      "stages": [],
+      "transport_retention": null,
+      "received_config": {
+        "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/citlali_o152418_0_2_c1.yaml",
+        "sha256": "431df8e4948bdbb38d016d0226433497384094902a956df173bff9b3344ba52a",
+        "bytes": 17375
+      },
+      "effective_config": {
+        "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/inputs/effective-point.yaml",
+        "sha256": "06ea1f42a1bc0a3fa09755480b65c07e4d82cf3fed2f0791e330985db9c00989",
+        "bytes": 4789
+      },
+      "input_bindings": {
+        "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/input-bindings.json",
+        "sha256": "567be0a5e0549949e9aaa9055de0ff6864539909b295153f84c4c827e5ad1a73",
+        "bytes": 18070
+      },
+      "observation_receipt": {
+        "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/observation-receipt.yaml",
+        "sha256": "222ee631fbffabf9626bdaaec5206df7758da39a6a3c5bd19a563e9d5f447c51",
+        "bytes": 7033
+      }
+    }
+  ],
+  "fit_verification": {
+    "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/evidence/configured-point-20261028/fit-verification/verification.json",
+    "sha256": "6984202ba84c87c114b297d720bf8ba3946757d9070c8191ad7dcafe0ed26741",
+    "bytes": 13542
+  },
+  "preservation": {
+    "sealed_preparation_files": 1149,
+    "reference_files": 667,
+    "original_reference_files": 667,
+    "raw_symlinks": 288,
+    "mismatches": 0,
+    "manifest": {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/evidence/point-preparation-20261028/final-artifact-manifest.json",
+      "sha256": "e696d584fbc02c2fecca09b5ce5c995fc702afa1f2416413007e38b9d2221a8a",
+      "bytes": 264256
+    }
+  },
+  "launch_ownership": {
+    "required": "Grant launches every reduction from the shell; Codex prepares and waits for his completion notice",
+    "correction": "Codex incorrectly launched these two local trials before the owner clarified the boundary; both are complete and no additional reduction is running."
+  },
+  "unity_access": false,
+  "production_authorized": false,
+  "calibration_consumer_compatibility": false
+}
