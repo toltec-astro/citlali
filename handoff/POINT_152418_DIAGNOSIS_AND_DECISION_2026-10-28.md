@@ -2,6 +2,12 @@
 
 28 October 2026. **Proposal only; no processing policy has changed.**
 
+Subsequent owner decision: prioritize observation-local exclusion of compromised
+detectors, with mandatory drop-count diagnostics. See
+[the decision record](../doc/COMPROMISED_DETECTOR_POLICY_2026-10-28.md).
+The recommendation below is retained as historical reasoning; short-stretch
+assessment is not the selected next direction. The saved diagnosis is unchanged.
+
 ## Recommendation
 
 Evaluate the existing short-stretch spectral-assessment method through an

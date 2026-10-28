@@ -1,3 +1,16 @@
+## Owner adopts local compromised-detector exclusion — 2026-10-28
+
+Grant adopted observation-local exclusion of compromised detectors while
+continuing when the remaining data support the requested products. Disturbance
+evidence and downstream consequences must determine rejection; no arbitrary
+minimum uninterrupted duration is selected. The
+[owner decision and diagnostic specification](COMPROMISED_DETECTOR_POLICY_2026-10-28.md)
+require compact, always-on counts by array, identities and reasons, separate
+from prior unavailability and final contribution. This supersedes prioritizing
+short-stretch assessment for152418. The automatic predicate and runtime
+implementation remain open; no policy was applied and no reduction was run.
+All-array product requirements and Grant's exclusive launch control remain.
+
 ## Configurable local POINT candidate and owner-run boundary — 2026-10-28
 
 Reviewed source87e9217fc0016839d43684f539e93774199a32a1 connects ordinary
