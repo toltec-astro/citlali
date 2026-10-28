@@ -93,6 +93,9 @@ def _inputs(config, launch_dir):
     name = meta["name"]
     if not isinstance(name, str) or len(name.split("_")) != 3 or not all(part.isdecimal() for part in name.split("_")):
         raise ValueError("inputs[0].meta.name must be observation_subobservation_scan")
+    observation = int(name.split("_")[0])
+    if not 1 <= observation <= 999999:
+        raise ValueError("observation must be between 1 and 999999 for TolTECA's six-digit product discovery")
     # This is the native POINT acquisition domain, not an observation-number
     # experiment. Other scan shapes need their own supported native admission.
     if tuple(map(int, name.split("_")[1:])) != (0, 2):
@@ -126,6 +129,86 @@ def _timing(config):
         name = item.get("meta", {}).get("interface", "")
         if isinstance(name, str) and name.startswith("toltec") and name not in offsets:
             raise ValueError(f"interface_sync_offset is missing the supplied network {name}")
+
+
+def _calibration(config):
+    """Adapt the known constant-offset sentinel, without changing calibration."""
+    items = config["inputs"][0]["cal_items"]
+    supported = {"array_prop_table", "astrometry", "photometry", "flxscale_correction"}
+    seen = {}
+    dispositions = []
+    for index, item in enumerate(items):
+        kind = item.get("type")
+        if not isinstance(kind, str) or kind not in supported:
+            raise ValueError(f"unsupported inputs[0].cal_items type: {kind!r}")
+        if kind in seen:
+            raise ValueError(f"duplicate inputs[0].cal_items {kind}")
+        seen[kind] = index
+        path = f"inputs[0].cal_items[{index}]"
+        if kind == "flxscale_correction":
+            _mapping(item, path, ("type", "value", "meta"), ("value",))
+            _number(item["value"], path + ".flxscale_correction.value", minimum=1, maximum=1)
+            dispositions.append(dict(path=path, disposition="identity-only",
+                replacement="flxscale_correction=1 is inert; native CAL consumes matched APT flxscale once; additional scaling is not implemented"))
+        elif kind == "photometry":
+            dispositions.append(dict(path=path, disposition="metadata-only",
+                replacement="beammap source photometry is preserved metadata; POINT CAL uses the matched APT, not these source fluxes"))
+    for kind in ("array_prop_table", "astrometry"):
+        if kind not in seen:
+            raise ValueError(f"configured POINT requires one {kind} calibration item")
+
+    item_index = seen["astrometry"]
+    item = items[item_index]
+    path = f"inputs[0].cal_items[{item_index}].pointing_offsets"
+    offsets = item.get("pointing_offsets")
+    if not isinstance(offsets, list) or not offsets:
+        raise ValueError(f"{path} must contain explicit az and alt axes")
+    axes = {}
+    epoch_entries = []
+    for index, entry in enumerate(offsets):
+        _mapping(entry, f"{path}[{index}]")
+        if "modified_julian_date" in entry:
+            _mapping(entry, f"{path}[{index}]", ("modified_julian_date",))
+            epoch_entries.append((index, entry["modified_julian_date"]))
+        else:
+            _mapping(entry, f"{path}[{index}]", ("axes_name", "value_arcsec"), ("axes_name", "value_arcsec"))
+            axis = entry["axes_name"]
+            if not isinstance(axis, str) or axis not in ("az", "alt") or axis in axes:
+                raise ValueError(f"{path} axes must be az and alt exactly once")
+            values = entry["value_arcsec"]
+            if not isinstance(values, list) or len(values) not in (1, 2) or any(
+                type(v) not in (int, float) or not math.isfinite(v) for v in values
+            ):
+                raise ValueError(f"{path}.{axis} requires one or two finite numeric values")
+            axes[axis] = values
+    if set(axes) != {"az", "alt"} or len(axes["az"]) != len(axes["alt"]):
+        raise ValueError(f"{path} requires equal az and alt value counts")
+    if len(epoch_entries) > 1:
+        raise ValueError(f"{path}.modified_julian_date is duplicated")
+    if not epoch_entries:
+        if len(axes["az"]) != 1:
+            raise ValueError(f"{path} requires actual epochs for two-value offsets")
+        return tuple(dispositions)
+
+    index, epochs = epoch_entries[0]
+    if not isinstance(epochs, list) or len(epochs) not in (1, 2) or any(
+        type(v) not in (int, float) or not math.isfinite(v) for v in epochs
+    ):
+        raise ValueError(f"{path}.modified_julian_date requires finite numeric epochs or the nonpositive sentinel")
+    if all(v <= 0 for v in epochs):
+        if len(axes["az"]) != 1:
+            raise ValueError(f"{path} nonpositive epoch sentinel requires one constant value per axis")
+        # Existing pointing_offsets_config_read.h normalizes this sentinel
+        # to a constant observation model. The native CAL boundary expresses
+        # that same model by absent epochs and binds its support to TEL bounds.
+        # Never turn a real observation epoch into an invented endpoint.
+        item["pointing_offsets"] = offsets[:index] + offsets[index + 1:]
+        dispositions.append(dict(path=f"{path}[{index}].modified_julian_date", disposition="normalized",
+            original=list(epochs), replacement="nonpositive epoch sentinel omitted for explicit constant az/alt; native CAL binds telescope time support",
+            authority="include/citlali/core/pipeline/pointing_offsets_config_read.h"))
+    elif len(epochs) != 2 or any(v <= 0 for v in epochs) or epochs[1] <= epochs[0]:
+        raise ValueError(f"{path}.modified_julian_date requires two increasing positive actual epochs")
+    return tuple(dispositions)
 
 
 def load_request(config: dict, launch_dir: Path) -> PointRequest:
@@ -184,6 +267,7 @@ def load_request(config: dict, launch_dir: Path) -> PointRequest:
     effective = deepcopy(config)
     _inputs(effective, launch_dir)
     _timing(effective)
+    calibration_dispositions = _calibration(effective)
     kids = _mapping(effective.get("kids"), "kids", required=("fitter", "solver"))
     fitter = _mapping(kids["fitter"], "kids.fitter", required=("modelspec",))
     _enum(fitter["modelspec"], "gainlintrend", "kids.fitter.modelspec")
@@ -209,6 +293,7 @@ def load_request(config: dict, launch_dir: Path) -> PointRequest:
     dispositions = tuple(dict(path=key, disposition="replaced" if key in config else "profile-defined",
                               replacement=value) for key, value in replacements.items()) + (
         dict(path="kids.solver", disposition="replaced", replacement="configured KMP directory retained; bound tune file, serial native KIDs solve and no extra producer outputs"),)
+    dispositions += calibration_dispositions
     for key in replacements:
         effective.pop(key, None)
     effective["timestream"] = {

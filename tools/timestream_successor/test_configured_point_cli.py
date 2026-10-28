@@ -180,7 +180,7 @@ def test_quiet_and_verbose_keep_numerical_requests_and_per_array_ranks(applicati
     quiet = app.execute()
     app.config['runtime']['verbose'] = True
     verbose = app.execute()
-    assert [c['log_level'] for c in app.calls] == ['warn', 'warn', 'debug', 'debug']
+    assert [c['log_level'] for c in app.calls] == ['warning', 'warning', 'debug', 'debug']
     first, second = deepcopy(app.effective)
     assert first['runtime'].pop('verbose') is False
     assert second['runtime'].pop('verbose') is True

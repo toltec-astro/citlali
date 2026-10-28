@@ -98,8 +98,11 @@ def test_explicit_profile_replaces_active_legacy_controls_with_recorded_disposit
     assert "post_processing" not in effective and "wiener_filter" not in effective
     disposed = {r["path"]: r for r in request.migration_dispositions}
     assert set(disposed) == {"timestream", "mapmaking", "noise_maps", "post_processing", "coadd",
-                             "pointing", "source", "wiener_filter", "beammap", "kids.solver"}
-    assert all(r["disposition"] == "replaced" and r["replacement"] for r in disposed.values())
+                             "pointing", "source", "wiener_filter", "beammap", "kids.solver",
+                             "inputs[0].cal_items[2]"}
+    assert all(r["disposition"] == "replaced" and r["replacement"] for path, r in disposed.items()
+               if not path.startswith("inputs["))
+    assert disposed["inputs[0].cal_items[2]"]["disposition"] == "metadata-only"
 
 
 def test_profile_replacement_requires_explicit_migration(config, tmp_path):
@@ -209,4 +212,124 @@ def test_unimplemented_acquisition_shape_is_rejected(config, tmp_path):
 def test_invalid_missing_or_nonzero_native_timing_fails_before_processing(config, tmp_path, entries):
     config["interface_sync_offset"] = entries
     with pytest.raises(ValueError, match="interface_sync_offset"):
+        load_request(config, tmp_path)
+
+
+@pytest.mark.parametrize("name", ["0_0_2", "1000000_0_2"])
+def test_observation_must_fit_existing_tolteca_product_discovery(config, tmp_path, name):
+    config["inputs"][0]["meta"]["name"] = name
+    with pytest.raises(ValueError, match="six-digit product discovery"):
+        load_request(config, tmp_path)
+
+
+def astrometry(config):
+    return next(item for item in config["inputs"][0]["cal_items"] if item["type"] == "astrometry")
+
+
+def test_actual_default_calibration_sentinel_is_adapted_without_mutating_request(config, tmp_path):
+    defaults = yaml.safe_load((REPO / "data/config.yaml").read_text())["inputs"][0]["cal_items"]
+    original_astrometry = deepcopy(next(item for item in defaults if item["type"] == "astrometry"))
+    original_correction = deepcopy(next(item for item in defaults if item["type"] == "flxscale_correction"))
+    assert original_astrometry["pointing_offsets"][-1] == {"modified_julian_date": [0.0]}
+    config["inputs"][0]["cal_items"][1] = deepcopy(original_astrometry)
+    config["inputs"][0]["cal_items"].append(deepcopy(original_correction))
+    before = deepcopy(config)
+    request = load_request(config, tmp_path)
+    effective_offsets = astrometry(request.effective_config)["pointing_offsets"]
+    assert effective_offsets == original_astrometry["pointing_offsets"][:-1]
+    assert config == before
+    assert any(row["disposition"] == "normalized" and row["original"] == [0.0]
+               for row in request.migration_dispositions)
+    assert any(row["disposition"] == "identity-only" for row in request.migration_dispositions)
+
+
+@pytest.mark.parametrize("epochs", [[0], [0.0], [0, 0.0]])
+def test_zero_epoch_sentinel_preserves_exact_single_axis_values(config, tmp_path, epochs):
+    offsets = astrometry(config)["pointing_offsets"]
+    offsets.append({"modified_julian_date": epochs})
+    original_axes = deepcopy(offsets[:-1])
+    request = load_request(config, tmp_path)
+    assert astrometry(request.effective_config)["pointing_offsets"] == original_axes
+
+
+@pytest.mark.parametrize("count", [1, 2])
+def test_actual_epochs_and_offset_values_are_preserved_exactly(config, tmp_path, count):
+    offsets = astrometry(config)["pointing_offsets"]
+    for entry in offsets:
+        entry["value_arcsec"] = [0.0] * count
+    offsets.append({"modified_julian_date": [61090.125, 61090.875]})
+    before = deepcopy(offsets)
+    request = load_request(config, tmp_path)
+    assert astrometry(request.effective_config)["pointing_offsets"] == before
+    assert not any(row["disposition"] == "normalized" for row in request.migration_dispositions)
+
+
+@pytest.mark.parametrize("axis_lengths", [(2, 2), (1, 2), (2, 1)])
+def test_sentinel_never_invents_epochs_for_two_value_or_mixed_axes(config, tmp_path, axis_lengths):
+    offsets = astrometry(config)["pointing_offsets"]
+    for entry, length in zip(offsets, axis_lengths):
+        entry["value_arcsec"] = [0.0] * length
+    offsets.append({"modified_julian_date": [0.0]})
+    with pytest.raises(ValueError, match="pointing_offsets"):
+        load_request(config, tmp_path)
+
+
+@pytest.mark.parametrize("epochs", [[False], [float("nan")], [float("inf")], ["0"], [],
+                                    [0, 0, 0], [61090.5], [-1, 61091], [0, 61091], [61091, 61090]])
+def test_only_recognized_zero_sentinel_or_real_epoch_pair_is_admitted(config, tmp_path, epochs):
+    astrometry(config)["pointing_offsets"].append({"modified_julian_date": epochs})
+    with pytest.raises(ValueError, match="modified_julian_date"):
+        load_request(config, tmp_path)
+
+
+@pytest.mark.parametrize("epochs", [[-1], [-1, 0], [-2, -1], [0, -1]])
+def test_nonpositive_legacy_sentinels_never_become_actual_epoch_pairs(config, tmp_path, epochs):
+    offsets = astrometry(config)["pointing_offsets"]
+    original_axes = deepcopy(offsets)
+    offsets.append({"modified_julian_date": epochs})
+    request = load_request(config, tmp_path)
+    assert astrometry(request.effective_config)["pointing_offsets"] == original_axes
+    assert any(row["disposition"] == "normalized" and row["original"] == epochs
+               for row in request.migration_dispositions)
+
+
+def test_duplicate_epoch_records_are_not_silently_removed(config, tmp_path):
+    astrometry(config)["pointing_offsets"].extend([
+        {"modified_julian_date": [0.0]}, {"modified_julian_date": [61090, 61091]}])
+    with pytest.raises(ValueError, match="duplicated"):
+        load_request(config, tmp_path)
+
+
+@pytest.mark.parametrize("value", [0, -1, 2, .5, True, False, "1", None, float("nan"), float("inf"), [1]])
+def test_nonidentity_or_invalid_fluxscale_correction_fails_before_processing(config, tmp_path, value):
+    config["inputs"][0]["cal_items"].append({"type": "flxscale_correction", "value": value})
+    with pytest.raises(ValueError, match="flxscale_correction"):
+        load_request(config, tmp_path)
+
+
+@pytest.mark.parametrize("value", [1, 1.0])
+def test_identity_fluxscale_correction_is_preserved_and_dispositioned(config, tmp_path, value):
+    item = {"type": "flxscale_correction", "value": value}
+    config["inputs"][0]["cal_items"].append(item)
+    request = load_request(config, tmp_path)
+    assert request.effective_config["inputs"][0]["cal_items"][-1] == item
+    assert any(row["disposition"] == "identity-only" for row in request.migration_dispositions)
+
+
+def test_duplicate_fluxscale_corrections_rejected_even_if_both_identity(config, tmp_path):
+    config["inputs"][0]["cal_items"].extend([
+        {"type": "flxscale_correction", "value": 1}, {"type": "flxscale_correction", "value": 1}])
+    with pytest.raises(ValueError, match="duplicate.*flxscale_correction"):
+        load_request(config, tmp_path)
+
+
+def test_fluxscale_correction_requires_value(config, tmp_path):
+    config["inputs"][0]["cal_items"].append({"type": "flxscale_correction"})
+    with pytest.raises(ValueError, match="missing.*value"):
+        load_request(config, tmp_path)
+
+
+def test_unknown_calibration_type_is_not_silently_ignored(config, tmp_path):
+    config["inputs"][0]["cal_items"].append({"type": "new_correction", "value": 1.2})
+    with pytest.raises(ValueError, match="unsupported.*cal_items type"):
         load_request(config, tmp_path)

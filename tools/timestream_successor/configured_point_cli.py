@@ -81,7 +81,7 @@ def native_call(binary, request, dest, *, terminal, workers=1, method=None, verb
     started = time.monotonic()
     log_path = dest / 'native.log'
     with log_path.open('w') as log:
-        result = subprocess.run([str(binary), '-l', 'debug' if verbose else 'warn', str(path)],
+        result = subprocess.run([str(binary), '-l', 'debug' if verbose else 'warning', str(path)],
                                 env=env, stdout=log, stderr=subprocess.STDOUT)
     elapsed = time.monotonic() - started
     # No process sampler or repeated output-tree inventory in ordinary mode.
