@@ -43,6 +43,16 @@ These checks do not reproduce Unity Spack V2 or establish scientific improvement
 Independent exact-SHA review and frozen runtime/prepared project identities are
 recorded in the final handoff after review. No push or canonical integration.
 
+Independent review of b17137eb64915da4aeae996ad638e3c896c8236c required two
+bounded repairs: bind the trigger to the exact jump plan actually applied and
+its VAL snapshot; print unavailable counts and the diagnostic path when input
+preparation fails. Both repairs include negative/failure-path tests. The
+repaired CLI and isolated header build and all three synthetic native tests
+pass. The Python suite passed 164 cases with one new assertion initially using
+the wrong console delimiter; corrected assertion and all 20 affected CLI/drop
+tests pass. These are test-only synthetic checks, not observational processing.
+The final repaired SHA requires its own independent review before runtime freeze.
+
 Three dispositions before independent review: science/behavior is a candidate
 implementing the explicit owner choice; architecture retains RTC ownership and
 existing CAL/PTC boundaries with no Engine growth; repository scope is the

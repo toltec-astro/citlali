@@ -178,8 +178,13 @@ def execute(config_path, native, *, launch_dir=None):
             path = reduction / 'detector-drops.json'
             write_json(path, summary)
             record['detector_drops'] = bind(path)
-        prepared = prepare(request.effective_config, work / 'inputs',
-                           launch_dir=launch_dir, rtc_profiles=request.rtc_profiles)
+        try:
+            prepared = prepare(request.effective_config, work / 'inputs',
+                               launch_dir=launch_dir, rtc_profiles=request.rtc_profiles)
+        except Exception:
+            if drop_enabled:
+                print(console_summary(summary, path), flush=True)
+            raise
         record['inputs'] = {k: v for k, v in prepared.items() if k != 'bindings'}
         write_json(work / 'input-bindings.json', prepared['bindings'])
         print(f"POINT {prepared['observation']}: {len(prepared['networks'])} networks, "

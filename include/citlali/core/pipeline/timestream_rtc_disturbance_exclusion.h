@@ -34,7 +34,9 @@ public:
       std::shared_ptr<const RtcJumpExclusionPlan> jumps) {
     if(!result || !outcome || !jumps ||
        jumps->input_handle().get()!=result->plan_handle()->input_handle().get() ||
+       jumps->admission_handle()->val_snapshot_handle().get()!=result->plan_handle()->snapshot_handle().get() ||
        outcome->original_handle().get()!=result->plan_handle()->original_consideration()->spectral_handle().get() ||
+       outcome->conditioned_handle()->conditioned_handle()->snapshot_handle().get()!=result->plan_handle()->snapshot_handle().get() ||
        !outcome->conditioned_handle()->conditioned_handle()->after_lowpass() ||
        outcome->conditioned_handle()->conditioned_handle()->producer_attempt()!=result->plan_handle()->attempt() ||
        outcome->conditioned_handle()->grid_policy()!=RtcConditionedSpectralGrid::require_full_stretch)
@@ -43,6 +45,8 @@ public:
     out->initial_=std::move(result);out->evidence_=std::move(outcome);out->jumps_=std::move(jumps);
     for(const auto &r:out->initial_->detector_results()) {
       const auto &p=*r->plan_handle();const auto &c=*p.assessment_handle()->candidate_handle();
+      if(p.transient_handle()->jump_plan_handle().get()!=out->jumps_.get())
+        throw std::invalid_argument("disturbance trigger differs from applied jump exclusions");
       if(out->evidence_->conditioned_handle()->conditioned_handle()->column(c.network(),c.detector()).source.get()!=r.get())
         throw std::invalid_argument("disturbance evidence belongs to another numerical realization");
       Record record{c.network(),c.detector()};RtcDisturbanceFacts facts;

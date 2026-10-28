@@ -107,7 +107,7 @@ def application(tmp_path, config, monkeypatch):
     return state
 
 
-def test_required_drop_diagnostic_survives_preparation_failure(application, monkeypatch):
+def test_required_drop_diagnostic_survives_preparation_failure(application, monkeypatch, capsys):
     from configured_point_config import DISTURBANCE_POLICY
     app = application
     app.config['successor']['rtc']['disturbance_exclusion'] = DISTURBANCE_POLICY
@@ -120,6 +120,11 @@ def test_required_drop_diagnostic_survives_preparation_failure(application, monk
     summary = json.loads((root / 'detector-drops.json').read_text())
     assert summary['evaluation_state'] == 'not_evaluated'
     assert summary['totals']['newly_dropped'] is None
+    output = capsys.readouterr().out
+    assert 'Detectors dropped for disturbances: unavailable' in output
+    assert str(root / 'detector-drops.json') in output
+    for array in ('a1100', 'a1400', 'a2000'):
+        assert f'{array}=unavailable' in output
 
 
 def test_required_drop_diagnostic_survives_upstream_failure(application, monkeypatch, capsys):

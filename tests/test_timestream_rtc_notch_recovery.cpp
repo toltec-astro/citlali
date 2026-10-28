@@ -1546,6 +1546,9 @@ TEST(rtc_disturbance_exclusion, frozen_exclusion_removes_pair_preserves_other_de
   ASSERT_TRUE(finalize_rtc_only({20011},grid,slot,decision).complete());
   auto other=complete_apply(t,p);
   EXPECT_THROW(RtcDisturbanceExclusionPlan::consider(other,outcome,t.transient->jump_plan_handle()),std::invalid_argument);
+  const auto &jumps=t.transient->jump_plan_handle();
+  auto foreign_jumps=RtcJumpExclusionPlan::consider(jumps->admission_handle(),jumps->scan_binding_handle(),t.val,9001);
+  EXPECT_THROW(RtcDisturbanceExclusionPlan::consider(initial,outcome,foreign_jumps),std::invalid_argument);
   EXPECT_THROW(policy->replacement_plan(31),std::invalid_argument);
   EXPECT_DOUBLE_EQ(t.parent->network(0).value(NativeReadoutCoordinate::x,1100,0),in.x(1000,0));
 }
