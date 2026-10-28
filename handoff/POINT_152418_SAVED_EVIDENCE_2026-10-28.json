@@ -1,0 +1,1002 @@
+{
+  "scope": "Read-only inspection of saved receipts, masks and source; no new spectra, fitting, filtering or reduction",
+  "observation": 152418,
+  "network": 11,
+  "array": "a2000",
+  "channel": 92,
+  "executed_source": "87e9217fc0016839d43684f539e93774199a32a1",
+  "inspected_checkout": "19d7f932799af88cf041101a6bebc6f5e0318557",
+  "source_root": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11",
+  "outcome_census": {
+    "coordinate_records": 972,
+    "available": 852,
+    "unavailable_empty": 118,
+    "unavailable_nonempty": [
+      {
+        "channel": 92,
+        "coordinate": 0,
+        "conditioned_eligible_samples": 1741,
+        "conditioned_cause": 4
+      },
+      {
+        "channel": 92,
+        "coordinate": 1,
+        "conditioned_eligible_samples": 1741,
+        "conditioned_cause": 4
+      }
+    ]
+  },
+  "native_rows": 7878,
+  "input_cause_counts": {
+    "11": 622,
+    "2": 2408,
+    "0": 4524,
+    "8": 152,
+    "7": 18,
+    "9": 154
+  },
+  "filter_support_cause_counts": {
+    "11": 622,
+    "2": 2408,
+    "0": 4694,
+    "9": 154
+  },
+  "result_cause_counts": {
+    "11": 622,
+    "2": 2408,
+    "5": 1405,
+    "0": 3289,
+    "9": 154
+  },
+  "state_counts": {
+    "0": 4589,
+    "3": 3289
+  },
+  "speed_counts": {
+    "0": 7610,
+    "1": 47,
+    "2": 221
+  },
+  "input_review_runs": [
+    [
+      1220,
+      1647
+    ],
+    [
+      1694,
+      2416
+    ],
+    [
+      2427,
+      2498
+    ],
+    [
+      2634,
+      3214
+    ],
+    [
+      3217,
+      3413
+    ],
+    [
+      3415,
+      3660
+    ],
+    [
+      4880,
+      5530
+    ],
+    [
+      5544,
+      6064
+    ],
+    [
+      6066,
+      6140
+    ],
+    [
+      6175,
+      6853
+    ],
+    [
+      6870,
+      7050
+    ],
+    [
+      7107,
+      7288
+    ]
+  ],
+  "filter_support_runs": [
+    [
+      1220,
+      2498
+    ],
+    [
+      2581,
+      3660
+    ],
+    [
+      4880,
+      5530
+    ],
+    [
+      5544,
+      7050
+    ],
+    [
+      7107,
+      7288
+    ]
+  ],
+  "numerical_output_runs": [
+    [
+      1373,
+      2345
+    ],
+    [
+      2734,
+      3507
+    ],
+    [
+      5033,
+      5377
+    ],
+    [
+      5697,
+      6897
+    ]
+  ],
+  "numerical_native_output_samples": 3289,
+  "decimated_map_center_candidates": 1592,
+  "postnotch_review_samples": 4524,
+  "postnotch_review_runs": [
+    [
+      1220,
+      1647
+    ],
+    [
+      1694,
+      2416
+    ],
+    [
+      2427,
+      2498
+    ],
+    [
+      2634,
+      3214
+    ],
+    [
+      3217,
+      3413
+    ],
+    [
+      3415,
+      3660
+    ],
+    [
+      4880,
+      5530
+    ],
+    [
+      5544,
+      6064
+    ],
+    [
+      6066,
+      6140
+    ],
+    [
+      6175,
+      6853
+    ],
+    [
+      6870,
+      7050
+    ],
+    [
+      7107,
+      7288
+    ]
+  ],
+  "postlowpass_review_samples": 1741,
+  "postlowpass_review_runs": [
+    [
+      1373,
+      1494
+    ],
+    [
+      1847,
+      2263
+    ],
+    [
+      2787,
+      3061
+    ],
+    [
+      5033,
+      5377
+    ],
+    [
+      5697,
+      5911
+    ],
+    [
+      6328,
+      6700
+    ]
+  ],
+  "postlowpass_review_lengths": [
+    121,
+    416,
+    274,
+    344,
+    214,
+    372
+  ],
+  "potential_short_windows_from_saved_support_only": 4,
+  "potential_short_window_samples": 1406,
+  "warning": "Potential windows are mask arithmetic, not a new spectral calculation or a predicted successful run.",
+  "support-decisions.yaml": [
+    {
+      "channel": 92,
+      "factor_identity": "sha256:5a1be186b2d8052d7701e84becf283b00abf2e7644585a783fdf973ca110e301:channel=92",
+      "stable_domains": [
+        [
+          1220,
+          3660
+        ],
+        [
+          4880,
+          7288
+        ]
+      ],
+      "donor_contaminated": [
+        [
+          0,
+          1220
+        ],
+        [
+          2498,
+          2581
+        ],
+        [
+          3660,
+          4880
+        ],
+        [
+          5530,
+          5544
+        ],
+        [
+          7050,
+          7107
+        ],
+        [
+          7288,
+          7878
+        ]
+      ]
+    }
+  ],
+  "jump-exclusions.yaml": [
+    {
+      "channel": 92,
+      "whole_observation": false,
+      "admitted_groups": [
+        535,
+        537
+      ],
+      "science_scans": [
+        0,
+        3
+      ],
+      "paired_exclusions": [
+        [
+          32,
+          1220
+        ],
+        [
+          3660,
+          4880
+        ]
+      ]
+    }
+  ],
+  "event-decisions.yaml": [
+    {
+      "event": 535,
+      "channel": 92,
+      "network": 11,
+      "seed_earlier_row": 880,
+      "origin_unix_seconds": 1771491652.7719502,
+      "class": "admitted-level-shift",
+      "affected": [
+        880,
+        882
+      ],
+      "operation_unavailable": [
+        -1,
+        -1
+      ],
+      "seeded_excursion": true,
+      "recovered": false,
+      "background_available": true,
+      "source_outside": true,
+      "target_domain_available": false,
+      "cohort_coincident_events": [
+        24,
+        72,
+        175,
+        202,
+        453,
+        478,
+        499,
+        515,
+        525,
+        534,
+        571,
+        586,
+        595,
+        604,
+        617,
+        629,
+        648,
+        662,
+        677,
+        698
+      ],
+      "proposed_isolation_prerequisites": false,
+      "donor_admission_available": false
+    },
+    {
+      "event": 536,
+      "channel": 92,
+      "network": 11,
+      "seed_earlier_row": 2508,
+      "origin_unix_seconds": 1771491666.3583822,
+      "class": "isolated-admission-unavailable",
+      "affected": [
+        2498,
+        2519
+      ],
+      "operation_unavailable": [
+        2498,
+        2581
+      ],
+      "seeded_excursion": true,
+      "recovered": true,
+      "background_available": true,
+      "source_outside": true,
+      "target_domain_available": true,
+      "cohort_coincident_events": [
+        5,
+        27,
+        51,
+        75,
+        101,
+        127,
+        151,
+        178,
+        205,
+        229,
+        254,
+        278,
+        300,
+        321,
+        344,
+        362,
+        382,
+        401,
+        418,
+        432,
+        439,
+        454,
+        465,
+        480,
+        487,
+        490,
+        504,
+        512,
+        516,
+        521,
+        528,
+        573,
+        579,
+        589,
+        597,
+        608,
+        620,
+        633,
+        651,
+        666,
+        681,
+        702
+      ],
+      "proposed_isolation_prerequisites": false,
+      "donor_admission_available": false
+    },
+    {
+      "event": 537,
+      "channel": 92,
+      "network": 11,
+      "seed_earlier_row": 4004,
+      "origin_unix_seconds": 1771491678.363758,
+      "class": "admitted-level-shift",
+      "affected": [
+        4004,
+        4006
+      ],
+      "operation_unavailable": [
+        -1,
+        -1
+      ],
+      "seeded_excursion": true,
+      "recovered": false,
+      "background_available": true,
+      "source_outside": true,
+      "target_domain_available": false,
+      "cohort_coincident_events": [
+        9,
+        31,
+        58,
+        80,
+        106,
+        132,
+        156,
+        185,
+        210,
+        234,
+        259,
+        282,
+        304,
+        326,
+        347,
+        366,
+        384,
+        402,
+        421,
+        442,
+        456,
+        468,
+        475,
+        481,
+        611,
+        623,
+        637,
+        654,
+        668,
+        684,
+        706
+      ],
+      "proposed_isolation_prerequisites": false,
+      "donor_admission_available": false
+    },
+    {
+      "event": 538,
+      "channel": 92,
+      "network": 11,
+      "seed_earlier_row": 5536,
+      "origin_unix_seconds": 1771491690.9139023,
+      "class": "isolated-admission-unavailable",
+      "affected": [
+        5533,
+        5537
+      ],
+      "operation_unavailable": [
+        5530,
+        5544
+      ],
+      "seeded_excursion": true,
+      "recovered": true,
+      "background_available": true,
+      "source_outside": true,
+      "target_domain_available": true,
+      "cohort_coincident_events": [
+        13,
+        36,
+        62,
+        84,
+        85,
+        86,
+        111,
+        112,
+        162,
+        190,
+        215,
+        238,
+        239,
+        263,
+        264,
+        286,
+        308,
+        330,
+        351,
+        370,
+        387,
+        406,
+        426,
+        446,
+        457,
+        469,
+        476,
+        483,
+        501,
+        505,
+        518,
+        520,
+        522,
+        529,
+        540,
+        542,
+        575,
+        580,
+        592,
+        600,
+        613,
+        624,
+        640,
+        655,
+        670,
+        687,
+        709
+      ],
+      "proposed_isolation_prerequisites": false,
+      "donor_admission_available": false
+    },
+    {
+      "event": 539,
+      "channel": 92,
+      "network": 11,
+      "seed_earlier_row": 7056,
+      "origin_unix_seconds": 1771491703.54187,
+      "class": "isolated-admission-unavailable",
+      "affected": [
+        7057,
+        7062
+      ],
+      "operation_unavailable": [
+        7050,
+        7107
+      ],
+      "seeded_excursion": true,
+      "recovered": true,
+      "background_available": true,
+      "source_outside": true,
+      "target_domain_available": false,
+      "cohort_coincident_events": [
+        20,
+        42,
+        67,
+        92,
+        117,
+        140,
+        141,
+        169,
+        170,
+        196,
+        219,
+        220,
+        245,
+        269,
+        291,
+        313,
+        335,
+        356,
+        374,
+        392,
+        410,
+        429,
+        450,
+        460,
+        472,
+        485,
+        491,
+        494,
+        497,
+        500,
+        507,
+        510,
+        532,
+        554,
+        555,
+        582,
+        593,
+        602,
+        614,
+        625,
+        642,
+        658,
+        673,
+        693,
+        714
+      ],
+      "proposed_isolation_prerequisites": false,
+      "donor_admission_available": false
+    }
+  ],
+  "verified_mask_accounting": {
+    "input_review_matches_postnotch": true,
+    "lowpass_review_exact_153_sample_trim_each_end": true,
+    "arithmetic_only": true
+  },
+  "inspected_file_sha256": [
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/post-lowpass-outcome.yaml",
+      "sha256": "beebdb4373a513231c96034f34b41880d0b8a3f84aa1e1c8590033bcd74c0b90"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/post-notch-outcome.yaml",
+      "sha256": "948655b47d2935fcb7b5886b77c26cfadb0b0e0e2917f79d9817b1ce0593fd10"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/92-input-causes.u8",
+      "sha256": "ec3d9e25cbe46c95b84f4e8fd274af64b23eb8ce76d31b1ff29bce63776786b6"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/92-support-causes.u8",
+      "sha256": "44087c550157184c2aec36be01afe23e76b481f5575315c2e985035e7296905a"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/92-state.u8",
+      "sha256": "ae9984ef429ef7a671ac3d4b0e3b7fddf481a1900284852e8bd4851ec1f663ef"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/92-causes.u8",
+      "sha256": "212c2debd71c430fa50834e88df4fdefe8531358a54a644fee1a590594631ac0"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/92-speed-evidence.u8",
+      "sha256": "ec0acc4e3cd0f7a76d8a3c960413ee994326d3551aed91c28b790e8db59ea0a7"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/92-map-center.u8",
+      "sha256": "6905386af07189ebc08a975841cf3352d105e36c73b49b45734861495be62162"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/software/configured-point-87e9217fc/data/development/bright_point_base_v1/a2000-rtc.json",
+      "sha256": "d1e9dbefaaaa8832b4876ac34f23a604270b3bf35bc5d79125c37cddd3a32cab"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/support-decisions.yaml",
+      "sha256": "14f33ae151d9ea2781b098326236bb212c16c641e47d634fac494e43563869c8"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/jump-exclusions.yaml",
+      "sha256": "0926eb90d85b83077af4788ea27dd1c6ca37b8754efb27f7c1bde71be0c32116"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/event-decisions.yaml",
+      "sha256": "1c995be9edc3d950663521f9b9428dfc0888b48cc3030974349c02c815c17fe5"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/learning-receipt.yaml",
+      "sha256": "e7a1a69dd4493ad65724b6cc9d3780a04fb790651e0038ee060031cfbe3bb567"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/reassessment-decision.yaml",
+      "sha256": "982577fb32bbe4b22cfcbd2ff0ccf68fd8ec0802b56c459adc4473892dfae82a"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/post-notch-spectra.yaml",
+      "sha256": "b644ec4764a58d2e30c178001d870e6c6400b2b45267535ecd20c44c6590e5cd"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/post-lowpass-spectra.yaml",
+      "sha256": "2d2c5fd27eb49694ca975a1570fa5999d374dd73f95796dc27f16f170530a662"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/observation-receipt.yaml",
+      "sha256": "222ee631fbffabf9626bdaaec5206df7758da39a6a3c5bd19a563e9d5f447c51"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/development.yaml",
+      "sha256": "1611a8a57579e1d8b7f56ea28cc43de6a4faf80e7d1fa186c759fc211dc3841e"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/0-state.u8",
+      "sha256": "7a7656a251de3213af8e5e1258c7b0a3478c688061b107101a5f33146ef067fd"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/1-state.u8",
+      "sha256": "7a7656a251de3213af8e5e1258c7b0a3478c688061b107101a5f33146ef067fd"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/2-state.u8",
+      "sha256": "7a7656a251de3213af8e5e1258c7b0a3478c688061b107101a5f33146ef067fd"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/3-state.u8",
+      "sha256": "7a7656a251de3213af8e5e1258c7b0a3478c688061b107101a5f33146ef067fd"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/4-state.u8",
+      "sha256": "7a7656a251de3213af8e5e1258c7b0a3478c688061b107101a5f33146ef067fd"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/5-state.u8",
+      "sha256": "7a7656a251de3213af8e5e1258c7b0a3478c688061b107101a5f33146ef067fd"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/6-state.u8",
+      "sha256": "7a7656a251de3213af8e5e1258c7b0a3478c688061b107101a5f33146ef067fd"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/7-state.u8",
+      "sha256": "7a7656a251de3213af8e5e1258c7b0a3478c688061b107101a5f33146ef067fd"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/8-state.u8",
+      "sha256": "7a7656a251de3213af8e5e1258c7b0a3478c688061b107101a5f33146ef067fd"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/9-state.u8",
+      "sha256": "7a7656a251de3213af8e5e1258c7b0a3478c688061b107101a5f33146ef067fd"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/10-state.u8",
+      "sha256": "7a7656a251de3213af8e5e1258c7b0a3478c688061b107101a5f33146ef067fd"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/11-state.u8",
+      "sha256": "7a7656a251de3213af8e5e1258c7b0a3478c688061b107101a5f33146ef067fd"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/12-state.u8",
+      "sha256": "7a7656a251de3213af8e5e1258c7b0a3478c688061b107101a5f33146ef067fd"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/13-state.u8",
+      "sha256": "7a7656a251de3213af8e5e1258c7b0a3478c688061b107101a5f33146ef067fd"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/14-state.u8",
+      "sha256": "7a7656a251de3213af8e5e1258c7b0a3478c688061b107101a5f33146ef067fd"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/15-state.u8",
+      "sha256": "7a7656a251de3213af8e5e1258c7b0a3478c688061b107101a5f33146ef067fd"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/16-state.u8",
+      "sha256": "7a7656a251de3213af8e5e1258c7b0a3478c688061b107101a5f33146ef067fd"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/17-state.u8",
+      "sha256": "7a7656a251de3213af8e5e1258c7b0a3478c688061b107101a5f33146ef067fd"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/18-state.u8",
+      "sha256": "7a7656a251de3213af8e5e1258c7b0a3478c688061b107101a5f33146ef067fd"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/19-state.u8",
+      "sha256": "7a7656a251de3213af8e5e1258c7b0a3478c688061b107101a5f33146ef067fd"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/20-state.u8",
+      "sha256": "7a7656a251de3213af8e5e1258c7b0a3478c688061b107101a5f33146ef067fd"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/21-state.u8",
+      "sha256": "7a7656a251de3213af8e5e1258c7b0a3478c688061b107101a5f33146ef067fd"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/22-state.u8",
+      "sha256": "7a7656a251de3213af8e5e1258c7b0a3478c688061b107101a5f33146ef067fd"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/23-state.u8",
+      "sha256": "7a7656a251de3213af8e5e1258c7b0a3478c688061b107101a5f33146ef067fd"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/24-state.u8",
+      "sha256": "7a7656a251de3213af8e5e1258c7b0a3478c688061b107101a5f33146ef067fd"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/27-state.u8",
+      "sha256": "7a7656a251de3213af8e5e1258c7b0a3478c688061b107101a5f33146ef067fd"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/31-state.u8",
+      "sha256": "7a7656a251de3213af8e5e1258c7b0a3478c688061b107101a5f33146ef067fd"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/70-state.u8",
+      "sha256": "7a7656a251de3213af8e5e1258c7b0a3478c688061b107101a5f33146ef067fd"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/71-state.u8",
+      "sha256": "7a7656a251de3213af8e5e1258c7b0a3478c688061b107101a5f33146ef067fd"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/72-state.u8",
+      "sha256": "7a7656a251de3213af8e5e1258c7b0a3478c688061b107101a5f33146ef067fd"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/74-state.u8",
+      "sha256": "7a7656a251de3213af8e5e1258c7b0a3478c688061b107101a5f33146ef067fd"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/76-state.u8",
+      "sha256": "7a7656a251de3213af8e5e1258c7b0a3478c688061b107101a5f33146ef067fd"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/78-state.u8",
+      "sha256": "7a7656a251de3213af8e5e1258c7b0a3478c688061b107101a5f33146ef067fd"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/79-state.u8",
+      "sha256": "7a7656a251de3213af8e5e1258c7b0a3478c688061b107101a5f33146ef067fd"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/84-state.u8",
+      "sha256": "7a7656a251de3213af8e5e1258c7b0a3478c688061b107101a5f33146ef067fd"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/90-state.u8",
+      "sha256": "7a7656a251de3213af8e5e1258c7b0a3478c688061b107101a5f33146ef067fd"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/96-state.u8",
+      "sha256": "7a7656a251de3213af8e5e1258c7b0a3478c688061b107101a5f33146ef067fd"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/99-state.u8",
+      "sha256": "7a7656a251de3213af8e5e1258c7b0a3478c688061b107101a5f33146ef067fd"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/111-state.u8",
+      "sha256": "7a7656a251de3213af8e5e1258c7b0a3478c688061b107101a5f33146ef067fd"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/171-state.u8",
+      "sha256": "7a7656a251de3213af8e5e1258c7b0a3478c688061b107101a5f33146ef067fd"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/257-state.u8",
+      "sha256": "7a7656a251de3213af8e5e1258c7b0a3478c688061b107101a5f33146ef067fd"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/270-state.u8",
+      "sha256": "7a7656a251de3213af8e5e1258c7b0a3478c688061b107101a5f33146ef067fd"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/298-state.u8",
+      "sha256": "7a7656a251de3213af8e5e1258c7b0a3478c688061b107101a5f33146ef067fd"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/312-state.u8",
+      "sha256": "7a7656a251de3213af8e5e1258c7b0a3478c688061b107101a5f33146ef067fd"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/327-state.u8",
+      "sha256": "7a7656a251de3213af8e5e1258c7b0a3478c688061b107101a5f33146ef067fd"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/371-state.u8",
+      "sha256": "7a7656a251de3213af8e5e1258c7b0a3478c688061b107101a5f33146ef067fd"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/456-state.u8",
+      "sha256": "7a7656a251de3213af8e5e1258c7b0a3478c688061b107101a5f33146ef067fd"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/474-state.u8",
+      "sha256": "7a7656a251de3213af8e5e1258c7b0a3478c688061b107101a5f33146ef067fd"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/475-state.u8",
+      "sha256": "7a7656a251de3213af8e5e1258c7b0a3478c688061b107101a5f33146ef067fd"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/476-state.u8",
+      "sha256": "7a7656a251de3213af8e5e1258c7b0a3478c688061b107101a5f33146ef067fd"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/477-state.u8",
+      "sha256": "7a7656a251de3213af8e5e1258c7b0a3478c688061b107101a5f33146ef067fd"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/478-state.u8",
+      "sha256": "7a7656a251de3213af8e5e1258c7b0a3478c688061b107101a5f33146ef067fd"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/479-state.u8",
+      "sha256": "7a7656a251de3213af8e5e1258c7b0a3478c688061b107101a5f33146ef067fd"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/480-state.u8",
+      "sha256": "7a7656a251de3213af8e5e1258c7b0a3478c688061b107101a5f33146ef067fd"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/481-state.u8",
+      "sha256": "7a7656a251de3213af8e5e1258c7b0a3478c688061b107101a5f33146ef067fd"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/482-state.u8",
+      "sha256": "7a7656a251de3213af8e5e1258c7b0a3478c688061b107101a5f33146ef067fd"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/483-state.u8",
+      "sha256": "7a7656a251de3213af8e5e1258c7b0a3478c688061b107101a5f33146ef067fd"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/484-state.u8",
+      "sha256": "7a7656a251de3213af8e5e1258c7b0a3478c688061b107101a5f33146ef067fd"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-check-152418/reduced/redu00/.point-work/upstream/products/network11/donor-continuity/485-state.u8",
+      "sha256": "7a7656a251de3213af8e5e1258c7b0a3478c688061b107101a5f33146ef067fd"
+    }
+  ],
+  "empty_review_detectors": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    27,
+    31,
+    70,
+    71,
+    72,
+    74,
+    76,
+    78,
+    79,
+    84,
+    90,
+    96,
+    99,
+    111,
+    171,
+    257,
+    270,
+    298,
+    312,
+    327,
+    371,
+    456,
+    474,
+    475,
+    476,
+    477,
+    478,
+    479,
+    480,
+    481,
+    482,
+    483,
+    484,
+    485
+  ],
+  "empty_review_detectors_with_numerical_output": [],
+  "lowpass_filter_taps": 307,
+  "checks": {
+    "all_recorded_evidence_hashes_rechecked": true,
+    "evidence_file_count": 77,
+    "no_new_processing": true
+  }
+}
