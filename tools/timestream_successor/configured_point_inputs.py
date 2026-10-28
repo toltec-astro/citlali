@@ -304,6 +304,9 @@ def prepare(config: dict, out: Path, *, launch_dir: Path,
                                            timing_inputs=timing, processing_request=processing_binding),
                        filter_plan=row["profile"],
                        detectors=[dict(channel=i, filter="lowpass") for i in range(row["channels"])])
+        disturbance = effective.get("successor", {}).get("rtc", {}).get("disturbance_exclusion", "disabled")
+        if disturbance != "disabled":
+            request["disturbance_exclusion"] = disturbance
         _write(path, request)
         requests.append(dict(network=row["network"], input=bindings.bind(path, "native network request")))
     observation_request = out / "observation.json"

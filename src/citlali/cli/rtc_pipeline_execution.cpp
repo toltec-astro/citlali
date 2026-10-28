@@ -10,6 +10,7 @@
 #include "rtc_multidetector_bindings.h"
 #include <citlali/core/pipeline/timestream_rtc_output_grid.h>
 #include <citlali/core/pipeline/timestream_cal_rtc_source.h>
+#include <citlali/core/pipeline/timestream_rtc_disturbance_exclusion.h>
 #include <bit>
 #include <mutex>
 #include <thread>
@@ -152,6 +153,10 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
     require(cfg["network"].as<int>()==nw && cfg["observation"].as<int>()==obs,"requested raw scope mismatch");
     const bool reference=cfg["development_reference"] && cfg["development_reference"].as<std::string>()=="bright-point-base-v1";
     const bool configured=citlali::cli::detail::configured_point_scope(cfg,obs,sub,scan);
+    if(cfg["disturbance_exclusion"])require(configured && development &&
+        cfg["disturbance_exclusion"].as<std::string>()==RtcDisturbanceExclusionPlan::identity &&
+        !cfg["point_transfer_runtime_profile"] && !cfg["rtc_whole_run_quarantine"] && !cfg["rtc_source_probe"],
+        "unsupported disturbance policy or invocation scope");
     require(!citlali::cli::detail::configured_point_request(cfg) || configured,"configured POINT acquisition differs");
     const bool oof=citlali::cli::detail::oof_network_scope(cfg,obs,sub,scan,nw);
     require(!citlali::cli::detail::oof_request(cfg) || oof,"OOF network identity outside bounded scan-1 scope");
@@ -912,13 +917,71 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
       performance.mark("detector_plans_complete");
       if(quarantine_path)require(citlali::utils::sha256_file(*quarantine_path)==citlali::cli::detail::rtc_quarantine_digest,
           "RTC frozen quarantine changed during processing");
-      const auto complete=RtcPipelinePlan::consider(plans,joint->joint_handle(),1000+continuity);
+      auto complete=RtcPipelinePlan::consider(plans,joint->joint_handle(),1000+continuity);
       arm["Consider_plan_seconds"]=std::chrono::duration<double>(std::chrono::steady_clock::now()-planning_at).count();
       const std::array partitions{view};
       const auto applied_at=std::chrono::steady_clock::now();
       performance.mark("RTC_apply_start");
       auto result=RtcPipelineResult::apply(complete,view,val,partitions);
       performance.mark("RTC_apply_complete");
+      std::shared_ptr<const RtcNativeSpectralEvidence> cached_final_spectral;
+      std::shared_ptr<const RtcTreatmentOutcomeEvidence> cached_final_outcome;
+      if(cfg["disturbance_exclusion"]) {
+        require(configured && development && decision && !cfg["point_transfer_runtime_profile"] &&
+            !cfg["rtc_whole_run_quarantine"] && !cfg["rtc_source_probe"] &&
+            cfg["disturbance_exclusion"].as<std::string>()==RtcDisturbanceExclusionPlan::identity,
+            "disturbance policy requires the configured POINT natural-event route");
+        YAML::Node drops;
+        drops["schema"]="citlali-detector-drops-network-v1";
+        drops["policy"]=RtcDisturbanceExclusionPlan::identity;
+        drops["observation"]=obs;drops["network"]=nw;drops["array"]=health_array;
+        drops["evaluation_state"]="incomplete";drops["application_state"]="not_applied";
+        drops["input_detectors"]=channels.size();
+        write_yaml(root_output/"detector-drops.yaml",drops);
+        cached_final_spectral=RtcNativeSpectralEvidence::learn_conditioned(result->native_product(true,val),val,cadence,1010);
+        cached_final_outcome=RtcTreatmentOutcomeEvidence::learn(spectral,cached_final_spectral,1011);
+        const auto exclusion=RtcDisturbanceExclusionPlan::consider(result,cached_final_outcome,jumps);
+        std::size_t empty=0,dropped=0;
+        drops["detectors"]=YAML::Node(YAML::NodeType::Sequence);
+        for(const auto &r:exclusion->records()) {
+          empty+=r.previously_unavailable;dropped+=r.dropped;
+          if(!r.dropped)continue;
+          YAML::Node row;row["network"]=r.network;row["channel"]=channels.at(r.detector);
+          row["detector_occurrence"]=detectors.at(r.detector).detector_occurrence_id;
+          row["array_association"]=detectors.at(r.detector).detector_association_record_id;
+          row["reason"]="repeated_level_shifts_unassessable_remainder";
+          row["assessment_cause"]="fixed_grid_unavailable";
+          row["assessment_samples_x"]=r.assessment_samples[0];row["assessment_samples_r"]=r.assessment_samples[1];
+          for(auto [event,scan_id]:r.event_scans){YAML::Node e;e["event"]=event;e["science_scan"]=scan_id;row["event_scans"].push_back(e);}
+          drops["detectors"].push_back(row);
+        }
+        drops["evaluation_state"]="complete";drops["previously_unavailable"]=empty;
+        drops["evaluated_detectors"]=channels.size()-empty;
+        drops["selected_for_exclusion"]=dropped;
+        drops["retained_after_decision"]=channels.size()-empty-dropped;
+        drops["initial_attempt"]=complete->attempt();
+        drops["jump_evidence_sha256"]=citlali::utils::sha256_file(root_output/"jump-exclusions.yaml");
+        write_yaml(root_output/"detector-drops.yaml",drops);
+        if(exclusion->has_drops()) {
+          // One frozen membership decision, then one original-input application.
+          // No repeated rejection or fallback after subsequent assessment failures.
+          complete=exclusion->replacement_plan(1002);
+          result=RtcPipelineResult::apply(complete,view,val,partitions);
+          cached_final_spectral.reset();cached_final_outcome.reset();
+          for(std::size_t d=0;d<exclusion->records().size();++d)if(exclusion->records()[d].dropped) {
+            const auto &r=*result->detector_results().at(d);
+            for(Eigen::Index i=0;i<r.filtered_native_pair().rows();++i)
+              require(!r.coordinate_stage_available(NativeReadoutCoordinate::x,r.plan_handle()->first_native_row()+i,true) &&
+                      !r.coordinate_stage_available(NativeReadoutCoordinate::r,r.plan_handle()->first_native_row()+i,true),
+                      "excluded detector retained numerical output");
+          }
+        }
+        drops["application_state"]="applied";drops["newly_dropped"]=dropped;
+        drops["final_attempt"]=complete->attempt();
+        write_yaml(root_output/"detector-drops.yaml",drops);
+        receipt["detector_drops_file"]="detector-drops.yaml";
+        receipt["detector_drops_sha256"]=citlali::utils::sha256_file(root_output/"detector-drops.yaml");
+      }
       RtcNotchRecoveryResult::OperationSeconds operation_seconds;
       for(const auto &detector:result->detector_results()) {
         const auto &t=detector->operation_seconds();operation_seconds.transient+=t.transient;
@@ -1068,7 +1131,7 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
       std::ofstream relearned_stream(relearned_path);
       const auto relearn_at=std::chrono::steady_clock::now();
       for(bool lowpass:{false,true}){
-        auto conditioned=RtcNativeSpectralEvidence::learn_conditioned(result->native_product(lowpass,val),val,cadence,1100+lowpass,
+        auto conditioned=(lowpass && cached_final_spectral) ? cached_final_spectral : RtcNativeSpectralEvidence::learn_conditioned(result->native_product(lowpass,val),val,cadence,1100+lowpass,
             cfg["point_transfer_runtime_profile"] ? RtcConditionedSpectralGrid::padded_short_stretches : RtcConditionedSpectralGrid::require_full_stretch);
         performance.mark(lowpass?"post_lowpass_learned":"post_notch_learned");
         performance.array(lowpass?"post_lowpass_spectral_evidence":"post_notch_spectral_evidence",conditioned->logical_owned_bytes(),1,0);
@@ -1076,7 +1139,7 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
         performance.array("conditioned_review_admission_bits",(rows*channels.size()+7)/8,1,channels.size());
         auto considered=RtcSpectralTransientConsideration::consider(conditioned,val,events,val,1200+lowpass);
         const auto outcome_started=std::chrono::steady_clock::now();
-        const auto outcome=RtcTreatmentOutcomeEvidence::learn(spectral,conditioned,1250+lowpass);
+        const auto outcome=(lowpass && cached_final_outcome) ? cached_final_outcome : RtcTreatmentOutcomeEvidence::learn(spectral,conditioned,1250+lowpass);
         performance.mark(lowpass?"post_lowpass_matched_outcome":"post_notch_matched_outcome");
         performance.array(lowpass?"post_lowpass_matched_evidence":"post_notch_matched_evidence",outcome->logical_owned_bytes(),1,0);
         const auto outcome_seconds=std::chrono::duration<double>(std::chrono::steady_clock::now()-outcome_started).count();

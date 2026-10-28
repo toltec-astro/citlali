@@ -168,14 +168,35 @@ def execute(config_path, native, *, launch_dir=None):
     shutil.copyfile(config_path, work / 'received.yaml')
     write_json(reduction / 'RUN.json', record)
     try:
+        drop_enabled = request.effective_config['successor']['rtc'].get('disturbance_exclusion', 'disabled') != 'disabled'
+        if drop_enabled:
+            from configured_point_drops import collect, console_summary
+            # Preparation can fail before the exact detector inventory exists.
+            # Preserve unknown populations rather than manufacturing zero losses.
+            summary = collect(work / 'upstream/products', None, [])
+            summary['evaluation_state'] = 'not_evaluated'
+            path = reduction / 'detector-drops.json'
+            write_json(path, summary)
+            record['detector_drops'] = bind(path)
         prepared = prepare(request.effective_config, work / 'inputs',
                            launch_dir=launch_dir, rtc_profiles=request.rtc_profiles)
         record['inputs'] = {k: v for k, v in prepared.items() if k != 'bindings'}
         write_json(work / 'input-bindings.json', prepared['bindings'])
         print(f"POINT {prepared['observation']}: {len(prepared['networks'])} networks, "
               f"all three arrays, {request.workers} workers", flush=True)
-        record['stages'].append(native_call(native, prepared['observation_request'], work / 'upstream',
-            terminal='ptc', workers=request.workers, method=request.cleaning_method, verbose=request.verbose))
+        try:
+            record['stages'].append(native_call(native, prepared['observation_request'], work / 'upstream',
+                terminal='ptc', workers=request.workers, method=request.cleaning_method, verbose=request.verbose))
+        finally:
+            if drop_enabled:
+                from configured_point_drops import collect, console_summary
+                summary = collect(work / 'upstream/products', prepared['observation'], prepared['networks'])
+                path = reduction / 'detector-drops.json'
+                write_json(path, summary)
+                record['detector_drops'] = bind(path)
+                print(console_summary(summary, path), flush=True)
+        if drop_enabled and summary['evaluation_state'] != 'complete':
+            raise RuntimeError('required detector-drop evaluation/application is incomplete')
         owner = REPO / 'data/development/bright_point_base_v1/map-owner.json'
         q = map_request(prepared, work / 'upstream', work / 'map-request.json', owner, request)
         record['stages'].append(native_call(native, q, work / 'map', terminal='map', verbose=request.verbose))

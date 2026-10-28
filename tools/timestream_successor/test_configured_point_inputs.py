@@ -112,6 +112,18 @@ def run(config, launch, profiles, out=None):
     return inputs.prepare(config, out or launch / "new-inputs", launch_dir=launch, rtc_profiles=profiles)
 
 
+def test_selected_disturbance_policy_reaches_every_native_network(tmp_path):
+    from configured_point_config import DISTURBANCE_POLICY
+    config, launch, profiles = fixture(tmp_path)
+    config['successor'] = {'rtc': {'disturbance_exclusion': DISTURBANCE_POLICY}}
+    result = run(config, launch, profiles)
+    observation = json.loads(result['observation_request'].read_text())
+    for entry in observation['networks']:
+        request = json.loads(Path(entry['input']['path']).read_text())
+        assert request['disturbance_exclusion'] == DISTURBANCE_POLICY
+        assert 'point_transfer_runtime_profile' not in request
+
+
 def test_nonhistorical_all_array_acquisition_and_separate_kmp_directory(tmp_path):
     config, launch, profiles = fixture(tmp_path)
     original = copy.deepcopy(config)

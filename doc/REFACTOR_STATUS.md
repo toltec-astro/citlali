@@ -1,5 +1,16 @@
 ## Owner adopts local compromised-detector exclusion — 2026-10-28
 
+The owner subsequently approved the concrete repeated-level-shift/unassessable-
+remainder rule, its implementation and a fresh152418 shell trial. The local
+candidate now contains an explicit opt-in RTC decision and paired exclusion,
+one original-input reapplication, and required compact detector-drop diagnostics.
+Three focused native tests pass, including unchanged retained-detector values,
+completed partial RTC handoff and forbidden donor reuse. The local CTest suite
+passes1335 enabled tests (one inherited disabled); baseline tests and full config
+preflight pass. Exact-source review and runtime freeze precede owner execution.
+No new observation has been processed; final map-contributor counts remain
+explicitly unmeasured by the RTC drop diagnostic.
+
 Grant adopted observation-local exclusion of compromised detectors while
 continuing when the remaining data support the requested products. Disturbance
 evidence and downstream consequences must determine rejection; no arbitrary
@@ -7,8 +18,8 @@ minimum uninterrupted duration is selected. The
 [owner decision and diagnostic specification](COMPROMISED_DETECTOR_POLICY_2026-10-28.md)
 require compact, always-on counts by array, identities and reasons, separate
 from prior unavailability and final contribution. This supersedes prioritizing
-short-stretch assessment for152418. The automatic predicate and runtime
-implementation remain open; no policy was applied and no reduction was run.
+short-stretch assessment for152418. The automatic predicate was approved in
+the subsequent implementation directive above; no reduction was run.
 All-array product requirements and Grant's exclusive launch control remain.
 
 ## Configurable local POINT candidate and owner-run boundary — 2026-10-28

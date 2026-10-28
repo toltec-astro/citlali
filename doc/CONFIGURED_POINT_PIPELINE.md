@@ -27,6 +27,7 @@ explanations and separately generated effective YAML are retained with each run.
 | `successor.cleaning.method` | `observed-als`; the end-to-end MAP consumer does not yet admit all PTC-only alternatives |
 | `successor.cleaning.ranks` | A positive integer for each array; these reach native PTC unchanged |
 | `successor.rtc.profile` | `existing-array-lowpass-v1`: existing measured coefficients/factors1,1,2 and original cadence/speed checks |
+| `successor.rtc.disturbance_exclusion` | `disabled` by default, or explicitly selected `repeated-level-shifts-unassessable-remainder-v1`; observation-local paired exclusion under the owner-approved rule |
 | `successor.map` | `containing-pixel`, `delta-source-AltAz`, positive pixel size in arcseconds, coverage fraction0–1 |
 | `successor.feedback.enabled` | False; true fails clearly because native feedback on corrected AltAz is not validated |
 | `successor.products.fit_diagnostics` | Qualified POINT-EXPECTED fits, default true; scientific rejection/unavailability remains explicit |
@@ -71,6 +72,18 @@ receipts and input identities remain and explicitly record that replay payloads
 were not retained. This is not a performance or sensitivity improvement claim.
 
 ## Products and compatibility
+
+With disturbance exclusion selected, every reduction root contains required
+`detector-drops.json`, including on upstream failure. It reports total/per-array
+newly dropped, prior empty, evaluated and retained populations, and native
+detector identities/reasons. Missing evaluation is unavailable, never zero.
+The console summary is printed with verbosity off. Final map-contributor counts
+are explicitly not measured by this RTC diagnostic. Native network receipts
+bind the initial decision and final application; map publication still requires
+all requested arrays. The rule and one-application boundary are recorded in
+`COMPROMISED_DETECTOR_POLICY_2026-10-28.md`. The current natural-event path has
+no admitted donor repairs; an unexpected donor-bearing exclusion fails safely
+rather than reusing contaminated donor estimates.
 
 | Product | Meaning | Current consumer status |
 | --- | --- | --- |

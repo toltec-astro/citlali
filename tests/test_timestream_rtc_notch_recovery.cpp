@@ -17,6 +17,7 @@
 #include <gtest/gtest.h>
 #include <citlali/core/pipeline/timestream_processing_scan_native.h>
 #include <citlali/core/pipeline/timestream_rtc_common_mode.h>
+#include <citlali/core/pipeline/timestream_rtc_disturbance_exclusion.h>
 
 namespace {
 using namespace citlali::pipeline;
@@ -1505,6 +1506,56 @@ TEST(rtc_event_treatment, decided_ready_donor_cannot_be_omitted_from_continuity_
   Input in;in.spike();in.paired_identity="declared-contaminant:exact-decision";
   Trial t(in,10,RtcSpikeProtection::outside_source);auto decision=resolve_events(t,true);
   EXPECT_THROW(RtcNotchRecoveryPlan::consider(t.plan()->assessment_handle(),t.transient,t.val,t.domain,3000,{},decision,true),std::invalid_argument);
+}
+TEST(rtc_disturbance_exclusion, distinct_events_and_segments_and_specific_failure_are_required) {
+  RtcDisturbanceFacts f;f.numerical_output=f.original_available=f.fragmented_pair=true;
+  f.event_scans={{1,0},{1,1}};EXPECT_FALSE(rtc_repeated_disturbance_rejection(f));
+  f.event_scans={{1,0},{2,0}};EXPECT_FALSE(rtc_repeated_disturbance_rejection(f));
+  f.event_scans={{1,0},{2,1}};EXPECT_TRUE(rtc_repeated_disturbance_rejection(f));
+  f.input_failure=true;EXPECT_FALSE(rtc_repeated_disturbance_rejection(f));f.input_failure=false;
+  f.original_available=false;EXPECT_FALSE(rtc_repeated_disturbance_rejection(f));f.original_available=true;
+  f.numerical_output=false;EXPECT_FALSE(rtc_repeated_disturbance_rejection(f));f.numerical_output=true;
+  f.fragmented_pair=false;EXPECT_FALSE(rtc_repeated_disturbance_rejection(f));
+}
+TEST(rtc_disturbance_exclusion, frozen_exclusion_removes_pair_preserves_other_detectors_and_completes) {
+  Input in(5000);in.step(1000);in.step(3000,-4,3);
+  in.xs[4500*3]=in.rs[4500*3]=NativeReadoutCoordinateState::measured(true,false,true,true);
+  Trial t(in,10,RtcSpikeProtection::outside_source,
+      {{0,{0,100,1600}},{1,{0,1600,2200}},{2,{0,2200,4000}},{3,{0,4000,5100}}});
+  std::vector<double> finite(307,0);finite[153]=1;
+  auto p=RtcPipelinePlan::consider(complete_plans(t,finite),t.joint->joint_handle(),31);
+  auto initial=complete_apply(t,p);auto spectrum=conditioned_learn(t,initial,true);
+  auto outcome=RtcTreatmentOutcomeEvidence::learn(t.lines->spectral_handle(),spectrum,41);
+  auto policy=RtcDisturbanceExclusionPlan::consider(initial,outcome,t.transient->jump_plan_handle());
+  ASSERT_TRUE(policy->has_drops());ASSERT_TRUE(policy->records()[0].dropped);
+  EXPECT_FALSE(policy->records()[1].dropped);EXPECT_FALSE(policy->records()[2].dropped);
+  auto final=complete_apply(t,policy->replacement_plan(20000));
+  for(int i=100;i<5100;++i)for(auto c:{NativeReadoutCoordinate::x,NativeReadoutCoordinate::r}) {
+    EXPECT_FALSE(final->detector_results()[0]->coordinate_stage_available(c,i,true));
+    for(int d:{1,2}) {
+      const auto &a=*initial->detector_results()[d],&b=*final->detector_results()[d];
+      ASSERT_EQ(a.coordinate_stage_available(c,i,true),b.coordinate_stage_available(c,i,true));
+      if(a.coordinate_stage_available(c,i,true))EXPECT_DOUBLE_EQ(a.filtered_native_pair()(i-100,static_cast<int>(c)),b.filtered_native_pair()(i-100,static_cast<int>(c)));
+    }
+  }
+  auto evidence=decision_evidence(t,final,20001);auto selection=retain_selection(evidence);
+  selection.outcome_requirement=RtcOutcomeRequirement::available_detector_outputs;
+  auto decision=RtcPipelineDecision::consider(evidence,t.val,selection,20010);
+  ASSERT_EQ(decision->disposition(),RtcPipelineDisposition::retain);
+  RtcPipelineTerminalSlot slot;auto grid=RtcOutputGrid::prepare(final,output_align(t));
+  ASSERT_TRUE(finalize_rtc_only({20011},grid,slot,decision).complete());
+  auto other=complete_apply(t,p);
+  EXPECT_THROW(RtcDisturbanceExclusionPlan::consider(other,outcome,t.transient->jump_plan_handle()),std::invalid_argument);
+  EXPECT_THROW(policy->replacement_plan(31),std::invalid_argument);
+  EXPECT_DOUBLE_EQ(t.parent->network(0).value(NativeReadoutCoordinate::x,1100,0),in.x(1000,0));
+}
+TEST(rtc_disturbance_exclusion, donor_bearing_plan_cannot_be_reused_after_exclusion) {
+  Input in;in.spike();Trial t(in,10,RtcSpikeProtection::outside_source);
+  auto donor=explicit_donor(t);ASSERT_EQ(donor->cause(),RtcDonorFillCause::ready);
+  auto result=complete_apply(t,RtcPipelinePlan::consider(complete_plans(t,{0,1,0},{donor}),t.joint->joint_handle(),31));
+  auto outcome=RtcTreatmentOutcomeEvidence::learn(t.lines->spectral_handle(),conditioned_learn(t,result,true),41);
+  auto policy=RtcDisturbanceExclusionPlan::consider(result,outcome,t.transient->jump_plan_handle());
+  EXPECT_THROW(policy->replacement_plan(1002),std::invalid_argument);
 }
 TEST(rtc_event_treatment, admitted_shift_excludes_its_existing_scan_and_never_fills) {
   Input in;in.step();Fixture t(in);

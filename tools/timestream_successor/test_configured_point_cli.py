@@ -107,6 +107,39 @@ def application(tmp_path, config, monkeypatch):
     return state
 
 
+def test_required_drop_diagnostic_survives_preparation_failure(application, monkeypatch):
+    from configured_point_config import DISTURBANCE_POLICY
+    app = application
+    app.config['successor']['rtc']['disturbance_exclusion'] = DISTURBANCE_POLICY
+    def fail(*args, **kwargs):
+        raise ValueError('invalid original input')
+    monkeypatch.setattr(cli, 'prepare', fail)
+    with pytest.raises(ValueError, match='invalid original input'):
+        app.execute()
+    root = next((app.launch / 'reduced').glob('redu*'))
+    summary = json.loads((root / 'detector-drops.json').read_text())
+    assert summary['evaluation_state'] == 'not_evaluated'
+    assert summary['totals']['newly_dropped'] is None
+
+
+def test_required_drop_diagnostic_survives_upstream_failure(application, monkeypatch, capsys):
+    from configured_point_config import DISTURBANCE_POLICY
+    app = application
+    app.config['successor']['rtc']['disturbance_exclusion'] = DISTURBANCE_POLICY
+    def fail(*args, **kwargs):
+        raise RuntimeError('native stage failed before evaluation')
+    monkeypatch.setattr(cli, 'native_call', fail)
+    with pytest.raises(RuntimeError, match='before evaluation'):
+        app.execute()
+    root = next((app.launch / 'reduced').glob('redu*'))
+    summary = json.loads((root / 'detector-drops.json').read_text())
+    assert summary['evaluation_state'] == 'incomplete'
+    assert summary['totals']['newly_dropped'] is None
+    assert json.loads((root / 'RUN.json').read_text())['status'] == 'failed'
+    assert 'Detectors dropped for disturbances: unavailable' in capsys.readouterr().out
+    assert not (root / '152389').exists()
+
+
 def test_preserves_existing_reductions_and_releases_only_consumed_transport(application):
     app = application
     old = app.launch / 'reduced/redu03/152389/raw'

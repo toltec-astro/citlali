@@ -41,7 +41,14 @@ the detector membership. Apply uses that decision consistently. No silent
 trial-and-error rejection, automatic threshold relaxation or map-appearance
 selection is implied.
 
-**The exact automatic rejection predicate remains to be specified.** A short
+**The owner subsequently approved the first concrete predicate and its
+implementation:** at least two distinct admitted level-shift events must affect
+two distinct science processing segments under existing whole-segment
+exclusions; numerical output must remain; both final conditioned-coordinate
+assessments must be unavailable specifically with `fixed_grid_unavailable`
+on nonempty support under the existing strict-grid method. Original spectra
+must be available and input/arithmetic errors must not be hidden. The policy
+identity is `repeated-level-shifts-unassessable-remainder-v1`. A short
 stretch, an unavailable assessment, a single event flag, or a low source S/N
 does not by itself identify a compromised detector under this decision.
 Disturbance evidence and downstream consequences must support the rule.
@@ -109,11 +116,13 @@ design must state which of these facts justify an observation-local exclusion,
 which merely record uncertainty, and how exclusion affects other detectors'
 estimates. A channel-specific hard-coded exception is not the general rule.
 
-Before implementation, specify that predicate and the affected scientific
-owner/consumer boundaries. Verify actual exclusion and dependency handling,
-count reconciliation, no double counting, genuine zero versus unevaluated
-status, and retained required-product failures. Implementation and independent
-review remain future work; no such tests are claimed complete by this record.
+Implementation follows the bounded work order at
+`validation/configured_point_2026-10-28/DISTURBANCE_WORK_ORDER.md`. RTC owns
+classification and original-input application; the project adapter owns the
+compact diagnostic. Its first implementation measures RTC decision populations;
+final map-contributor accounting is explicitly unavailable rather than inferred
+from retained counts. That additional diagnostic remains future consumer work.
+Completion and independent review are recorded separately from this owner decision.
 
 Grant alone triggers reductions from the shell. Existing failed and successful
 reductions remain unchanged.

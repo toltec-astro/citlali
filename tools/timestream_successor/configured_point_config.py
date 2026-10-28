@@ -16,6 +16,7 @@ ARRAYS = ("a1100", "a1400", "a2000")
 SCHEMA = "citlali-point-v1"
 MIGRATION = "replace-legacy-point-controls-v1"
 RTC_PROFILE = "existing-array-lowpass-v1"
+DISTURBANCE_POLICY = "repeated-level-shifts-unassessable-remainder-v1"
 REPO = Path(__file__).resolve().parents[2]
 
 
@@ -235,8 +236,11 @@ def load_request(config: dict, launch_dir: Path) -> PointRequest:
     method = _enum(cleaning["method"], "observed-als", "successor.cleaning.method")
     rank_values = _mapping(cleaning["ranks"], "successor.cleaning.ranks", ARRAYS, ARRAYS)
     ranks = {a: _integer(rank_values[a], f"successor.cleaning.ranks.{a}") for a in ARRAYS}
-    rtc = _mapping(successor["rtc"], "successor.rtc", ("profile",), ("profile",))
+    rtc = _mapping(successor["rtc"], "successor.rtc", ("profile", "disturbance_exclusion"), ("profile",))
     _enum(rtc["profile"], RTC_PROFILE, "successor.rtc.profile")
+    disturbance = rtc.get("disturbance_exclusion", "disabled")
+    if disturbance not in ("disabled", DISTURBANCE_POLICY):
+        raise ValueError("unsupported successor.rtc.disturbance_exclusion")
     rtc_profiles = {a: REPO / "data/development/bright_point_base_v1" / f"{a}-rtc.json" for a in ARRAYS}
     for path in rtc_profiles.values():
         if not path.is_file():
@@ -319,7 +323,7 @@ def load_request(config: dict, launch_dir: Path) -> PointRequest:
     effective["runtime"] = dict(reduction_type="pointing", output_dir=str(output_dir),
                                 n_threads=workers, verbose=verbose, interp_over_gaps=True)
     effective["successor"] = dict(schema=SCHEMA, migration=MIGRATION, arrays=list(ARRAYS),
-        cleaning=dict(method=method, ranks=dict(ranks)), rtc=dict(profile=RTC_PROFILE),
+        cleaning=dict(method=method, ranks=dict(ranks)), rtc=dict(profile=RTC_PROFILE, disturbance_exclusion=disturbance),
         map=dict(method="containing-pixel", frame="delta-source-AltAz", pixel_size_arcsec=pixel, coverage_cut=coverage),
         feedback=dict(enabled=False), products=dict(fits=True, fit_diagnostics=fit_diagnostics, retain_intermediates=retain))
     return PointRequest(effective, output_dir, workers, verbose, retain, fit_diagnostics,
