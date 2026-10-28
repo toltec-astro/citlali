@@ -11,6 +11,15 @@ preflight pass. Exact-source review and runtime freeze precede owner execution.
 No new observation has been processed; final map-contributor counts remain
 explicitly unmeasured by the RTC drop diagnostic.
 
+The repaired source4767cc1440d973ee883868e4d744b060883db895 passed independent
+exact-source review and was frozen with a matching native executable. All165
+Python adapter/package tests pass. The fresh152418 trial passes check-only
+TolTECA configuration/identity verification and TolProj resource validation;
+Grant has the sole launch command in the
+[prepared trial handoff](../handoff/DISTURBANCE_152418_PREPARED_2026-10-28.md).
+Previous reductions remain intact; actual drops and scientific outcomes await
+his shell run. This documentation closure does not change the frozen runtime.
+
 Grant adopted observation-local exclusion of compromised detectors while
 continuing when the remaining data support the requested products. Disturbance
 evidence and downstream consequences must determine rejection; no arbitrary
