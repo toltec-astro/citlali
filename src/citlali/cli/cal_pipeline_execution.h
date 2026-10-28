@@ -63,7 +63,7 @@ CalObservationInput prepare_cal_observation(const YAML::Node &cfg,const NativeOb
             offset_values[axis]=Eigen::Map<const Eigen::VectorXd>(values.data(),values.size());
         }
     }
-    if(time_records==0 && (citlali::cli::detail::oof_scope(cfg,scope.observation,scope.subobservation,scope.scan) || (((cfg["development_reference"] && cfg["development_reference"].as<std::string>()=="bright-point-base-v1") || scope.observation==152389 || scope.observation==152430) && scope.subobservation==0 && scope.scan==2))) {
+    if(time_records==0 && (citlali::cli::detail::configured_point_scope(cfg,scope.observation,scope.subobservation,scope.scan) || citlali::cli::detail::oof_scope(cfg,scope.observation,scope.subobservation,scope.scan) || (((cfg["development_reference"] && cfg["development_reference"].as<std::string>()=="bright-point-base-v1") || scope.observation==152389 || scope.observation==152430) && scope.subobservation==0 && scope.scan==2))) {
         require(offset_values.contains("az") && offset_values.contains("alt") &&
             offset_values.at("az").size()==1 && offset_values.at("alt").size()==1,
             "POINT without offset epochs requires explicit constant axes");

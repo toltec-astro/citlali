@@ -1,4 +1,5 @@
 #include "../../src/citlali/cli/oof_development_scope.h"
+#include "../../src/citlali/cli/configured_point_scope.h"
 #pragma once
 // Private offline adapter, included after the existing identity ingress helpers.
 #include <citlali/core/engine/telescope.h>
@@ -35,7 +36,7 @@ PreparedProcessingScans prepare_processing_scans(const YAML::Node &cfg,
   YAML::Node provenance,selection;
   if(fresh) {
     selection=YAML::LoadFile(checked_file(request["processing_request"]).string());
-    require((citlali::cli::detail::oof_scope(cfg,scope.observation,scope.subobservation,scope.scan) || (((cfg["development_reference"] && cfg["development_reference"].as<std::string>()=="bright-point-base-v1") || scope.observation==152389 || scope.observation==152430) && scope.subobservation==0 && scope.scan==2)) &&
+    require((citlali::cli::detail::configured_point_scope(cfg,scope.observation,scope.subobservation,scope.scan) || citlali::cli::detail::oof_scope(cfg,scope.observation,scope.subobservation,scope.scan) || (((cfg["development_reference"] && cfg["development_reference"].as<std::string>()=="bright-point-base-v1") || scope.observation==152389 || scope.observation==152430) && scope.subobservation==0 && scope.scan==2)) &&
         selection["schema"].as<std::string>()=="citlali-native-processing-request-v1" &&
         selection["observation"].as<int>()==scope.observation &&
         selection["subobservation"].as<int>()==scope.subobservation && selection["scan"].as<int>()==scope.scan &&

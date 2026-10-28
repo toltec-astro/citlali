@@ -1,0 +1,241 @@
+"""Strict application boundary for the opt-in, all-array POINT interface.
+
+TolTECA owns YAML merging and input preparation. This module resolves the
+resulting request once, without opening raw data or changing the supplied dict.
+The explicitly selected migration replaces the old algorithm controls, rather
+than pretending that their names retain their former scientific meaning.
+"""
+from copy import deepcopy
+from dataclasses import dataclass
+import math
+from pathlib import Path
+import re
+
+
+ARRAYS = ("a1100", "a1400", "a2000")
+SCHEMA = "citlali-point-v1"
+MIGRATION = "replace-legacy-point-controls-v1"
+RTC_PROFILE = "existing-array-lowpass-v1"
+REPO = Path(__file__).resolve().parents[2]
+
+
+@dataclass(frozen=True)
+class PointRequest:
+    effective_config: dict
+    output_dir: Path
+    workers: int
+    verbose: bool
+    retain_intermediates: bool
+    fit_diagnostics: bool
+    cleaning_method: str
+    ranks: dict
+    pixel_size_arcsec: float
+    coverage_cut: float
+    rtc_profiles: dict
+    arrays: tuple
+    migration_dispositions: tuple
+
+
+def _mapping(value, path, allowed=None, required=()):
+    if not isinstance(value, dict) or any(not isinstance(k, str) for k in value):
+        raise ValueError(f"{path} must be a mapping with string keys")
+    if allowed is not None:
+        unknown = set(value) - set(allowed)
+        if unknown:
+            raise ValueError(f"unsupported {path} fields: {', '.join(sorted(unknown))}")
+    missing = set(required) - set(value)
+    if missing:
+        raise ValueError(f"missing {path} fields: {', '.join(sorted(missing))}")
+    return value
+
+
+def _bool(value, path):
+    if type(value) is not bool:
+        raise ValueError(f"{path} must be a boolean")
+    return value
+
+
+def _integer(value, path, maximum=None):
+    if type(value) is not int or value < 1 or (maximum is not None and value > maximum):
+        suffix = f" between 1 and {maximum}" if maximum is not None else " greater than zero"
+        raise ValueError(f"{path} must be an integer{suffix}")
+    return value
+
+
+def _number(value, path, *, minimum, maximum=None, strict_minimum=False):
+    if type(value) not in (int, float) or not math.isfinite(value):
+        raise ValueError(f"{path} must be a finite number")
+    if value < minimum or (strict_minimum and value == minimum) or (maximum is not None and value > maximum):
+        raise ValueError(f"{path} is outside its supported range")
+    return float(value)
+
+
+def _path(value, path, launch_dir):
+    if not isinstance(value, str) or not value.strip():
+        raise ValueError(f"{path} must be a nonempty path string")
+    p = Path(value).expanduser()
+    return (p if p.is_absolute() else launch_dir / p).resolve()
+
+
+def _enum(value, expected, path):
+    if value != expected or type(value) is not str:
+        raise ValueError(f"{path} supports only {expected!r}")
+    return value
+
+
+def _inputs(config, launch_dir):
+    """Resolve ordinary prepared paths; acquisition/APT validation comes next."""
+    inputs = config.get("inputs")
+    if not isinstance(inputs, list) or len(inputs) != 1:
+        raise ValueError("configured POINT requires exactly one prepared input observation")
+    item = _mapping(inputs[0], "inputs[0]", required=("meta", "data_items", "cal_items"))
+    meta = _mapping(item["meta"], "inputs[0].meta", required=("name",))
+    name = meta["name"]
+    if not isinstance(name, str) or len(name.split("_")) != 3 or not all(part.isdecimal() for part in name.split("_")):
+        raise ValueError("inputs[0].meta.name must be observation_subobservation_scan")
+    # This is the native POINT acquisition domain, not an observation-number
+    # experiment. Other scan shapes need their own supported native admission.
+    if tuple(map(int, name.split("_")[1:])) != (0, 2):
+        raise ValueError("configured POINT currently supports subobservation 0, scan 2")
+    for group in ("data_items", "cal_items"):
+        if not isinstance(item[group], list) or not item[group]:
+            raise ValueError(f"inputs[0].{group} must be a nonempty list")
+        for index, entry in enumerate(item[group]):
+            _mapping(entry, f"inputs[0].{group}[{index}]")
+            if "filepath" in entry:
+                entry["filepath"] = str(_path(entry["filepath"], f"inputs[0].{group}[{index}].filepath", launch_dir))
+
+
+def _timing(config):
+    entries = config.get("interface_sync_offset")
+    if not isinstance(entries, list):
+        raise ValueError("interface_sync_offset must be an explicit sequence")
+    offsets = {}
+    for entry in entries:
+        if not isinstance(entry, dict) or len(entry) != 1:
+            raise ValueError("interface_sync_offset entries must contain one interface")
+        name, value = next(iter(entry.items()))
+        if not isinstance(name, str):
+            raise ValueError("interface_sync_offset interface must be a string")
+        if not name.startswith("toltec"):
+            continue
+        if not re.fullmatch(r"toltec(?:[0-9]|1[0-2])", name) or name in offsets:
+            raise ValueError("interface_sync_offset network is invalid or duplicated")
+        offsets[name] = _number(value, f"interface_sync_offset.{name}", minimum=0, maximum=0)
+    for item in config["inputs"][0]["data_items"]:
+        name = item.get("meta", {}).get("interface", "")
+        if isinstance(name, str) and name.startswith("toltec") and name not in offsets:
+            raise ValueError(f"interface_sync_offset is missing the supplied network {name}")
+
+
+def load_request(config: dict, launch_dir: Path) -> PointRequest:
+    """Return the requested POINT plan and a one-way native compatibility copy.
+
+    ``launch_dir`` is the TolTECA job working directory, not the location of its
+    generated YAML. No new input root is introduced. File identity, complete
+    array membership and writable fresh outputs are checked by preparation.
+    """
+    _mapping(config, "configuration")
+    launch_dir = Path(launch_dir).resolve()
+    successor = _mapping(config.get("successor"), "successor", allowed=(
+        "schema", "migration", "arrays", "cleaning", "rtc", "map", "feedback", "products"),
+        required=("schema", "migration", "cleaning", "rtc", "map", "feedback"))
+    _enum(successor["schema"], SCHEMA, "successor.schema")
+    _enum(successor["migration"], MIGRATION, "successor.migration")
+    arrays = successor.get("arrays", list(ARRAYS))
+    if not isinstance(arrays, list) or any(type(a) is not str for a in arrays) or len(arrays) != 3 or set(arrays) != set(ARRAYS):
+        raise ValueError("successor.arrays must contain a1100, a1400 and a2000 exactly once")
+
+    cleaning = _mapping(successor["cleaning"], "successor.cleaning", ("method", "ranks"), ("method", "ranks"))
+    # PTC alone implements other methods; the connected MAP consumer does not
+    # admit them. Expose only a method that reaches the requested final product.
+    method = _enum(cleaning["method"], "observed-als", "successor.cleaning.method")
+    rank_values = _mapping(cleaning["ranks"], "successor.cleaning.ranks", ARRAYS, ARRAYS)
+    ranks = {a: _integer(rank_values[a], f"successor.cleaning.ranks.{a}") for a in ARRAYS}
+    rtc = _mapping(successor["rtc"], "successor.rtc", ("profile",), ("profile",))
+    _enum(rtc["profile"], RTC_PROFILE, "successor.rtc.profile")
+    rtc_profiles = {a: REPO / "data/development/bright_point_base_v1" / f"{a}-rtc.json" for a in ARRAYS}
+    for path in rtc_profiles.values():
+        if not path.is_file():
+            raise ValueError(f"installed RTC profile is missing: {path}")
+
+    mapping = _mapping(successor["map"], "successor.map", (
+        "method", "frame", "pixel_size_arcsec", "coverage_cut"),
+        ("method", "frame", "pixel_size_arcsec", "coverage_cut"))
+    _enum(mapping["method"], "containing-pixel", "successor.map.method")
+    _enum(mapping["frame"], "delta-source-AltAz", "successor.map.frame")
+    pixel = _number(mapping["pixel_size_arcsec"], "successor.map.pixel_size_arcsec", minimum=0, strict_minimum=True)
+    coverage = _number(mapping["coverage_cut"], "successor.map.coverage_cut", minimum=0, maximum=1)
+    feedback = _mapping(successor["feedback"], "successor.feedback", ("enabled",), ("enabled",))
+    if _bool(feedback["enabled"], "successor.feedback.enabled"):
+        raise ValueError("successor.feedback.enabled=true is not implemented in citlali-point-v1")
+    products = _mapping(successor.get("products", {}), "successor.products", (
+        "fits", "fit_diagnostics", "retain_intermediates"))
+    if not _bool(products.get("fits", True), "successor.products.fits"):
+        raise ValueError("successor.products.fits is required for all three arrays")
+    fit_diagnostics = _bool(products.get("fit_diagnostics", True), "successor.products.fit_diagnostics")
+    retain = _bool(products.get("retain_intermediates", False), "successor.products.retain_intermediates")
+
+    runtime = _mapping(config.get("runtime"), "runtime", required=("reduction_type", "output_dir", "n_threads"))
+    _enum(runtime["reduction_type"], "pointing", "runtime.reduction_type")
+    workers = _integer(runtime["n_threads"], "runtime.n_threads", maximum=12)
+    verbose = _bool(runtime.get("verbose", False), "runtime.verbose")
+    output_dir = _path(runtime["output_dir"], "runtime.output_dir", launch_dir)
+    effective = deepcopy(config)
+    _inputs(effective, launch_dir)
+    _timing(effective)
+    kids = _mapping(effective.get("kids"), "kids", required=("fitter", "solver"))
+    fitter = _mapping(kids["fitter"], "kids.fitter", required=("modelspec",))
+    _enum(fitter["modelspec"], "gainlintrend", "kids.fitter.modelspec")
+    solver = _mapping(kids["solver"], "kids.solver", required=("fitreportdir",))
+    kids["solver"] = dict(fitreportdir=str(_path(solver["fitreportdir"], "kids.solver.fitreportdir", launch_dir)),
+                          parallel_policy="seq", extra_output=False)
+
+    # Input/calibration/timing/KIDs provenance remains ordinary project data.
+    # Everything below is explicitly replaced by the selected successor profile.
+    # Do not keep inactive old fields in the effective copy: they could falsely
+    # suggest that requested legacy JINC, flags, weights or errors were applied.
+    replacements = {
+        "timestream": "native paired xs; existing RTC profile and validity policy with no spatial source mask; native CAL/APT and atmosphere policy; fixed native processing partition; observed-entry network cleaning; no feedback or polarimetry",
+        "mapmaking": "containing-pixel map in delta-source-AltAz; uniform admitted coefficients; configured pixels and coverage",
+        "noise_maps": "not produced; map normalization is not inverse-variance weight",
+        "post_processing": "optional POINT-EXPECTED qualified fit diagnostics; no legacy source finder or map filter",
+        "coadd": "one-observation POINT invocation; no coadd",
+        "pointing": "existing POINT-EXPECTED source analysis; no legacy pointing correction publication",
+        "source": "POINT observation semantics; legacy map-regime switch retired",
+        "wiener_filter": "not executed",
+        "beammap": "outside POINT scope; not executed",
+    }
+    dispositions = tuple(dict(path=key, disposition="replaced" if key in config else "profile-defined",
+                              replacement=value) for key, value in replacements.items()) + (
+        dict(path="kids.solver", disposition="replaced", replacement="configured KMP directory retained; bound tune file, serial native KIDs solve and no extra producer outputs"),)
+    for key in replacements:
+        effective.pop(key, None)
+    effective["timestream"] = {
+        "enabled": True, "type": "xs", "polarimetry": {"enabled": False},
+        "fruit_loops": {"enabled": False},
+        "chunking": {"chunk_mode": "duration", "value": 10, "force_chunking": True},
+        # These recover the accepted processing partition/context, not the
+        # separately bound per-array RTC filter coefficients or factors.
+        "raw_time_chunk": {"IIR_filter": {"enabled": False},
+                           "filter": {"enabled": True, "n_terms": 32}},
+        "processed_time_chunk": {"clean": {
+            "enabled": True, "grouping": ["nw"], "mask_radius_arcsec": 0.0, "tau": 0.0,
+            "standard_pca": {"enabled": True, "stddev_limit": 0.0,
+                             "n_eig_to_cut": {a: [ranks[a]] for a in ARRAYS}},
+        }},
+    }
+    effective["mapmaking"] = dict(enabled=True, method="containing-pixel", pixel_axes="altaz",
+                                 pixel_size_arcsec=pixel, coverage_cut=coverage, cunit="mJy/beam")
+    effective["coadd"] = {"enabled": False}
+    effective["noise_maps"] = {"enabled": False}
+    # Native PTC still reads the historical standard_pca path above. It is only
+    # a one-way rank carrier; the separately passed method is observed-als.
+    effective["runtime"] = dict(reduction_type="pointing", output_dir=str(output_dir),
+                                n_threads=workers, verbose=verbose, interp_over_gaps=True)
+    effective["successor"] = dict(schema=SCHEMA, migration=MIGRATION, arrays=list(ARRAYS),
+        cleaning=dict(method=method, ranks=dict(ranks)), rtc=dict(profile=RTC_PROFILE),
+        map=dict(method="containing-pixel", frame="delta-source-AltAz", pixel_size_arcsec=pixel, coverage_cut=coverage),
+        feedback=dict(enabled=False), products=dict(fits=True, fit_diagnostics=fit_diagnostics, retain_intermediates=retain))
+    return PointRequest(effective, output_dir, workers, verbose, retain, fit_diagnostics,
+                        method, ranks, pixel, coverage, rtc_profiles, ARRAYS, dispositions)

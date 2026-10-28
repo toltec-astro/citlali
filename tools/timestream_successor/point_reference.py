@@ -16,6 +16,73 @@ from inspect_forward_map import require
 from point_timing import timed
 
 
+def measure_forward(path, *, details=None):
+    """Qualified POINT-EXPECTED measurement of a native source-offset map.
+
+    This is the initial guard only: no BASE admission, feedback candidate,
+    Neighborhood, endpoint uncertainty or pointing correction is produced.
+    Convert the native arcsecond increments to the existing learner's degree
+    representation without changing its source-offset axes. The 40 arcsecond
+    fit domain determines both the covariance crop and computational padding;
+    49 preserves the existing padding at the historical two-arcsecond grid.
+    """
+    from point_expected import METHOD
+    full, native_header = load(path)
+    require(native_header['ASTFRAME'] == 'delta-source-AltAz' and
+            (native_header['CTYPE1'], native_header['CTYPE2']) ==
+            ('AZOFFSET', 'ELOFFSET') and
+            (native_header['CUNIT1'], native_header['CUNIT2']) ==
+            ('arcsec', 'arcsec'), 'forward POINT requires source-offset AltAz')
+    header = native_header.copy()
+    for axis in (1, 2):
+        header[f'CDELT{axis}'] /= 3600.
+        header[f'CRVAL{axis}'] /= 3600.
+        header[f'CUNIT{axis}'] = 'deg'
+    signal = full['PRIMARY']
+    support = full['SCI_SUPPORT'].astype(bool)
+    coverage = full['NORMALIZATION']
+    try:
+        s, valid, _, stamp_header, half = source_patch(
+            signal, support, coverage, header)
+    except ValueError as exc:
+        # A map can be valid while its finite extent cannot support this fit.
+        return dict(method=METHOD, status='unavailable', accepted=False,
+                    complete=False, cause=str(exc), message=str(exc),
+                    accepted_parameters=None, pointing_correction=None,
+                    accepted_centroid_tangent_arcsec=None,
+                    expected_origin_tangent_arcsec=[0., 0.],
+                    sigma_A=None, SNR_A=None, diagnostic=None,
+                    optimizer_calls=0)
+    fixed = SimpleNamespace(header=stamp_header,
+                            beam=float(native_header['NOMBFWHM']))
+    models = {}
+
+    def covariance(parameters):
+        model = learn(signal, coverage, support, header, parameters,
+                      NoiseRequest(mask_fwhm=4., high_coverage_usable=True),
+                      stamp_size=max(49, max(s.shape)))
+        models['C0'] = model
+        row = int(round(header['CRPIX2'] - 1))
+        column = int(round(header['CRPIX1'] - 1))
+        return patch(model['scale'], row, column, half), model['psd']
+
+    guard = measure_expected(s, valid, fixed, None, None,
+                             initialize_covariance=covariance)
+    # POINT-EXPECTED's historical sky-field names are not celestial metadata
+    # for this native AltAz map. Publication states the actual frame instead.
+    guard.pop('expected_origin_sky', None)
+    if details is not None and 'C0' in models:
+        details = Path(details)
+        details.mkdir(parents=True, exist_ok=False)
+        model = models['C0']
+        save_json(details / 'C0.json', model['summary'])
+        np.savez_compressed(details / 'C0.npz', **{
+            key: model[key] for key in
+            ('scale', 'valid', 'coverage_extrapolated', 'source_mask',
+             'background_mask', 'psd', 'empirical', 'pairs')})
+    return guard
+
+
 @timed("initial_noise_guard_context_publication")
 def initialize(path,dest,beam=10.,*,auxiliary=False):
     full,h=load(path);signal=full['PRIMARY'];support=full['SCI_SUPPORT'].astype(bool);coverage=full['NORMALIZATION']

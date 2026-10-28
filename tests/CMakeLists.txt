@@ -34,6 +34,7 @@ set_target_properties(citlali_test
 target_sources(citlali_test
     PRIVATE
         test_oof_development_scope.cpp
+        test_configured_point_scope.cpp
         test_astrometry_config_plan.cpp
         test_beammap_config_plan.cpp
         test_canonical_apt_v1.cpp
@@ -701,3 +702,10 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
 endif()
 add_dependencies(check citlali_rtc_point_selection_test)
 add_test(NAME citlali::rtc_point_selection COMMAND citlali_rtc_point_selection_test)
+
+# Retained pilot regression: YAML-backed items must not mutate their input.
+add_executable(citlali_rawobs_config_test EXCLUDE_FROM_ALL test_rawobs_config_identity.cpp)
+target_link_libraries(citlali_rawobs_config_test PRIVATE citlali::citlali GTest::gtest_main)
+add_dependencies(check citlali_rawobs_config_test)
+gtest_discover_tests(citlali_rawobs_config_test WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
+    TEST_PREFIX "citlali::" DISCOVERY_MODE PRE_TEST)

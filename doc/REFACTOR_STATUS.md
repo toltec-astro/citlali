@@ -1,3 +1,22 @@
+## Configurable local POINT implementation — 2026-10-28
+
+Grant approved the revised goal: a useful configurable pipeline that can surpass
+past results, with quiet ordinary operation. The bounded
+[work order](../validation/configured_point_2026-10-28/WORK_ORDER.md) recovers
+native source6e2a467b85f07f15b8fdfe947bed81df833d11bb and the pilot's immutable-input
+fix. The [new POINT interface](CONFIGURED_POINT_PIPELINE.md) passes actual
+observation/APT/KMP selection, per-array ALS ranks, map pixels/coverage and worker
+count through existing stage owners. No fixed bright-source experiment is
+substituted for the request. All three arrays are required at publication.
+
+This is a local implementation candidate pending exact-source gates, review and
+observational evidence. Qualified fits remain inspection products; conventional
+flux-calibration PPT, corrected-frame feedback, SCIENCE/coadds and old image
+analysis compatibility are still open. Previous reductions and sealed pilot
+preparation remain preserved. No Unity access, push, integration or production
+activation is performed. Historical closed-POINT campaign allowances below are
+not the authority for this separately authorized local integration work.
+
 ## Delta-source AltAz repair and OOF JINC preparation — 2026-10-02
 
 The owner resumed the coordinate repair and requests three same-sample a2000

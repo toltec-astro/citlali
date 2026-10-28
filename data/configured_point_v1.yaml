@@ -1,0 +1,41 @@
+# Overlay for TolTECA's merged Citlali low-level configuration. Keep the usual
+# project input/APT/KMP paths; place this mapping inside the reduction step's
+# low_level block. This is a new algorithm profile, not a request to reproduce
+# the older JINC/noise/learning settings retained in archived configurations.
+#
+# migration explicitly retires old timestream, mapmaking, noise_maps,
+# post_processing, coadd, pointing/source strategy, Wiener and beammap controls.
+# Their replacements are recorded in the effective plan. In particular:
+# - supplied per-array ranks select observed-entry ALS, not legacy standard PCA;
+# - the RTC profile uses its existing per-array coefficients/factors (1/1/2),
+#   with their original cadence/speed validity checks; it does not redesign FIRs;
+# - native processing uses its existing forced ten-second partition and
+#   32-sample context; KIDs uses the associated tune file, serially, without
+#   extra outputs; the native CAL/APT and atmosphere policy remains in force;
+# - maps use containing pixels, delta-source AltAz, and uniform coefficients;
+# - noise maps, empirical weights, feedback and coadds are absent;
+# - fit diagnostics retain qualified uncertainty/unavailable states and do not
+#   claim compatibility with ppt_* calibration tables or pointing corrections.
+runtime:
+  reduction_type: pointing
+  verbose: false
+successor:
+  schema: citlali-point-v1
+  migration: replace-legacy-point-controls-v1
+  arrays: [a1100, a1400, a2000]
+  cleaning:
+    method: observed-als
+    ranks: {a1100: 5, a1400: 5, a2000: 5}
+  rtc:
+    profile: existing-array-lowpass-v1
+  map:
+    method: containing-pixel
+    frame: delta-source-AltAz
+    pixel_size_arcsec: 1.0
+    coverage_cut: 0.1
+  feedback:
+    enabled: false
+  products:
+    fits: true
+    fit_diagnostics: true
+    retain_intermediates: false

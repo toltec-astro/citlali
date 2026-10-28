@@ -69,13 +69,21 @@ void RawObs::collect_data_items() {
         data_items.emplace_back(
             config_t{node_data_items[i], this->config().filepath()});
     }
-    m_data_items = std::move(data_items);
-
-    sort(m_data_items.begin(), m_data_items.end(),
-         [] (const RawObs::DataItem& a, const RawObs::DataItem& b) {
-             return rawobs_data_item_ordering::sort_key(a) <
-                    rawobs_data_item_ordering::sort_key(b);
-         });
+    // YAML-backed configs share their source nodes. Sorting DataItems assigns
+    // those nodes and mutates the original request; reorder indices instead.
+    std::vector<std::size_t> order;
+    order.reserve(data_items.size());
+    for (std::size_t i = 0; i < data_items.size(); ++i) {
+        order.push_back(i);
+    }
+    sort(order.begin(), order.end(), [&](std::size_t a, std::size_t b) {
+        return rawobs_data_item_ordering::sort_key(data_items[a]) <
+               rawobs_data_item_ordering::sort_key(data_items[b]);
+    });
+    m_data_items.reserve(data_items.size());
+    for (const auto index : order) {
+        m_data_items.emplace_back(data_items[index]);
+    }
 
     SPDLOG_DEBUG("collected n_data_items={}\n{}", this->n_data_items(),
                  this->data_items());

@@ -2725,3 +2725,12 @@ TEST(rtc_pipeline, physical_run_rejection_preserves_other_run_and_original_valid
   t.domain.rejected_physical_runs.clear();auto neutral=t.plan();
   EXPECT_EQ(base->input_causes(),neutral->input_causes());EXPECT_EQ(base->support_causes(),neutral->support_causes());
 }
+
+TEST(rtc_multidetector_caller, configured_point_requires_explicit_current_scope) {
+  const std::string authority="owner-configurable-POINT-no-spatial-mask-2026-10-28";
+  EXPECT_NO_THROW(caller::require_no_mask_scope(NativeObservationScope{152418,0,2},authority,false,true));
+  EXPECT_THROW(caller::require_no_mask_scope(NativeObservationScope{152418,0,2},authority),std::invalid_argument);
+  EXPECT_THROW(caller::require_no_mask_scope(NativeObservationScope{152418,0,1},authority,false,true),std::invalid_argument);
+  EXPECT_THROW(caller::require_no_mask_scope(NativeObservationScope{0,0,2},authority,false,true),std::invalid_argument);
+  EXPECT_THROW(caller::require_no_mask_scope(NativeObservationScope{152418,0,2},"unknown",false,true),std::invalid_argument);
+}

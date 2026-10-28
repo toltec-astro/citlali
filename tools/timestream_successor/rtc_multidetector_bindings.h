@@ -16,9 +16,10 @@ inline void require(bool condition, const char *message) {
   if (!condition) throw std::invalid_argument(message);
 }
 inline void require_no_mask_scope(NativeObservationScope scope,
-                                  const std::string &authority, bool configured_point = false) {
+                                  const std::string &authority, bool bright_reference = false, bool configured_point = false) {
   require(scope.subobservation == 0 && scope.scan == 2 &&
-              ((configured_point && authority=="owner-bright-POINT-no-spatial-mask-2026-09-26") ||
+              ((configured_point && scope.observation > 0 && authority=="owner-configurable-POINT-no-spatial-mask-2026-10-28") ||
+               (bright_reference && authority=="owner-bright-POINT-no-spatial-mask-2026-09-26") ||
                (scope.observation == 152390 && authority == no_mask_authority) ||
                (scope.observation == 152389 && authority == point_no_mask_authority) ||
                (scope.observation == 152430 && authority == "owner-152430-frozen-POINT-no-spatial-mask-2026-09-26")),
