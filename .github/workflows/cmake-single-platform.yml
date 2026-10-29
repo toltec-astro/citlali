@@ -19,15 +19,40 @@ env:
 jobs:
   source-checks:
     runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        python: ["3.11", "3.13"]
+    env:
+      MPLCONFIGDIR: ${{ runner.temp }}/citlali-mpl
+      XDG_CACHE_HOME: ${{ runner.temp }}/citlali-cache
     steps:
       - uses: actions/checkout@v7
         with:
           persist-credentials: false
       - uses: actions/setup-python@v7
         with:
-          python-version: "3.13"
-      - name: Install engineering-check dependencies
-        run: python -m pip install -r .github/requirements-engineering-checks.txt
+          python-version: ${{ matrix.python }}
+      - name: Install application and engineering dependencies
+        run: |
+          if [ "${{ matrix.python }}" = "3.13" ]; then
+            python -m pip install --require-hashes -r requirements/linux-x86_64-cp313-dev.lock
+            python -m build --wheel --no-isolation
+          else
+            python -m pip install '.[diagnostics,test]'
+            python -m build --wheel
+          fi
+          python -m pip install --no-deps --force-reinstall dist/citlali_configured_point-0.0.0-py3-none-any.whl
+          python -m pip check
+      - name: Maintained application lint, format and boundary types
+        run: |
+          node --version
+          python -m ruff check --no-cache .
+          python -m ruff format --check --no-cache .
+          python -m pyright
+      - name: Installed application smoke without source imports
+        run: |
+          python -I -c 'import importlib; import configured_point_runtime as r; [importlib.import_module(name) for name in r.RUNTIME_MODULES]; print(r.data_root())'
+          python -I -m configured_point_cli --native /nonexistent/citlali --dump_config
       - name: Build graph and packaging unit checks
         run: python -m unittest discover -s tools/build -p 'test_*.py'
       - name: Configuration unit checks
@@ -45,7 +70,8 @@ jobs:
             tools/timestream_successor/test_configured_point_cli.py \
             tools/timestream_successor/test_configured_point_drops.py \
             tools/timestream_successor/test_configured_point_weighted.py \
-            tools/timestream_successor/test_package_configured_point.py
+            tools/timestream_successor/test_package_configured_point.py \
+            tools/timestream_successor/test_configured_point_runtime.py
       - name: Checked-in configuration contracts
         run: |
           python tools/config/tolteca_mode_kit.py validate-all

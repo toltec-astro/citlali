@@ -197,3 +197,14 @@ external packages as unpinned at launch. Native shared-library identity,
 Spack/Unity qualification, Linux execution and scientific acceptance remain
 separate. See requirements/README.md for reproducible deployment instructions.
 CI wiring to these declarations is recorded in a separate build/CI commit.
+
+### Stage 4 CI follow-through (separate build commit)
+
+Hosted CI now installs the application and runs its focused lint, format, type,
+installed-import/resource and synthetic contracts on Python 3.11 and 3.13.
+Linux 3.13 consumes the full hash lock. The 3.11 compatibility lane resolves
+the declared ranges and uses isolated build requirements; it is not claimed
+to reproduce the locked 3.13 environment. The earlier duplicate CI dependency
+file is superseded by project metadata/locks. Workflow YAML, embedded shell
+syntax, filenames and package metadata were checked locally. GitHub jobs have
+not been dispatched; hosted CI success remains unverified until owner push.

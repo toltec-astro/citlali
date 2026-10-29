@@ -11,7 +11,7 @@ historical Doxygen publication workflow is unchanged.
 `spack-native-checks.yml` is an owner-dispatched native job for the supported
 `macos-llvm20` profile. Provision an isolated macOS runner with labels
 `self-hosted`, `macOS`, and `citlali-spack-macos`, the current Actions runner,
-`$HOME/tolteca/bin/python` and the engineering-check dependencies, the accepted
+`$HOME/tolteca/bin/python` with the declared application/test dependencies, the accepted
 Spack dependencies/compiler, and the four read-only baseline YAML inputs named
 by `tools/config/compact_compatibility_cases.yaml`. Set repository variables
 `CITLALI_SPACK_ROOT` and `CITLALI_SPACK_ENVIRONMENT` to that runner's Spack root
