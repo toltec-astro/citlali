@@ -1,3 +1,4 @@
+#include <citlali/core/utils/fits_handle.h>
 // Private adapter: exact files/identities only; AST, CAL and model owners supply
 // all coordinate, calibration and containing-pixel numerical operations.
 #include <citlali/core/pipeline/point_rtc_source_probe.h>
@@ -33,7 +34,8 @@ PointRtcProbeExecution execute_point_rtc_probe(
   std::unique_ptr<FruitPointModel> model;std::string raster_sha;
   if(branch!="REF") {
     const auto path=checked_file(request["raster"]);raster_sha=request["raster"]["sha256"].as<std::string>();
-    fitsfile *f=nullptr;int status=0,any=0;fits_open_file(&f,path.c_str(),READONLY,&status);
+    citlali::utils::FitsHandle handle;int status=0,any=0;fits_open_file(handle.address(),path.c_str(),READONLY,&status);
+    require(!status,"RTC source raster open failed");auto *f=handle.get();
     long axes[2];int ndim=0;fits_get_img_dim(f,&ndim,&status);fits_get_img_size(f,2,axes,&status);
     require(!status && ndim==2 && axes[0]==41 && axes[1]==41,"RTC source raster geometry");
     auto key=[&](const char *name){double v=NAN;fits_read_key(f,TDOUBLE,name,&v,nullptr,&status);return v;};
@@ -46,7 +48,7 @@ PointRtcProbeExecution execute_point_rtc_probe(
     std::vector<double> brightness(1681);std::vector<std::uint8_t> valid(1681);
     fits_read_img(f,TDOUBLE,1,1681,nullptr,brightness.data(),&any,&status);
     fits_movnam_hdu(f,IMAGE_HDU,const_cast<char*>("VALID"),0,&status);fits_read_img(f,TBYTE,1,1681,nullptr,valid.data(),&any,&status);
-    fits_close_file(f,&status);require(!status,"RTC source raster read failed");
+    const int close_status=handle.close();require(!status && !close_status,"RTC source raster read failed");
     model=std::make_unique<FruitPointModel>("sha256:"+raster_sha,mapmaking::ForwardMapGrid{41,41,"retained-source-raster"},cx,cy,dx,dy,std::move(brightness),std::move(valid));
   }
   const auto directory=output/"source-probe";fs::create_directory(directory);

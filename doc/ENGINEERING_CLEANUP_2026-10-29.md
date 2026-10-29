@@ -110,3 +110,31 @@ Intended behavior changes: complete ordinary builds, stricter source identity
 verification and current CI routing. No scientific algorithm or parameter
 change. Spack/Unity qualification and runner provisioning remain open. Source
 and binary revision agreement is checked again after this stage's commit.
+
+## Stage 2 — native output and C-resource ownership
+
+Stage 1 source/binary agreement passed at
+`1bb75f1a9b337485e197b659144d9e8b6394e5bd` before applying this stage.
+
+`StagedOutputDirectory` owns atomic creation of a direct invocation's `.pending`
+directory and uses atomic no-replace rename on macOS/Linux. POINT weighted and
+saved-MAP callers use it; unsuccessful attempts retain their staging and failure
+evidence. Unsupported no-replace filesystems/platforms fail closed. This does
+not promise fsync crash durability or change configured POINT's existing atomic
+`reduNN` reservation.
+
+`FitsHandle` closes on exceptions, with independent explicit close status for
+required writes. The FRUIT, probe, saved-MAP and weighted feedback call sites
+use it. `FftwComplexBuffer` and `FftwPlan` check creation and release in reverse
+lifetime order at all six retained Wiener sites. Transform operations, buffer
+relations, signs, flags, thresholds and planning order are unchanged.
+
+CLI and complete ordinary test aggregate built; 1,375 enabled CTests passed
+(11.51 s), with the same inherited disabled test. Nine new tests cover competing
+writers, failed staging, existing/intervening/dangling destinations, FITS cleanup
+and close failure, FFTW allocation/plan failure and exact tiny FFT roundtrip.
+Three new public headers separately passed isolation compilation. Supplemental
+standalone synthetic checks also passed. No observations were processed.
+Intended failure change: reject competing publication/resource-creation failure
+before unsafe use, and propagate required FITS close failures. Linux's syscall
+branch and supported Spack/Unity environment still require qualification.
