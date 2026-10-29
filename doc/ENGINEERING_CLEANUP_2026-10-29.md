@@ -1,0 +1,112 @@
+# Collaborator engineering cleanup — 2026-10-29
+
+## Work order and preflight
+
+Owner: Grant Wilson; this chat owns engineering. Scientific product assessment
+remains in the original chat. Tier 2: build environment, resource lifetime,
+application ownership, deployment, and evidence preservation.
+
+Read: AGENTS, engineering/successor/review governance, current status,
+architecture, scientific conventions, retained debt, application baselines,
+and the owner-supplied October 29 review. Canonical's integration ledger records
+accepted governance `06a3ade51c1b3f38887295433d913811bf25cd14` and effectiveness
+`77507836325eff9f469062d5884481ea37599594`. The candidate also records the
+September 30 standing owner development amendment. This work does not amend
+governance or scientific contracts.
+
+- Canonical integration: `codex/refactor-mainline` at
+  `e32c4584dec07617d6caa857d39bf13047b6c4b0` (verified locally).
+- Reviewed candidate and engineering base:
+  `77063575c4fac2bb207ca462435009358be396f6`, clean when inspected.
+  Canonical is its ancestor, 262 commits behind. Ancestry is not acceptance.
+- Frozen weighted POINT trial source:
+  `331ff29ea1720b1454e671cbbab93814d8df8321`.
+- Owned branch: `codex/citlali-engineering-20261029`.
+- Owned managed worktree:
+  `/Users/gwilson/.codex/worktrees/citlali-engineering-20261029/citlali-refactor`.
+  Initial staged/unstaged/untracked state: clean.
+- Shared store: `/Users/gwilson/GitHub/citlali/.git`.
+- WIP: owner-authorized engineering lane; original chat owns scientific review.
+  Build changes remain in separate commits from application changes.
+- Grant confirmed October 29 that trials finished; local builds may proceed.
+
+## Scope, sequence, and gates
+
+| Stage | Owned interface / scope | Gates |
+| --- | --- | --- |
+| 1 | CMake sources, strict FP, ordinary native tests, current CI | Fresh build, complete executable aggregate, native/Python/config checks |
+| 2 | Native publication, FITS and FFTW lifetimes | Synthetic exceptions, allocation failure, competing writers, no replacement |
+| 3 | Shared input/product services for runtime and experiment callers | Both callers compile/test; exact identity and experiment restrictions preserved |
+| 4 | Maintained Python package and boundary types | Explicit modules/dependencies, packaging tests, targeted lint/typing |
+| 5 | Front door, current state, integration proposal | Exact identities and links; accepted historical records retained |
+| 6 | Inventory and cleanup proposal | Enumerate protected state; preserve administrative records; exact approval batch |
+
+Target collaborator scope: POINT and SCIENCE on all three arrays; familiar
+TolProj configuration, validation and guarded submission; TolTECA preparation
+and launch; established pointing calibration, real multi-observation coadds,
+and downstream consumers. Grant supplies beammap/APT products. This is a
+release target, not a claim that every route is qualified.
+
+Accepted scientific contracts, owner decisions, scientific conventions,
+product/config contracts and retained limitations govern semantics. No changes
+to thresholds, rejection, noise estimation, fitting, weighting, calibration,
+FRUIT mathematics or admission. Preserve unavailable measurements, exact input
+associations and required failure propagation. No Engine growth, generic
+framework, observation launches, Unity access, trial modification, frozen
+executable replacement or sibling-repository edits. Normal diagnostics remain
+compact. Local fallback checks are supplemental; supported Spack qualification
+remains owner-run. Independently review substantive final source SHAs with
+separate behavioral, architectural and repository dispositions.
+
+Stop for unresolved scientific intent, required sibling changes, frozen-input
+changes or consequential compatibility uncertainty; continue bounded repairs
+and routine implementation choices. Grant controls reductions, canonical
+integration, pushes and exact destructive cleanup approval. No deletion,
+pruning, remote-ref removal, reflog expiration, garbage collection or history
+rewrite is authorized by this work order.
+
+## Issue and disposition table
+
+| Finding | Confirmation | Disposition |
+| --- | --- | --- |
+| Source/strict-FP drift | 26 fallback sources vs 20 Spack; same six missing from strict FP | Stage 1 in progress |
+| Ordinary tests | Safety missing from check; Spack lists only 11 targets | Stage 1 in progress |
+| Historical CI | Conan-era workflow misses current gates | Stage 1 in progress |
+| Output race | POINT/MAP check absence then share unchecked staging creation | Stage 2 pending |
+| Resource leaks | FITS exceptional paths and unchecked FFTW creation | Stage 2 pending |
+| Acceptance inclusion | Production includes acceptance source with renamed main | Stage 3 pending |
+| Python deployment | No portable maintained runtime declaration | Stage 4 pending |
+| Documentation | Current and historical summaries overlap | Stage 5 pending |
+| Repository cleanup | Protected originals intact; refreshed inventory underway | Stage 6 proposal only |
+
+Completion records will bind exact commits, checks, unresolved compatibility,
+owner decisions and release blockers. Engineering checks do not promote a
+release or establish scientific acceptance.
+
+## Stage 1 — build and test consistency
+
+Both dependency entry points now consume one 26-source/13-strict-FP declaration.
+Dependency resolution stays separate. `citlali_test_binaries` builds every
+ordinary registered executable, including safety and the synthetic JINC
+command; truth-only and sanitizer targets remain explicitly separate. Spack's
+developer runner builds that aggregate and checks executable/source identity.
+CI targets canonical integration, partitions source-only versus native-dependent
+checks explicitly, and replaces the old Conan job with an owner-dispatched
+prepared Spack runner. No observational launch is included.
+
+Verification on a wholly fresh `build/` binary directory: AppleClang 17,
+C++20 Release, existing read-only dependency sources and Homebrew libraries.
+No existing binary/object tree was copied. CLI and ordinary aggregate built;
+1,366 enabled CTests passed (18.37 s), with the inherited
+`MapFitterLifecycle.ExactProductSequence` explicitly disabled. All 207 baseline
+unit tests passed after building their required CLI. Full `--require-all`
+configuration preflight passed. Focused build tooling, config and configured
+POINT checks are recorded in the final handoff. First baseline attempt before
+CLI completion failed its native prerequisite; the successful rerun establishes
+the required order. Compiler/dependency deprecation and duplicate-library
+warnings remain visible; no unexpected runtime errors were accepted.
+
+Intended behavior changes: complete ordinary builds, stricter source identity
+verification and current CI routing. No scientific algorithm or parameter
+change. Spack/Unity qualification and runner provisioning remain open. Source
+and binary revision agreement is checked again after this stage's commit.

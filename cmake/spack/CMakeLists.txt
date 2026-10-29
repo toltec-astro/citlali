@@ -167,44 +167,11 @@ add_library(citlali STATIC)
 add_library(citlali::citlali ALIAS citlali)
 set_target_properties(citlali PROPERTIES EXPORT_NAME citlali)
 tula_cmake_target_defaults(TARGET citlali)
-target_sources(
-    citlali
-    PRIVATE
-        "${CITLALI_SOURCE_ROOT}/src/citlali/core/config/timestream_enums.cpp"
-        "${CITLALI_SOURCE_ROOT}/src/citlali/core/engine/calib.cpp"
-        "${CITLALI_SOURCE_ROOT}/src/citlali/core/engine/telescope.cpp"
-        "${CITLALI_SOURCE_ROOT}/src/citlali/core/mapmaking/map.cpp"
-        "${CITLALI_SOURCE_ROOT}/src/citlali/core/pipeline/ast_scan_motion.cpp"
-        "${CITLALI_SOURCE_ROOT}/src/citlali/core/pipeline/ast_scan_motion_alignment.cpp"
-        "${CITLALI_SOURCE_ROOT}/src/citlali/core/pipeline/timestream_rtc_common_mode.cpp"
-        "${CITLALI_SOURCE_ROOT}/src/citlali/core/pipeline/timestream_cal_atmosphere.cpp"
-        "${CITLALI_SOURCE_ROOT}/src/citlali/core/pipeline/timestream_cal_wvr.cpp"
-        "${CITLALI_SOURCE_ROOT}/src/citlali/core/pipeline/ast_rtc_coordinates.cpp"
-        "${CITLALI_SOURCE_ROOT}/src/citlali/core/pipeline/timestream_cal_pipeline.cpp"
-        "${CITLALI_SOURCE_ROOT}/src/citlali/core/mapmaking/forward_map.cpp"
-        "${CITLALI_SOURCE_ROOT}/src/citlali/core/pipeline/timestream_ptc_numerics.cpp"
-        "${CITLALI_SOURCE_ROOT}/src/citlali/core/pipeline/timestream_ptc_pipeline.cpp"
-    "${CITLALI_SOURCE_ROOT}/src/citlali/core/pipeline/ptc_map_handoff.cpp"
-        "${CITLALI_SOURCE_ROOT}/src/citlali/core/pipeline/timestream_identity_route_context.cpp"
-        "${CITLALI_SOURCE_ROOT}/src/citlali/core/pipeline/output_root_lease.cpp"
-        "${CITLALI_SOURCE_ROOT}/src/citlali/core/pipeline/reduction_restart_checkpoint.cpp"
-        "${CITLALI_SOURCE_ROOT}/src/citlali/core/timestream/ptc/sensitivity.cpp"
-        "${CITLALI_SOURCE_ROOT}/src/citlali/core/utils/gauss_models.cpp"
-)
+include("${CITLALI_SOURCE_ROOT}/cmake/citlali_core_sources.cmake")
+citlali_add_core_sources(citlali "${CITLALI_SOURCE_ROOT}")
 include("${CITLALI_SOURCE_ROOT}/cmake/citlali_cal_authority.cmake")
 citlali_bind_cal_authority("${CITLALI_SOURCE_ROOT}")
-if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
-    set_source_files_properties(
-        "${CITLALI_SOURCE_ROOT}/src/citlali/core/pipeline/timestream_rtc_common_mode.cpp"
-        "${CITLALI_SOURCE_ROOT}/src/citlali/core/pipeline/timestream_cal_atmosphere.cpp"
-        "${CITLALI_SOURCE_ROOT}/src/citlali/core/pipeline/timestream_cal_wvr.cpp"
-        "${CITLALI_SOURCE_ROOT}/src/citlali/core/pipeline/ast_rtc_coordinates.cpp"
-        "${CITLALI_SOURCE_ROOT}/src/citlali/core/pipeline/timestream_cal_pipeline.cpp"
-        "${CITLALI_SOURCE_ROOT}/src/citlali/core/pipeline/timestream_ptc_numerics.cpp"
-        "${CITLALI_SOURCE_ROOT}/src/citlali/core/pipeline/timestream_ptc_pipeline.cpp"
-        PROPERTIES COMPILE_OPTIONS "-fno-fast-math;-ffp-contract=off"
-    )
-endif()
+
 target_include_directories(
     citlali
     PUBLIC
@@ -263,6 +230,8 @@ if(CITLALI_BUILD_CLI)
             "${CITLALI_SOURCE_ROOT}/src/citlali/cli/main.cpp"
     )
     set_target_properties(citlali_cli PROPERTIES OUTPUT_NAME citlali)
+    file(GENERATE OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/citlali_cli_path.txt"
+        CONTENT "$<TARGET_FILE:citlali_cli>\n")
     tula_cmake_target_defaults(TARGET citlali_cli)
     target_link_libraries(
         citlali_cli PRIVATE citlali::citlali citlali_rtc_execution tula::cli
@@ -306,21 +275,6 @@ if(CITLALI_BUILD_TESTS)
     find_package(GTest CONFIG REQUIRED)
     enable_testing()
     add_subdirectory("${CITLALI_SOURCE_ROOT}/tests" tests)
-    set_property(
-        TARGET
-            citlali_test
-            citlali_jinc_map_contract_test
-            citlali_jinc_parallel_ownership_test
-            citlali_safety_test
-            citlali_sci_align_test
-            citlali_science_map_fits_products_test
-            citlali_timestream_successor_native_paired_readout_test
-            citlali_timestream_successor_ast_scan_motion_test
-            citlali_timestream_successor_identity_test
-            citlali_timestream_successor_identity_route_context_test
-            citlali_cal_numerics_test
-        PROPERTY EXCLUDE_FROM_ALL FALSE
-    )
 endif()
 
 install(
@@ -348,4 +302,15 @@ add_executable(citlali_ptc_cost EXCLUDE_FROM_ALL "${CITLALI_SOURCE_ROOT}/tools/t
 target_link_libraries(citlali_ptc_cost PRIVATE citlali::citlali)
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     target_compile_options(citlali_ptc_cost PRIVATE -fno-fast-math -ffp-contract=off)
+endif()
+
+# Synthetic diagnostic tests use the same explicit optional executable.
+add_executable(citlali_jinc_diagnostic EXCLUDE_FROM_ALL
+    "${CITLALI_SOURCE_ROOT}/src/citlali/cli/jinc_diagnostic.cpp")
+target_link_libraries(citlali_jinc_diagnostic PRIVATE citlali::citlali)
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    target_compile_options(citlali_jinc_diagnostic PRIVATE -fno-fast-math -ffp-contract=off)
+endif()
+if(TARGET citlali_test_binaries)
+    add_dependencies(citlali_test_binaries citlali_jinc_diagnostic)
 endif()

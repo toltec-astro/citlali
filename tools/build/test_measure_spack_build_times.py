@@ -33,7 +33,8 @@ class BuildCommandTest(unittest.TestCase):
     def test_build_command_uses_requested_parallelism(self):
         self.assertEqual(
             build_command(build_dir=Path("/tmp/build"), jobs=6),
-            ["cmake", "--build", "/tmp/build", "-j", "6"],
+            ["cmake", "--build", "/tmp/build", "--target",
+             "citlali_cli", "citlali_test_binaries", "-j", "6"],
         )
 
     def test_configure_uses_spack_environment_compilers(self):

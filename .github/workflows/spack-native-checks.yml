@@ -1,0 +1,55 @@
+# Owner-dispatched only: this job needs a prepared, isolated macOS Spack runner.
+# It never accesses Unity, installs/overwrites a package, or runs observations.
+name: Citlali supported Spack native checks
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  native:
+    runs-on: [self-hosted, macOS, citlali-spack-macos]
+    timeout-minutes: 120
+    env:
+      SPACK_ROOT: ${{ vars.CITLALI_SPACK_ROOT }}
+      SPACK_ENVIRONMENT: ${{ vars.CITLALI_SPACK_ENVIRONMENT }}
+      MPLBACKEND: Agg
+      PYTHONDONTWRITEBYTECODE: "1"
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Require the owner-provisioned environment
+        shell: bash
+        run: |
+          test -x "$HOME/tolteca/bin/python"
+          test -x "$SPACK_ROOT/bin/spack"
+          test -f "$SPACK_ENVIRONMENT/spack.lock"
+          test -f "$SPACK_ENVIRONMENT/spack.yaml"
+      - name: Prepare pinned build-only dependency sources
+        shell: bash
+        run: |
+          "$HOME/tolteca/bin/python" tools/build/prepare_spack_sources.py
+      - name: Fresh Spack configuration, ordinary native build, and CTest
+        shell: bash
+        run: |
+          build_dir="$RUNNER_TEMP/citlali-spack-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          test ! -e "$build_dir"
+          "$HOME/tolteca/bin/python" tools/build/run_spack_citlali_dev.py all \
+            --profile macos-llvm20 --spack "$SPACK_ROOT/bin/spack" \
+            --spack-python "$HOME/tolteca/bin/python" \
+            --environment "$SPACK_ENVIRONMENT" --build-dir "$build_dir" \
+            --fresh -j 8
+          printf 'CITLALI_TEST_CLI=%s\n' "$(cat "$build_dir/citlali_cli_path.txt")" >> "$GITHUB_ENV"
+      - name: Complete baseline suite against the fresh native executable
+        shell: bash
+        run: |
+          "$SPACK_ROOT/bin/spack" -e "$SPACK_ENVIRONMENT" build-env citlali -- \
+            "$HOME/tolteca/bin/python" -m unittest discover -s tools/baseline -p 'test_*.py'
+      - name: Full configuration compatibility gate
+        shell: bash
+        run: |
+          "$HOME/tolteca/bin/python" tools/config/run_config_preflight.py \
+            --require-all --work-dir "$RUNNER_TEMP/citlali-config-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"

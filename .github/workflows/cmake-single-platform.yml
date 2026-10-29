@@ -1,45 +1,53 @@
-# This starter workflow is for a CMake project running on a single platform. There is a different starter workflow if you need cross-platform coverage.
-# See: https://github.com/actions/starter-workflows/blob/main/ci/cmake-multi-platform.yml
-name: CMake on a single platform
+# Replaces the historical v4.x / Conan 1 starter workflow. That workflow is
+# retained in Git history; Conan is not a current integration dependency.
+name: Citlali integration checks
 
 on:
   push:
-    branches: [ "v4.x" ]
+    branches: ["codex/refactor-mainline"]
   pull_request:
-    branches: [ "v4.x" ]
+    branches: ["codex/refactor-mainline"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
 
 env:
-  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
-  BUILD_TYPE: Release
+  MPLBACKEND: Agg
+  PYTHONDONTWRITEBYTECODE: "1"
 
 jobs:
-  build:
-    # The CMake configure and build commands are platform agnostic and should work equally well on Windows or Mac.
-    # You can convert this to a matrix build if you need cross-platform coverage.
-    # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
-    runs-on: ubuntu-latest
-
+  source-checks:
+    runs-on: ubuntu-24.04
     steps:
-    - uses: actions/checkout@v3
-
-    - name: Install Conan
-      id: conan
-      uses: turtlebrowser/get-conan@main
-      with:
-        version: 1.57.0
-
-    - name: Configure CMake
-      # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
-      # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
-
-    - name: Build
-      # Build your program with the given configuration
-      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
-
-    - name: Test
-      working-directory: ${{github.workspace}}/build
-      # Execute tests defined by the CMake configuration.
-      # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
-      run: ctest -C ${{env.BUILD_TYPE}}
-
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+      - name: Install engineering-check dependencies
+        run: python -m pip install -r .github/requirements-engineering-checks.txt
+      - name: Build graph and packaging unit checks
+        run: python -m unittest discover -s tools/build -p 'test_*.py'
+      - name: Configuration unit checks
+        run: python -m unittest discover -s tools/config -p 'test_*.py'
+      - name: Baseline-tool unit checks (synthetic fixtures)
+        run: python tools/build/run_source_baseline_tests.py
+      - name: Configured POINT application contracts (synthetic inputs)
+        run: |
+          python -m pytest -q -p no:cacheprovider \
+            tools/timestream_successor/test_configured_point_config.py \
+            tools/timestream_successor/test_configured_point_v2_config.py \
+            tools/timestream_successor/test_configured_point_inputs.py \
+            tools/timestream_successor/test_configured_point_products.py \
+            tools/timestream_successor/test_configured_point_feedback.py \
+            tools/timestream_successor/test_configured_point_cli.py \
+            tools/timestream_successor/test_configured_point_drops.py \
+            tools/timestream_successor/test_configured_point_weighted.py \
+            tools/timestream_successor/test_package_configured_point.py
+      - name: Checked-in configuration contracts
+        run: |
+          python tools/config/tolteca_mode_kit.py validate-all
+          python tools/config/generate_config_schema_header.py --check
+          python tools/config/validate_config_authority_inventory.py

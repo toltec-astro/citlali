@@ -1,0 +1,8 @@
+# Direct engineering-check dependencies, matched to the local verification
+# environment. This is not a deployment lock or an observational environment.
+numpy==2.2.3
+astropy==7.0.1
+PyYAML==6.0.2
+netCDF4==1.7.2
+pytest==9.0.3
+scipy==1.17.1

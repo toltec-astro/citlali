@@ -12,6 +12,7 @@ from spack_citlali_common import (
     inspect_spack_compiler_environment,
     process_environment,
     require_spack_compiler_cache,
+    require_matching_source_revision,
     run,
     spack_build_env_command,
     validate_concrete_graph,
@@ -56,7 +57,18 @@ def configure_command(
 
 def build_command(*, build_dir: Path, jobs: int) -> list[str]:
     """Return the canonical CMake build command."""
-    return ["cmake", "--build", str(build_dir), "-j", str(jobs)]
+    return [
+        "cmake", "--build", str(build_dir), "--target",
+        "citlali_cli", "citlali_test_binaries", "-j", str(jobs),
+    ]
+
+
+def developer_binary(build_dir: Path) -> Path:
+    """Resolve only the executable named by this fresh CMake build graph."""
+    path = Path((build_dir / "citlali_cli_path.txt").read_text().strip()).resolve()
+    if not path.is_relative_to(build_dir.resolve()) or not path.is_file():
+        raise RuntimeError(f"missing or foreign developer executable: {path}")
+    return path
 
 
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
@@ -169,6 +181,15 @@ def main(argv: Sequence[str] | None = None) -> int:
             ),
             environment=environment,
         )
+
+        executable = developer_binary(build_dir)
+        revision = run(["git", "-C", str(source_root), "rev-parse", "HEAD"],
+                       environment=environment).splitlines()[-1]
+        version = run(
+            spack_build_env_command(spack, environment_path, [str(executable), "--version"]),
+            environment=environment,
+        )
+        require_matching_source_revision(version, revision)
 
     if args.action in {"test", "all"}:
         run(
