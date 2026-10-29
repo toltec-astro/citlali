@@ -1,6 +1,61 @@
 # Repository cleanup proposal — 2026-10-29
 
-Status: **proposal only; no deletion or pruning executed**. Refresh the inventory after the final documentation commit and recheck immediately before any approved operation. This document grants no cleanup authority.
+Status: **completed under exact owner approval; all protected state verified intact**.
+
+## Approved cleanup execution — 2026-10-29
+
+Grant explicitly approved: "prune only the 33 missing worktree registrations in
+the proposal, then verify that all protected branches, stashes, existing
+worktrees, and recovery artifacts remain intact."
+
+The exact proposal was executed at source
+`941ccf476da011fa72043488fa566f7aafe45785`. Immediately before execution,
+all 33 paths were still absent, branch/HEAD identities and all 233 administrative
+files matched the approved manifest, and Git's complete dry run matched the
+33 administrative IDs. The immutable administrative archive and reflog-commit
+bundle retained their recorded hashes. All 414 administrative commit IDs and
+10,611 index objects were rechecked; the only two commits outside named-ref
+reachability were covered by the verified recovery bundle. All original bundle
+prerequisites remained reachable.
+
+`git worktree prune --verbose --expire now` removed exactly those registrations,
+including their archived per-worktree logs. Registrations decreased from 53 to
+20. A fresh dry run is empty. The immediate before/after comparison proved:
+
+- All 371 refs, including 104 local branch tips, and all three stashes unchanged.
+- All 20 existing worktrees retained, with identical HEADs, status, indexes,
+  dirty-file contents and checkout/ignored-root identities. The three original
+  dirty worktrees and detached checkout remained protected.
+- All shared reflog bytes, 41 original recovery bundles, both preservation
+  artifacts and the checked frozen runtime files unchanged.
+
+Independent preflight and post-operation verification passed without findings,
+including 467 dirty entries, all 33 combined recovery prerequisite identities,
+and the continued presence of both preserved reflog-only commit objects.
+No branch/tag deletion, existing-worktree removal, shared reflog expiration,
+garbage collection, remote action, trial modification or reduction occurred.
+
+The approval covers this completed batch only. The original proposal and
+before-operation inventory remain historical evidence; they are not permission
+for future cleanup. Execution records and both independent snapshots are retained
+under this task's artifact directory in `cleanup-execution-20261029/`:
+
+`/Users/gwilson/.codex/visualizations/2026/10/29/01a188f2-4d30-7e60-88a8-956b50bb08cf/citlali-engineering-20261029`
+
+`execution-result.json` binds the exact command, owner approval, proposal digest
+and Git output; `before.json`, `after.json`, `verification.json` and the two
+`citlali-independent-cleanup-*.json` files bind preservation checks. The original
+backup retention/prerequisite obligations continue after pruning.
+
+Scientific/behavioral conformance: preserved; no application change or
+observational gate triggered. Architecture/ownership: unchanged. Repository and
+evidence hygiene: pass, independently verified. This follow-up changes only the
+cleanup/status documentation; its commit advances the owned engineering branch
+after the unchanged-ref comparison, retaining the reviewed source as ancestry.
+
+## Original approved proposal
+
+The proposal below is retained as the exact pre-operation record. Its prerequisites were rechecked before the approved execution; it grants no authority for another cleanup batch.
 
 The shared repository is `/Users/gwilson/GitHub/citlali/.git`. The reviewed candidate is `77063575c4fac2bb207ca462435009358be396f6`; canonical `codex/refactor-mainline` remains `e32c4584dec07617d6caa857d39bf13047b6c4b0`. The candidate is 262 commits ahead with zero canonical-only commits. Ancestry does not establish scientific acceptance. Engineering continues separately on `codex/citlali-engineering-20261029`.
 
@@ -99,7 +154,7 @@ The read-only dry run is:
 git -C /Users/gwilson/.codex/worktrees/citlali-engineering-20261029/citlali-refactor worktree prune --dry-run --verbose --expire now
 ```
 
-Only after exact approval and all rechecks, the corresponding operation would use `worktree prune --verbose --expire now` on that same repository. It removes bookkeeping, not the retained branches or bulk tracked evidence. No pruning operation was executed by this task.
+Only after exact approval and all rechecks, the corresponding operation would use `worktree prune --verbose --expire now` on that same repository. It removes bookkeeping, not the retained branches or bulk tracked evidence. No pruning operation had been executed when this proposal was prepared. The later approved execution is recorded above.
 
 ## Branch disposition and future storage
 

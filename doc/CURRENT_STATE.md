@@ -80,8 +80,10 @@ acceptance merely from graph containment or passing tests.
 
 [Owner-run target qualification](ENGINEERING_OWNER_QUALIFICATION_2026-10-29.md)
 provides isolated Unity build/check instructions. The
-[exact cleanup proposal](REPOSITORY_CLEANUP_PROPOSAL_2026-10-29.md) requires
-separate approval before pruning.
+[cleanup record](REPOSITORY_CLEANUP_PROPOSAL_2026-10-29.md) documents Grant's
+subsequent exact approval and removal of 33 missing registrations. All 20
+existing worktrees, 104 branches, three stashes and recovery artifacts were
+verified intact. Further cleanup requires its own exact approval.
 
 [CI](../.github/README.md) separates hosted source checks from a prepared native
 Spack job. No CI step launches an observation. Required data cannot be skipped

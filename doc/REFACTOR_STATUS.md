@@ -1,3 +1,19 @@
+## Approved missing-worktree cleanup completed — 2026-10-29
+
+Grant approved only the [exact 33-registration metadata batch](REPOSITORY_CLEANUP_PROPOSAL_2026-10-29.md).
+Repeated identity/absence, archive, object-reachability and dry-run checks passed
+before pruning. Exactly 33 registrations were removed; all 20 existing worktrees
+remain, and a fresh prune preview is empty. Immediate before/after checks found
+all 104 branch tips, three stashes, shared reflogs, dirty-file contents, 41
+original recovery bundles, two preservation artifacts and checked frozen runtime
+files unchanged. Independent preflight and post-operation verification passed.
+The two reflog-only commits remain recoverable through the verified bundle and
+its retained prerequisites. No existing checkout, branch, trial or recovery
+artifact was removed. The execution occurred at engineering source
+`941ccf476da011fa72043488fa566f7aafe45785`; this documentation follow-up preserves
+that source as ancestry and records the completed owner decision. Application,
+scientific and supported-environment qualification status is unchanged.
+
 ## Collaborator engineering candidate — 2026-10-29
 
 The bounded [engineering work order](ENGINEERING_CLEANUP_2026-10-29.md) has
@@ -15,8 +31,9 @@ identities, release blockers and the owner integration proposal. Grant confirmed
 trials finished, enabling these local engineering checks; scientific product
 assessment remains in the original chat. Original checkout and frozen runtime
 identities are preserved. Repository inventory and recoverable metadata/object
-backups support an [exact proposed cleanup batch](REPOSITORY_CLEANUP_PROPOSAL_2026-10-29.md);
-no prune, branch deletion, push or canonical integration has occurred.
+backups supported an [exact proposed cleanup batch](REPOSITORY_CLEANUP_PROPOSAL_2026-10-29.md),
+later approved and completed as recorded above. No branch deletion, push or
+canonical integration occurred.
 
 The older entries below retain their dated scope and acceptance status.
 

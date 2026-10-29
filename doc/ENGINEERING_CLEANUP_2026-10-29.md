@@ -61,9 +61,10 @@ separate behavioral, architectural and repository dispositions.
 Stop for unresolved scientific intent, required sibling changes, frozen-input
 changes or consequential compatibility uncertainty; continue bounded repairs
 and routine implementation choices. Grant controls reductions, canonical
-integration, pushes and exact destructive cleanup approval. No deletion,
-pruning, remote-ref removal, reflog expiration, garbage collection or history
-rewrite is authorized by this work order.
+integration, pushes and exact destructive cleanup approval. The initial work order authorized no deletion, pruning, remote-ref removal,
+reflog expiration, garbage collection or history rewrite. Grant subsequently
+approved only the exact 33-registration metadata batch, whose completed
+execution is recorded below and in the cleanup proposal.
 
 ## Issue and disposition table
 
@@ -77,7 +78,7 @@ rewrite is authorized by this work order.
 | Acceptance inclusion | Production includes acceptance source with renamed main | Fixed; compiled shared service and explicit unchanged historical profiles; both callers compile |
 | Python deployment | No portable maintained runtime declaration | Implemented; curated wheel/frozen closure, hash locks and focused quality gates; target qualification open |
 | Documentation | Current and historical summaries overlap | Reconciled; current-state front door and explicit historical checkpoints; owner integration pending |
-| Repository cleanup | Protected originals intact; refreshed inventory underway | Exact 33-registration proposal prepared with verified recovery; no prune or deletion |
+| Repository cleanup | Protected originals verified intact before and after execution | Exact 33-registration batch approved and pruned; 20 existing worktrees retained; independent verification passed |
 
 The stage records below bind changes, checks, unresolved compatibility,
 owner decisions and release blockers. Engineering checks do not promote a
@@ -258,11 +259,11 @@ index object remains reachable from named refs. Copies and hashes are retained
 outside temporary storage in this task's artifact directory.
 
 All branches, three original dirty checkouts, detached checkout, stashes,
-ignored dependencies and original recovery bundles remain protected. No
-pruning, deletion, shared reflog expiration, garbage collection or history
-rewrite was executed. Only the owned engineering branch was created/advanced;
-existing branch and preservation refs were not moved. Final inventory and pre-operation rechecks bind
-any later exact approval. Future large evidence belongs in retrievable project
+ignored dependencies and original recovery bundles remain protected. The
+initial delivery proposed cleanup only. Grant later approved exactly the
+33 missing registrations; the verified execution below closes that batch.
+No other deletion, shared reflog expiration, garbage collection or history
+rewrite was performed. Future large evidence belongs in retrievable project
 storage with compact summaries/manifests/digests in Git; existing approximately
 1.70 GB of historical validation evidence remains intact.
 
@@ -295,6 +296,24 @@ Remaining owner decisions: acceptance of POINT scientific products in the
 original chat; pointing-derived calibration compatibility; all-array SCIENCE
 and true multi-observation coadds; downstream consumers; supported Spack/Unity
 and Linux/Python deployment qualification; canonical integration of an exact
-reviewed continuation; GitHub push; and approval of the exact 33-registration
-metadata batch. Beammap production and OOF remain outside the collaborator
+reviewed continuation; and GitHub push. The exact 33-registration metadata
+cleanup has been approved, executed and independently verified. Beammap production and OOF remain outside the collaborator
 release. No engineering test grants scientific or production acceptance.
+
+## Approved cleanup execution — 2026-10-29
+
+Grant subsequently approved only the exact 33 missing registrations and
+required post-operation verification. At source
+`941ccf476da011fa72043488fa566f7aafe45785`, repeated archive, object-reachability,
+identity/absence and exact dry-run checks passed, then Git pruned exactly that
+batch. All 20 existing worktrees, 104 branches, three stashes, shared reflogs,
+dirty-file contents, 41 original recovery bundles, two preservation artifacts
+and checked frozen runtime files remained unchanged. Independent preflight and
+post-operation checks passed; a fresh prune preview is empty.
+
+The [cleanup execution record](REPOSITORY_CLEANUP_PROPOSAL_2026-10-29.md) binds
+the owner approval, operation, preserved artifacts and retained verification
+records. No application behavior changed or observational gate was triggered.
+Architecture is unchanged; repository/evidence hygiene passes independent
+verification. This documentation follow-up retains the reviewed source as
+ancestry. No further cleanup, canonical integration or push is authorized.
