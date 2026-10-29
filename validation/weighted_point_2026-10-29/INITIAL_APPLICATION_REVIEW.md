@@ -1,9 +1,9 @@
 # Independent exact-SHA application review
 
-Candidate: `4f7d31957d2135601145c63387e310622fe16d64`  
-Tree: `f5d22e465327a0f77101fbfc4bc1400bf88862ac`  
-Parent/base: `c6ea76247213cdb8ce51c9ed935a9744b15beb9a`  
-Worktree: `/Users/gwilson/.codex/worktrees/configurable-point-20261028/citlali-refactor`  
+Candidate: `4f7d31957d2135601145c63387e310622fe16d64`
+Tree: `f5d22e465327a0f77101fbfc4bc1400bf88862ac`
+Parent/base: `c6ea76247213cdb8ce51c9ed935a9744b15beb9a`
+Worktree: `/Users/gwilson/.codex/worktrees/configurable-point-20261028/citlali-refactor`
 Review date: 2026-10-29
 
 Verdict: **pass with recorded limitations for the reviewed application scope**. No actionable findings were identified. This is not a numerical-method review or observational acceptance.
