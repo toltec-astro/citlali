@@ -9,7 +9,7 @@ remain authoritative for their exact scope and source identities.
 | Role | Exact identity | Disposition |
 | --- | --- | --- |
 | Canonical integration | `codex/refactor-mainline` at `e32c4584dec07617d6caa857d39bf13047b6c4b0` | Existing integration authority; unchanged by this work |
-| Reviewed POINT candidate / engineering base | `77063575c4fac2bb207ca462435009358be396f6` | Clean original checkout; 262 commits beyond canonical |
+| Reviewed POINT candidate / engineering base | `77063575c4fac2bb207ca462435009358be396f6` | Historical engineering base; 262 commits beyond canonical; live pointing work continues separately |
 | Frozen weighted POINT trials | `331ff29ea1720b1454e671cbbab93814d8df8321` | Preserved runtime and products; Grant reviews science elsewhere |
 | Engineering implementation snapshot | `8c3b676ec9c3f5d8c7ccbb0f0f2ede97a959c983` on `codex/citlali-engineering-20261029` | Locally verified stages 1–4; subsequent documentation commits are recorded in Git; owner integration pending |
 
@@ -18,7 +18,7 @@ The engineering worktree is
 the shared store is `/Users/gwilson/GitHub/citlali/.git`. The directory named
 `/Users/gwilson/GitHub/citlali-refactor` is an older, protected scientific
 checkout. A folder name does not establish authority. Cached remote refs are
-historical local information; this task did not query GitHub or push.
+historical local information. Later read-only GitHub inspection confirmed the owner-pushed CI repair; this lane has not pushed.
 
 Grant alone launches reductions, accepts scientific results, integrates
 canonical, and pushes. This engineering lane does not modify the original
@@ -108,3 +108,14 @@ The chronological August no-work-order/held descriptions record their historical
 checkpoints. The September 30 standing owner amendment and the present bounded
 engineering work order govern their own later scope; neither changes scientific
 contracts or grants integration/production authority.
+
+## Working-folder consolidation preparation — 2026-10-29
+
+Grant authorized safe preparation toward five core working folders, preserving
+pointing and recovery evidence, with small approval batches before deletion.
+The [consolidation record](REPOSITORY_CONSOLIDATION_2026-10-29.md) names all
+20 folders, verified independent backups, dependencies and the first one-folder
+proposal. No existing folder or branch has been deleted under this new request.
+The pointing chat is active; inventory and backup cutoffs are recorded separately.
+Current engineering/pointing builds still use the older science checkout’s
+dependency sources, so that folder is retained.

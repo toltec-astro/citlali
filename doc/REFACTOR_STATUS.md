@@ -1,3 +1,17 @@
+## Working-folder consolidation prepared — 2026-10-29
+
+Grant authorized preparation toward 3–5 active working folders with exact small
+deletion batches approved separately. The [bounded consolidation record](REPOSITORY_CONSOLIDATION_2026-10-29.md)
+selects five core folders, accounts for all other 15, and proposes only the
+source-only paired-guard folder for the first approval. All 104 branch tips,
+three stashes, the detached checkout and historical recovery commits are
+preserved in independently restored backups. Three older folders’ 467 unsaved
+entries have byte-verified archives. Pointing remains active and untouched.
+Build/runtime dependencies hold the later batches; ignored binaries are not
+assumed reproducible. No existing working folder, branch, stash or original
+recovery artifact was deleted. Application/scientific status and integration,
+push and production authority are unchanged.
+
 ## Hosted CI workflow validation repair — 2026-10-29
 
 GitHub [run 40942913840](https://github.com/toltec-astro/citlali/actions/runs/40942913840)
