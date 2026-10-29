@@ -9,8 +9,16 @@ the feedback budget defaults to ten. Uniform v1 behavior remains selectable.
 See the [implementation and limitations](../validation/weighted_point_2026-10-29/IMPLEMENTATION.md)
 and [bounded work order](../validation/weighted_point_2026-10-29/WORK_ORDER.md).
 
-Local synthetic/build/configuration gates and exact-source review precede frozen
-trials for 152389 and 152418. Grant alone launches the reductions. Map improvement,
+Reviewed source `331ff29ea1720b1454e671cbbab93814d8df8321` is now frozen with a
+matching executable in fresh local trials for 152389 and 152418. The
+[prepared handoff](../handoff/WEIGHTED_POINT_PREPARED_2026-10-29.md) records exact
+software/configuration identities and Grant's shell commands. All 1,366 enabled
+native tests, 256 configured POINT Python tests, 207 baseline tests and full
+configuration preflight pass. Independent review caught and repaired an optical
+bootstrap support mismatch; two new regressions detect that actual false-weak
+classification. Corrected native and application reviews pass all three categories
+within their stated local/synthetic scope. Both new project merges, snapshots and
+resource checks pass; no reduction was launched. Grant alone launches them. Map improvement,
 actual rejected populations, interval coverage, timing and scientific acceptance
 are not established by these engineering tests. This candidate does not complete
 the later POINT calibration-consumer/SCIENCE/coadd release milestone.

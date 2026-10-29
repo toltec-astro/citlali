@@ -190,7 +190,7 @@
     {
       "change_id": "configured-point-optical-inverse-noise-fruit-2026-10-29",
       "scientific_epoch": "configured-point-v2-2026-10-29",
-      "status": "scientific_owner_approved_local_candidate_review_and_observations_pending",
+      "status": "scientific_owner_approved_local_candidate_reviewed_observations_pending",
       "change_class": "intentional_algorithm_change",
       "owner": "Grant Wilson",
       "owner_date": "2026-10-29",
