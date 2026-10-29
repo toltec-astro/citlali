@@ -159,5 +159,22 @@ MPLBACKEND=Agg MPLCONFIGDIR=/tmp/temporal-study-mpl XDG_CACHE_HOME=/tmp/temporal
 Scientific: evidence after failed uncertainty-calibration gate; no admission
 approval. Architecture: standalone study, no pipeline changes. Repository:
 bounded study/status additions; frozen reductions, APTs and runtime untouched.
-Independent exact-SHA review is recorded after candidate commit. Unity/Spack,
+Independent [exact-SHA review](INDEPENDENT_REVIEW.md) passes with recorded
+limitations for preserving this failed-calibration study at candidate
+`a8b720e17ef5b72afc2824d55570ca0ec1e159b7`, tree
+`336402e30ec747a50a6bb1f10564351163f59677`, parent
+`9bcbfcf539355a36faf18c5114492fd56c600fb0`. Reviewer reproduced all scientific
+results exactly (wall-clock duration excluded),20 tests, and both figures. No
+repair is required for preservation; scientific readiness remains failed. Review
+also records SciPy1.17.1 and exact evidence digests. This closure changes documents
+only. Unity/Spack,
 integration, push, activation and production validation were not performed.
+
+Locally rendered, visually checked figures:
+
+- [Map tradeoffs](/Users/gwilson/.codex/visualizations/2026/10/23/01a1688f-ccdb-73b0-99e9-0ff65be99341/temporal-change-20261029/map-tradeoffs.png)
+- [Uncertainty calibration](/Users/gwilson/.codex/visualizations/2026/10/23/01a1688f-ccdb-73b0-99e9-0ff65be99341/temporal-change-20261029/calibration.png)
+
+These external figure locations are conveniences; the committed scripts and
+JSON reproduce them. All application, runtime and prepared-trial identities
+remain unchanged. The final documentary closure preserves the reviewed source.
