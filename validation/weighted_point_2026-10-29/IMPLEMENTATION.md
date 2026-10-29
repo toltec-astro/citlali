@@ -45,8 +45,12 @@ parameter, not an empirically validated universal limit.
    must establish positive response above f to retain, response wholly within
    (-f,+f) to call weak, or a wholly negative response below -f to flag reversed.
    Boundary-overlapping and unavailable decisions are withheld as unresolved.
-   At least two informative blocks in each tested portion are necessary to
-   estimate variation; this is not a minimum uninterrupted-duration cut.
+   Every block contributing rows to a fit must participate in its bootstrap,
+   including sparse or individually constant blocks. At least two contributing
+   blocks are needed; a rank-deficient resample makes the interval unavailable.
+   This is not a minimum uninterrupted-duration cut. The corrected method is
+   `point-optical-heldout-network-block-panel-bootstrap-v2`; predecessor evidence
+   cannot be restored under this identity.
 5. The statistical limitations are required output: the intervals condition on
    the constructed references, robust weights, normal-response scale, and assumed
    exchangeability of processing blocks. Peer panels provide reference sensitivity,

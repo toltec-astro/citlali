@@ -36,6 +36,9 @@ struct PointOpticalRequest {
 struct PointOpticalInterval {
     bool available = false;
     double lower = NAN, upper = NAN;
+    // Number of contributing science blocks, including singleton or constant-
+    // reference blocks. Blocks need not separately identify a slope. Every
+    // required resample must identify a slope or the interval is unavailable.
     std::size_t informative_blocks = 0, resamples = 0;
     std::uint64_t seed = 0;
     std::string reason = "not_evaluated";
@@ -77,9 +80,11 @@ public:
     const auto &request() const noexcept { return request_; }
     const auto &networks() const noexcept { return networks_; }
     static constexpr std::string_view method =
-        "point-optical-heldout-network-block-panel-bootstrap-v1";
+        "point-optical-heldout-network-block-panel-bootstrap-v2";
     static constexpr std::string_view uncertainty =
         "conditional-percentile-interval; frozen robust-fit weights and normal-response scale; "
+        "all fitted science blocks retained; informative_blocks counts contributing blocks; "
+        "any required resample rank failure makes interval unavailable; "
         "science-block exchangeability assumed; disjoint peer panels; "
         "coverage and observation-wide false-rejection rate unvalidated";
 private:

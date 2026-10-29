@@ -30,6 +30,46 @@ std::vector<PointOpticalNetwork> fixture() {
     return out;
 }
 PointOpticalRequest request(){PointOpticalRequest r;r.bootstrap_samples=400;return r;}
+
+// Four blocks have within-block slope information; eight others identify the
+// near-unit full response through their between-block offsets. Dropping the
+// latter blocks would instead report a confidently weak response near 0.035.
+std::vector<PointOpticalNetwork> sparse_block_fixture(bool constant_blocks=false) {
+    std::vector<double> reference,target;std::vector<std::int64_t> blocks;
+    const std::array<double,8> levels{-100,-70,70,100,-90,-60,60,90};
+    std::size_t level=0;
+    for(int block=0;block<12;++block) {
+        if(block==0 || block==1 || block==6 || block==7) {
+            for(int row=0;row<10;++row) {
+                const double x=-1.+2.*row/9.;reference.push_back(x);
+                target.push_back((.03+.01*(block%6))*x+.0001*std::sin(row));blocks.push_back(block);
+            }
+        } else {
+            const double x=levels[level++];
+            for(int row=0;row<(constant_blocks?4:1);++row) {
+                reference.push_back(x);target.push_back(x);blocks.push_back(block);
+            }
+        }
+    }
+    std::vector<PointOpticalNetwork> networks;
+    for(int network=0;network<3;++network) {
+        PointOpticalNetwork n;n.observation_identity="observation:sparse-block-regression";
+        n.cal_identity="cal:sparse:"+std::to_string(network);n.source_mask_identity="source-free:sparse:"+std::to_string(network);
+        n.array=0;n.network=network;n.science_blocks=blocks;
+        n.values.resize(reference.size(),12);n.eligible=PtcMask::Ones(n.values.rows(),12);n.source_free=n.eligible;
+        for(int detector=0;detector<12;++detector)n.detector_ids.push_back("sparse:N"+std::to_string(network)+":D"+std::to_string(detector));
+        for(std::size_t row=0;row<reference.size();++row) {
+            n.times_unix_sec.push_back(1000.+row);
+            // Slightly different, positively coupled peer networks make the
+            // shared-reference interval identifiable without hiding the test.
+            const double gain=1.+.0001*(network+1)*(blocks[row]+1);
+            for(int detector=0;detector<12;++detector)
+                n.values(row,detector)=network==0 && detector==0?target[row]:gain*reference[row]+detector;
+        }
+        networks.push_back(std::move(n));
+    }
+    return networks;
+}
 }
 
 TEST(PointOpticalResponse, WeakHealthyQuietNoisyAndReversedHaveSeparateDecisions) {
@@ -113,4 +153,41 @@ TEST(PointOpticalResponse, NoisyEvidenceDoesNotUseCorrelationAsARejectionThresho
     const auto e=PointOpticalEvidence::learn(data,request());const auto p=PointOpticalPlan::consider(e);
     EXPECT_NE(p->for_network(data[0])[8].state,PointOpticalState::weak_response);
     EXPECT_GT(e->networks()[0].detectors[8].binned_residual_rms,e->networks()[0].detectors[7].binned_residual_rms);
+}
+
+TEST(PointOpticalResponse, BootstrapRetainsSparseAndConstantBlocksThatIdentifyTheFullResponse) {
+    for(bool constant_blocks:{false,true}) {
+        SCOPED_TRACE(constant_blocks?"constant blocks":"singleton blocks");
+        const auto data=sparse_block_fixture(constant_blocks);
+        const auto evidence=PointOpticalEvidence::learn(data,request());
+        ASSERT_TRUE(evidence->networks()[0].reference_available)<<evidence->networks()[0].reference_reason;
+        const auto &detector=evidence->networks()[0].detectors[0];
+        EXPECT_GT(detector.relative_response,.9);
+        EXPECT_LT(detector.relative_response,1.1);
+        for(std::size_t check=0;check<detector.checks.size();++check)
+            EXPECT_EQ(detector.checks[check].informative_blocks,check<2?12:6);
+        const auto plan=PointOpticalPlan::consider(evidence);
+        EXPECT_NE(plan->for_network(data[0])[0].state,PointOpticalState::weak_response);
+        if(detector.interval.available)EXPECT_GT(detector.interval.upper,.9);
+    }
+}
+
+TEST(PointOpticalResponse, RankDeficientBlockResampleIsUnavailableAndDetectorUnresolved) {
+    auto data=sparse_block_fixture(true);
+    for(Eigen::Index row=0;row<data[0].values.rows();++row) {
+        const auto block=data[0].science_blocks[row];
+        data[0].source_free(row,0)=block==2 || block==3;
+    }
+    const auto evidence=PointOpticalEvidence::learn(data,request());
+    ASSERT_TRUE(evidence->networks()[0].reference_available)<<evidence->networks()[0].reference_reason;
+    const auto &detector=evidence->networks()[0].detectors[0];
+    ASSERT_TRUE(std::isfinite(detector.relative_response));
+    EXPECT_GT(detector.relative_response,.9);
+    for(int panel=0;panel<2;++panel) {
+        const auto &check=detector.checks[panel];
+        EXPECT_EQ(check.informative_blocks,2);EXPECT_FALSE(check.available);
+        EXPECT_EQ(check.reason,"resample_rank_unavailable");
+    }
+    const auto plan=PointOpticalPlan::consider(evidence);
+    EXPECT_EQ(plan->for_network(data[0])[0].state,PointOpticalState::unresolved);
 }

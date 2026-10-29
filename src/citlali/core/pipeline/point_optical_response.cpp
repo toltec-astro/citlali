@@ -104,7 +104,10 @@ PointOpticalInterval interval(const std::vector<double> &x,const std::vector<dou
     std::map<std::int64_t,Stats> grouped;
     for(std::size_t j=0;j<f.rows.size();++j){const auto i=f.rows[j];grouped[keys[i].second].add(x[i],y[i],f.weights[j]);}
     std::vector<Stats> blocks;
-    for(const auto &[id,s]:grouped){double beta,offset;if(s.solve(beta,offset))blocks.push_back(s);}
+    // Resample the exact row population used by the full fit. A singleton or
+    // constant-reference block may carry essential between-block response
+    // information even though it cannot determine a slope by itself.
+    for(const auto &[id,s]:grouped)blocks.push_back(s);
     out.informative_blocks=blocks.size();out.reason="insufficient_independent_science_blocks";
     if(blocks.size()<2)return out;
     std::vector<double> slopes;slopes.reserve(request.bootstrap_samples);Generator rng{seed};

@@ -1,0 +1,6 @@
+Candidate: 4f7d31957d2135601145c63387e310622fe16d64
+RNG: exact native SplitMix64 and rejection-index; fixed synthetic seed 42
+Block domain: 12; paired bins: 48; normal-response normalization: 1
+full: full-domain slope=0.999721155729697; retained blocks=[0, 1, 6, 7]; interval=[0.0300045656305905, 0.040004642013862]; f=0.1 decision=weak_response
+early: full-domain slope=0.999751091010455; retained blocks=[0, 1]; interval=[0.0300045656320706, 0.0400046420129721]; f=0.1 decision=weak_response
+late: full-domain slope=0.999683035712617; retained blocks=[6, 7]; interval=[0.0300045656287056, 0.0400046420149952]; f=0.1 decision=weak_response

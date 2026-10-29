@@ -1,5 +1,28 @@
 # Local engineering checks before exact-candidate review
 
+The first exact candidate `4f7d31957d2135601145c63387e310622fe16d64`
+passed the checks below but failed independent numerical review. It was never
+frozen into a trial runtime. [Initial native review](INITIAL_NATIVE_REVIEW.md)
+identified one major issue: a response fit used sparse/constant blocks that its
+bootstrap silently omitted, permitting a false confidently weak decision. The
+[independent reproducer](review_counterexample.py) and [initial output](review_counterexample.txt)
+are synthetic, not observation processing. Application review passed its scope
+in [the separate report](INITIAL_APPLICATION_REVIEW.md).
+
+The bounded repair retains every contributing fitted block. If a bootstrap draw
+cannot support the fit, its interval is explicitly unavailable and the detector
+remains unresolved. The method identity is now bootstrap-v2, preventing restored
+v1 evidence from bypassing the repair. Two new public Learn/Consider regressions
+cover both formerly omitted singleton/constant blocks and explicit resample rank
+failure. All ten optical tests pass; no threshold or other scientific policy was
+changed. Corrected exact-source review and matching executable are required before
+freezing either owner trial. The repaired full CTest suite passes 1,366 enabled
+tests with zero failures in 7.36 seconds (one inherited disabled test). Restoring
+only the old filtering line in an isolated temporary test binary makes both new
+tests fail, confirming that they catch the actual false-weak decision. Logs:
+`/tmp/weighted-point-repaired-ctest.log` and
+`/tmp/citlali-point-optical-old-block-filter-regression.log`.
+
 Environment: existing Mac AppleClang/Homebrew fallback build; Python
 `/Users/gwilson/tolteca/bin/python`. These are supplemental checks, not accepted
 Spack/Unity application evidence. Existing native dependency version retains its
