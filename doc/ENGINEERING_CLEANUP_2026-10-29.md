@@ -317,3 +317,29 @@ records. No application behavior changed or observational gate was triggered.
 Architecture is unchanged; repository/evidence hygiene passes independent
 verification. This documentation follow-up retains the reviewed source as
 ancestry. No further cleanup, canonical integration or push is authorized.
+
+## Hosted workflow validation repair — 2026-10-29
+
+Owner reported the failed workflow email for source
+`941ccf476da011fa72043488fa566f7aafe45785`. Read-only GitHub API inspection
+confirmed [run 40942913840](https://github.com/toltec-astro/citlali/actions/runs/40942913840)
+failed on push with zero jobs and zero check runs. The bounded repair starts
+from clean engineering source `359e444f85aa1c56abf88846ab8e34c73332393b`, under
+the existing build/CI work scope. No scientific/application implementation or
+workflow triggers change.
+
+The introduced job-level cache environment used `${{ runner.temp }}`, which
+GitHub forbids at that scope. The previous YAML/shell checks missed this
+semantic defect. Checksum-verified actionlint 1.7.12 reproduced both invalid
+context expressions. Cache paths now enter `GITHUB_ENV` from an executing
+step's `$RUNNER_TEMP`. The linter configuration explicitly names the existing
+custom Spack runner label; no rule is suppressed. All three workflows pass
+semantic validation after the repair. The new setup shell is exercised with
+spaces in temporary paths and checked for exact subsequent-step environment
+values; embedded shell syntax also passes.
+
+The GitHub failure occurred before tests, not during a scientific reduction.
+Local semantic validation does not establish hosted matrix success. Grant
+controls the push and a new eligible CI run. No remote state was changed,
+workflow dispatched, reduction launched, or Unity host accessed. Independent
+review binds the resulting exact commit in the retained repair artifacts.

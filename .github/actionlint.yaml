@@ -1,0 +1,4 @@
+# The existing owner-provisioned Spack runner label is intentional.
+self-hosted-runner:
+  labels:
+    - citlali-spack-macos

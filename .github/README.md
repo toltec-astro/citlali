@@ -35,3 +35,26 @@ Action interfaces were checked against their official documentation:
 [checkout](https://github.com/actions/checkout),
 [setup-python](https://github.com/actions/setup-python), and
 [self-hosted runner labels](https://docs.github.com/en/actions/how-tos/manage-runners/self-hosted-runners/use-in-a-workflow).
+
+## Validate workflow semantics before pushing
+
+Run actionlint 1.7.12 against all checked-in workflows. The focused invocation
+below checks workflow schema, expression-context availability, actions and
+runner labels; shell and Python checks remain separate. `.github/actionlint.yaml`
+declares the existing custom Spack runner label without suppressing errors.
+Use the checksum-verified upstream release; local repair validation installed
+it only in a task-specific temporary directory.
+
+```bash
+actionlint -shellcheck= -pyflakes= .github/workflows/*.yml
+```
+
+YAML parsing and `bash -n` alone cannot detect GitHub expression-context errors.
+Runner-dependent cache paths are set in an executing step through `GITHUB_ENV`,
+so subsequent steps inherit them. GitHub does not allow the `runner` context
+in a job-level `env` map. See the [context availability rules](https://docs.github.com/en/actions/reference/workflows-and-actions/contexts#context-availability).
+
+Source-check triggers remain pushes/PRs targeting `codex/refactor-mainline` and
+explicit dispatch. A topic-branch push alone does not schedule the source test
+matrix. Actual hosted execution still needs a new eligible run of the repaired
+revision; re-running an older failed revision retains its old workflow.

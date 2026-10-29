@@ -1,3 +1,16 @@
+## Hosted CI workflow validation repair — 2026-10-29
+
+GitHub [run 40942913840](https://github.com/toltec-astro/citlali/actions/runs/40942913840)
+at engineering source `941ccf476da011fa72043488fa566f7aafe45785` failed with zero
+jobs. The introduced job-level `runner.temp` expressions were invalid for that
+scope; YAML parsing and shell syntax checks had missed them. The bounded
+[repair record](ENGINEERING_CLEANUP_2026-10-29.md) moves cache initialization
+into a runtime step and adds explicit configuration for the existing custom
+runner label. Actionlint 1.7.12 reproduces the defect and passes all three
+workflows after repair. Hosted execution of the repaired revision remains an
+owner-run gate. Application behavior, native/scientific evidence and the
+completed 33-registration cleanup are unchanged.
+
 ## Approved missing-worktree cleanup completed — 2026-10-29
 
 Grant approved only the [exact 33-registration metadata batch](REPOSITORY_CLEANUP_PROPOSAL_2026-10-29.md).

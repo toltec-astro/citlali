@@ -22,10 +22,11 @@ jobs:
     strategy:
       matrix:
         python: ["3.11", "3.13"]
-    env:
-      MPLCONFIGDIR: ${{ runner.temp }}/citlali-mpl
-      XDG_CACHE_HOME: ${{ runner.temp }}/citlali-cache
     steps:
+      - name: Configure headless runtime caches
+        run: |
+          printf 'MPLCONFIGDIR=%s/citlali-mpl\n' "$RUNNER_TEMP" >> "$GITHUB_ENV"
+          printf 'XDG_CACHE_HOME=%s/citlali-cache\n' "$RUNNER_TEMP" >> "$GITHUB_ENV"
       - uses: actions/checkout@v7
         with:
           persist-credentials: false
