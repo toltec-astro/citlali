@@ -188,6 +188,23 @@
   ],
   "successor_owner_amendments": [
     {
+      "change_id": "configured-point-optical-inverse-noise-fruit-2026-10-29",
+      "scientific_epoch": "configured-point-v2-2026-10-29",
+      "status": "scientific_owner_approved_local_candidate_review_and_observations_pending",
+      "change_class": "intentional_algorithm_change",
+      "owner": "Grant Wilson",
+      "owner_date": "2026-10-29",
+      "authority_path": "doc/OPTICAL_RESPONSE_POLICY_2026-10-29.md",
+      "authority_sha256": "899bfdcb7b1bca55b358340753ad3f8be5f8f009ce90a686c2ed62df99c0c468",
+      "literal_base": "c6ea76247213cdb8ce51c9ed935a9744b15beb9a",
+      "affected_modes": ["point"],
+      "affected_output": "v2 optical eligibility, weighted PTC, empirical MAP coefficients, corrected-frame FRUIT and compact diagnostics",
+      "expected_effect": "freeze optical eligibility using configurable default 0.10 and conditional block/panel intervals; learn full source-free residual noise and weight cleaning/maps; fresh original-CAL FRUIT with exact source restoration",
+      "qualification": "synthetic local engineering evidence only; interval coverage, scientific improvement and Unity/Spack acceptance unestablished",
+      "evidence": "validation/weighted_point_2026-10-29/IMPLEMENTATION.md",
+      "preserves": "uniform v1 family, original APT/CAL inputs, reference reductions and Grant-only observational launches"
+    },
+    {
       "change_id": "cal-single-opacity-owner-correction-2026-09-18",
       "scientific_epoch": "cal-opacity-single-or-interpolated-2026-09-18",
       "status": "scientific_owner_approved_implementation_review_pending",

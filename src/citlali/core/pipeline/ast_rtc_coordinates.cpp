@@ -57,6 +57,17 @@ Eigen::Matrix<double,Eigen::Dynamic,2> AstRtcScheduleEvaluation::detector_tangen
     }
     return out;
 }
+Eigen::Array<std::uint8_t,Eigen::Dynamic,1> AstRtcScheduleEvaluation::outside_source_radius(
+    double x_t,double y_t,double radius) const {
+    if(frame!=AstRtcMapFrame::delta_source_altaz||!std::isfinite(radius)||radius<=0)
+        throw std::invalid_argument("AST source exclusion requires corrected source-offset AltAz and positive finite radius");
+    const auto xy=detector_tangent_deg(x_t,y_t);
+    Eigen::Array<std::uint8_t,Eigen::Dynamic,1> mask=Eigen::Array<std::uint8_t,Eigen::Dynamic,1>::Zero(xy.rows());
+    for(Eigen::Index i=0;i<xy.rows();++i)
+        if(std::isfinite(xy(i,0))&&std::isfinite(xy(i,1)))
+            mask[i]=std::hypot(xy(i,0),xy(i,1))*3600>radius;
+    return mask;
+}
 AstRtcTanGrid AstRtcTanGrid::centered(double ra,double dec,double pixel,double x,double y) {
     if(!std::isfinite(ra) || !std::isfinite(dec) || std::abs(dec)>std::numbers::pi/2 ||
        !std::isfinite(pixel) || pixel<=0 || !std::isfinite(x) || !std::isfinite(y) || x<0 || y<0)

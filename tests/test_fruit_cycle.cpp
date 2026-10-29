@@ -15,6 +15,35 @@ TEST(FruitCycle, PixelProjectionSupportAndExactBrightness) {
     EXPECT_EQ(m.at(-2./3600,0).support,FruitModelSupport::excluded);
     EXPECT_EQ(m.at(0.999/3600,0).value,17.25);
 }
+TEST(FruitCycle, AltAzProjectionExplicitDiskAndPhysicalFrameParity) {
+    std::vector<double> v(1681,0);
+    std::vector<std::uint8_t> valid(1681,1);
+    v[840]=17.25;valid[839]=0;v[839]=NAN;
+    // Corners lie inside the image but outside the explicit POINT disk.
+    valid[0]=0;v[0]=NAN;
+    FruitOffsetModel offset("altaz",{41,41,"offset-grid"},21,21,-2,2,v,valid,40.);
+    FruitPointModel historical("fk5",{41,41,"old-grid"},21,21,-2./3600,2./3600,v,valid);
+    for (const auto x: {-60.,-40.,-2.,-.999,0.,.999,2.,40.,60.})
+        for (const auto y: {-40.,0.,40.}) {
+            const auto a=offset.at(x,y),b=historical.at(x/3600,y/3600);
+            EXPECT_EQ(a.support,b.support);
+            EXPECT_DOUBLE_EQ(a.value,b.value);
+        }
+    EXPECT_EQ(offset.identity(),"altaz");
+    EXPECT_EQ(offset.at(40,-40).support,FruitModelSupport::outside);
+    EXPECT_EQ(offset.at(2,0).support,FruitModelSupport::unavailable);
+    EXPECT_EQ(offset.at(NAN,0).support,FruitModelSupport::unavailable);
+    EXPECT_EQ(offset.at(0,INFINITY).support,FruitModelSupport::unavailable);
+    EXPECT_DOUBLE_EQ(offset.at(.999,0).value,17.25);
+    EXPECT_EQ(offset.at(1.,0).support,FruitModelSupport::admitted);
+    EXPECT_EQ(offset.at(1.+1e-12,0).support,FruitModelSupport::unavailable);
+    FruitOffsetModel whole("whole",{41,41,"grid"},21,21,-2,2,v,valid);
+    EXPECT_EQ(whole.at(40,-40).support,FruitModelSupport::unavailable);
+    EXPECT_THROW((FruitOffsetModel("bad",{41,41,"grid"},21,21,-2,2,v,valid,42.)),std::invalid_argument);
+    EXPECT_THROW((FruitOffsetModel("bad",{41,41,"grid"},21,21,-2,2,v,valid,0.)),std::invalid_argument);
+    EXPECT_THROW((FruitOffsetModel("bad",{41,41,"grid"},21,21,-2,2,v,valid,NAN)),std::invalid_argument);
+    EXPECT_THROW((FruitOffsetModel("bad",{41,41,"grid"},21,21,2,2,v,valid)),std::invalid_argument);
+}
 TEST(FruitCycle, BypassAccountingMissingnessAndStaleState) {
     PtcMatrix y(4,3);y<<1,2,3,4,5,6,7,8,9,10,11,12;
     PtcMatrix m=PtcMatrix::Constant(4,3,0.25);PtcMask e=PtcMask::Ones(4,3),s=e;s(1,1)=0;

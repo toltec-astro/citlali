@@ -57,6 +57,7 @@ std::string native_plane_digest(const NativePairedReadoutMatrix &m) {
 #include "ptc_pipeline_execution.h"
 #include "map_saved_execution.h"
 #include "fruit_saved_execution.h"
+#include "point_weighted_execution.h"
 #include "jinc_ast_execution.h"
 #include "point_rtc_probe_execution.h"
 #include "point_rtc_probe_scope.h"
@@ -623,6 +624,7 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
     receipt["schema"]="rtc-multidetector-learning-v1";
     receipt["source_revision"]=std::string(CITLALI_GIT_REVISION);
     receipt["configuration_sha256"]=citlali::utils::sha256_file(argv[1]);
+    if(recovered_scans)receipt["processing_scans_sha256"]=citlali::utils::sha256_file(output/"processing-scans.yaml");
     if(filter_input) {
       receipt["explicit_array_lowpass"]=YAML::Clone(cfg["filter_plan"]);
       receipt["explicit_array_lowpass"]["array"]=health_array;
@@ -1463,6 +1465,7 @@ int run_successor_saved_fruit(const std::filesystem::path &input,const std::file
 }
 int run_successor_saved_map(const std::filesystem::path &input,const std::filesystem::path &output) {
     const auto request=YAML::LoadFile(input.string());
+    if(request["schema"] && request["schema"].as<std::string>()=="citlali-configured-weighted-point-v1")return execute_weighted_point(input,output);
     if(request["schema"] && (request["schema"].as<std::string>()=="point-152389-jinc-ast-v1" || request["schema"].as<std::string>()=="oof-a2000-altaz-ast-v1"))return execute_jinc_ast(input,output);
     return execute_saved_map(input,output);
 }

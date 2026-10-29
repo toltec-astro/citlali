@@ -1,5 +1,13 @@
 # Optical response and noise weighting owner decision
 
+Implementation follow-up: Grant subsequently requested the full suite and chose
+“Use the resampled interval and report its limitations.” The explicit v2 candidate
+is described in [the implementation record](../validation/weighted_point_2026-10-29/IMPLEMENTATION.md).
+The historical v1/forthcoming statements below describe the original decision
+point; v1 still rejects this control, while v2 implements it. Scientific outcomes
+await Grant's shell trials. Conditional 99% intervals are not demonstrated 99%
+coverage or an observation-wide false-rejection guarantee.
+
 ## Accepted default and configuration
 
 On 2026-10-29 Grant accepted the saved-152418 atmospheric-response approach and

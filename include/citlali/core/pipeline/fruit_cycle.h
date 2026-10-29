@@ -2,6 +2,7 @@
 #include <citlali/core/pipeline/timestream_ptc_numerics.h>
 #include <citlali/core/mapmaking/forward_map.h>
 #include <memory>
+#include <optional>
 #include <string>
 #include <vector>
 
@@ -22,6 +23,30 @@ public:
 private:
     std::string identity_;mapmaking::ForwardMapGrid grid_;
     double cx_,cy_,dx_,dy_;std::vector<double> values_;std::vector<std::uint8_t> valid_;
+};
+// Frame-explicit containing-pixel projection recovered from CAL-entry source
+// 3a74a5c53, extended with an explicit optional domain. Coordinates/increments
+// are delta-source AltAz arcseconds; brightness
+// is mJy/nominal-beam. No fit, beam, noise, or connected-selection policy lives
+// here. An optional AST-centered disk classifies pixels outside the declared
+// feedback domain as no feedback (not unavailable sky). The caller owns that
+// policy: configured POINT supplies 40 arcseconds explicitly. A missing radius
+// means the entire supplied grid is the model domain.
+class FruitOffsetModel {
+public:
+    FruitOffsetModel(std::string identity, mapmaking::ForwardMapGrid,
+        double crpix1, double crpix2, double cdelt1_arcsec, double cdelt2_arcsec,
+        std::vector<double> brightness, std::vector<std::uint8_t> valid,
+        std::optional<double> domain_radius_arcsec=std::nullopt);
+    FruitOperand at(double az_arcsec, double el_arcsec) const;
+    const std::string &identity() const { return identity_; }
+private:
+    std::string identity_;
+    mapmaking::ForwardMapGrid grid_;
+    double cx_,cy_,dx_,dy_;
+    std::vector<double> values_;
+    std::vector<std::uint8_t> valid_;
+    std::optional<double> radius_;
 };
 // Bounded response experiment: add a signed projected brightness operand only
 // on the immutable parent's eligible entries. Invalid entries remain bitwise

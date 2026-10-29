@@ -68,12 +68,12 @@ struct SavedMapNetwork {
     std::int64_t first;
     std::size_t scheduled;
 };
-SavedMapNetwork load_saved_map_network(const YAML::Node &request,MapFileLedger &ledger,bool source_offset_altaz=false) {
+SavedMapNetwork load_saved_map_network(const YAML::Node &request,MapFileLedger &ledger,bool source_offset_altaz=false,bool cal_only=false) {
     SavedMapNetwork out;out.root=request["root"].as<std::string>();out.ptcroot=out.root/"donor-continuity"/"ptc";
     require(out.root.is_absolute(),"MAP source root must be absolute");
     ledger.bind(out.root/"receipt.yaml",request["receipt_sha256"].as<std::string>());
     const auto final=map_prefix(out.root/"receipt.yaml");
-    require(final["completed_through"].as<std::string>()=="PTC" && !final["legacy_fallback_performed"].as<bool>(),"MAP requires an actual completed successor PTC route");
+    require(final["completed_through"].as<std::string>()==(cal_only?"CAL":"PTC") && !final["legacy_fallback_performed"].as<bool>(),"saved consumer requires its actual completed successor parent stage");
     const auto input_path=checked_file(request["input"]);ledger.bind(input_path,final["configuration_sha256"].as<std::string>());
     out.input=YAML::LoadFile(input_path.string());
     ledger.bind(out.root/"learning-receipt.yaml");out.learn=map_prefix(out.root/"learning-receipt.yaml");
@@ -90,10 +90,18 @@ SavedMapNetwork load_saved_map_network(const YAML::Node &request,MapFileLedger &
         require(out.apply[key] && final_apply[key] && YAML::Dump(out.apply[key])==YAML::Dump(final_apply[key]),
                 "MAP apply/final identity mismatch: "+key);
     require(out.apply["original_parent"].as<std::string>()==out.learn["original_parent"].as<std::string>(),"MAP RTC parent mismatch");
-    out.ptc_sha=ledger.bind(out.ptcroot/"receipt.yaml",request["ptc_receipt_sha256"].as<std::string>());
-    out.ptc=YAML::LoadFile((out.ptcroot/"receipt.yaml").string());
-    out.cal_sha=ledger.bind(out.root/"donor-continuity/cal/receipt.yaml",out.ptc["source_CAL_receipt_sha256"].as<std::string>());
+    if(!cal_only) {
+        out.ptc_sha=ledger.bind(out.ptcroot/"receipt.yaml",request["ptc_receipt_sha256"].as<std::string>());
+        out.ptc=YAML::LoadFile((out.ptcroot/"receipt.yaml").string());
+    }
+    out.cal_sha=ledger.bind(out.root/"donor-continuity/cal/receipt.yaml",
+        cal_only?request["cal_receipt_sha256"].as<std::string>():out.ptc["source_CAL_receipt_sha256"].as<std::string>());
     out.cal=YAML::LoadFile((out.root/"donor-continuity/cal/receipt.yaml").string());
+    require(out.cal["schema"].as<std::string>()=="citlali-cal-output-v1" &&
+        out.cal["unit"].as<std::string>()=="mJy/nominal-beam" &&
+        out.cal["input_RTC_attempt"].as<std::uint64_t>()==out.apply["attempt"].as<std::uint64_t>() &&
+        YAML::Dump(final["CAL"])==YAML::Dump(out.cal),"saved CAL/RTC publication differs");
+    if(!cal_only) {
     require(out.ptc["schema"].as<std::string>()=="citlali-ptc-output-v2" && out.cal["schema"].as<std::string>()=="citlali-cal-output-v1" &&
         out.ptc["rank"].as<int>()>0 && (out.ptc["method"].as<std::string>()=="observed-als" || (out.ptc["method"].as<std::string>()=="masked-covariance-count-v1" && out.input["observation"].as<int>()==152430 && (out.input["network"].as<int>()==11 || out.input["network"].as<int>()==12))) &&
         out.ptc["unit"].as<std::string>()=="mJy/nominal-beam" && out.cal["unit"].as<std::string>()=="mJy/nominal-beam" &&
@@ -104,6 +112,7 @@ SavedMapNetwork load_saved_map_network(const YAML::Node &request,MapFileLedger &
         out.ptc["input_VAL_generation"].as<std::uint64_t>()==out.cal["output_VAL_generation"].as<std::uint64_t>() &&
         out.cal["input_RTC_attempt"].as<std::uint64_t>()==out.apply["attempt"].as<std::uint64_t>(),"MAP PTC/CAL/RTC publication identity or method incompatible");
     require(YAML::Dump(final["PTC"])==YAML::Dump(out.ptc) && YAML::Dump(final["CAL"])==YAML::Dump(out.cal),"MAP final receipt differs from required child publication");
+    }
     out.network=out.learn["network"].as<int>();out.array=out.cal["detectors"][0]["array"].as<int>();
     out.obsnum=out.learn["observation"].as<int>();
     const bool oof=citlali::cli::detail::oof_network_scope(out.input,out.obsnum,0,1,out.network);
@@ -199,7 +208,8 @@ std::shared_ptr<const PtcMapPublication> load_map_segment(const SavedMapNetwork 
     require(q->retained()==s["retained"].as<std::size_t>(),"MAP PTC retained support mismatch");return q;
 }
 void map_fits(const fs::path &path,const AstRtcTanGrid &wcs,const mapmaking::ForwardMapOperator &op,
-    const mapmaking::ForwardMapValues &result,const std::string &array,double beam) {
+    const mapmaking::ForwardMapValues &result,const std::string &array,double beam,
+    bool empirical_inverse_noise=false) {
     fitsfile *f=nullptr;int status=0;
     fits_create_file(&f,path.c_str(),&status);require(!status,"MAP required FITS create failed");
     const auto size=wcs.rows*wcs.columns;
@@ -212,14 +222,14 @@ void map_fits(const fs::path &path,const AstRtcTanGrid &wcs,const mapmaking::For
         fits_update_key_str(f,"CUNIT1","arcsec",nullptr,&status);fits_update_key_str(f,"CUNIT2","arcsec",nullptr,&status);
         fits_update_key_str(f,"ASTFRAME","delta-source-AltAz",nullptr,&status);
         for(const auto &[key,value]:std::array<std::pair<const char*,double>,6>{{{"CRPIX1",wcs.crpix1},{"CRPIX2",wcs.crpix2},{"CRVAL1",wcs.crval1_deg},{"CRVAL2",wcs.crval2_deg},{"CDELT1",3600*wcs.cdelt1_deg},{"CDELT2",3600*wcs.cdelt2_deg}}})
-            fits_update_key_dbl(f,key,value,15,nullptr,&status);
+            fits_update_key_dbl(f,key,value,17,nullptr,&status);
         fits_update_key_str(f,"BUNIT",unit,nullptr,&status);fits_update_key_str(f,"ARRAY",array.c_str(),nullptr,&status);
-        fits_update_key_dbl(f,"NOMBFWHM",beam,15,"Fixed nominal calibration FWHM, arcsec; not measured PSF",&status);
+        fits_update_key_dbl(f,"NOMBFWHM",beam,17,"Fixed nominal calibration FWHM, arcsec; not measured PSF",&status);
         fits_write_img(f,datatype,1,size,const_cast<void*>(data),&status);fits_write_chksum(f,&status);
     };
     plane("",DOUBLE_IMG,TDOUBLE,signal.data(),"mJy/beam");
-    plane("NUMERATOR",DOUBLE_IMG,TDOUBLE,result.numerator.data(),"mJy/beam");
-    plane("NORMALIZATION",DOUBLE_IMG,TDOUBLE,op.normalization().data(),"1");
+    plane("NUMERATOR",DOUBLE_IMG,TDOUBLE,result.numerator.data(),empirical_inverse_noise?"beam/mJy":"mJy/beam");
+    plane("NORMALIZATION",DOUBLE_IMG,TDOUBLE,op.normalization().data(),empirical_inverse_noise?"beam2/mJy2":"1");
     std::vector<long long> hits(op.contributing_hits().begin(),op.contributing_hits().end());
     plane("HITS",LONGLONG_IMG,TLONGLONG,hits.data(),"count");
     plane("NORM_SUPPORT",BYTE_IMG,TBYTE,op.normalization_support().data(),"1");

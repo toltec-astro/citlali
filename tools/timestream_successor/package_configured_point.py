@@ -21,8 +21,10 @@ import subprocess
 SCHEMA = "citlali-configured-point-runtime-v1"
 TOOL_DIR = Path("tools/timestream_successor")
 REQUIRED_TOOLS = ("configured_point_cli.py", "configured_point_config.py",
-                  "configured_point_inputs.py", "configured_point_products.py", "configured_point_drops.py")
+                  "configured_point_inputs.py", "configured_point_products.py", "configured_point_drops.py",
+                  "configured_point_weighted.py", "configured_point_feedback.py")
 DATA_FILES = (Path("data/config.yaml"), Path("data/configured_point_v1.yaml"),
+              Path("data/configured_point_v2.yaml"),
               *(Path("data/development/bright_point_base_v1") / f"{a}-rtc.json"
                 for a in ("a1100", "a1400", "a2000")),
               Path("data/development/bright_point_base_v1/map-owner.json"))

@@ -25,6 +25,11 @@ struct AstRtcScheduleEvaluation {
     NativePointingOffsetsArcsec offsets;
     Eigen::VectorXd elevation_deg;
     Eigen::Matrix<double,Eigen::Dynamic,2> detector_tangent_deg(double x_t_arcsec, double y_t_arcsec) const;
+    // Source exclusion belongs to AST's corrected source-offset geometry.
+    // Returns 1 only for finite positions strictly outside the requested circle;
+    // missing geometry remains 0. Does not alter signal or map contribution.
+    Eigen::Array<std::uint8_t,Eigen::Dynamic,1> outside_source_radius(
+        double x_t_arcsec, double y_t_arcsec, double radius_arcsec) const;
 };
 AstRtcScheduleEvaluation evaluate_ast_rtc_schedule(const RawTelescopeTrajectory &,
     const NativePointingOffsetModel &, double center_ra_rad, double center_dec_rad,

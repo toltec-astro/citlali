@@ -135,7 +135,7 @@ def release_transport(work):
     count = size = 0
     for root in (work / 'upstream' / 'products', work / 'map' / 'products'):
         for path in root.rglob('*'):
-            if path.suffix not in {'.f64', '.u8', '.u64', '.i32', '.i64'}:
+            if path.suffix not in {'.f64', '.u8', '.u16', '.u64', '.i32', '.i64'}:
                 continue
             if path.is_symlink() or not path.resolve().is_relative_to(work.resolve()):
                 raise RuntimeError(f'unsafe generated transport path: {path}')
@@ -191,7 +191,8 @@ def execute(config_path, native, *, launch_dir=None):
               f"all three arrays, {request.workers} workers", flush=True)
         try:
             record['stages'].append(native_call(native, prepared['observation_request'], work / 'upstream',
-                terminal='ptc', workers=request.workers, method=request.cleaning_method, verbose=request.verbose))
+                terminal='cal' if request.weighted else 'ptc', workers=request.workers,
+                method=None if request.weighted else request.cleaning_method, verbose=request.verbose))
         finally:
             if drop_enabled:
                 from configured_point_drops import collect, console_summary
@@ -202,14 +203,20 @@ def execute(config_path, native, *, launch_dir=None):
                 print(console_summary(summary, path), flush=True)
         if drop_enabled and summary['evaluation_state'] != 'complete':
             raise RuntimeError('required detector-drop evaluation/application is incomplete')
-        owner = REPO / 'data/development/bright_point_base_v1/map-owner.json'
-        q = map_request(prepared, work / 'upstream', work / 'map-request.json', owner, request)
-        record['stages'].append(native_call(native, q, work / 'map', terminal='map', verbose=request.verbose))
+        if request.weighted:
+            from configured_point_weighted import execute as weighted_point
+            map_products = weighted_point(prepared, work, reduction, native, request, record,
+                native_call=native_call, bind=bind, write_json=write_json)
+        else:
+            owner = REPO / 'data/development/bright_point_base_v1/map-owner.json'
+            q = map_request(prepared, work / 'upstream', work / 'map-request.json', owner, request)
+            record['stages'].append(native_call(native, q, work / 'map', terminal='map', verbose=request.verbose))
+            map_products = work / 'map/products'
         # Publish into hidden staging first. A failed required product never
         # leaves a discoverable, apparently complete observation directory.
         staged = work / 'publish'
         raw = staged / 'raw'
-        record['products'] = publish_maps(work / 'map' / 'products', raw,
+        record['products'] = publish_maps(map_products, raw,
             prepared['observation'], request.arrays,
             fit_diagnostics=request.fit_diagnostics, verbose=request.verbose)
         if not request.retain_intermediates:
@@ -221,7 +228,8 @@ def execute(config_path, native, *, launch_dir=None):
         # Paths reported by publisher must follow the published directory.
         record['products'] = json.loads(json.dumps(record['products'], default=str).replace(str(staged), str(published)))
         record.update(status='completed', seconds=time.monotonic() - started,
-                      scientific_scope='forward POINT maps and qualified diagnostics; no flux-calibration table')
+                      scientific_scope=('weighted POINT maps with explicit FRUIT outcome' if request.weighted else 'forward POINT maps') +
+                          ' and qualified diagnostics; no flux-calibration table')
         write_json(reduction / 'RUN.json', record)
         print(f'POINT complete: {published}', flush=True)
         return reduction

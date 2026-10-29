@@ -68,13 +68,19 @@ def test_copied_launcher_finds_exact_bundle_and_preserves_arguments(source, tmp_
     assert manifest["python"]["package_contents_pinned"] is False
     copied_members = {entry["path"] for entry in manifest["files"]}
     assert "tools/timestream_successor/transitive_import.py" in copied_members
+    assert "tools/timestream_successor/configured_point_weighted.py" in copied_members
+    assert "tools/timestream_successor/configured_point_feedback.py" in copied_members
+    assert "data/configured_point_v2.yaml" in copied_members
     assert {str(path) for path in DATA_FILES} <= copied_members
     assert "bin/citlali-native" in copied_members
     assert not list(destination.rglob("__pycache__"))
 
 
 @pytest.mark.parametrize("relative", ["manifest.json", "bin/citlali-native", "tools/timestream_successor/transitive_import.py",
-                                      "data/config.yaml", "data/development/bright_point_base_v1/a1400-rtc.json"])
+                                      "data/config.yaml", "data/configured_point_v2.yaml",
+                                      "tools/timestream_successor/configured_point_weighted.py",
+                                      "tools/timestream_successor/configured_point_feedback.py",
+                                      "data/development/bright_point_base_v1/a1400-rtc.json"])
 def test_snapshot_launcher_rejects_changed_manifest_or_payload(source, tmp_path, relative):
     root, native, python = source
     destination = tmp_path / "runtime"

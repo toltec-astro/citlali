@@ -668,6 +668,37 @@ endif()
 add_dependencies(check citlali_ptc_numerics_test)
 gtest_discover_tests(citlali_ptc_numerics_test WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR} TEST_PREFIX "citlali::" DISCOVERY_MODE PRE_TEST)
 
+add_executable(citlali_ptc_inverse_noise_test EXCLUDE_FROM_ALL
+    test_ptc_inverse_noise.cpp ptc_inverse_noise_header.cpp
+    ptc_empirical_map_handoff_header.cpp forward_empirical_map_admission_header.cpp
+    val_empirical_map_handoff_header.cpp)
+set_source_files_properties(ptc_inverse_noise_header.cpp ptc_empirical_map_handoff_header.cpp
+    forward_empirical_map_admission_header.cpp val_empirical_map_handoff_header.cpp
+    PROPERTIES SKIP_PRECOMPILE_HEADERS ON)
+target_link_libraries(citlali_ptc_inverse_noise_test PRIVATE citlali::citlali GTest::gtest_main)
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    target_compile_options(citlali_ptc_inverse_noise_test PRIVATE -fno-fast-math -ffp-contract=off)
+endif()
+add_dependencies(check citlali_ptc_inverse_noise_test)
+gtest_discover_tests(citlali_ptc_inverse_noise_test TEST_PREFIX "citlali::" DISCOVERY_MODE PRE_TEST)
+
+add_executable(citlali_point_optical_response_test EXCLUDE_FROM_ALL
+    test_point_optical_response.cpp point_optical_response_header.cpp)
+set_source_files_properties(point_optical_response_header.cpp PROPERTIES SKIP_PRECOMPILE_HEADERS ON)
+target_link_libraries(citlali_point_optical_response_test PRIVATE citlali::citlali GTest::gtest_main)
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    target_compile_options(citlali_point_optical_response_test PRIVATE -fno-fast-math -ffp-contract=off)
+endif()
+add_dependencies(check citlali_point_optical_response_test)
+gtest_discover_tests(citlali_point_optical_response_test TEST_PREFIX "citlali::" DISCOVERY_MODE PRE_TEST)
+
+add_executable(citlali_point_weighted_bindings_test EXCLUDE_FROM_ALL
+    test_point_weighted_bindings.cpp point_weighted_bindings_header.cpp)
+set_source_files_properties(point_weighted_bindings_header.cpp PROPERTIES SKIP_PRECOMPILE_HEADERS ON)
+target_link_libraries(citlali_point_weighted_bindings_test PRIVATE citlali::citlali GTest::gtest_main)
+add_dependencies(check citlali_point_weighted_bindings_test)
+gtest_discover_tests(citlali_point_weighted_bindings_test TEST_PREFIX "citlali::" DISCOVERY_MODE PRE_TEST)
+
 add_executable(citlali_forward_map_test EXCLUDE_FROM_ALL test_forward_map.cpp forward_map_header.cpp ptc_map_handoff_header.cpp forward_map_admission_header.cpp val_map_handoff_header.cpp)
 set_source_files_properties(forward_map_header.cpp ptc_map_handoff_header.cpp forward_map_admission_header.cpp val_map_handoff_header.cpp PROPERTIES SKIP_PRECOMPILE_HEADERS ON)
 target_link_libraries(citlali_forward_map_test PRIVATE citlali::citlali GTest::gtest_main)

@@ -1,0 +1,54 @@
+# Opt-in weighted POINT overlay for TolTECA's merged low-level configuration.
+# Keep ordinary project input/APT/KMP paths and place this mapping inside the
+# reduction step's low_level block. The v1 uniform forward profile is preserved
+# separately in configured_point_v1.yaml.
+#
+# The explicit migration replaces old algorithm controls. This profile freezes
+# source-protected optical eligibility from the original CAL data, learns an
+# empirical variance for each detector/processing segment and weights cleaning
+# by inverse variance. The map uses 1/max(reference variance, remaining variance).
+# These are empirical analysis coefficients, not a full map precision/covariance.
+# Detector response is diagnostic and does not rescale the supplied APT gains.
+#
+# min_relative_response is a tunable dimensionless fraction: 0 < value <= 1.
+# Omission selects 0.10; the same requested fraction uses each array's own normal
+# response. It is never adjusted automatically to obtain a desired drop count.
+#
+# max_iters counts feedback applications AFTER the initial weighted forward map.
+# Each pass starts from immutable CAL, subtracts the current source model, learns
+# fresh noise/cleaning, restores that exact operand and makes a replacement model.
+# Ten is a fixed trial budget, not a convergence rule. enabled:false requests the
+# weighted forward map alone. Missing source/selection support stops feedback
+# explicitly; the pipeline does not weaken the existing POINT/BASE guards.
+#
+# The existing per-array RTC coefficients/factors and native CAL/APT policy stay
+# in force. The initial noise/source masks are POINT-specific, not SCIENCE masks.
+# Coadds, noise-map covariance products, legacy PPT calibration compatibility and
+# automatic pointing corrections remain outside this configured POINT profile.
+runtime:
+  reduction_type: pointing
+  verbose: false
+successor:
+  schema: citlali-point-v2
+  migration: replace-legacy-point-controls-v2
+  arrays: [a1100, a1400, a2000]
+  cleaning:
+    method: noise-weighted-observed-als-v1
+    ranks: {a1100: 3, a1400: 4, a2000: 6}
+  detector_response:
+    min_relative_response: 0.10
+  rtc:
+    profile: existing-array-lowpass-v1
+    disturbance_exclusion: repeated-level-shifts-unassessable-remainder-v1
+  map:
+    method: containing-pixel
+    frame: delta-source-AltAz
+    pixel_size_arcsec: 1.0
+    coverage_cut: 0.1
+  feedback:
+    enabled: true
+    max_iters: 10
+  products:
+    fits: true
+    fit_diagnostics: true
+    retain_intermediates: false

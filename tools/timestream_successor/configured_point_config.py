@@ -15,6 +15,9 @@ import re
 ARRAYS = ("a1100", "a1400", "a2000")
 SCHEMA = "citlali-point-v1"
 MIGRATION = "replace-legacy-point-controls-v1"
+SCHEMA_V2 = "citlali-point-v2"
+MIGRATION_V2 = "replace-legacy-point-controls-v2"
+WEIGHTED_CLEANING = "noise-weighted-observed-als-v1"
 RTC_PROFILE = "existing-array-lowpass-v1"
 DISTURBANCE_POLICY = "repeated-level-shifts-unassessable-remainder-v1"
 REPO = Path(__file__).resolve().parents[2]
@@ -35,6 +38,10 @@ class PointRequest:
     rtc_profiles: dict
     arrays: tuple
     migration_dispositions: tuple
+    weighted: bool = False
+    min_relative_response: float | None = None
+    feedback_enabled: bool = False
+    feedback_iterations: int = 0
 
 
 def _mapping(value, path, allowed=None, required=()):
@@ -221,11 +228,17 @@ def load_request(config: dict, launch_dir: Path) -> PointRequest:
     """
     _mapping(config, "configuration")
     launch_dir = Path(launch_dir).resolve()
-    successor = _mapping(config.get("successor"), "successor", allowed=(
-        "schema", "migration", "arrays", "cleaning", "rtc", "map", "feedback", "products"),
+    successor = _mapping(config.get("successor"), "successor",
         required=("schema", "migration", "cleaning", "rtc", "map", "feedback"))
-    _enum(successor["schema"], SCHEMA, "successor.schema")
-    _enum(successor["migration"], MIGRATION, "successor.migration")
+    schema = successor["schema"]
+    if type(schema) is not str or schema not in (SCHEMA, SCHEMA_V2):
+        raise ValueError(f"successor.schema supports only {SCHEMA!r} or {SCHEMA_V2!r}")
+    weighted = schema == SCHEMA_V2
+    migration = MIGRATION_V2 if weighted else MIGRATION
+    _enum(successor["migration"], migration, "successor.migration")
+    _mapping(successor, "successor", allowed=(
+        "schema", "migration", "arrays", "cleaning", "rtc", "map", "feedback", "products",
+        *(("detector_response",) if weighted else ())))
     arrays = successor.get("arrays", list(ARRAYS))
     if not isinstance(arrays, list) or any(type(a) is not str for a in arrays) or len(arrays) != 3 or set(arrays) != set(ARRAYS):
         raise ValueError("successor.arrays must contain a1100, a1400 and a2000 exactly once")
@@ -233,7 +246,8 @@ def load_request(config: dict, launch_dir: Path) -> PointRequest:
     cleaning = _mapping(successor["cleaning"], "successor.cleaning", ("method", "ranks"), ("method", "ranks"))
     # PTC alone implements other methods; the connected MAP consumer does not
     # admit them. Expose only a method that reaches the requested final product.
-    method = _enum(cleaning["method"], "observed-als", "successor.cleaning.method")
+    method = _enum(cleaning["method"], WEIGHTED_CLEANING if weighted else "observed-als",
+                   "successor.cleaning.method")
     rank_values = _mapping(cleaning["ranks"], "successor.cleaning.ranks", ARRAYS, ARRAYS)
     ranks = {a: _integer(rank_values[a], f"successor.cleaning.ranks.{a}") for a in ARRAYS}
     rtc = _mapping(successor["rtc"], "successor.rtc", ("profile", "disturbance_exclusion"), ("profile",))
@@ -253,9 +267,24 @@ def load_request(config: dict, launch_dir: Path) -> PointRequest:
     _enum(mapping["frame"], "delta-source-AltAz", "successor.map.frame")
     pixel = _number(mapping["pixel_size_arcsec"], "successor.map.pixel_size_arcsec", minimum=0, strict_minimum=True)
     coverage = _number(mapping["coverage_cut"], "successor.map.coverage_cut", minimum=0, maximum=1)
-    feedback = _mapping(successor["feedback"], "successor.feedback", ("enabled",), ("enabled",))
-    if _bool(feedback["enabled"], "successor.feedback.enabled"):
-        raise ValueError("successor.feedback.enabled=true is not implemented in citlali-point-v1")
+    if weighted:
+        response = _mapping(successor.get("detector_response", {}), "successor.detector_response",
+                            ("min_relative_response",))
+        # A fraction of the separately normalized same-array response. One is
+        # permitted as an explicit owner request; zero, booleans and nonfinite
+        # values are not disable switches. Never tune this from realized counts.
+        min_response = _number(response.get("min_relative_response", .10),
+            "successor.detector_response.min_relative_response",
+            minimum=0, maximum=1, strict_minimum=True)
+        feedback = _mapping(successor["feedback"], "successor.feedback", ("enabled", "max_iters"))
+        feedback_enabled = _bool(feedback.get("enabled", True), "successor.feedback.enabled")
+        feedback_iterations = _integer(feedback.get("max_iters", 10), "successor.feedback.max_iters")
+    else:
+        min_response = None
+        feedback = _mapping(successor["feedback"], "successor.feedback", ("enabled",), ("enabled",))
+        if _bool(feedback["enabled"], "successor.feedback.enabled"):
+            raise ValueError("successor.feedback.enabled=true is not implemented in citlali-point-v1")
+        feedback_enabled, feedback_iterations = False, 0
     products = _mapping(successor.get("products", {}), "successor.products", (
         "fits", "fit_diagnostics", "retain_intermediates"))
     if not _bool(products.get("fits", True), "successor.products.fits"):
@@ -294,6 +323,12 @@ def load_request(config: dict, launch_dir: Path) -> PointRequest:
         "wiener_filter": "not executed",
         "beammap": "outside POINT scope; not executed",
     }
+    if weighted:
+        replacements.update(
+            timestream="native paired xs; existing RTC profile and observation-local disturbance policy; immutable CAL/APT parent; source-protected optical eligibility frozen before noise-weighted observed-entry network cleaning; configured fresh-residual feedback; no legacy FRUIT or polarimetry",
+            mapmaking="containing-pixel map in delta-source-AltAz; empirical inverse-noise coefficients from max(reference variance, remaining variance); configured pixels and coverage; normalization is not map precision",
+            noise_maps="not produced; empirical detector coefficients do not establish full cleaned-data covariance or map uncertainty",
+            post_processing="POINT-EXPECTED and BASE conditional source selection for requested feedback; optional qualified fit diagnostics; no legacy source finder or map filter")
     dispositions = tuple(dict(path=key, disposition="replaced" if key in config else "profile-defined",
                               replacement=value) for key, value in replacements.items()) + (
         dict(path="kids.solver", disposition="replaced", replacement="configured KMP directory retained; bound tune file, serial native KIDs solve and no extra producer outputs"),)
@@ -318,13 +353,33 @@ def load_request(config: dict, launch_dir: Path) -> PointRequest:
                                  pixel_size_arcsec=pixel, coverage_cut=coverage, cunit="mJy/beam")
     effective["coadd"] = {"enabled": False}
     effective["noise_maps"] = {"enabled": False}
-    # Native PTC still reads the historical standard_pca path above. It is only
-    # a one-way rank carrier; the separately passed method is observed-als.
+    # This is a one-way compatibility carrier, not executable legacy FRUIT.
+    # V2 stops upstream at CAL and its own native cycle consumes the separately
+    # requested weights/ranks/feedback; v1 PTC reads the standard_pca rank path.
     effective["runtime"] = dict(reduction_type="pointing", output_dir=str(output_dir),
                                 n_threads=workers, verbose=verbose, interp_over_gaps=True)
-    effective["successor"] = dict(schema=SCHEMA, migration=MIGRATION, arrays=list(ARRAYS),
+    effective["successor"] = dict(schema=schema, migration=migration, arrays=list(ARRAYS),
         cleaning=dict(method=method, ranks=dict(ranks)), rtc=dict(profile=RTC_PROFILE, disturbance_exclusion=disturbance),
         map=dict(method="containing-pixel", frame="delta-source-AltAz", pixel_size_arcsec=pixel, coverage_cut=coverage),
-        feedback=dict(enabled=False), products=dict(fits=True, fit_diagnostics=fit_diagnostics, retain_intermediates=retain))
+        feedback=dict(enabled=feedback_enabled), products=dict(fits=True, fit_diagnostics=fit_diagnostics, retain_intermediates=retain))
+    if weighted:
+        effective["successor"]["detector_response"] = dict(min_relative_response=min_response)
+        effective["successor"]["feedback"]["max_iters"] = feedback_iterations
+        effective["successor_effective"] = dict(
+            schema="citlali-point-v2-effective-semantics-v1",
+            optical_eligibility="observation-local preclean CAL decision, frozen before all cleaner passes; no APT mutation or response-gain rescaling",
+            cleaning_weight="1 / source-protected empirical reference residual variance",
+            map_weight="1 / max(reference residual variance, remaining cleaned residual variance)",
+            variance_units="(mJy/nominal-beam)^2",
+            coefficient_units="(mJy/nominal-beam)^-2",
+            normalization="sum of empirical analysis coefficients; not map precision or significance",
+            missing_estimate="unavailable; no unity coefficient or arbitrary high-weight cap",
+            feedback_owner="configured successor cycle; legacy timestream.fruit_loops disabled in upstream compatibility adapter",
+            feedback_budget="fixed number of fresh immutable-CAL feedback applications after the weighted forward map; not convergence",
+            source_selection="existing POINT-EXPECTED and BASE, conditional on initial-map selection covariance; not full adaptive or endpoint uncertainty",
+            limitations=["Empirical residual variance is not an independently calibrated detector or map covariance.",
+                         "The response threshold is an owner-selected policy, not a calibrated observation-wide false-rejection rate.",
+                         "Corrected-frame feedback and weighting require owner-run all-array validation; no production qualification is inferred."])
     return PointRequest(effective, output_dir, workers, verbose, retain, fit_diagnostics,
-                        method, ranks, pixel, coverage, rtc_profiles, ARRAYS, dispositions)
+                        method, ranks, pixel, coverage, rtc_profiles, ARRAYS, dispositions,
+                        weighted, min_response, feedback_enabled, feedback_iterations)

@@ -250,4 +250,13 @@ TEST(ForwardMap, SourceOffsetZeroAndDetectorRotationSign) {
     EXPECT_TRUE(s.detector_tangent_deg(0,0).isZero());
     const auto xy=s.detector_tangent_deg(4,3);
     EXPECT_NEAR(xy(0,0)*3600,-3,1e-14);EXPECT_NEAR(xy(0,1)*3600,4,1e-14);
+    EXPECT_TRUE(s.outside_source_radius(0,0,35).isZero());
+    EXPECT_TRUE((s.outside_source_radius(36,0,35)==1).all());
+    EXPECT_TRUE((s.outside_source_radius(43,0,42.5)==1).all());
+    EXPECT_TRUE((s.outside_source_radius(51,0,50)==1).all());
+    EXPECT_TRUE(s.outside_source_radius(NAN,0,35).isZero());
+    EXPECT_THROW(s.outside_source_radius(0,0,0),std::invalid_argument);
+    EXPECT_THROW(s.outside_source_radius(0,0,NAN),std::invalid_argument);
+    auto wrong_frame=s;wrong_frame.frame=AstRtcMapFrame::fk5_tan;
+    EXPECT_THROW(wrong_frame.outside_source_radius(0,0,35),std::invalid_argument);
 }

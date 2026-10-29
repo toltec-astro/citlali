@@ -78,6 +78,9 @@ target_sources(citlali
     "src/citlali/core/mapmaking/jinc_discrete.cpp"
     "src/citlali/core/mapmaking/jinc_certified.cpp"
     "src/citlali/core/pipeline/timestream_ptc_numerics.cpp"
+    "src/citlali/core/pipeline/ptc_inverse_noise.cpp"
+    "src/citlali/core/pipeline/ptc_empirical_map_handoff.cpp"
+    "src/citlali/core/pipeline/point_optical_response.cpp"
     "src/citlali/core/pipeline/fruit_cycle.cpp"
     "src/citlali/core/pipeline/timestream_ptc_pipeline.cpp"
     "src/citlali/core/pipeline/ptc_map_handoff.cpp"
@@ -113,6 +116,9 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
         src/citlali/core/pipeline/ast_rtc_coordinates.cpp
         src/citlali/core/pipeline/timestream_cal_pipeline.cpp
         src/citlali/core/pipeline/timestream_ptc_numerics.cpp
+        src/citlali/core/pipeline/ptc_inverse_noise.cpp
+        src/citlali/core/pipeline/ptc_empirical_map_handoff.cpp
+        src/citlali/core/pipeline/point_optical_response.cpp
         src/citlali/core/mapmaking/jinc_discrete.cpp
         src/citlali/core/mapmaking/jinc_certified.cpp
         src/citlali/core/pipeline/fruit_cycle.cpp

@@ -1,3 +1,20 @@
+## Weighted POINT and FRUIT implementation candidate — 2026-10-29
+
+The owner authorized the complete response/noise/FRUIT suite and chose conditional
+resampled response intervals with their limitations reported. The new explicit
+`citlali-point-v2` candidate connects all-array CAL, frozen optical-health decisions,
+inverse-noise ALS and map coefficients, and fresh original-CAL FRUIT passes through
+the existing configured POINT interface. The tunable optical default is 0.10;
+the feedback budget defaults to ten. Uniform v1 behavior remains selectable.
+See the [implementation and limitations](../validation/weighted_point_2026-10-29/IMPLEMENTATION.md)
+and [bounded work order](../validation/weighted_point_2026-10-29/WORK_ORDER.md).
+
+Local synthetic/build/configuration gates and exact-source review precede frozen
+trials for 152389 and 152418. Grant alone launches the reductions. Map improvement,
+actual rejected populations, interval coverage, timing and scientific acceptance
+are not established by these engineering tests. This candidate does not complete
+the later POINT calibration-consumer/SCIENCE/coadd release milestone.
+
 ## Owner adopts configurable optical-response default — 2026-10-29
 
 Grant accepted the atmospheric-response/noise-weighting direction after the saved
