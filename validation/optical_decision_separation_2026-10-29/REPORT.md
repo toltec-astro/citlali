@@ -107,4 +107,9 @@ reduction, Unity access, frozen-runtime replacement, integration or push occurre
   no Engine/state growth, pipeline dependency or activation.
 - Repository/evidence: own bounded validation directory plus current-status
   entry; historical trials, data, application code and other thread preserved.
-- Independent exact-SHA review: recorded separately after candidate commit.
+- Independent exact-SHA review: [pass with recorded limitations](INDEPENDENT_REVIEW.md)
+  for candidate `2e4989a23cb9dd60f853ae2b1d1790cbc4bd88a2`, tree
+  `e276b3e340a64fd76a6aeeab5b8a4ba7f69f9b24`. Reviewer independently reproduced
+  all 204 evaluations and 47 passing / two strict-XFAIL tests. No additional
+  blocker to preserving this study; the temporal veto remains unready for
+  activation. This review-record closure changes documentation only.
