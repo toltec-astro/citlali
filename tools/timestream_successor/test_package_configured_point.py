@@ -9,6 +9,7 @@ import sys
 
 import pytest
 
+from configured_point_runtime import RUNTIME_MODULES
 from package_configured_point import DATA_FILES, REQUIRED_TOOLS, TOOL_DIR, digest, package
 
 
@@ -30,6 +31,8 @@ def source(tmp_path):
         'print(json.dumps({"args":sys.argv[1:],"marker":MARKER}))\n')
     (root / TOOL_DIR / "configured_point_config.py").write_text('MARKER="bundled-source"\n')
     (root / TOOL_DIR / "unrelated_historical_tool.py").write_text('raise RuntimeError("historical tool must not ship")\n')
+    (root / TOOL_DIR / "configured_point_runtime.py").write_text(
+        "RUNTIME_MODULES = " + repr(RUNTIME_MODULES) + "\n")
     git(root, "add", ".")
     git(root, "-c", "user.name=Runtime test", "-c", "user.email=test@example.invalid", "commit", "-qm", "fixture")
     revision = git(root, "rev-parse", "HEAD")
@@ -167,3 +170,62 @@ def test_uncommitted_required_helper_is_rejected(source, tmp_path):
     native.write_text("#!/bin/sh\nprintf '%s\\n' " + shlex.quote("citlali " + revision[:9]) + "\n")
     with pytest.raises(ValueError, match="not committed"):
         package(root, native, python, tmp_path / "runtime")
+
+
+@pytest.mark.parametrize("case", [
+    "added", "removed", "duplicate", "non_tuple", "invalid_name",
+    "nonliteral", "syntax_error", "missing_declaration", "missing_file",
+    "multiple_assignments", "augmented_assignment",
+])
+def test_incompatible_target_runtime_rejected_before_destination(source, tmp_path, case):
+    root, native, python = source
+    marker = tmp_path / "target-code-executed"
+    declaration = "RUNTIME_MODULES = " + repr(RUNTIME_MODULES) + "\n"
+    variants = {
+        "added": "RUNTIME_MODULES = " + repr((*RUNTIME_MODULES, "new_runtime_member")),
+        "removed": "RUNTIME_MODULES = " + repr(RUNTIME_MODULES[:-1]),
+        "duplicate": "RUNTIME_MODULES = " + repr((*RUNTIME_MODULES, RUNTIME_MODULES[0])),
+        "non_tuple": "RUNTIME_MODULES = " + repr(list(RUNTIME_MODULES)),
+        "invalid_name": "RUNTIME_MODULES = " + repr((*RUNTIME_MODULES, "../outside")),
+        "nonliteral": "RUNTIME_MODULES = (__import__('pathlib').Path(" + repr(str(marker))
+                      + ").write_text('executed'),)",
+        "syntax_error": "RUNTIME_MODULES = (",
+        "missing_declaration": "# This source generation has no declaration.\n",
+        "multiple_assignments": declaration + declaration,
+        "augmented_assignment": declaration + "RUNTIME_MODULES += ('new_runtime_member',)\n",
+    }
+    target = root / TOOL_DIR / "configured_point_runtime.py"
+    if case == "missing_file":
+        target.unlink()
+    else:
+        target.write_text(variants[case])
+    if case == "added":
+        # Reproduce an older installed packager targeting a newer clean source.
+        (root / TOOL_DIR / "new_runtime_member.py").write_text("VALUE = 1\n")
+        cli = root / TOOL_DIR / "configured_point_cli.py"
+        cli.write_text("import new_runtime_member\n" + cli.read_text())
+    git(root, "add", "-A")
+    git(root, "-c", "user.name=Runtime test", "-c", "user.email=test@example.invalid",
+        "commit", "-qm", "target runtime declaration " + case)
+    revision = git(root, "rev-parse", "HEAD")
+    native.write_text("#!/bin/sh\nprintf '%s\\n' " + shlex.quote("citlali " + revision[:9]) + "\n")
+    destination = tmp_path / "fresh-parent" / "runtime"
+    with pytest.raises(ValueError, match="use the packager from the target source revision"):
+        package(root, native, python, destination)
+    assert not destination.parent.exists()
+    assert not marker.exists()
+
+
+def test_compatible_target_declaration_is_read_without_execution(source, tmp_path):
+    root, native, python = source
+    target = root / TOOL_DIR / "configured_point_runtime.py"
+    target.write_text(target.read_text() + "raise RuntimeError('target module must not execute')\n")
+    git(root, "add", "-A")
+    git(root, "-c", "user.name=Runtime test", "-c", "user.email=test@example.invalid",
+        "commit", "-qm", "compatible literal with nonexecuted target code")
+    revision = git(root, "rev-parse", "HEAD")
+    native.write_text("#!/bin/sh\nprintf '%s\\n' " + shlex.quote("citlali " + revision[:9]) + "\n")
+    launcher = package(root, native, python, tmp_path / "runtime")
+    result = invoke(launcher)
+    assert result.returncode == 0, result.stderr
+    assert json.loads(result.stdout)["marker"] == "bundled-source"

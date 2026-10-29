@@ -9,6 +9,7 @@ portable installation. No source checkout or shared environment is modified.
 from __future__ import annotations
 
 import argparse
+import ast
 import hashlib
 import json
 import os
@@ -55,6 +56,61 @@ def _revision(repository):
     if _git(repository, "status", "--porcelain", "--untracked-files=no"):
         raise ValueError("runtime packaging requires a clean tracked source tree")
     return revision
+
+
+def _validate_target_runtime(repository: Path, tracked: set[str]) -> None:
+    """Check the target's literal inventory without importing target code.
+
+    An installed packager can belong to an older source generation. It must
+    reject incompatible membership before reserving a bundle destination.
+    """
+    relative = TOOL_DIR / "configured_point_runtime.py"
+    path = repository / relative
+    guidance = "; use the packager from the target source revision"
+
+    def reject(reason: str) -> ValueError:
+        return ValueError("incompatible target runtime module declaration: " + reason + guidance)
+
+    if relative.as_posix() not in tracked or not path.is_file():
+        raise reject("committed configured_point_runtime.py is missing")
+    if path.is_symlink() or not path.resolve().is_relative_to(repository):
+        raise reject("configured_point_runtime.py must be a regular file in the checkout")
+    try:
+        tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(relative))
+        bindings = [
+            node
+            for node in ast.walk(tree)
+            if isinstance(node, ast.Name)
+            and node.id == "RUNTIME_MODULES"
+            and isinstance(node.ctx, ast.Store)
+        ]
+        declarations = [
+            node
+            for node in tree.body
+            if isinstance(node, ast.Assign)
+            and len(node.targets) == 1
+            and isinstance(node.targets[0], ast.Name)
+            and node.targets[0].id == "RUNTIME_MODULES"
+        ]
+        if len(bindings) != 1 or len(declarations) != 1:
+            raise reject("expected one top-level literal RUNTIME_MODULES assignment")
+        declared = ast.literal_eval(declarations[0].value)
+    except (OSError, SyntaxError, ValueError, TypeError) as exc:
+        raise reject("RUNTIME_MODULES must be a readable literal tuple") from exc
+    if (
+        not isinstance(declared, tuple)
+        or not declared
+        or any(
+            not isinstance(name, str) or not re.fullmatch(r"[A-Za-z_]\w*", name)
+            for name in declared
+        )
+        or len(declared) != len(set(declared))
+    ):
+        raise reject("RUNTIME_MODULES must contain unique module names in a literal tuple")
+    if set(declared) != set(RUNTIME_MODULES):
+        added = sorted(set(declared) - set(RUNTIME_MODULES))
+        missing = sorted(set(RUNTIME_MODULES) - set(declared))
+        raise reject(f"module set differs (added={added}, missing={missing})")
 
 
 def _python_identity(python):
@@ -151,6 +207,7 @@ def package(repository: Path, native: Path, python: Path, destination: Path) -> 
     if not re.search(r"(?<![0-9a-f])" + revision[:9] + r"[0-9a-f]*(?![0-9a-f])", version):
         raise ValueError("native --version does not match the committed source revision")
     tracked = set(_git(repository, "ls-files", "-z").split("\0"))
+    _validate_target_runtime(repository, tracked)
     required = {TOOL_DIR / name for name in REQUIRED_TOOLS} | set(DATA_FILES)
     missing = sorted(str(path) for path in required if path.as_posix() not in tracked)
     if missing:
@@ -169,7 +226,11 @@ def package(repository: Path, native: Path, python: Path, destination: Path) -> 
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(repository / relative, target)
         members.append(
-            dict(path=relative.as_posix(), sha256=digest(target), bytes=target.stat().st_size)
+            dict(
+                path=relative.as_posix(),
+                sha256=digest(target),
+                bytes=target.stat().st_size,
+            )
         )
     native_target = destination / "bin/citlali-native"
     native_target.parent.mkdir(parents=True, exist_ok=True)
@@ -179,7 +240,11 @@ def package(repository: Path, native: Path, python: Path, destination: Path) -> 
             "native executable changed while packaging; incomplete bundle retained for inspection"
         )
     members.append(
-        dict(path="bin/citlali-native", sha256=native_sha256, bytes=native_target.stat().st_size)
+        dict(
+            path="bin/citlali-native",
+            sha256=native_sha256,
+            bytes=native_target.stat().st_size,
+        )
     )
     if _revision(repository) != revision:
         raise ValueError(
