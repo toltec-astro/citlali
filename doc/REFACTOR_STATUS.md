@@ -1,3 +1,15 @@
+## Owner adopts configurable optical-response default — 2026-10-29
+
+Grant accepted the atmospheric-response/noise-weighting direction after the saved
+152418 assessment and chose **0.10 as the default minimum relative optical
+response, tunable in YAML**. The [owner decision](OPTICAL_RESPONSE_POLICY_2026-10-29.md)
+records `successor.detector_response.min_relative_response`, its normalized
+meaning and the required effective-value diagnostic. The decision is settled;
+the optical gate, inverse-noise coefficients and corrected-frame FRUIT connection
+remain to be implemented and verified. The current profile must not accept and
+ignore this future control. No runnable configuration, frozen trial or reduction
+was changed by this decision record; Grant retains sole launch control.
+
 ## Owner adopts local compromised-detector exclusion — 2026-10-28
 
 The owner subsequently approved the concrete repeated-level-shift/unassessable-

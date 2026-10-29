@@ -10,6 +10,12 @@ This is a local development candidate. It is not the first collaborator release:
 pointing-derived flux calibration, SCIENCE/coadds, corrected-frame feedback and
 existing downstream image analysis still need their own demonstrated connections.
 
+The [accepted optical-response policy](OPTICAL_RESPONSE_POLICY_2026-10-29.md)
+sets a configurable default of0.10 for the forthcoming detector-health gate.
+Its intended `successor.detector_response.min_relative_response` key is not yet
+supported by this profile; parser, scientific decision and diagnostics must be
+connected together before it becomes an executable control.
+
 ## Configuration
 
 Place the contents of `data/configured_point_v1.yaml` inside the existing
