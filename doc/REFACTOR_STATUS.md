@@ -1,3 +1,16 @@
+## Direct temporal-change synthetic study — 2026-10-29
+
+Grant authorized a fixed-reference temporal-change study and synthetic map-impact
+tradeoffs, preserving the0.10 optical cut and forbidding new reductions. The
+[study](../validation/temporal_change_2026-10-29/REPORT.md) tests12,000 synthetic
+realizations plus known-noise controls and a separate fixed-operator map sweep.
+Direct contrasts avoid the earlier two stationary counterexamples, but learned
+noise-dependence intervals fail nominal99% coverage and small/temporary changes
+can be missed. Oracle controls identify dependence learning as a major limitation.
+No automatic admission, harm threshold, detector restoration or runtime change
+is accepted. Map tradeoffs are illustrative beam-unit simulations, not predictions
+for the two saved POINT observations or three-array calibration qualification.
+
 ## Optical response / temporal stability synthetic study — 2026-10-29
 
 After both weighted POINT trials completed under Grant's shell control, saved

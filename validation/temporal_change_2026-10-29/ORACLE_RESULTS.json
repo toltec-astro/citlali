@@ -1,0 +1,47 @@
+{
+  "purpose": "oracle dependence diagnostic, not a production repair",
+  "cases": [
+    {
+      "case": "iid",
+      "known_rho": 0,
+      "known_innovation_sigma": 0.1,
+      "calibration_draws": 50000,
+      "realizations": 1000,
+      "covered": 988,
+      "coverage_interval_95": [
+        0.9791427315245017,
+        0.9931223521935965
+      ],
+      "critical_max": 3.0960043653449913,
+      "operationally_available": false
+    },
+    {
+      "case": "ar1",
+      "known_rho": 0.6,
+      "known_innovation_sigma": 0.1,
+      "calibration_draws": 50000,
+      "realizations": 1000,
+      "covered": 990,
+      "coverage_interval_95": [
+        0.9816905311296853,
+        0.9945592455544707
+      ],
+      "critical_max": 3.1056182024354997,
+      "operationally_available": false
+    },
+    {
+      "case": "long_memory",
+      "known_rho": 0.95,
+      "known_innovation_sigma": 0.1,
+      "calibration_draws": 50000,
+      "realizations": 1000,
+      "covered": 993,
+      "coverage_interval_95": [
+        0.9856216845342334,
+        0.9966051315990092
+      ],
+      "critical_max": 3.1143538629422305,
+      "operationally_available": false
+    }
+  ]
+}
