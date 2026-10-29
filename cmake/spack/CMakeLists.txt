@@ -211,9 +211,12 @@ if(CITLALI_USE_WIENER_FILTER_OMP)
     )
 endif()
 
+include("${CITLALI_SOURCE_ROOT}/cmake/citlali_successor_input_bindings.cmake")
+citlali_add_successor_input_bindings("${CITLALI_SOURCE_ROOT}")
+
 add_library(citlali_rtc_execution STATIC
     "${CITLALI_SOURCE_ROOT}/src/citlali/cli/rtc_pipeline_execution.cpp")
-target_link_libraries(citlali_rtc_execution PUBLIC citlali::citlali)
+target_link_libraries(citlali_rtc_execution PUBLIC citlali_successor_input_bindings)
 target_include_directories(citlali_rtc_execution PRIVATE "${CITLALI_SOURCE_ROOT}/tools/timestream_successor")
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     target_compile_options(citlali_rtc_execution PRIVATE -fno-fast-math -ffp-contract=off)
@@ -251,7 +254,7 @@ tula_cmake_target_defaults(
 )
 target_link_libraries(
     citlali_timestream_successor_identity_acceptance
-    PRIVATE citlali::citlali
+    PRIVATE citlali_successor_input_bindings
 )
 add_dependencies(
     citlali_timestream_successor_identity_acceptance

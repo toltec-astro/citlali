@@ -138,3 +138,34 @@ standalone synthetic checks also passed. No observations were processed.
 Intended failure change: reject competing publication/resource-creation failure
 before unsafe use, and propagate required FITS close failures. Linux's syscall
 branch and supported Spack/Unity environment still require qualification.
+
+## Stage 3 — reusable application input services
+
+Stage 2's clean executable identifies
+`e1490b25735854005a96a29a1c9bdee9bb53bac4`. Independent fresh-context review
+of stages 1–2 passed all three categories with recorded local/environment
+limitations and no actionable findings.
+
+`citlali_successor_input_bindings` now owns concrete runtime-config, NetCDF,
+APT/raw identity, Tune normalization, native mapping/occurrence and member-state
+helpers. The production executor and acceptance program link this internal
+compiled service. Production no longer textually includes the acceptance
+executable or renames its main. Acceptance argument parsing, comparisons,
+reporting and process policy stay in the tool. The six existing acceptance/tool
+callers retain explicit linkage. Historical telescope/mapping and saved-MAP
+masked-covariance restrictions have named profiles; their domains are unchanged.
+No new scientific admission or Engine state is introduced.
+
+The extraction audit found 12 moved helper blocks byte-identical, including
+the telescope guard/loading body. Mapping's literal is unchanged in its named
+profile; existing production overrides retain ownership. No compile-speed
+improvement is claimed without a controlled measurement.
+
+Verification: production CLI, ordinary aggregate, acceptance executable and all
+five historical includers compile/link. All 1,382 enabled CTests pass (14.05 s),
+including seven new boundary tests and isolated service-header compilation;
+the inherited disabled test is unchanged. All 207 baseline tests and full
+configuration preflight pass. Build-tool tests: 75 passed. Validation ledger
+(60 records), scientific-change ledger (3 changes/5 integration commits), and
+session exit audit (zero library/CLI exits or growth) pass. No observational
+processing was performed; Spack/Unity qualification remains separate.

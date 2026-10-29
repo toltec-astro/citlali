@@ -85,9 +85,12 @@ citlali_bind_cal_authority("${CMAKE_CURRENT_SOURCE_DIR}")
 
 
 ## optional targets
+include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/citlali_successor_input_bindings.cmake")
+citlali_add_successor_input_bindings("${CMAKE_CURRENT_SOURCE_DIR}")
+
 add_library(citlali_rtc_execution STATIC
     "src/citlali/cli/rtc_pipeline_execution.cpp")
-target_link_libraries(citlali_rtc_execution PUBLIC citlali::citlali)
+target_link_libraries(citlali_rtc_execution PUBLIC citlali_successor_input_bindings)
 target_include_directories(citlali_rtc_execution PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/tools/timestream_successor")
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     target_compile_options(citlali_rtc_execution PRIVATE -fno-fast-math -ffp-contract=off)
@@ -123,7 +126,7 @@ if (CITLALI_STANDALONE)
         "tools/timestream_successor/identity_route_acceptance.cpp")
     target_link_libraries(
         citlali_timestream_successor_identity_acceptance
-        PRIVATE citlali::citlali)
+        PRIVATE citlali_successor_input_bindings)
     target_include_directories(
         citlali_timestream_successor_identity_acceptance
         PRIVATE "include")
@@ -131,21 +134,21 @@ if (CITLALI_STANDALONE)
     # Bounded observational census: inert Learn/Consider evidence only.
     add_executable(citlali_rtc_event_census EXCLUDE_FROM_ALL
         "tools/timestream_successor/rtc_event_census.cpp")
-    target_link_libraries(citlali_rtc_event_census PRIVATE citlali::citlali)
+    target_link_libraries(citlali_rtc_event_census PRIVATE citlali_successor_input_bindings)
     target_include_directories(citlali_rtc_event_census PRIVATE "include")
 
     add_executable(citlali_rtc_event_assessment_census EXCLUDE_FROM_ALL
         "tools/timestream_successor/rtc_event_assessment_census.cpp")
-    target_link_libraries(citlali_rtc_event_assessment_census PRIVATE citlali::citlali)
+    target_link_libraries(citlali_rtc_event_assessment_census PRIVATE citlali_successor_input_bindings)
     target_include_directories(citlali_rtc_event_assessment_census PRIVATE "include")
     add_executable(citlali_rtc_science_reference EXCLUDE_FROM_ALL "tools/timestream_successor/rtc_science_reference.cpp")
-    target_link_libraries(citlali_rtc_science_reference PRIVATE citlali::citlali)
+    target_link_libraries(citlali_rtc_science_reference PRIVATE citlali_successor_input_bindings)
     target_include_directories(citlali_rtc_science_reference PRIVATE "include")
     if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
         target_compile_options(citlali_rtc_science_reference PRIVATE -fno-fast-math -ffp-contract=off)
     endif()
     add_executable(citlali_rtc_notch_recovery EXCLUDE_FROM_ALL "tools/timestream_successor/rtc_notch_recovery.cpp")
-    target_link_libraries(citlali_rtc_notch_recovery PRIVATE citlali::citlali)
+    target_link_libraries(citlali_rtc_notch_recovery PRIVATE citlali_successor_input_bindings)
     target_include_directories(citlali_rtc_notch_recovery PRIVATE "include")
     if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
         target_compile_options(citlali_rtc_notch_recovery PRIVATE -fno-fast-math -ffp-contract=off)
@@ -157,7 +160,7 @@ if (CITLALI_STANDALONE)
         target_compile_options(citlali_rtc_multidetector PRIVATE -fno-fast-math -ffp-contract=off)
     endif()
     add_executable(citlali_rtc_real_data_audit EXCLUDE_FROM_ALL "tools/timestream_successor/rtc_real_data_audit.cpp")
-    target_link_libraries(citlali_rtc_real_data_audit PRIVATE citlali::citlali)
+    target_link_libraries(citlali_rtc_real_data_audit PRIVATE citlali_successor_input_bindings)
     target_include_directories(citlali_rtc_real_data_audit PRIVATE "include")
     add_executable(citlali_rtc_jump_injection EXCLUDE_FROM_ALL "tools/timestream_successor/rtc_jump_injection.cpp")
     target_link_libraries(citlali_rtc_jump_injection PRIVATE citlali::citlali)

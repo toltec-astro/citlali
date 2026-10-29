@@ -715,3 +715,13 @@ add_executable(citlali_rawobs_config_test EXCLUDE_FROM_ALL test_rawobs_config_id
 target_link_libraries(citlali_rawobs_config_test PRIVATE citlali::citlali GTest::gtest_main)
 citlali_discover_tests(citlali_rawobs_config_test WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
     TEST_PREFIX "citlali::" DISCOVERY_MODE PRE_TEST)
+
+# Shared application input loaders, independent of the acceptance executable.
+add_executable(citlali_successor_input_bindings_test EXCLUDE_FROM_ALL
+    test_successor_input_bindings.cpp successor_input_bindings_header.cpp)
+set_source_files_properties(successor_input_bindings_header.cpp
+    PROPERTIES SKIP_PRECOMPILE_HEADERS ON)
+target_link_libraries(citlali_successor_input_bindings_test PRIVATE
+    citlali_successor_input_bindings GTest::gtest_main)
+citlali_discover_tests(citlali_successor_input_bindings_test
+    TEST_PREFIX "citlali::input_bindings::" DISCOVERY_MODE PRE_TEST)

@@ -86,6 +86,20 @@ class SpackSourceGraphTest(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, "missing or foreign"):
                 developer_binary(build)
 
+    def test_application_uses_shared_inputs_without_acceptance_main(self) -> None:
+        root = Path(__file__).resolve().parents[2]
+        execution = (root / "src/citlali/cli/rtc_pipeline_execution.cpp").read_text()
+        acceptance = (root / "tools/timestream_successor/identity_route_acceptance.cpp").read_text()
+        self.assertNotIn("#define main", execution)
+        self.assertNotIn('"identity_route_acceptance.cpp"', execution)
+        self.assertIn('#include "successor_input_bindings.h"', execution)
+        self.assertIn('#include "successor_input_bindings.h"', acceptance)
+        self.assertNotIn("TelescopeInput load_telescope(", acceptance)
+        for entry in ("CMakeLists.txt", "cmake/spack/CMakeLists.txt"):
+            graph = (root / entry).read_text()
+            self.assertIn("citlali_add_successor_input_bindings(", graph)
+            self.assertIn("citlali_rtc_execution PUBLIC citlali_successor_input_bindings", graph)
+
     def test_acceptance_runner_uses_raw_timestream_compatibility_boundary(
         self,
     ) -> None:

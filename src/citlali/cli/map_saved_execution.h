@@ -1,3 +1,4 @@
+#include "successor_experiment_profiles.h"
 // Private saved-product application adapter. Scientific arithmetic remains in
 // PTC, AST and MAP owners; this boundary parses and verifies persisted sources.
 #include <citlali/core/pipeline/ptc_map_handoff.h>
@@ -105,7 +106,7 @@ SavedMapNetwork load_saved_map_network(const YAML::Node &request,MapFileLedger &
         YAML::Dump(final["CAL"])==YAML::Dump(out.cal),"saved CAL/RTC publication differs");
     if(!cal_only) {
     require(out.ptc["schema"].as<std::string>()=="citlali-ptc-output-v2" && out.cal["schema"].as<std::string>()=="citlali-cal-output-v1" &&
-        out.ptc["rank"].as<int>()>0 && (out.ptc["method"].as<std::string>()=="observed-als" || (out.ptc["method"].as<std::string>()=="masked-covariance-count-v1" && out.input["observation"].as<int>()==152430 && (out.input["network"].as<int>()==11 || out.input["network"].as<int>()==12))) &&
+        out.ptc["rank"].as<int>()>0 && (out.ptc["method"].as<std::string>()=="observed-als" || (out.ptc["method"].as<std::string>()=="masked-covariance-count-v1" && citlali::cli::experiment_profiles::masked_covariance_count_152430(out.input))) &&
         out.ptc["unit"].as<std::string>()=="mJy/nominal-beam" && out.cal["unit"].as<std::string>()=="mJy/nominal-beam" &&
         out.ptc["centering"].as<std::string>()=="per-detector-eligible-arithmetic-mean-not-restored" &&
         out.ptc["use_policy"].as<std::string>()=="ptc-cal-observed-entry-use-2026-09-18-v2" &&
