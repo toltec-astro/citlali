@@ -1,3 +1,20 @@
+## Optical response / temporal stability synthetic study — 2026-10-29
+
+After both weighted POINT trials completed under Grant's shell control, saved
+health evidence showed that many unresolved detectors pass full-observation
+response tests but fail short-subset precision. Grant authorized a revised
+decision specification and synthetic cases, retaining the 0.10 cut and making
+no new reductions. The [candidate rule and study](../validation/optical_decision_separation_2026-10-29/REPORT.md)
+separate full-domain response from temporal stability without touching the native
+learner, active runtime, YAML or observational membership.
+
+47 focused tests pass; two strict-XFAIL scientific counterexamples expose a
+stationary-response false veto from the proposed early/late non-overlap rule.
+Twelve physical cases across sixteen fixed noise realizations support response
+separation but do not validate that temporal veto. The candidate requires
+revision before activation; no detector restoration, calibration acceptance,
+Spack qualification or new observational run follows from these synthetic tests.
+
 ## Weighted POINT and FRUIT implementation candidate — 2026-10-29
 
 The owner authorized the complete response/noise/FRUIT suite and chose conditional

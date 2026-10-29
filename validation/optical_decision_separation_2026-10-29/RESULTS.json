@@ -1,0 +1,676 @@
+{
+  "schema": "optical-decision-synthetic-study-v1",
+  "threshold": 0.1,
+  "confidence": 0.99,
+  "interval_method": "exact-multinomial-frozen-Huber-reference",
+  "coverage_claim": false,
+  "native_conformance_claim": false,
+  "cases": [
+    {
+      "case": "healthy",
+      "seed": 42,
+      "checks": [
+        {
+          "lower": 0.997965586338962,
+          "upper": 1.0010454967744482
+        },
+        {
+          "lower": 0.9979724929791719,
+          "upper": 1.0010369685114302
+        },
+        {
+          "lower": 0.9976086482635436,
+          "upper": 1.0022820599905642
+        },
+        {
+          "lower": 0.997605830893058,
+          "upper": 1.0023039731195418
+        },
+        {
+          "lower": 0.9965159293226454,
+          "upper": 1.0010261144439807
+        },
+        {
+          "lower": 0.9965115390866318,
+          "upper": 1.0010348809150411
+        }
+      ],
+      "decision": {
+        "optical": "responsive",
+        "temporal": "positive_subsets_no_detected_difference",
+        "eligible": true,
+        "reasons": []
+      },
+      "old_six_interval_admission": true
+    },
+    {
+      "case": "quiet_healthy",
+      "seed": 42,
+      "checks": [
+        {
+          "lower": 0.9999898279412668,
+          "upper": 1.000005227491161
+        },
+        {
+          "lower": 0.9999913289330556,
+          "upper": 1.0000072906674682
+        },
+        {
+          "lower": 0.9999880432142303,
+          "upper": 1.0000114103129722
+        },
+        {
+          "lower": 0.9999901600399748,
+          "upper": 1.0000133552805692
+        },
+        {
+          "lower": 0.9999825795758114,
+          "upper": 1.0000051305458777
+        },
+        {
+          "lower": 0.9999814590086487,
+          "upper": 1.0000111161050982
+        }
+      ],
+      "decision": {
+        "optical": "responsive",
+        "temporal": "positive_subsets_no_detected_difference",
+        "eligible": true,
+        "reasons": []
+      },
+      "old_six_interval_admission": true
+    },
+    {
+      "case": "noisy_healthy",
+      "seed": 42,
+      "checks": [
+        {
+          "lower": 0.9694837950065848,
+          "upper": 1.0156824515575251
+        },
+        {
+          "lower": 0.96948962735351,
+          "upper": 1.0156723941426875
+        },
+        {
+          "lower": 0.9641297243522192,
+          "upper": 1.0342308996641967
+        },
+        {
+          "lower": 0.9641285927899017,
+          "upper": 1.0342515525715192
+        },
+        {
+          "lower": 0.947738940773349,
+          "upper": 1.015391717003534
+        },
+        {
+          "lower": 0.947717006821045,
+          "upper": 1.0153921082234725
+        }
+      ],
+      "decision": {
+        "optical": "responsive",
+        "temporal": "positive_subsets_no_detected_difference",
+        "eligible": true,
+        "reasons": []
+      },
+      "old_six_interval_admission": true
+    },
+    {
+      "case": "weak_quiet",
+      "seed": 42,
+      "checks": [
+        {
+          "lower": 0.02998982794126702,
+          "upper": 0.030005227491160767
+        },
+        {
+          "lower": 0.02999002832906462,
+          "upper": 0.03000510428415656
+        },
+        {
+          "lower": 0.02998804323678918,
+          "upper": 0.030011410302143486
+        },
+        {
+          "lower": 0.02998812713840361,
+          "upper": 0.030011734116525093
+        },
+        {
+          "lower": 0.029982579635197803,
+          "upper": 0.030005130567994392
+        },
+        {
+          "lower": 0.02998288747424648,
+          "upper": 0.030005297780132657
+        }
+      ],
+      "decision": {
+        "optical": "weak",
+        "temporal": "subset_below_requirement",
+        "eligible": false,
+        "reasons": [
+          "full_response_weak",
+          "subset_response_at_or_below_cut"
+        ]
+      },
+      "old_six_interval_admission": false
+    },
+    {
+      "case": "reversed",
+      "seed": 42,
+      "checks": [
+        {
+          "lower": -1.0020344136610388,
+          "upper": -0.9989545032255513
+        },
+        {
+          "lower": -1.0020404943831642,
+          "upper": -0.9989555715873236
+        },
+        {
+          "lower": -1.002391351736456,
+          "upper": -0.9977179400094353
+        },
+        {
+          "lower": -1.0023880854381595,
+          "upper": -0.9977400963436196
+        },
+        {
+          "lower": -1.0034840706773536,
+          "upper": -0.9989738855560186
+        },
+        {
+          "lower": -1.0034821754430234,
+          "upper": -0.9989838527129441
+        }
+      ],
+      "decision": {
+        "optical": "reversed",
+        "temporal": "subset_below_requirement",
+        "eligible": false,
+        "reasons": [
+          "full_response_reversed",
+          "subset_response_at_or_below_cut"
+        ]
+      },
+      "old_six_interval_admission": false
+    },
+    {
+      "case": "limited_excitation",
+      "seed": 42,
+      "checks": [
+        {
+          "lower": 0.9979505389288331,
+          "upper": 1.001069452917978
+        },
+        {
+          "lower": 0.9979537669078307,
+          "upper": 1.0010693036526266
+        },
+        {
+          "lower": 0.9976086482635436,
+          "upper": 1.0022820599905642
+        },
+        {
+          "lower": 0.997605830893058,
+          "upper": 1.0023039731195418
+        },
+        {
+          "lower": -5.765398262084118,
+          "upper": 1.0010100779584954
+        },
+        {
+          "lower": -5.595256843795991,
+          "upper": 1.0010097070092867
+        }
+      ],
+      "decision": {
+        "optical": "responsive",
+        "temporal": "subset_uncertainty_only",
+        "eligible": true,
+        "reasons": [
+          "eligible_with_temporal_uncertainty"
+        ]
+      },
+      "old_six_interval_admission": false
+    },
+    {
+      "case": "positive_gain_change",
+      "seed": 42,
+      "checks": [
+        {
+          "lower": 0.9979098015379951,
+          "upper": 1.799127106795872
+        },
+        {
+          "lower": 0.997910124594755,
+          "upper": 1.7991286676500966
+        },
+        {
+          "lower": 0.9976086482635436,
+          "upper": 1.0022820599905642
+        },
+        {
+          "lower": 0.997605830893058,
+          "upper": 1.0023039731195418
+        },
+        {
+          "lower": 1.7965159293226463,
+          "upper": 1.8010261144439812
+        },
+        {
+          "lower": 1.796509036725944,
+          "upper": 1.8010423699171332
+        }
+      ],
+      "decision": {
+        "optical": "responsive",
+        "temporal": "difference_requires_review",
+        "eligible": false,
+        "reasons": [
+          "early_late_nonoverlap_panel_0",
+          "early_late_nonoverlap_panel_1"
+        ]
+      },
+      "old_six_interval_admission": true
+    },
+    {
+      "case": "late_weak",
+      "seed": 42,
+      "checks": [
+        {
+          "lower": 0.028643123830041892,
+          "upper": 0.9980660488907541
+        },
+        {
+          "lower": 0.028643156145160036,
+          "upper": 0.9980664143244121
+        },
+        {
+          "lower": 0.9976086482635436,
+          "upper": 1.0022820599905642
+        },
+        {
+          "lower": 0.997605830893058,
+          "upper": 1.0023039731195418
+        },
+        {
+          "lower": 0.026515929376065624,
+          "upper": 0.031026114463657165
+        },
+        {
+          "lower": 0.02651458232794182,
+          "upper": 0.031025797102072376
+        }
+      ],
+      "decision": {
+        "optical": "unresolved",
+        "temporal": "difference_requires_review",
+        "eligible": false,
+        "reasons": [
+          "full_response_unresolved",
+          "subset_response_at_or_below_cut",
+          "early_late_nonoverlap_panel_0",
+          "early_late_nonoverlap_panel_1"
+        ]
+      },
+      "old_six_interval_admission": false
+    },
+    {
+      "case": "late_reversed",
+      "seed": 42,
+      "checks": [
+        {
+          "lower": -1.0014378957175976,
+          "upper": 0.9981387215304893
+        },
+        {
+          "lower": -1.0014380674476255,
+          "upper": 0.998139219787078
+        },
+        {
+          "lower": 0.9976086482635436,
+          "upper": 1.0022820599905642
+        },
+        {
+          "lower": 0.997605830893058,
+          "upper": 1.0023039731195418
+        },
+        {
+          "lower": -1.0034840706773536,
+          "upper": -0.9989738855560186
+        },
+        {
+          "lower": -1.0034821754430234,
+          "upper": -0.9989838527129441
+        }
+      ],
+      "decision": {
+        "optical": "unresolved",
+        "temporal": "difference_requires_review",
+        "eligible": false,
+        "reasons": [
+          "full_response_unresolved",
+          "subset_response_at_or_below_cut",
+          "early_late_nonoverlap_panel_0",
+          "early_late_nonoverlap_panel_1"
+        ]
+      },
+      "old_six_interval_admission": false
+    },
+    {
+      "case": "no_excitation",
+      "seed": 42,
+      "checks": [
+        {
+          "lower": null,
+          "upper": null
+        },
+        {
+          "lower": null,
+          "upper": null
+        },
+        {
+          "lower": null,
+          "upper": null
+        },
+        {
+          "lower": null,
+          "upper": null
+        },
+        {
+          "lower": null,
+          "upper": null
+        },
+        {
+          "lower": null,
+          "upper": null
+        }
+      ],
+      "decision": {
+        "optical": "unresolved",
+        "temporal": "not_assessed",
+        "eligible": false,
+        "reasons": [
+          "full_interval_unavailable"
+        ]
+      },
+      "old_six_interval_admission": false
+    },
+    {
+      "case": "constant_block",
+      "seed": 42,
+      "checks": [
+        {
+          "lower": null,
+          "upper": null
+        },
+        {
+          "lower": null,
+          "upper": null
+        },
+        {
+          "lower": 0.9976086482635436,
+          "upper": 1.0022820599905642
+        },
+        {
+          "lower": 0.9976086482635436,
+          "upper": 1.0022820599905642
+        },
+        {
+          "lower": null,
+          "upper": null
+        },
+        {
+          "lower": null,
+          "upper": null
+        }
+      ],
+      "decision": {
+        "optical": "unresolved",
+        "temporal": "not_assessed",
+        "eligible": false,
+        "reasons": [
+          "full_interval_unavailable"
+        ]
+      },
+      "old_six_interval_admission": false
+    },
+    {
+      "case": "ambiguous_full",
+      "seed": 42,
+      "checks": [
+        {
+          "lower": 0.06948379500658482,
+          "upper": 0.11568245155752539
+        },
+        {
+          "lower": 0.06948342061675888,
+          "upper": 0.11568004174560188
+        },
+        {
+          "lower": 0.06412972435221895,
+          "upper": 0.13423089966419788
+        },
+        {
+          "lower": 0.06413125894028576,
+          "upper": 0.13423173042207165
+        },
+        {
+          "lower": 0.047738940773349434,
+          "upper": 0.11539171700353418
+        },
+        {
+          "lower": 0.04771983494452138,
+          "upper": 0.11538367821926872
+        }
+      ],
+      "decision": {
+        "optical": "unresolved",
+        "temporal": "subset_uncertainty_only",
+        "eligible": false,
+        "reasons": [
+          "full_response_unresolved"
+        ]
+      },
+      "old_six_interval_admission": false
+    }
+  ],
+  "scientific_disposition": "revise_temporal_veto_before_activation",
+  "seed_sweep_summary": {
+    "healthy": {
+      "realizations": 16,
+      "eligible": 14,
+      "old_six_interval_eligible": 16,
+      "temporal_states": {
+        "positive_subsets_no_detected_difference": 14,
+        "difference_requires_review": 2
+      }
+    },
+    "quiet_healthy": {
+      "realizations": 16,
+      "eligible": 14,
+      "old_six_interval_eligible": 16,
+      "temporal_states": {
+        "positive_subsets_no_detected_difference": 14,
+        "difference_requires_review": 2
+      }
+    },
+    "noisy_healthy": {
+      "realizations": 16,
+      "eligible": 14,
+      "old_six_interval_eligible": 16,
+      "temporal_states": {
+        "positive_subsets_no_detected_difference": 14,
+        "difference_requires_review": 2
+      }
+    },
+    "weak_quiet": {
+      "realizations": 16,
+      "eligible": 0,
+      "old_six_interval_eligible": 0,
+      "temporal_states": {
+        "subset_below_requirement": 14,
+        "difference_requires_review": 2
+      }
+    },
+    "reversed": {
+      "realizations": 16,
+      "eligible": 0,
+      "old_six_interval_eligible": 0,
+      "temporal_states": {
+        "subset_below_requirement": 14,
+        "difference_requires_review": 2
+      }
+    },
+    "limited_excitation": {
+      "realizations": 16,
+      "eligible": 14,
+      "old_six_interval_eligible": 0,
+      "temporal_states": {
+        "subset_uncertainty_only": 14,
+        "difference_requires_review": 2
+      }
+    },
+    "positive_gain_change": {
+      "realizations": 16,
+      "eligible": 0,
+      "old_six_interval_eligible": 16,
+      "temporal_states": {
+        "difference_requires_review": 16
+      }
+    },
+    "late_weak": {
+      "realizations": 16,
+      "eligible": 0,
+      "old_six_interval_eligible": 0,
+      "temporal_states": {
+        "difference_requires_review": 16
+      }
+    },
+    "late_reversed": {
+      "realizations": 16,
+      "eligible": 0,
+      "old_six_interval_eligible": 0,
+      "temporal_states": {
+        "difference_requires_review": 16
+      }
+    },
+    "no_excitation": {
+      "realizations": 16,
+      "eligible": 0,
+      "old_six_interval_eligible": 0,
+      "temporal_states": {
+        "not_assessed": 16
+      }
+    },
+    "constant_block": {
+      "realizations": 16,
+      "eligible": 0,
+      "old_six_interval_eligible": 0,
+      "temporal_states": {
+        "not_assessed": 16
+      }
+    },
+    "ambiguous_full": {
+      "realizations": 16,
+      "eligible": 0,
+      "old_six_interval_eligible": 0,
+      "temporal_states": {
+        "subset_uncertainty_only": 14,
+        "difference_requires_review": 2
+      }
+    }
+  },
+  "stationary_counterexamples": [
+    {
+      "case": "healthy",
+      "seed": 7,
+      "checks": [
+        {
+          "lower": 0.9988640011047225,
+          "upper": 1.0032712277406752
+        },
+        {
+          "lower": 0.9988670428999245,
+          "upper": 1.003267773871753
+        },
+        {
+          "lower": 1.0013614671832056,
+          "upper": 1.0062151635538803
+        },
+        {
+          "lower": 1.0013614690680568,
+          "upper": 1.0062147561181582
+        },
+        {
+          "lower": 0.989863719435381,
+          "upper": 1.0008265260752818
+        },
+        {
+          "lower": 0.9898584019482248,
+          "upper": 1.0008200575430848
+        }
+      ],
+      "decision": {
+        "optical": "responsive",
+        "temporal": "difference_requires_review",
+        "eligible": false,
+        "reasons": [
+          "early_late_nonoverlap_panel_0",
+          "early_late_nonoverlap_panel_1"
+        ]
+      },
+      "old_six_interval_admission": true
+    },
+    {
+      "case": "healthy",
+      "seed": 15,
+      "checks": [
+        {
+          "lower": 0.99669096677901,
+          "upper": 1.003794489411756
+        },
+        {
+          "lower": 0.9966923179645139,
+          "upper": 1.003790212872308
+        },
+        {
+          "lower": 1.0020988930474415,
+          "upper": 1.008782250674976
+        },
+        {
+          "lower": 1.0021087341703239,
+          "upper": 1.0087751094758632
+        },
+        {
+          "lower": 0.9925650065179952,
+          "upper": 1.0007366116542433
+        },
+        {
+          "lower": 0.99255619343428,
+          "upper": 1.0007412799580155
+        }
+      ],
+      "decision": {
+        "optical": "responsive",
+        "temporal": "difference_requires_review",
+        "eligible": false,
+        "reasons": [
+          "early_late_nonoverlap_panel_0",
+          "early_late_nonoverlap_panel_1"
+        ]
+      },
+      "old_six_interval_admission": true
+    }
+  ],
+  "seed_scope": "0..15, same noise realization reused across related physical cases; not independent replications of a false-rejection rate",
+  "full_result_sha256": "2fff63c35b1e1ae60c9118c0060b1ae71080db2c6b25d65876362c6737d329fd",
+  "environment": {
+    "python": "3.13.2",
+    "numpy": "2.2.3",
+    "platform": "macOS-27.0.1-arm64-arm-64bit-Mach-O"
+  }
+}
