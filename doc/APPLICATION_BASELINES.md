@@ -4,6 +4,10 @@ This is the short answer to “which Citlali?” It names durable application
 landmarks without turning branch names, validation directories, scientific
 contracts, or work programs into product versions.
 
+The current engineering/application candidate and release blockers are routed
+through [CURRENT_STATE.md](CURRENT_STATE.md). The landmarks below preserve
+their original acceptance scope and dates.
+
 This document is a router, not a second status ledger. Current sequencing is
 in [`REFACTOR_STATUS.md`](REFACTOR_STATUS.md), concurrent workstream authority
 is in [`INTEGRATION_LEDGER.md`](INTEGRATION_LEDGER.md), scientific contract
@@ -123,8 +127,8 @@ This is a scientific-contract landmark, not an application build.
 
 ### WP-7.1 Timestream Successor Program
 
-This is the active application-development program that will implement and
-validate the WP-7.1 contract on canonical ancestry. It is not the name of a
+This landmark records the August governance-reconciliation checkpoint for
+implementing and validating the WP-7.1 contract on canonical ancestry. It is not the name of a
 completed Citlali product or release.
 
 - Canonical reconciliation branch: `codex/wp7-governance-reconciliation`
@@ -136,8 +140,8 @@ completed Citlali product or release.
   Baseline default to the accepted Spack realization. Build-adaptation changes
   remain separately governed and may not be folded into WP-7 implementation
   opportunistically.
-- Current phase: governance, authority, and ancestry reconciliation. Further
-  application implementation is held until the gates in
+- Phase at that checkpoint: governance, authority, and ancestry reconciliation.
+  Further application implementation was held until the gates in
   [`WP7_TIMESTREAM_SUCCESSOR_PROGRAM.md`](WP7_TIMESTREAM_SUCCESSOR_PROGRAM.md)
   pass.
 

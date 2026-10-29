@@ -1,3 +1,25 @@
+## Collaborator engineering candidate — 2026-10-29
+
+The bounded [engineering work order](ENGINEERING_CLEANUP_2026-10-29.md) has
+completed build/test parity, native publication/resource ownership, shared
+application input services and curated Python deployment. The implementation
+snapshot is `8c3b676ec9c3f5d8c7ccbb0f0f2ede97a959c983`; documentation and
+preservation proposals follow as separate commits. All 1,382 enabled native
+tests, 207 baseline tests, full config preflight and 273 configured POINT
+Python tests pass. The inherited disabled native lifecycle test remains
+explicit. Mac environment recreation and focused lint/typing pass; supported
+Spack/Unity and Linux runtime qualification remain open. No reduction ran.
+
+[Current state](CURRENT_STATE.md) gives exact canonical/candidate/frozen-trial
+identities, release blockers and the owner integration proposal. Grant confirmed
+trials finished, enabling these local engineering checks; scientific product
+assessment remains in the original chat. Original checkout and frozen runtime
+identities are preserved. Repository inventory and recoverable metadata/object
+backups support an [exact proposed cleanup batch](REPOSITORY_CLEANUP_PROPOSAL_2026-10-29.md);
+no prune, branch deletion, push or canonical integration has occurred.
+
+The older entries below retain their dated scope and acceptance status.
+
 ## Weighted POINT and FRUIT implementation candidate — 2026-10-29
 
 The owner authorized the complete response/noise/FRUIT suite and chose conditional

@@ -69,17 +69,17 @@ rewrite is authorized by this work order.
 
 | Finding | Confirmation | Disposition |
 | --- | --- | --- |
-| Source/strict-FP drift | 26 fallback sources vs 20 Spack; same six missing from strict FP | Stage 1 in progress |
-| Ordinary tests | Safety missing from check; Spack lists only 11 targets | Stage 1 in progress |
-| Historical CI | Conan-era workflow misses current gates | Stage 1 in progress |
-| Output race | POINT/MAP check absence then share unchecked staging creation | Stage 2 pending |
-| Resource leaks | FITS exceptional paths and unchecked FFTW creation | Stage 2 pending |
-| Acceptance inclusion | Production includes acceptance source with renamed main | Stage 3 pending |
-| Python deployment | No portable maintained runtime declaration | Stage 4 pending |
-| Documentation | Current and historical summaries overlap | Stage 5 pending |
-| Repository cleanup | Protected originals intact; refreshed inventory underway | Stage 6 proposal only |
+| Source/strict-FP drift | 26 fallback sources vs 20 Spack; same six missing from strict FP | Fixed; shared source/FP owner, aggregate and current CI; fresh local gates pass |
+| Ordinary tests | Safety missing from check; Spack lists only 11 targets | Fixed; shared source/FP owner, aggregate and current CI; fresh local gates pass |
+| Historical CI | Conan-era workflow misses current gates | Fixed; shared source/FP owner, aggregate and current CI; fresh local gates pass |
+| Output race | POINT/MAP check absence then share unchecked staging creation | Fixed; exclusive/no-replace native publication and resource owners; synthetic gates pass |
+| Resource leaks | FITS exceptional paths and unchecked FFTW creation | Fixed; exclusive/no-replace native publication and resource owners; synthetic gates pass |
+| Acceptance inclusion | Production includes acceptance source with renamed main | Fixed; compiled shared service and explicit unchanged historical profiles; both callers compile |
+| Python deployment | No portable maintained runtime declaration | Implemented; curated wheel/frozen closure, hash locks and focused quality gates; target qualification open |
+| Documentation | Current and historical summaries overlap | Reconciled; current-state front door and explicit historical checkpoints; owner integration pending |
+| Repository cleanup | Protected originals intact; refreshed inventory underway | Exact 33-registration proposal prepared with verified recovery; no prune or deletion |
 
-Completion records will bind exact commits, checks, unresolved compatibility,
+The stage records below bind changes, checks, unresolved compatibility,
 owner decisions and release blockers. Engineering checks do not promote a
 release or establish scientific acceptance.
 
@@ -208,3 +208,93 @@ to reproduce the locked 3.13 environment. The earlier duplicate CI dependency
 file is superseded by project metadata/locks. Workflow YAML, embedded shell
 syntax, filenames and package metadata were checked locally. GitHub jobs have
 not been dispatched; hosted CI success remains unverified until owner push.
+
+### Stage 4 independent-review repair
+
+Independent review found a real cross-revision packaging defect: an installed
+packager could use its own inventory when targeting a checkout that declared a
+new module, create a bundle without that module, and fail at launch. The bounded
+repair validates the target's committed literal inventory without executing
+its code and rejects incompatible/malformed membership before creating the
+destination. It directs the caller to the matching source packager. Added,
+removed, duplicate, missing, malformed and nonliteral declarations are tested,
+with compatible success and no code execution. All 273 configured POINT/package
+tests pass, along with Ruff/Pyright and full config preflight. This intended
+failure behavior prevents creation of an incomplete cross-revision runtime;
+scientific execution is unchanged. The initial review finding and repaired
+exact-source disposition are both retained in the delivery artifacts.
+
+## Stage 5 — documentation and integration disposition
+
+README and CURRENT_STATE now route the supported workflow, exact canonical,
+reviewed and frozen identities, implementation snapshot, qualified evidence and
+open collaborator gates. Stale August held/no-work-order summaries are labeled
+as historical in AGENTS, architecture and application landmarks, with original
+acceptance/history retained. Scientific conventions gain a routing note only.
+Architecture describes the real shared source manifest, concrete input service
+and publication/resource owners. No governance or scientific acceptance is
+amended. Owner-run Unity instructions use an isolated testing checkout and
+fresh build/environment; no remote access or reduction was performed here.
+
+Canonical remains unchanged, 262 commits behind the reviewed engineering base.
+The proposal is owner review of that bounded application continuation and its
+scientific dispositions before integration of an exact complete candidate.
+Preserve accepted ancestry when the whole continuation is accepted; otherwise
+prepare a separately reviewed selective integration plan. Engineering commits
+must not be blindly cherry-picked onto the older canonical application. No
+canonical update or GitHub push was performed.
+
+## Stage 6 — preservation and exact cleanup proposal
+
+The refreshed inventory enumerates branches and provisional dispositions,
+worktrees/dirty paths/ignored roots, detached state, three stashes, recovery
+bundles, preservation refs and bundle prerequisites. The exact 33 missing
+registrations are listed in REPOSITORY_CLEANUP_PROPOSAL_2026-10-29.md. Their
+administrative records are archived with per-file verification. Two otherwise
+unreferenced reflog commits are in a verified thin recovery bundle, with exact
+prerequisites retained. Restoration in an isolated bare repository without
+alternates, commit/tree comparison and strict fsck passed; every administrative
+index object remains reachable from named refs. Copies and hashes are retained
+outside temporary storage in this task's artifact directory.
+
+All branches, three original dirty checkouts, detached checkout, stashes,
+ignored dependencies and original recovery bundles remain protected. No
+pruning, deletion, shared reflog expiration, garbage collection or history
+rewrite was executed. Only the owned engineering branch was created/advanced;
+existing branch and preservation refs were not moved. Final inventory and pre-operation rechecks bind
+any later exact approval. Future large evidence belongs in retrievable project
+storage with compact summaries/manifests/digests in Git; existing approximately
+1.70 GB of historical validation evidence remains intact.
+
+## Exact implementation commits and open gates
+
+| Stage | Commit | Local result / remaining gate |
+| --- | --- | --- |
+| Build/test/CI parity | `1bb75f1a9b337485e197b659144d9e8b6394e5bd` | Fresh CLI/ordinary aggregate; 1,366 enabled tests; supported Spack runner still needs execution |
+| Native publication/FITS/FFTW ownership | `e1490b25735854005a96a29a1c9bdee9bb53bac4` | 1,375 enabled tests; independent review passes; Linux syscall qualification open |
+| Shared input service / historical profiles | `00b24dee6ecc484a7130d41bdb6a0c6bd6e41ce0` | 1,382 enabled tests; all six tool callers compile; independent extraction review passes |
+| Curated Python application | `357b256e1642378d951d03a5880209b8737688b4` | 261 synthetic tests; offline Mac recreation, installed smoke, lint/types pass; Linux/other Python execution open |
+| Packaging review repair | `8c3b676ec9c3f5d8c7ccbb0f0f2ede97a959c983` | 273 synthetic tests; incompatible selected-source closure rejected before publication; static gates pass |
+| Python CI wiring (separate build change) | `cd35fa6e9db7fc30c4b7be1f5a6be737868d04ef` | YAML/shell parse; fresh-env 75 build, 130 config, 203 source-baseline tests pass; actual hosted dispatch open |
+
+All 207 native-capable baseline tests and full config preflight passed after
+Stage 3. One inherited disabled CTest remains disclosed throughout:
+`MapFitterLifecycle.ExactProductSequence`. The local AppleClang 17/Homebrew
+build uses cached dependency sources, including a dirty KIDs dependency;
+its evidence is supplemental and cannot replace supported Spack qualification.
+The native executable was refreshed and version-matched after each C++ stage;
+the final delivered commit gets a separate version refresh and artifact record.
+
+Independent exact-source reviews and final delivery evidence are retained in
+the task artifact directory. Review limits, final source/binary hashes and the
+post-commit inventory are bound there, avoiding a self-referential commit hash
+inside this document. A clean engineering branch does not imply the entire
+shared repository is clean or safe to prune.
+
+Remaining owner decisions: acceptance of POINT scientific products in the
+original chat; pointing-derived calibration compatibility; all-array SCIENCE
+and true multi-observation coadds; downstream consumers; supported Spack/Unity
+and Linux/Python deployment qualification; canonical integration of an exact
+reviewed continuation; GitHub push; and approval of the exact 33-registration
+metadata batch. Beammap production and OOF remain outside the collaborator
+release. No engineering test grants scientific or production acceptance.

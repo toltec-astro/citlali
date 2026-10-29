@@ -1,5 +1,16 @@
 # Citlali Architecture
 
+[Current candidate and release scope](CURRENT_STATE.md) distinguish October 29
+engineering changes from scientific acceptance and historical checkpoints.
+The concrete `citlali_successor_input_bindings` library owns application-boundary
+config/NetCDF/Tune/APT/raw binding and product loading. Production execution
+and acceptance tooling link it; production no longer includes the acceptance
+program. Historical telescope/mapping and masked-covariance domains remain
+explicit in `successor_experiment_profiles.h`, without broader admission.
+Native direct output uses an exclusive staged-directory owner and no-replace
+publication; required FITS closes and FFTW creation have explicit resource
+owners. Configured POINT's separate atomic `reduNN` creation is unchanged.
+
 Current bright-POINT development execution and ownership are documented in
 [the consolidated pipeline](BRIGHT_POINT_PIPELINE.md). Its frozen ordinary MAP /
 BASE-POINT route supersedes historical statements below that MAP or FRUIT is
@@ -137,7 +148,7 @@ Timestream Contract Baseline. Contract closure does not select application
 ancestry or prove implementation conformance, performance, observational
 validation, readiness, or production authorization.
 
-The active successor program lives on
+The August governance-reconciliation checkpoint placed the successor program on
 `codex/wp7-governance-reconciliation`, based exactly on canonical
 `cb3d568c...`. The divergent branch
 `codex/wp7-rtc-fixed-decimation-authority` is preserved at committed head
@@ -199,12 +210,15 @@ is not build-environment-neutral. The established non-Spack CMake graph
 remains compatibility and supplemental smoke-test infrastructure while release
 composition and rollback decisions remain open. A successful fallback build
 does not reproduce the Spack-backed V2 campaign. Both graphs must carry the
-same production translation-unit set and expose the same two production
-targets:
+same production core source and strict-FP declarations from
+`cmake/citlali_core_sources.cmake`. Their dependency discovery remains separate.
+The application service is declared in `cmake/citlali_successor_input_bindings.cmake`:
+
 
 | Target | Role | Active implementation |
 | --- | --- | --- |
-| `citlali` / `citlali::citlali` | Static library and shared include/dependency boundary | Twelve compiled implementation files plus the header-defined numerical and orchestration graph |
+| `citlali` / `citlali::citlali` | Static library and shared include/dependency boundary | 26 implementation files from the shared CMake manifest plus the header-defined numerical and orchestration graph |
+| `citlali_successor_input_bindings` | Shared internal application service | Concrete configuration and product/input binding consumed by runtime and acceptance tools |
 | `citlali_rtc_execution` | Shared application-boundary execution library | Direct successor RTC sequence, used by the ordinary CLI and comparison wrapper |
 | `citlali_cli` | Development executable, emitted as `citlali` | Three CLI translation units: the two versioned canonical-APT protocol adapters and `src/citlali/cli/main.cpp`, linked to `citlali::citlali` and `citlali_rtc_execution` |
 
@@ -735,7 +749,7 @@ frames, units, indexing, and missing values is defined in
 | `include/citlali/core/engine` | Active compatibility aggregate, mode processors, calibration/telescope/KIDs integration, and contextual implementation fragments |
 | `include/citlali/core/timestream` | RTC/PTC data structures, contracts, diagnostics, and mature timestream algorithms |
 | `include/citlali/core/mapmaking` | Map buffers, mapmakers, filtering, and hot map operations |
-| `src/citlali/core` | Current compiled implementation boundary for eight selected cold/non-template library translation units |
+| `src/citlali/core` | Compiled implementation boundary enumerated by the shared core source manifest |
 | `tests` | Focused C++ contract, safety, session, writer, header-isolation, and multi-translation-unit tests |
 | `tools/config` | Config schema, authority, compact-translation, and preflight gates |
 | `tools/baseline` | Run audit, product contract, numerical comparison, validation ledger, and performance evidence |

@@ -77,6 +77,14 @@ scientific authority and must not leak into Stage B authorship.
 
 ## Current Direction
 
+Start with `doc/CURRENT_STATE.md` for the October 29 candidate, integration
+identities and release boundaries. The owner-authorized bounded engineering
+cleanup is recorded in `doc/ENGINEERING_CLEANUP_2026-10-29.md`; scientific
+assessment remains in the pointing chat. This is task scope under existing
+governance, not an amendment or permission for unrelated work. No trial,
+frozen runtime, reduction, canonical integration, push or destructive cleanup
+is authorized by this engineering record.
+
 The refactor follows the roadmap in `doc/REFACTOR_STATUS.md`. Project-owner
 additions Phase 4.1 and Phase 4.2 are complete. The accepted four-mode TolTECA
 numbered-config kits remain opt-in through TolPROJ's `--refactor` path, and the
@@ -98,11 +106,12 @@ Do not broaden mature RTC, PTC, JINC, or Wiener-filter algorithms while fixing
 their contracts. Preserve numerical behavior unless a change is named,
 measured, and recorded as intentional.
 
-The WP-7.1 successor is in G4 reviewed replay after the project owner accepted
+Historical August 31 checkpoint (later bounded work is routed above):
+the WP-7.1 successor was in G4 reviewed replay after the project owner accepted
 the committed G0--G3 governance package and explicitly resumed application
 work on 2026-08-31. The owner subsequently accepted and integrated bounded D2
-evidence-tooling unit `WP7-REPLAY-001` at exact commit `f8ba732bc...`. No WP-7
-application work order is now active. Preserve the divergent lane and its
+evidence-tooling unit `WP7-REPLAY-001` at exact commit `f8ba732bc...`. At that checkpoint no WP-7
+application work order remained active. Preserve the divergent lane and its
 uncommitted producer prototype; that prototype is not an immutable source
 identity and remains unauthorized. Do not begin a producer, prefilter,
 residual, factor-selection, filter-design, downsampling, or route-wiring unit

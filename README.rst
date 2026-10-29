@@ -10,14 +10,45 @@ While citlali is developed targeting LMT/TolTEC, it can also be adapted to
 with other telescope/detectors that shares similar architectural properties.
 
 
+Collaborator candidate — start here
+----------------------------------
+
+The `current state <doc/CURRENT_STATE.md>`_ identifies the exact engineering
+candidate, canonical integration branch, frozen POINT trials, accepted evidence
+and remaining release gates. The release target is POINT and SCIENCE on all
+three TolTEC arrays through TolProj configuration, validation and guarded
+submission, with TolTECA preparing and launching the selected runtime. Grant
+supplies beammap/APT products; beammap production and OOF are outside this target.
+
+Use the `configured POINT deployment instructions <requirements/README.md>`_
+for the curated Python application and copyable TolProj launcher. The existing
+uniform v1 and weighted v2 profiles remain explicit. Native builds use the
+accepted Spack profiles; `owner qualification instructions
+<doc/ENGINEERING_OWNER_QUALIFICATION_2026-10-29.md>`_ keep builds and checks
+isolated from trial runtimes. Grant alone launches reductions and accepts
+scientific results. Local engineering checks do not establish calibration,
+SCIENCE/coadd, downstream-consumer or production acceptance.
+
+See the `staged engineering record <doc/ENGINEERING_CLEANUP_2026-10-29.md>`_
+for changes, checks and integration disposition, and the `CI guide
+<.github/README.md>`_ for source and native gates.
+
+Historical build reference
+--------------------------
+
+The platform and Conan instructions below describe earlier development
+snapshots. They are retained for historical reproduction, not the current
+supported deployment or qualification matrix. Follow the current-state and
+Spack links above for this candidate.
+
 System requirements
 -------------------
 
 Citlali requires a C++20 compiler and CMake 3.20+ to build.
 
 
-The software is fully tested for the following
-platform/operating system/compilers:
+The historical snapshot documented these tested
+platform/operating system/compiler combinations:
 
 * x86_64 macOS 11 (Big Sur); LLVM 13+
 
