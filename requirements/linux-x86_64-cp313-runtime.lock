@@ -1,0 +1,12 @@
+# Exact wheel artifacts from official PyPI; CPython 3.13, Linux x86_64.
+# Download/metadata verification only: not installed or Unity-qualified.
+astropy==7.0.1 --hash=sha256:a367d334b789934b975565be470eb1043b3419508bd8e15a882775925e30d2ce
+astropy-iers-data==0.2025.2.24.0.34.4 --hash=sha256:be8b3b75b09b1aa1d22de9b5243854e00d19936aca6d8f64466d16197c04bb28
+certifi==2025.1.31 --hash=sha256:ca78db4565a652026a4db2bcdf68f2fb589ea80d0be70e03929ed730746b84fe
+cftime==1.6.4.post1 --hash=sha256:6579c5c83cdf09d73aa94c7bc34925edd93c5f2c7dd28e074f568f7e376271a0
+netCDF4==1.7.2 --hash=sha256:8d6bfd38ba0bde04d56f06c1554714a2ea9dab75811c89450dc3ec57a9d36b80
+numpy==2.2.3 --hash=sha256:52659ad2534427dffcc36aac76bebdd02b67e3b7a619ac67543bc9bfe6b7cdb1
+packaging==24.2 --hash=sha256:09abb1bccd265c01f4a3aa3f7a7db064b36514d2cba19a2f694fe6150451a759
+pyerfa==2.0.1.5 --hash=sha256:0e43c7194e3242083f2350b46c09fd4bf8ba1bcc0ebd1460b98fc47fe2389906
+PyYAML==6.0.2 --hash=sha256:70b189594dbe54f75ab3a1acec5f1e3faa7e8cf2f1e08d9b561cb41b845f69d5
+scipy==1.17.1 --hash=sha256:581b2264fc0aa555f3f435a5944da7504ea3a065d7029ad60e7c3d1ae09c5464

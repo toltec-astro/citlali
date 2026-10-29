@@ -5,6 +5,7 @@ The bundle retains an absolute dependency on the selected existing Python
 environment and on the native executable's shared libraries. It is not a
 portable installation. No source checkout or shared environment is modified.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -17,17 +18,22 @@ import shlex
 import shutil
 import subprocess
 
+from configured_point_runtime import RUNTIME_MODULES
+
 
 SCHEMA = "citlali-configured-point-runtime-v1"
 TOOL_DIR = Path("tools/timestream_successor")
-REQUIRED_TOOLS = ("configured_point_cli.py", "configured_point_config.py",
-                  "configured_point_inputs.py", "configured_point_products.py", "configured_point_drops.py",
-                  "configured_point_weighted.py", "configured_point_feedback.py")
-DATA_FILES = (Path("data/config.yaml"), Path("data/configured_point_v1.yaml"),
-              Path("data/configured_point_v2.yaml"),
-              *(Path("data/development/bright_point_base_v1") / f"{a}-rtc.json"
-                for a in ("a1100", "a1400", "a2000")),
-              Path("data/development/bright_point_base_v1/map-owner.json"))
+REQUIRED_TOOLS = tuple(name + ".py" for name in RUNTIME_MODULES)
+DATA_FILES = (
+    Path("data/config.yaml"),
+    Path("data/configured_point_v1.yaml"),
+    Path("data/configured_point_v2.yaml"),
+    *(
+        Path("data/development/bright_point_base_v1") / f"{a}-rtc.json"
+        for a in ("a1100", "a1400", "a2000")
+    ),
+    Path("data/development/bright_point_base_v1/map-owner.json"),
+)
 
 
 def digest(path):
@@ -56,28 +62,38 @@ def _python_identity(python):
     script = """
 import importlib.metadata,json,os,sys
 packages={}
-for name in ('numpy','scipy','astropy','netCDF4','psutil','PyYAML'):
+for name in ('numpy','scipy','astropy','netCDF4','matplotlib','PyYAML'):
     try: packages[name]=importlib.metadata.version(name)
     except importlib.metadata.PackageNotFoundError: packages[name]=None
 print(json.dumps(dict(version=sys.version,executable=sys.executable,
     prefix=sys.prefix,base_prefix=sys.base_prefix,
     dependency_roots=[os.path.abspath(p) for p in sys.path if p],packages=packages)))
 """
-    result = subprocess.run([str(python), "-B", "-c", script], capture_output=True, text=True, check=True)
+    result = subprocess.run(
+        [str(python), "-B", "-c", script], capture_output=True, text=True, check=True
+    )
     identity = json.loads(result.stdout)
-    if not isinstance(identity, dict) or not isinstance(identity.get("dependency_roots"), list) or not isinstance(identity.get("executable"), str):
+    if (
+        not isinstance(identity, dict)
+        or not isinstance(identity.get("dependency_roots"), list)
+        or not isinstance(identity.get("executable"), str)
+    ):
         raise ValueError("Python environment identity query did not return the required record")
-    identity.update(path=str(python), realpath=str(python.resolve()), sha256=digest(python),
-                    interpreter_sha256=digest(identity["executable"]),
-                    environment_is_external=True,
-                    package_contents_pinned=False)
+    identity.update(
+        path=str(python),
+        realpath=str(python.resolve()),
+        sha256=digest(python),
+        interpreter_sha256=digest(identity["executable"]),
+        environment_is_external=True,
+        package_contents_pinned=False,
+    )
     return identity
 
 
 def _launcher(root, manifest_sha256, python):
     # The launcher can be copied alone by TolProj: neither __file__ nor cwd is
     # used to locate its immutable runtime. Verification uses only stdlib.
-    program = f'''import hashlib,json,os,pathlib,sys
+    program = f"""import hashlib,json,os,pathlib,sys
 ROOT=pathlib.Path({str(root)!r})
 EXPECTED={manifest_sha256!r}
 PYTHON={str(python)!r}
@@ -107,10 +123,12 @@ except (OSError,ValueError,KeyError,TypeError) as exc:
     raise SystemExit(2)
 os.execv(PYTHON,[PYTHON,"-B",str(ROOT/"tools/timestream_successor/configured_point_cli.py"),
     "--native",str(ROOT/"bin/citlali-native"),*sys.argv[1:]])
-'''
+"""
     # A shell front door permits an absolute Python path containing spaces.
     # shlex.quote protects literal paths/code; user arguments stay separate.
-    return "#!/bin/sh\nexec " + shlex.quote(str(python)) + " -B -c " + shlex.quote(program) + ' "$@"\n'
+    return (
+        "#!/bin/sh\nexec " + shlex.quote(str(python)) + " -B -c " + shlex.quote(program) + ' "$@"\n'
+    )
 
 
 def package(repository: Path, native: Path, python: Path, destination: Path) -> Path:
@@ -127,17 +145,17 @@ def package(repository: Path, native: Path, python: Path, destination: Path) -> 
         if not executable.is_file() or not os.access(executable, os.X_OK):
             raise ValueError(f"{label} executable is unavailable: {executable}")
     revision = _revision(repository)
-    version = subprocess.check_output([str(native), "--version"], text=True, stderr=subprocess.STDOUT).strip()
+    version = subprocess.check_output(
+        [str(native), "--version"], text=True, stderr=subprocess.STDOUT
+    ).strip()
     if not re.search(r"(?<![0-9a-f])" + revision[:9] + r"[0-9a-f]*(?![0-9a-f])", version):
         raise ValueError("native --version does not match the committed source revision")
     tracked = set(_git(repository, "ls-files", "-z").split("\0"))
-    sources = sorted(Path(name) for name in tracked
-                     if name.startswith(TOOL_DIR.as_posix() + "/") and name.endswith(".py"))
     required = {TOOL_DIR / name for name in REQUIRED_TOOLS} | set(DATA_FILES)
     missing = sorted(str(path) for path in required if path.as_posix() not in tracked)
     if missing:
         raise ValueError("required runtime sources are not committed: " + ", ".join(missing))
-    sources = sorted(set(sources) | set(DATA_FILES))
+    sources = sorted(required)
     for relative in sources:
         path = repository / relative
         if path.is_symlink() or not path.is_file() or not path.resolve().is_relative_to(repository):
@@ -150,21 +168,35 @@ def package(repository: Path, native: Path, python: Path, destination: Path) -> 
         target = destination / relative
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(repository / relative, target)
-        members.append(dict(path=relative.as_posix(), sha256=digest(target), bytes=target.stat().st_size))
+        members.append(
+            dict(path=relative.as_posix(), sha256=digest(target), bytes=target.stat().st_size)
+        )
     native_target = destination / "bin/citlali-native"
     native_target.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(native, native_target)
     if digest(native_target) != native_sha256:
-        raise ValueError("native executable changed while packaging; incomplete bundle retained for inspection")
-    members.append(dict(path="bin/citlali-native", sha256=native_sha256, bytes=native_target.stat().st_size))
+        raise ValueError(
+            "native executable changed while packaging; incomplete bundle retained for inspection"
+        )
+    members.append(
+        dict(path="bin/citlali-native", sha256=native_sha256, bytes=native_target.stat().st_size)
+    )
     if _revision(repository) != revision:
-        raise ValueError("source revision changed while packaging; incomplete bundle retained for inspection")
-    manifest = dict(schema=SCHEMA, source=dict(repository=str(repository), revision=revision, tracked_clean=True),
-                    native=dict(version=version, source_path=str(native), bundled_path="bin/citlali-native"),
-                    python=python_identity, files=members,
-                    limitations=["Absolute bundle location is embedded in its launcher.",
-                                 "External Python package contents and native shared libraries are not bundled or pinned.",
-                                 "Use on the recorded local host; no Unity/Spack or portable deployment claim."])
+        raise ValueError(
+            "source revision changed while packaging; incomplete bundle retained for inspection"
+        )
+    manifest = dict(
+        schema=SCHEMA,
+        source=dict(repository=str(repository), revision=revision, tracked_clean=True),
+        native=dict(version=version, source_path=str(native), bundled_path="bin/citlali-native"),
+        python=python_identity,
+        files=members,
+        limitations=[
+            "Absolute bundle location is embedded in its launcher.",
+            "External Python package contents and native shared libraries are not bundled or pinned.",
+            "Use on the recorded local host; no Unity/Spack or portable deployment claim.",
+        ],
+    )
     manifest_path = destination / "manifest.json"
     manifest_path.write_text(json.dumps(manifest, indent=2, allow_nan=False) + "\n")
     launcher = destination / "bin/citlali"
@@ -184,8 +216,16 @@ def main(argv=None):
         launcher = package(args.repository, args.native, args.python, args.destination)
     except (OSError, ValueError, subprocess.SubprocessError) as exc:
         parser.exit(2, f"POINT runtime packaging failed: {exc}\n")
-    print(json.dumps(dict(launcher=str(launcher), launcher_sha256=digest(launcher),
-                          manifest=str(launcher.parent.parent / "manifest.json")), indent=2))
+    print(
+        json.dumps(
+            dict(
+                launcher=str(launcher),
+                launcher_sha256=digest(launcher),
+                manifest=str(launcher.parent.parent / "manifest.json"),
+            ),
+            indent=2,
+        )
+    )
     return 0
 
 

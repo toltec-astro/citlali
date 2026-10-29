@@ -13,3 +13,7 @@ spack/environments/**/.spack-env/
 spack/environments/**/.spack-view/
 spack/environments/**/spack.lock
 spack/compat/**/build-*
+
+# Configured POINT Python distribution artifacts
+/dist/
+/tools/timestream_successor/*.egg-info/

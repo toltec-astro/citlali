@@ -21,14 +21,15 @@ def source(tmp_path):
     root = tmp_path / "checkout"
     root.mkdir()
     git(root, "init", "-q")
-    for relative in [*(TOOL_DIR / name for name in REQUIRED_TOOLS), *DATA_FILES, TOOL_DIR / "transitive_import.py"]:
+    for relative in [*(TOOL_DIR / name for name in REQUIRED_TOOLS), *DATA_FILES, TOOL_DIR / "unrelated_historical_tool.py"]:
         path = root / relative
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text("# fixture\n")
     (root / TOOL_DIR / "configured_point_cli.py").write_text(
-        'import json,sys\nfrom transitive_import import MARKER\n'
+        'import json,sys\nfrom configured_point_config import MARKER\n'
         'print(json.dumps({"args":sys.argv[1:],"marker":MARKER}))\n')
-    (root / TOOL_DIR / "transitive_import.py").write_text('MARKER="bundled-source"\n')
+    (root / TOOL_DIR / "configured_point_config.py").write_text('MARKER="bundled-source"\n')
+    (root / TOOL_DIR / "unrelated_historical_tool.py").write_text('raise RuntimeError("historical tool must not ship")\n')
     git(root, "add", ".")
     git(root, "-c", "user.name=Runtime test", "-c", "user.email=test@example.invalid", "commit", "-qm", "fixture")
     revision = git(root, "rev-parse", "HEAD")
@@ -67,7 +68,8 @@ def test_copied_launcher_finds_exact_bundle_and_preserves_arguments(source, tmp_
     assert manifest["python"]["dependency_roots"]
     assert manifest["python"]["package_contents_pinned"] is False
     copied_members = {entry["path"] for entry in manifest["files"]}
-    assert "tools/timestream_successor/transitive_import.py" in copied_members
+    assert "tools/timestream_successor/unrelated_historical_tool.py" not in copied_members
+    assert {name for name in copied_members if name.endswith(".py")} == {str(TOOL_DIR / name) for name in REQUIRED_TOOLS}
     assert "tools/timestream_successor/configured_point_weighted.py" in copied_members
     assert "tools/timestream_successor/configured_point_feedback.py" in copied_members
     assert "data/configured_point_v2.yaml" in copied_members
@@ -76,7 +78,7 @@ def test_copied_launcher_finds_exact_bundle_and_preserves_arguments(source, tmp_
     assert not list(destination.rglob("__pycache__"))
 
 
-@pytest.mark.parametrize("relative", ["manifest.json", "bin/citlali-native", "tools/timestream_successor/transitive_import.py",
+@pytest.mark.parametrize("relative", ["manifest.json", "bin/citlali-native", "tools/timestream_successor/configured_point_config.py",
                                       "data/config.yaml", "data/configured_point_v2.yaml",
                                       "tools/timestream_successor/configured_point_weighted.py",
                                       "tools/timestream_successor/configured_point_feedback.py",
@@ -113,7 +115,7 @@ def test_changed_external_python_wrapper_is_rejected(source, tmp_path):
 def test_source_can_change_after_packaging_without_changing_frozen_payload(source, tmp_path):
     root, native, python = source
     launcher = package(root, native, python, tmp_path / "runtime")
-    (root / TOOL_DIR / "transitive_import.py").write_text('MARKER="changed source"\n')
+    (root / TOOL_DIR / "unrelated_historical_tool.py").write_text('MARKER="changed source"\n')
     native.write_text("changed source binary")
     result = invoke(launcher)
     assert result.returncode == 0, result.stderr

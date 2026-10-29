@@ -169,3 +169,31 @@ configuration preflight pass. Build-tool tests: 75 passed. Validation ledger
 (60 records), scientific-change ledger (3 changes/5 integration commits), and
 session exit audit (zero library/CLI exits or growth) pass. No observational
 processing was performed; Spack/Unity qualification remains separate.
+
+## Stage 4 — curated Python deployment
+
+The installable configured POINT application declares CPython 3.11–3.13 as
+compatibility targets, runtime/optional-diagnostic/development dependencies,
+and a tested 28-module runtime plus its packager and seven data files. Frozen
+TolProj launchers retain exact source/native checks and byte verification.
+Historical tool imports required by existing measurement helpers remain in the
+explicit closure; copying every successor script is no longer necessary.
+Typed file/input/prepared-observation boundaries and a focused ten-file Ruff
+baseline improve maintenance without changing scientific operations. Pyright
+checks four config/input/resource/type boundaries without blanket suppressions.
+
+A fresh CPython 3.13.2 Mac arm64 environment was recreated offline from 31
+full-wheel SHA-256 locks; wheel build/install, pip check, all runtime imports
+and installed config/resource lookup passed. The applied synthetic suite passes
+261 tests; Ruff lint/format pass; Pyright reports zero errors and warnings.
+Equivalent Linux x86_64 CPython 3.13 artifact locks are prepared, with glibc
+2.28 minimum, but Linux execution and other Python versions are unqualified.
+The wheel version 0.0.0 is a packaging candidate identifier, not a release.
+
+Intended deployment change: installable explicit module/resource inventory and
+narrower frozen bundles. Existing CLI/scientific behavior is preserved. Locks
+record installation artifacts; the launcher still honestly reports mutable
+external packages as unpinned at launch. Native shared-library identity,
+Spack/Unity qualification, Linux execution and scientific acceptance remain
+separate. See requirements/README.md for reproducible deployment instructions.
+CI wiring to these declarations is recorded in a separate build/CI commit.

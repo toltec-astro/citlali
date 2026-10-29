@@ -1,0 +1,82 @@
+[build-system]
+requires = ["setuptools>=80", "wheel>=0.45"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "citlali-configured-point"
+version = "0.0.0"
+description = "Configured POINT application candidate for the Citlali native engine"
+requires-python = ">=3.11,<3.14"
+dependencies = [
+  "numpy>=2.2,<3", "scipy>=1.17,<2", "astropy>=7,<8",
+  "netCDF4>=1.7,<2", "PyYAML>=6,<7",
+]
+
+[project.optional-dependencies]
+diagnostics = ["matplotlib>=3.10,<4"]
+test = ["pytest>=9,<10", "ruff==0.13.2", "pyright==1.1.405", "build>=1.2,<2", "wheel>=0.45,<1"]
+
+[project.scripts]
+citlali-configured-point = "configured_point_cli:main"
+citlali-package-point = "package_configured_point:main"
+
+[tool.setuptools]
+package-dir = {"" = "tools/timestream_successor"}
+py-modules = [
+  "configured_point_cli",
+  "configured_point_config",
+  "configured_point_drops",
+  "configured_point_feedback",
+  "configured_point_inputs",
+  "configured_point_products",
+  "configured_point_runtime",
+  "configured_point_types",
+  "configured_point_weighted",
+  "inspect_forward_map",
+  "inspect_point_source",
+  "local_data_purge",
+  "point_additive",
+  "point_additive_diagnostics",
+  "point_admission",
+  "point_archive_compaction",
+  "point_auxiliary",
+  "point_corr_admission",
+  "point_empirical",
+  "point_empirical_io",
+  "point_expected",
+  "point_fruit_diagnostics",
+  "point_fruit_trajectory",
+  "point_guarded_feedback",
+  "point_reference",
+  "point_response_cd",
+  "point_source_evolution",
+  "point_timing",
+  "package_configured_point"
+]
+
+[tool.setuptools.data-files]
+"share/citlali-point/data" = ["data/config.yaml", "data/configured_point_v1.yaml", "data/configured_point_v2.yaml"]
+"share/citlali-point/data/development/bright_point_base_v1" = [
+  "data/development/bright_point_base_v1/a1100-rtc.json",
+  "data/development/bright_point_base_v1/a1400-rtc.json",
+  "data/development/bright_point_base_v1/a2000-rtc.json",
+  "data/development/bright_point_base_v1/map-owner.json",
+]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+include = ["tools/timestream_successor/configured_point_*.py", "tools/timestream_successor/package_configured_point.py"]
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F"]
+
+[tool.pyright]
+pythonVersion = "3.11"
+typeCheckingMode = "basic"
+include = [
+  "tools/timestream_successor/configured_point_types.py",
+  "tools/timestream_successor/configured_point_runtime.py",
+  "tools/timestream_successor/configured_point_config.py",
+  "tools/timestream_successor/configured_point_inputs.py",
+]
