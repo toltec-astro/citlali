@@ -1,3 +1,28 @@
+## Connected pilot implementation plan prepared — 2026-10-30
+
+The [minimal plan](POINT_SCIENCE_CONNECTED_PILOT_PLAN_2026-10-30.md) is aligned with
+combined closure b090da0458271c618568802fde1cf5c39f5dd5d2 and unchanged application
+merge c83375dc030095821999a0e0ff435f13bf82b914. Proposed batches: truthful POINT
+publication and consumer protection; explicit celestial SCIENCE and equal-observation
+coadd; selected product/calibration binding; owner-run A/B/C preparation. First
+sequence is152389→152390→152391, then held-out SCIENCE152392 with POINT152393 and
+coadd. Existing detector noise weighting and2″ pilot grid are retained.
+
+Recommend an explicitly scoped raw-map/coadd pilot and optional diagnostic calibration
+transfer with honestly unavailable errors to avoid unrelated noise/error research
+becoming an automatic prerequisite. These are proposals requiring owner selection,
+not changed product policy or calibration permission. Full requested noise/filter
+products and production photometric qualification remain separate unresolved goals.
+SCIENCE source/training/feedback policy must be bound explicitly; the POINT bright
+source guard is not a generic SCIENCE policy. Historical coadd arithmetic is not
+substituted for the accepted ordinary equal-observation rule.
+
+Read-only prior-work recovery, exact input/source bindings and independent plan
+review are stored in validation/point_science_connection_plan_2026-10-30. Only plan,
+evidence and status changed; no implementation, sibling edits, other-thread messages,
+source fits, calibrations, builds, reductions, Unity or pushes. Wing and temporal
+studies stay paused. Combined supported-environment/mainline gates are not waived.
+
 ## Return to connected POINT–SCIENCE–POINT delivery — owner direction, 2026-10-30
 
 Grant redirects this lane from further broad-source feedback optimization to
