@@ -272,3 +272,29 @@ def update(map_path, context, destination, verbose=False):
         selected['header'] = stamp_header
     return _publish(map_path, destination, native, guard, selected, verbose=verbose,
                     initial_map_sha256=context.initial_map_sha256, bundle=bundle)
+
+
+def measure_only(map_path, context, additive=None):
+    """Measure a total/ideal-added map with its frozen selector covariance.
+
+    Diagnostic only: no candidate, covariance relearning, feedback or new
+    reduction. The optional additive is a full-grid brightness operand.
+    """
+    require(isinstance(context, FeedbackContext), 'feedback context unavailable')
+    signal, support, coverage, native, header, bundle = _read_map(map_path)
+    require(tuple((key, native[key]) for key in GRID_KEYS) == context.grid and
+            signal.shape == context.full_shape and
+            bundle['observation'] == context.observation and
+            bundle.get('frozen_health_identity') == context.frozen_health_identity,
+            'measurement frozen context differs')
+    if additive is not None:
+        additive = np.asarray(additive)
+        require(additive.shape == signal.shape and np.isfinite(additive).all(),
+                'ideal map addition invalid')
+        signal = signal + additive
+    s, valid, _, stamp_header, half = source_patch(signal, support, coverage, header)
+    require(half == context.half and
+            tuple((key, stamp_header[key]) for key in GRID_KEYS) == context.header,
+            'measurement source crop differs')
+    fixed = SimpleNamespace(header=stamp_header, beam=context.beam)
+    return _guard_frame(measure_expected(s, valid, fixed, context.scale, context.psd))

@@ -190,3 +190,22 @@ TEST(PointRtcSourceProbe, SignedNativeUnitsCalibrationOnlyAndValidity) {
     EXPECT_THROW(point_rtc_source_probe(1,true,{0,FruitModelSupport::unavailable},2),std::invalid_argument);
     EXPECT_EQ(point_rtc_source_probe(1,true,{0,FruitModelSupport::outside},2).x,1);
 }
+
+TEST(FruitCycle, WeightedRasterReferenceUsesActualCoefficientsAndSignedTruth) {
+    ForwardMapGrid grid{41,41,"diagnostic-offset-grid"};
+    std::vector<double> raster(1681,0);raster[840]=13.25;raster[839]=-2.75;
+    const FruitOffsetModel model("signed-raster",grid,21,21,-2,2,raster,std::vector<std::uint8_t>(1681,1),40.);
+    const std::vector<double> az{0.,.999,1.,2.,2.999,-30.};
+    std::vector<double> projected;std::vector<ForwardMapMember> members;
+    for(std::size_t j=0;j<az.size();++j) {
+        const auto p=containing_pixel(grid,az[j]/-2+21,21);ASSERT_TRUE(p);
+        projected.push_back(model.at(az[j],0).value);
+        members.push_back({j,*p,.1+double(j*j)});
+        EXPECT_DOUBLE_EQ(projected.back(),raster[*p]);
+    }
+    const auto op=ForwardMapOperator::resolve(grid,"exact-domain",az.size(),members,{0.,{}});
+    const auto mapped=op.apply("exact-domain",projected);
+    for(std::size_t j=0;j<op.output_rows().size();++j)
+        EXPECT_NEAR(mapped.signal[j],raster[op.output_rows()[j]],1e-12);
+    EXPECT_NE(op.normalization()[840],double(op.contributing_hits()[840]));
+}

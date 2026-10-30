@@ -1,3 +1,19 @@
+## Weighted POINT recovery diagnostic implemented — 2026-10-30
+
+Grant approved implementation and owner-run preparation of the five-case152418
+plan. The [implementation work order](../validation/weighted_point_recovery_plan_2026-10-30/IMPLEMENTATION_WORK_ORDER.md)
+records the signed native diagnostic interface, one-use seed, immutable parent
+hashes, actual weighted MAP reference checks, fixed-domain measurements and bounded
+runner. Noise-weighting rules and2″ grid remain unchanged. Local synthetic/build,
+config and broader checks pass; independent exact-source review and immutable
+runtime/trial preparation are final gates. No observation processing occurred.
+
+Deleted CAL transport requires one original-executable, exact-hash input restoration
+in the owner's future shell run, followed by at most54 map-cycle invocations.
+Archived reductions stay untouched. The runner never retries, tunes or continues
+past M10, and stops the matrix on reference mismatch. Scientific release thresholds
+remain unset; execution completion will not certify source recovery or calibration.
+
 ## Weighted POINT source-recovery test defined — 2026-10-30
 
 Grant requested a bounded current-route test recovered from September25, retaining

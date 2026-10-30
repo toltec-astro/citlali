@@ -5,6 +5,7 @@
 #include <citlali/core/pipeline/ptc_empirical_map_handoff.h>
 #include <citlali/core/pipeline/val_empirical_map_handoff.h>
 #include "point_weighted_bindings.h"
+#include "point_recovery_bindings.h"
 namespace {
 const std::array<std::string,3> weighted_arrays{"a1100","a1400","a2000"};
 const std::array<double,3> weighted_beams{5.,7.5,10.}, weighted_source_radii{35.,42.5,50.};
@@ -173,13 +174,34 @@ YAML::Node point_noise_record(const PtcDetectorNoiseEvidence &e) {
     point_number(n,"cleaning_coefficient",e.cleaning_coefficient.value_or(NAN));point_number(n,"map_coefficient",e.map_coefficient.value_or(NAN));
     n["reference_reason"]=e.reference_reason;n["remaining_reason"]=e.remaining_reason;return n;
 }
+// Diagnostic rasters are separately authenticated signed source operands, not
+// ordinary threshold-selected source publications. The native FRUIT owner
+// retains the same AltAz containing-pixel projection used by ordinary feedback.
+FruitOffsetModel point_recovery_raster(const YAML::Node &binding,MapFileLedger &ledger,
+    const std::string &array) {
+    const auto path=checked_file(binding);const auto sha=ledger.bind(path);
+    const auto n=YAML::LoadFile(path.string());
+    require(n["schema"].as<std::string>()=="citlali-point-recovery-raster-v1" &&
+        n["array"].as<std::string>()==array && n["frame"].as<std::string>()=="delta-source-AltAz" &&
+        n["unit"].as<std::string>()=="mJy/nominal beam","recovery raster identity differs");
+    const auto values=n["values"].as<std::vector<double>>();
+    require(values.size()==1681,"recovery raster shape differs");
+    std::vector<std::uint8_t> valid(1681,1);
+    for(std::size_t i=0;i<values.size();++i) {
+        const double x=(20.-double(i%41))*2.,y=(double(i/41)-20.)*2.;
+        require(std::isfinite(values[i]) && (std::hypot(x,y)<36. || values[i]==0.),
+            "recovery raster nonfinite or outside prescribed taper");
+    }
+    return FruitOffsetModel("sha256:"+sha,{41,41,"recovery-grid:"+sha},21,21,-2,2,values,valid,40.);
+}
 int execute_weighted_point(const fs::path &input,const fs::path &output) {
     require(output.is_absolute() && !fs::exists(output),"weighted POINT needs a fresh absolute output");
     const fs::path staging=output.string()+".pending";require(!fs::exists(staging),"weighted POINT pending output exists");
     MapFileLedger ledger;const auto request_sha=ledger.bind(input);const auto request=YAML::LoadFile(input.string());
-    const std::set<std::string> fields{"schema","stage","effective_config","networks","health","cycle_index","models","verbose","weighting_control"};
+    const std::set<std::string> fields{"schema","stage","effective_config","networks","health","cycle_index","models","verbose","weighting_control","recovery"};
     for(const auto &e:request)require(fields.contains(e.first.as<std::string>()),"weighted POINT unknown request field");
     require(request["schema"].as<std::string>()=="citlali-configured-weighted-point-v1","weighted POINT schema differs");
+    require(!request["recovery"] || request["stage"].as<std::string>()=="cycle","recovery cannot change health");
     const auto stage=request["stage"].as<std::string>();require(stage=="health" || stage=="cycle","weighted POINT unknown stage");
     const auto config_path=checked_file(request["effective_config"]);const auto config_sha=ledger.bind(config_path);const auto config=YAML::LoadFile(config_path.string());
     const auto cfg=config["successor"];require(cfg["schema"].as<std::string>()=="citlali-point-v2" && cfg["migration"].as<std::string>()=="replace-legacy-point-controls-v2" &&
@@ -213,6 +235,18 @@ int execute_weighted_point(const fs::path &input,const fs::path &output) {
     const auto health=point_restore_health(health_record,threshold);require(health->evidence_handle()->networks().size()==networks.size(),"POINT health network cohort differs");
     const int cycle=request["cycle_index"].as<int>();require(cycle>=0 && (cycle==0 || (cfg["feedback"]["enabled"].as<bool>() && cycle<=cfg["feedback"]["max_iters"].as<int>())),"POINT cycle outside configured budget");
     require((cycle==0 && (!request["models"] || request["models"].size()==0)) || (cycle>0 && request["models"].size()==3),"POINT feedback model set differs");
+    std::string recovery_role,recovery_sha;YAML::Node recovery;
+    if(request["recovery"]) {
+        const auto path=checked_file(request["recovery"]);recovery_sha=ledger.bind(path);
+        recovery=YAML::LoadFile(path.string());
+        citlali::cli::detail::validate_point_recovery(recovery,networks.front().saved.observation_identity,config_sha,health_sha,cycle);
+        require(weighting==PointWeighting::inverse_noise && pixel==2. && cut==.15 &&
+            cfg["feedback"]["max_iters"].as<int>()==10 && threshold==.1 &&
+            cfg["cleaning"]["ranks"]["a1100"].as<int>()==3 &&
+            cfg["cleaning"]["ranks"]["a1400"].as<int>()==4 &&
+            cfg["cleaning"]["ranks"]["a2000"].as<int>()==6,"recovery recipe differs");
+        recovery_role=recovery["case"].as<std::string>();
+    }
     YAML::Node diagnostics;diagnostics["schema"]="citlali-weighted-point-cycle-v1";diagnostics["cycle_index"]=cycle;
     diagnostics["frozen_health_identity"]="sha256:"+health_sha;diagnostics["coefficient_family"]=std::string(PtcEmpiricalCoefficients::family_for(weighting));
     diagnostics["normalization_interpretation"]=std::string(PtcEmpiricalCoefficients::interpretation);diagnostics["request_sha256"]=request_sha;
@@ -229,6 +263,20 @@ int execute_weighted_point(const fs::path &input,const fs::path &output) {
         plan["frozen_health_identity"]="sha256:"+health_sha;plan["array"]=weighted_arrays[array];plan["observation"]=networks.front().saved.observation_identity;
         if(comparison)plan["weighting_control"]=control;
         plan["target_grid_policy"]="all science-supported original CAL coordinates, frozen before optical and noise exclusions";
+        std::optional<FruitOffsetModel> injected;
+        std::vector<FruitOffsetModel> reference_models;
+        std::vector<std::vector<double>> reference_values;
+        if(request["recovery"]) {
+            injected.emplace(point_recovery_raster(recovery["arrays"][weighted_arrays[array]],ledger,weighted_arrays[array]));
+            plan["diagnostic_recovery"]["identity"]="sha256:"+recovery_sha;
+            plan["diagnostic_recovery"]["case"]=recovery_role;
+            plan["diagnostic_recovery"]["seed_applied"]=recovery_role=="SEED" && cycle==1;
+            if(recovery_role=="REF") {
+                for(const auto &ref:recovery["weighted_references"][weighted_arrays[array]])
+                    reference_models.push_back(point_recovery_raster(ref,ledger,weighted_arrays[array]));
+                reference_values.resize(reference_models.size());
+            }
+        }
         if(model)plan["source_model"]=model->identity();else plan["source_model"]="M0:zero-operand";
         auto frame=plan["WCS"];frame["ASTFRAME"]="delta-source-AltAz";frame["CTYPE1"]="AZOFFSET";frame["CTYPE2"]="ELOFFSET";frame["CUNIT1"]="arcsec";frame["CUNIT2"]="arcsec";
         frame["CRPIX1"]=wcs.crpix1;frame["CRPIX2"]=wcs.crpix2;frame["CDELT1"]=3600*wcs.cdelt1_deg;frame["CDELT2"]=3600*wcs.cdelt2_deg;frame["CRVAL1"]=0.;frame["CRVAL2"]=0.;frame["rows"]=wcs.rows;frame["columns"]=wcs.columns;
@@ -237,9 +285,24 @@ int execute_weighted_point(const fs::path &input,const fs::path &output) {
             for(const auto &segment:n.segments) {
                 const auto rows=segment.slots.size(),cols=s.detectors.size();PtcMatrix original(rows,cols),operand=PtcMatrix::Zero(rows,cols);
                 PtcMask eligible(rows,cols),source_free(rows,cols),model_supported=PtcMask::Ones(rows,cols);
+                PtcMatrix added;PtcMask injection_supported;
+                if(injected) {added=PtcMatrix::Zero(rows,cols);injection_supported=PtcMask::Ones(rows,cols);}
+                std::size_t source_free_injected=0;double source_free_power=0.;
                 for(std::size_t t=0;t<rows;++t)for(std::size_t d=0;d<cols;++d) {
                     const auto slot=segment.slots[t];original(t,d)=n.optical.values(slot,d);eligible(t,d)=n.optical.eligible(slot,d) && decisions[d].retained();source_free(t,d)=n.optical.source_free(slot,d);
+                    if(injected && eligible(t,d)) {
+                        const auto q=injected->at(3600*n.coordinates(slot,2*d),3600*n.coordinates(slot,2*d+1));
+                        injection_supported(t,d)=q.support!=FruitModelSupport::unavailable;
+                        require(injection_supported(t,d),"recovery projection unavailable on eligible original sample");
+                        added(t,d)=q.value;
+                        if(source_free(t,d) && q.value!=0.) {++source_free_injected;source_free_power+=q.value*q.value;}
+                    }
                     if(model && eligible(t,d)) {const auto p=model->at(3600*n.coordinates(slot,2*d),3600*n.coordinates(slot,2*d+1));operand(t,d)=p.value;model_supported(t,d)=p.support!=FruitModelSupport::unavailable;}
+                }
+                if(injected) {
+                    if(recovery_role=="SEED" && cycle==1) operand=fruit_injected_parent(operand,eligible,added,injection_supported);
+                    else if(recovery_role=="CORE+" || recovery_role=="CORE-" || recovery_role=="SHOULDER")
+                        original=fruit_injected_parent(original,eligible,added,injection_supported);
                 }
                 const auto identity="sha256:"+request_sha+":network="+std::to_string(s.network)+":segment="+std::to_string(si++);
                 const auto residual=FruitResidual::subtract(identity+":CAL-minus-model",original,eligible,std::move(operand),std::move(model_supported));
@@ -249,6 +312,13 @@ int execute_weighted_point(const fs::path &input,const fs::path &output) {
                     "scan="+std::to_string(segment.scan)+":"+identity,identity+":retained",s.network,array,solver.rank,s.detectors,segment.slots};
                 const auto q=PtcMapPublication::bind_verified_segment(std::move(id),std::move(result.total),noise.cleaned.causes,noise.fit.converged);
                 std::vector<PtcEmpiricalDetectorRecord> records;YAML::Node evidence;evidence["identity"]=identity;evidence["network"]=s.network;evidence["scan"]=segment.scan;
+                if(injected) {
+                    evidence["recovery_source_free_nonzero"]=source_free_injected;
+                    point_number(evidence,"recovery_source_free_squared_signal",source_free_power);
+                    citlali::utils::Sha256 parent_hash;
+                    parent_hash.update(reinterpret_cast<const std::uint8_t *>(original.data()),std::size_t(original.size())*sizeof(double));
+                    evidence["recovery_parent_sha256"]=parent_hash.finish();
+                }
                 evidence["rank"]=solver.rank;evidence["converged"]=noise.fit.converged;evidence["stopping_reason"]=noise.fit.stopping_reason;evidence["retained_samples"]=q->retained();
                 std::size_t unavailable=0;double lowest=INFINITY,highest=0;
                 for(std::size_t d=0;d<cols;++d) {
@@ -261,7 +331,7 @@ int execute_weighted_point(const fs::path &input,const fs::path &output) {
                 }
                 evidence["health_retained_without_map_weight"]=unavailable;point_number(evidence,"map_weight_min",lowest);point_number(evidence,"map_weight_max",highest>0?highest:NAN);
                 PtcMask mapped_support;
-                if(comparison) {
+                if(comparison || injected) {
                     mapped_support=PtcMask::Zero(rows,cols);
                     evidence["input_support_sha256"]=point_support_digest(eligible);
                     evidence["source_free_sha256"]=point_support_digest(source_free);
@@ -273,7 +343,7 @@ int execute_weighted_point(const fs::path &input,const fs::path &output) {
                     evidence["ordered_domain_sha256"]=domain.finish();
                 }
                 if(!q->retained()) {
-                    if(comparison)evidence["mapped_support_sha256"]=point_support_digest(mapped_support);
+                    if(comparison || injected)evidence["mapped_support_sha256"]=point_support_digest(mapped_support);
                     plan["segments"].push_back(evidence);continue;
                 }
                 const auto g=PtcEmpiricalCoefficients::publish(q,identity+":coefficients",identity+":noise",std::move(records),q->identity().support_reference,weighting);
@@ -283,10 +353,21 @@ int execute_weighted_point(const fs::path &input,const fs::path &output) {
                     const auto weight=g->value(decision.coefficient_qc,t,d);require(weight.has_value(),"POINT admitted coefficient absent");
                     const auto [x,y]=wcs.continuous_pixel(n.coordinates(slot,2*d),n.coordinates(slot,2*d+1));
                     if(const auto p=mapmaking::containing_pixel(grid,x,y)) {members.push_back({values.size(),*p,*weight});values.push_back(q->values()(t,d));
-                        if(comparison)mapped_support(t,d)=1;
+                        if(comparison || injected)mapped_support(t,d)=1;
+                        for(std::size_t k=0;k<reference_models.size();++k) {
+                            const auto projected=reference_models[k].at(3600*n.coordinates(slot,2*d),3600*n.coordinates(slot,2*d+1));
+                            // Independent full-grid cell-center evaluation checks the
+                            // AST-to-source raster association, including half ties.
+                            const double ax=(double(*p%grid.columns)+1-wcs.crpix1)*3600*wcs.cdelt1_deg;
+                            const double ay=(double(*p/grid.columns)+1-wcs.crpix2)*3600*wcs.cdelt2_deg;
+                            const auto expected=reference_models[k].at(ax,ay);
+                            require(projected.support!=FruitModelSupport::unavailable && expected.support!=FruitModelSupport::unavailable &&
+                                projected.value==expected.value,"recovery projection does not match MAP cell");
+                            reference_values[k].push_back(projected.value);
+                        }
                         if(!contributed[d]){contributed[d]=true;++contributors;}}
                 }
-                if(comparison)evidence["mapped_support_sha256"]=point_support_digest(mapped_support);
+                if(comparison || injected)evidence["mapped_support_sha256"]=point_support_digest(mapped_support);
                 plan["segments"].push_back(evidence);
             }
             for(std::size_t d=0;d<contributed.size();++d)if(contributed[d])plan["contributing_channels"][std::to_string(s.network)].push_back(s.channels[d]);
@@ -294,6 +375,22 @@ int execute_weighted_point(const fs::path &input,const fs::path &output) {
         const std::string domain="sha256:"+request_sha+":"+weighted_arrays[array]+":ordered-physical-PTC-support";
         const auto op=mapmaking::ForwardMapOperator::resolve(grid,domain,values.size(),std::move(members),{cut,{}});
         require(!op.output_rows().empty(),"POINT required array has no supported weighted map: "+weighted_arrays[array]);const auto result=op.apply(domain,values);
+        for(std::size_t k=0;k<reference_models.size();++k) {
+            const auto mapped=op.apply(domain,reference_values[k]);double error=0.;
+            for(std::size_t j=0;j<op.output_rows().size();++j) {
+                const auto p=op.output_rows()[j];
+                const double ax=(double(p%grid.columns)+1-wcs.crpix1)*3600*wcs.cdelt1_deg;
+                const double ay=(double(p/grid.columns)+1-wcs.crpix2)*3600*wcs.cdelt2_deg;
+                const auto expected=reference_models[k].at(ax,ay).value;
+                error=std::max(error,std::abs(mapped.signal[j]-expected));
+                require(op.normalization()[p]>0 && std::abs(mapped.signal[j]-expected)<=1e-10*std::max(1.,std::abs(expected)),
+                    "weighted injection MAP identity failed");
+            }
+            auto verified=YAML::Node();verified["raster"]=reference_models[k].identity();
+            verified["actual_ref_members"]=op.members().size();verified["supported_pixels"]=op.output_rows().size();
+            verified["max_absolute_error"]=error;verified["numerical_rtol_floor_one"]=1e-10;
+            plan["diagnostic_recovery"]["weighted_references"].push_back(verified);
+        }
         write_yaml(directory/"plan.yaml",plan);map_fits(directory/"map.fits",wcs,op,result,weighted_arrays[array],weighted_beams[array],true);
         YAML::Node bundle;bundle["schema"]="citlali-forward-map-bundle-v1";bundle["role"]="SCI-MAP:base_observation_map@1";bundle["outcome"]="success";
         bundle["array"]=weighted_arrays[array];bundle["observation"]=networks.front().saved.observation_identity;bundle["WCS"]=frame;

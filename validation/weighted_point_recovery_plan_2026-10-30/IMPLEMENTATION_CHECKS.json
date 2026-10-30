@@ -1,0 +1,69 @@
+{
+  "status": "local checks passed; preparation and independent review pending",
+  "focused": "280 passed",
+  "baseline": "207 passed plus 137 subtests",
+  "ctest": "1371 passed; one pre-existing disabled MapFitterLifecycle.ExactProductSequence test",
+  "native_build": "citlali_cli, citlali_fruit_cycle_test, citlali_point_weighted_bindings_test built",
+  "config_preflight": "--require-all passed",
+  "environment": "existing local fallback; supplemental, no Unity/Spack or observed reductions",
+  "repaired_test_failure": "Optional timeout argument initially broke five subprocess mocks; preserve old call shape when timeout absent. All 280 focused tests now pass.",
+  "records": [
+    {
+      "path": "/tmp/point-recovery-focused-final.log",
+      "sha256": "dcb35f5e984281780874515b09d70ea8d7daf25560686efa1d0266506242cb02",
+      "tail": [
+        "........................................................................ [ 25%]",
+        "........................................................................ [ 51%]",
+        "........................................................................ [ 77%]",
+        "................................................................         [100%]",
+        "280 passed in 24.00s"
+      ]
+    },
+    {
+      "path": "/tmp/point-recovery-baseline-tests.log",
+      "sha256": "815da47f5597dc48b80f72053b9f72d955f8ed607a68352e8d0dfe121a53b622",
+      "tail": [
+        "...................................................................................................................... [ 57%]",
+        ".............................................. [ 79%]",
+        "...........................................                 [100%]",
+        "207 passed, 137 subtests passed in 23.87s"
+      ]
+    },
+    {
+      "path": "/tmp/point-recovery-config-preflight.log",
+      "sha256": "3cddbe843edaacc4158ab28ac8877e3ec2bbf4dcd49b43380b266e7eff6d1671",
+      "tail": [
+        "KIDs external boundary: types=4 provenance=required-atomic-v1 drift=False",
+        "+ /Users/gwilson/tolteca/bin/python tools/config/audit_config_source_manifest.py --json-out /private/tmp/citlali_config_preflight/config_source_manifest.json --markdown-out /private/tmp/citlali_config_preflight/config_source_manifest.md --fail-on-drift",
+        "config source manifest: drift=False",
+        "+ /Users/gwilson/tolteca/bin/python tools/config/audit_raw_timestream_boundary.py --json-out /private/tmp/citlali_config_preflight/raw_timestream_boundary.json --markdown-out /private/tmp/citlali_config_preflight/raw_timestream_boundary.md --fail-on-drift",
+        "raw config boundary: paths=171 raw=169 polarimetry=2 parser_retired=True typed_request_reads=1 typed_authority_inits=1 legacy_parser_calls=0 legacy_oracle_mirrors=0 polarimetry_reads=1 polarimetry_adapters=1 typed_reader_coverage=169/169 serialized=169/169 adapted=169/169 drift=False",
+        "+ /Users/gwilson/tolteca/bin/python tools/config/audit_raw_timestream_execution_reads.py --json-out /private/tmp/citlali_config_preflight/raw_timestream_execution_reads.json --markdown-out /private/tmp/citlali_config_preflight/raw_timestream_execution_reads.md --fail-on-drift --fail-on-review",
+        "raw execution read census: records=48 digest=c9d5084148eec6a435c8228b1c74722e1181e83c59048083ebfb6aaf1dce0d6c review_required=0 drift=False classifications={'executor_operation': 25, 'observation_state': 7, 'output_or_realized_state': 9, 'raw_policy_read': 3, 'separate_polarimetry_domain': 4}",
+        "config preflight reports written under /private/tmp/citlali_config_preflight"
+      ]
+    },
+    {
+      "path": "/tmp/point-recovery-ctest.log",
+      "sha256": "214e73edbd09e79a9e01921b0f1853d64dc512150e04b8d51dc1fcedbb74498d",
+      "tail": [
+        "1372/1372 Test #1234: citlali::point_rtc_source_probe.native_midpoints_AST_pixels_and_signed_CAL_preserve_original_pair ......................................................................   Passed    7.28 sec",
+        "",
+        "100% tests passed, 0 tests failed out of 1371",
+        "",
+        "Total Test time (real) =   7.57 sec",
+        "",
+        "The following tests did not run:",
+        "\t558 - citlali::MapFitterLifecycle.ExactProductSequence (Disabled)"
+      ]
+    },
+    {
+      "path": "/tmp/point-recovery-cli-retest.log",
+      "sha256": "3ecde35ff2460fb5407af39de5e3a5007c5f94c52a6e99b133f6aade8c32602e",
+      "tail": [
+        ".............                                                            [100%]",
+        "13 passed in 2.54s"
+      ]
+    }
+  ]
+}

@@ -64,7 +64,7 @@ def reserve_reduction(output):
             number += 1
 
 
-def native_call(binary, request, dest, *, terminal, workers=1, method=None, verbose=False):
+def native_call(binary, request, dest, *, terminal, workers=1, method=None, verbose=False, timeout=None):
     dest.mkdir()
     config = {'schema': 'citlali-development-v1', 'input': bind(request),
               'output': str(dest / 'products'), 'terminal': terminal,
@@ -82,7 +82,8 @@ def native_call(binary, request, dest, *, terminal, workers=1, method=None, verb
     log_path = dest / 'native.log'
     with log_path.open('w') as log:
         result = subprocess.run([str(binary), '-l', 'debug' if verbose else 'warning', str(path)],
-                                env=env, stdout=log, stderr=subprocess.STDOUT)
+                                env=env, stdout=log, stderr=subprocess.STDOUT,
+                                **({"timeout": timeout} if timeout is not None else {}))
     elapsed = time.monotonic() - started
     # No process sampler or repeated output-tree inventory in ordinary mode.
     # Preserve warnings/errors in the user-facing launch log as well as disk.

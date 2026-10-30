@@ -168,3 +168,20 @@ def test_verbose_only_changes_diagnostics(tmp_path):
         for one, two in zip(a, b):
             assert np.array_equal(one.data, two.data, equal_nan=True)
     assert {p.name for p in (tmp_path / 'verbose').glob('*.npz')} == {'C0.npz', 'BASE.npz'}
+
+
+def test_recovery_measurement_only_uses_frozen_context(tmp_path, monkeypatch):
+    path = native_map(tmp_path / 'map', 'a1100', step=2.)
+    context, initial = feedback.initialize(path, tmp_path / 'initial')
+    assert initial['status'] == 'ready'
+    def forbidden(*args, **kwargs):
+        raise AssertionError('measurement-only must not learn or select feedback')
+    monkeypatch.setattr(feedback, 'learn', forbidden)
+    monkeypatch.setattr(feedback, 'candidate', forbidden)
+    with fits.open(path) as h:
+        zero = np.zeros(h[0].data.shape)
+    ordinary = feedback.measure_only(path, context)
+    added = feedback.measure_only(path, context, zero)
+    assert ordinary['accepted_parameters'] == added['accepted_parameters']
+    with pytest.raises(ValueError, match='addition invalid'):
+        feedback.measure_only(path, context, np.zeros((2, 2)))

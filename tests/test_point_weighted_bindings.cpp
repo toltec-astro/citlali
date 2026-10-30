@@ -115,3 +115,28 @@ TEST(PointWeightedBindings, HealthDecisionRequiresStateAndReason) {
     detector.remove("reason");EXPECT_THROW(validate_point_health_decision(detector,"weak_response","reason"),std::invalid_argument);
 }
 } // namespace
+
+#include "../src/citlali/cli/point_recovery_bindings.h"
+TEST(PointWeightedBindings, RecoveryCaseLineageAndSeedLifetime) {
+    YAML::Node n=YAML::Load("schema: citlali-point-recovery-v1\ncase: SEED\nobservation: obs:152418_0_2\nconfig_sha256: cfg\nhealth_sha256: health\narrays: {a1100: {}, a1400: {}, a2000: {}}\n");
+    using citlali::cli::detail::validate_point_recovery;
+    EXPECT_THROW(validate_point_recovery(n,"obs:152418_0_2","cfg","health",0),std::invalid_argument);
+    EXPECT_NO_THROW(validate_point_recovery(n,"obs:152418_0_2","cfg","health",1));
+    EXPECT_THROW(validate_point_recovery(n,"obs:152418_0_2","cfg","health",11),std::invalid_argument);
+    EXPECT_THROW(validate_point_recovery(n,"other","cfg","health",1),std::invalid_argument);
+    n["case"]="unbounded";
+    EXPECT_THROW(validate_point_recovery(n,"obs:152418_0_2","cfg","health",1),std::invalid_argument);
+    n["case"]="CORE-";
+    EXPECT_NO_THROW(validate_point_recovery(n,"obs:152418_0_2","cfg","health",0));
+    n["unexpected"]=true;
+    EXPECT_THROW(validate_point_recovery(n,"obs:152418_0_2","cfg","health",0),std::invalid_argument);
+}
+TEST(PointWeightedBindings, RecoveryReferenceRequiresBothWeightedTruths) {
+    YAML::Node n=YAML::Load("schema: citlali-point-recovery-v1\ncase: REF\nobservation: obs:152418_0_2\nconfig_sha256: cfg\nhealth_sha256: health\narrays: {a1100: {}, a1400: {}, a2000: {}}\n");
+    using citlali::cli::detail::validate_point_recovery;
+    EXPECT_THROW(validate_point_recovery(n,"obs:152418_0_2","cfg","health",0),std::invalid_argument);
+    for(const auto *a:{"a1100","a1400","a2000"}) n["weighted_references"][a]=YAML::Load("[{}, {}]");
+    EXPECT_NO_THROW(validate_point_recovery(n,"obs:152418_0_2","cfg","health",0));
+    n["case"]="CORE+";
+    EXPECT_THROW(validate_point_recovery(n,"obs:152418_0_2","cfg","health",0),std::invalid_argument);
+}
