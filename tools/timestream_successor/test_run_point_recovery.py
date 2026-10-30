@@ -63,6 +63,9 @@ class RunnerTest(unittest.TestCase):
             stage.mkdir()
             (stage / "products").mkdir()
             (stage / "products/cycle.yaml").write_text("fixture")
+            if failure == "final-overshoot" and (role, c) == ("SEED", 10):
+                with (stage / "large-fixture").open("wb") as f:
+                    f.truncate(100000001)
             return dict(seconds=0)
 
         guard = dict(
@@ -93,6 +96,11 @@ class RunnerTest(unittest.TestCase):
             (stage / "measurements.json").write_text("{}")
             return {a: dict(total={}) for a in ARRAYS}
 
+        def accounting(*args):
+            if failure == "accounting-overshoot":
+                with (root / "output/large-accounting-fixture").open("wb") as f:
+                    f.truncate(100000001)
+
         with contextlib.ExitStack() as stack:
             mocks = {
                 "check": lambda m: None,
@@ -109,7 +117,7 @@ class RunnerTest(unittest.TestCase):
                 "load_map": lambda *args: (np.zeros((1, 1)), np.ones((1, 1), bool)),
                 "measurements": lambda *args: {},
                 "increments": lambda *args: {},
-                "final_accounting": lambda *args: None,
+                "final_accounting": accounting,
             }
             for name, fn in mocks.items():
                 stack.enter_context(patch.object(runner, name, fn))
@@ -151,6 +159,20 @@ class RunnerTest(unittest.TestCase):
         for role, c, q in calls:
             self.assertEqual(q["weighting_control"], "inverse-noise")
             self.assertEqual(len(q["models"]), 0 if c == 0 else 3)
+
+    def test_last_native_stage_budget_violation_is_global_stop(self):
+        calls, _, _, record = self.run_fixture("final-overshoot")
+        self.assertEqual(len(calls), 54)
+        self.assertEqual(record["status"], "stopped")
+        self.assertEqual(record["cases"]["SEED"]["status"], "stopped")
+        self.assertIn("storage ceiling", record["cases"]["SEED"]["error"])
+
+    def test_terminal_accounting_budget_violation_is_global_stop(self):
+        calls, _, _, record = self.run_fixture("accounting-overshoot")
+        self.assertEqual(len(calls), 54)
+        self.assertEqual(record["status"], "stopped")
+        self.assertEqual(record["phase"], "terminal_accounting")
+        self.assertIn("storage ceiling", record["error"])
 
     def test_reference_failure_blocks_matrix(self):
         calls, _, _, record = self.run_fixture(("REF", 2))

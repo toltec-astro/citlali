@@ -64,6 +64,48 @@
         ".............                                                            [100%]",
         "13 passed in 2.54s"
       ]
+    },
+    {
+      "path": "/tmp/point-recovery-repair-tests.log",
+      "sha256": "c2b742523d2e10b2b1a2dc7ad2433aac6a81f31126995c4d94a607b8c61ec931",
+      "tail": [
+        ".....                                                                    [100%]",
+        "5 passed in 16.72s"
+      ]
+    },
+    {
+      "path": "/tmp/point-recovery-repair-ctest.log",
+      "sha256": "c44be2e5a2dfb0bd800a64665b896c1ed03f2dad659a87676a985b5f0f689f8a",
+      "tail": [
+        "1373/1373 Test #1234: citlali::point_rtc_source_probe.native_midpoints_AST_pixels_and_signed_CAL_preserve_original_pair ......................................................................   Passed    7.30 sec",
+        "",
+        "100% tests passed, 0 tests failed out of 1372",
+        "",
+        "Total Test time (real) =   7.85 sec",
+        "",
+        "The following tests did not run:",
+        "\t558 - citlali::MapFitterLifecycle.ExactProductSequence (Disabled)"
+      ]
+    },
+    {
+      "path": "/tmp/point-recovery-repair-build.log",
+      "sha256": "dca0153232d752b297571aa1b60112a2f2e127cadf8ebfc15e2963a707968dad",
+      "tail": [
+        "[ 38%] Built target gitversion_header_citlali",
+        "[ 38%] Built target gtest_main",
+        "[ 84%] Built target ceres",
+        "[ 88%] Built target kids",
+        "[ 98%] Built target citlali",
+        "[ 98%] Building CXX object tests/CMakeFiles/citlali_point_weighted_bindings_test.dir/test_point_weighted_bindings.cpp.o",
+        "[ 98%] Linking CXX executable ../bin/citlali_point_weighted_bindings_test",
+        "[100%] Built target citlali_point_weighted_bindings_test"
+      ]
     }
-  ]
+  ],
+  "review_repairs": {
+    "runner": "5 synthetic tests passed, including both terminal storage overshoots",
+    "native": "11 binding tests and 11 FRUIT tests passed within CTest",
+    "ctest": "1372 passed; one pre-existing disabled lifecycle test",
+    "build": "citlali_cli and binding target rebuilt"
+  }
 }

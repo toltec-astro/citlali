@@ -336,6 +336,7 @@ def execute(manifest):
                     ref_models = copy.deepcopy(models)
                     ref_entry = copy.deepcopy(entry)
                 write_json(root / "RUN.json", record)
+                budget()
                 print(f"{role} M{cycle}: complete", flush=True)
             row["status"] = "completed"
         except Exception as error:
@@ -348,14 +349,22 @@ def execute(manifest):
                 write_json(root / "RUN.json", record)
                 raise
         write_json(root / "RUN.json", record)
-    final_accounting(root, rows, geometries, truths)
-    record.update(
-        status="completed"
-        if len(rows) == 5 and all(r["status"] == "completed" for r in rows.values())
-        else "completed_with_stops",
-        seconds=time.monotonic() - start,
-    )
-    write_json(root / "RUN.json", record)
+    try:
+        budget()
+        final_accounting(root, rows, geometries, truths)
+        budget()
+        record.update(
+            status="completed"
+            if len(rows) == 5 and all(r["status"] == "completed" for r in rows.values())
+            else "completed_with_stops",
+            seconds=time.monotonic() - start,
+        )
+        write_json(root / "RUN.json", record)
+        budget()
+    except Exception as error:
+        record.update(status="stopped", error=str(error), phase="terminal_accounting")
+        write_json(root / "RUN.json", record)
+        raise
     if record["status"] != "completed":
         raise RuntimeError("one or more recovery cases stopped")
 

@@ -93,3 +93,13 @@ Scientific-contract baseline and existing source/feedback policy remain unchange
 No integration, push, Unity, production, calibration issuance, threshold change,
 new candidate policy, second observation, new source fit on saved observations,
 or observation processing during this implementation/preparation turn.
+
+## Independent-review repairs
+
+The first exact-source review identified terminal budget enforcement and direct
+native seed-expiry test coverage gaps. Both remain within the approved milestone:
+post-stage/terminal budget checks preserve stopped status, and the actual native
+intervention switch is shared with tiny matrix tests. No change to the five-case
+scientific definitions, noise rules, grid, thresholds or invocation budget.
+See IMPLEMENTATION_REVIEW_76c6237a0.md; its repair-required verdict does not transfer
+to the repaired candidate.

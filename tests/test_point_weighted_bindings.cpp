@@ -140,3 +140,27 @@ TEST(PointWeightedBindings, RecoveryReferenceRequiresBothWeightedTruths) {
     n["case"]="CORE+";
     EXPECT_THROW(validate_point_recovery(n,"obs:152418_0_2","cfg","health",0),std::invalid_argument);
 }
+TEST(PointWeightedBindings, ActualNativeSeedSwitchExpiresAndSignedParentsAreFresh) {
+    using namespace citlali::pipeline;
+    using citlali::cli::detail::apply_point_recovery;
+    PtcMatrix parent(2,2),ordinary(2,2),addition(2,2);
+    parent<<10,20,30,40;ordinary<<1,2,3,4;addition<<.25,.5,.75,1.;
+    const auto mask=PtcMask::Ones(2,2).eval();
+    auto y=parent,m=ordinary;
+    apply_point_recovery("SEED",1,y,m,mask,addition,mask);
+    EXPECT_TRUE(y==parent);EXPECT_TRUE(m==ordinary+addition);
+    PtcMatrix fresh_y=parent,replacement=ordinary*2.;
+    apply_point_recovery("SEED",2,fresh_y,replacement,mask,addition,mask);
+    EXPECT_TRUE(fresh_y==parent);EXPECT_TRUE(replacement==ordinary*2.);
+    for(const auto sign:{-1.,1.}) {
+        y=parent;m=ordinary;
+        apply_point_recovery(sign<0?"CORE-":"CORE+",2,y,m,mask,sign*addition,mask);
+        EXPECT_TRUE(y==parent+sign*addition);EXPECT_TRUE(m==ordinary);
+        const auto residual=FruitResidual::subtract("fixture",y,mask,m,mask);
+        EXPECT_TRUE(residual->values()==parent+sign*addition-ordinary);
+        EXPECT_TRUE(residual->operand()==ordinary); // restore only what was subtracted
+    }
+    y=parent;m=ordinary;
+    apply_point_recovery("REF",0,y,m,mask,addition,mask);
+    EXPECT_TRUE(y==parent);EXPECT_TRUE(m==ordinary);
+}

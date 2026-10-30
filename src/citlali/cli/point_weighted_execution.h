@@ -300,9 +300,8 @@ int execute_weighted_point(const fs::path &input,const fs::path &output) {
                     if(model && eligible(t,d)) {const auto p=model->at(3600*n.coordinates(slot,2*d),3600*n.coordinates(slot,2*d+1));operand(t,d)=p.value;model_supported(t,d)=p.support!=FruitModelSupport::unavailable;}
                 }
                 if(injected) {
-                    if(recovery_role=="SEED" && cycle==1) operand=fruit_injected_parent(operand,eligible,added,injection_supported);
-                    else if(recovery_role=="CORE+" || recovery_role=="CORE-" || recovery_role=="SHOULDER")
-                        original=fruit_injected_parent(original,eligible,added,injection_supported);
+                    citlali::cli::detail::apply_point_recovery(recovery_role,cycle,
+                        original,operand,eligible,added,injection_supported);
                 }
                 const auto identity="sha256:"+request_sha+":network="+std::to_string(s.network)+":segment="+std::to_string(si++);
                 const auto residual=FruitResidual::subtract(identity+":CAL-minus-model",original,eligible,std::move(operand),std::move(model_supported));
