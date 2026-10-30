@@ -1,3 +1,13 @@
+## Local branch consolidation completed — 2026-10-30
+
+The [owner-approved branch archival](BRANCH_CONSOLIDATION_2026-10-30.md) completed
+104 → 41 → 10 local branches. All 94 retired names are mapped to permanent
+archive refs, plus 12 historical roots recovered from branch logs; independent
+restore and post-operation checks passed. Seven working folders, pointing work,
+4.x/5.x, three stashes and existing recovery evidence remain protected. Historical
+verifiers use isolated restoration of original labels/checkout state. No science
+acceptance, canonical integration, push or remote deletion was performed.
+
 ## Grouped refactor-folder consolidation completed — 2026-10-30
 
 Grant expanded cleanup to grouped retirement after verified local backups and

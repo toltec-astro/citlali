@@ -1,5 +1,9 @@
 # 2026 refactor working-folder consolidation — 2026-10-30
 
+> Later on October 30, Grant separately approved reducing local branch names
+> from 104 to 10. See [branch consolidation](BRANCH_CONSOLIDATION_2026-10-30.md).
+> The folder-preservation statements below describe their completed checkpoint.
+
 Status: grouped retirement completed. **20 working folders became 7: five refactor
 workspaces plus two untouched legacy/performance workspaces.** All 104 local
 branches, three stashes, meaningful history and original recovery evidence remain.

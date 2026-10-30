@@ -115,9 +115,21 @@ contracts or grants integration/production authority.
 The [completed grouped cleanup](REPOSITORY_CONSOLIDATION_2026-10-30.md) retired 13
 historical 2026-refactor working folders after full recovery checks. Seven folders
 remain: five refactor workspaces and two protected legacy/performance workspaces.
-All 104 local branches, three stashes and original recovery evidence remain.
-4.x/5.x source and refs were untouched. Current pointing and its pilot fallback
+At that checkpoint all 104 local branches, three stashes and original recovery
+evidence remained. The later branch consolidation below supersedes that branch
+count. 4.x/5.x source and refs were untouched. Current pointing and its pilot fallback
 remain available; archived historical OOF checks/replays require exact-path
 restoration. Physical consolidation does not change scientific or integration
 acceptance. The October 29 one-folder approval proposal is superseded by Grant's
 October 30 grouped-consolidation directive and completed operation record.
+
+## Local branch consolidation completed — 2026-10-30
+
+The [approved two-batch branch cleanup](BRANCH_CONSOLIDATION_2026-10-30.md) reduced
+104 local branches to 41, then 10. Ninety-four historical names and 12 additional
+commit roots remain preserved by 106 archive refs and an independently restored
+backup. Seven working folders remain; pointing, 4.x/5.x, all stashes, old recovery
+evidence and scientific status are protected. Historical branch-dependent
+verifiers require a separate recovery repository with original names and exact
+historical checkout state. GitHub cleanup is a separate owner-controlled next
+step; the live remote audit and recommendation are in the operation record.
