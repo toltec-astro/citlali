@@ -1,0 +1,64 @@
+{
+  "schema": "citlali-mainline-integration-work-order/v1",
+  "created_utc": "2026-10-30T22:02:15.859229+00:00",
+  "owner": "Grant Wilson",
+  "owner_directive": "Let's do what needs to be done to bring candidate 44171fd3a into refactor-mainline.  I'm hoping we end today with a seriously cleaned up and professional, clear, and understandable code base.",
+  "risk_tier": 2,
+  "purpose": "Integrate the exact reviewed candidate locally and reconcile the documentation entry points without further application changes.",
+  "canonical_base": "e32c4584dec07617d6caa857d39bf13047b6c4b0",
+  "accepted_application_source": "44171fd3a6ba5924f8f4dba0324defe0922c597d",
+  "accepted_application_tree": "82b89c29ce70b2e05f33e9aea02911590cea2ce1",
+  "branch": "codex/pointing-engineering-candidate-20261030",
+  "worktree": "/Users/gwilson/.codex/worktrees/pointing-engineering-candidate-20261030/citlali-refactor",
+  "initial_status": "clean",
+  "wip": "canonical integration operation; no new application implementation slot or worktree",
+  "governance_read": [
+    "doc/governance/ENGINEERING_GOVERNANCE.md",
+    "doc/governance/TIMESTREAM_SUCCESSOR_GOVERNANCE.md",
+    "doc/governance/REVIEW_AND_CONFORMANCE.md"
+  ],
+  "authority": [
+    "doc/CURRENT_STATE.md",
+    "doc/REFACTOR_STATUS.md",
+    "doc/INTEGRATION_LEDGER.md",
+    "doc/ARCHITECTURE.md",
+    "doc/SCIENTIFIC_CONVENTIONS.md",
+    "doc/RETAINED_DEBT.md",
+    "validation/pointing_engineering_candidate_2026-10-30/acceptance-table.json",
+    "validation/pointing_engineering_candidate_2026-10-30/OWNER_ACCEPTANCE.json",
+    "validation/pointing_engineering_candidate_2026-10-30/governance-incorporation-proposal.json",
+    "validation/spack_qualification_2026-10-30/QUALIFICATION.json"
+  ],
+  "scope": [
+    "one documentation-only closure above the accepted source on the existing candidate branch",
+    "existing front-door and build/status documentation clarity",
+    "record incorporation of the existing owner-approved September30 governance amendment without normative edits",
+    "independent exact-closure review",
+    "compare-and-swap fast-forward of local codex/refactor-mainline from exact old tip",
+    "reuse the same physical worktree as canonical checkout after both refs match",
+    "preserve all other refs/workspaces, active pointing, legacy 4.x/5.x and backups"
+  ],
+  "gates": [
+    "authenticated prior exact44171 source/review/Spack seal",
+    "documentation links, JSON, source-equivalence and ledger checks",
+    "refresh native executable provenance after documentation commit, retaining exact44171 executable",
+    "native CTest/baseline/config gate at final closure as executable refresh evidence",
+    "fresh-context read-only exact-SHA three-axis review",
+    "live ancestry, old-ref and preservation comparisons before/after advancement"
+  ],
+  "stop_or_reassess": [
+    "unexpected source, scientific contract, normative governance or default change",
+    "candidate or mainline changed by another process",
+    "required gate fails",
+    "unexpected protected state change"
+  ],
+  "excluded": [
+    "pushes/remote writes",
+    "Unity access",
+    "reductions or frozen-runtime changes",
+    "newer ongoing pointing/handoff commits",
+    "new scientific/calibration/SCIENCE/coadd/production acceptance",
+    "branch/worktree/backup deletion or history rewriting"
+  ],
+  "external_packet": "/Users/gwilson/.codex/visualizations/2026/10/29/01a188f2-4d30-7e60-88a8-956b50bb08cf/citlali-mainline-integration-20261030"
+}

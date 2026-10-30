@@ -1,5 +1,60 @@
 # Citlali Integration Ledger
 
+## Owner-approved local mainline integration — 2026-10-30
+
+Grant directed integration of exact application candidate
+`44171fd3a6ba5924f8f4dba0324defe0922c597d`. The
+[owner acceptance](../validation/mainline_integration_2026-10-30/OWNER_ACCEPTANCE.json)
+and [work order](../validation/mainline_integration_2026-10-30/WORK_ORDER.json) bind
+the source, prior admission table and exact permitted operation. Local canonical
+advances from `e32c4584dec07617d6caa857d39bf13047b6c4b0` to a separately reviewed
+documentation-only child of that source. The literal ref and external completion
+receipt establish actual movement; the prepared record alone does not.
+
+The accepted source retains pointing cutoff `797d013f115e403a30663eb92254082e8e742826`
+and engineering `5c46201057d6b6d1048aac2949a64e9a34e9bad3`. Newer pointing/handoff
+work remains separate and protected. Development, diagnostic and held scopes in
+the admission table remain distinct; integration is not wholesale scientific
+or production acceptance. Mac Spack qualification passes all 44 dependencies,
+1,388 enabled CTests, 207 baseline tests and full configuration preflight, with
+one inherited disabled test and independent review without findings.
+
+The existing September 30 standing development amendment is incorporated with
+its original owner directive, not rewritten. Original governance acceptance
+`06a3ade51c1b3f38887295433d913811bf25cd14` and effectiveness record
+`77507836325eff9f469062d5884481ea37599594` remain in ancestry. Exact normative
+content incorporated here:
+
+| Document | Accepted source | SHA-256 |
+| --- | --- | --- |
+| `doc/governance/ENGINEERING_GOVERNANCE.md` | `06a3ade51c1b3f38887295433d913811bf25cd14` | `70769787ce2ef4b7323cd2a38e221ade4af3310e0ad6b7b682e08cb4e4d61e76` |
+| `doc/governance/REVIEW_AND_CONFORMANCE.md` | `06a3ade51c1b3f38887295433d913811bf25cd14` | `691e6d6250102ef2f4a504397581ee67c5707d898ab20fb8dd9e874c47f99bb1` |
+| `doc/governance/TIMESTREAM_SUCCESSOR_GOVERNANCE.md` | `59b03a0fd3e5d25481b9215994b61462d02446b3` | `7326daab5fc7682e651ba11be9ed1faf2353fbbbd9dee1deb843e2bd0c514101` |
+
+The amendment's owner authority is
+`validation/rtc_point_transfer_2026-09-28/COMPLETION_AUTHORITY.md` at
+`59b03a0fd3e5d25481b9215994b61462d02446b3`, digest
+`a7fd87b864513becc6df89f1b96aab2695d26d27244d2ad22cde675dac0c883d`.
+Its development-only scope, substantive owner boundaries and separate push,
+production and later-integration controls remain unchanged. Frozen scientific
+contracts/router and accepted-run ledgers are untouched.
+
+The admission table's eligible-source-CI requirement is retained explicitly:
+its detailed ENG-E5 route requires owner publication / candidate PR. This owner
+directive authorizes local development integration now; eligible hosted CI follows
+owner publication and remains unperformed here, with `codex/refactor-mainline`
+as the integration/PR base. No hosted-CI, Unity, immutable release/export,
+calibration, SCIENCE/coadd, downstream-consumer or production pass is inferred.
+
+The current checkout is reused as the mainline working folder after live
+compare-and-swap verification. No new workspace, destructive cleanup or remote
+write is performed. Previous mainline and exact `44171fd3a` remain reachable in the
+unchanged ancestry; all backups and protected work are preserved. Exact closure
+SHA/tree, final executable/gates, independent three-axis review and before/after
+ref/preservation receipts live in
+`/Users/gwilson/.codex/visualizations/2026/10/29/01a188f2-4d30-7e60-88a8-956b50bb08cf/citlali-mainline-integration-20261030/COMPLETION.json`.
+
+
 ## Owner-approved isolated candidate preparation — 2026-10-30
 
 Grant approved the acceptance table and pointing cutoff `797d013f115e403a30663eb92254082e8e742826`

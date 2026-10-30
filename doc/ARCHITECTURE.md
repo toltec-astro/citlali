@@ -1,7 +1,7 @@
 # Citlali Architecture
 
-[Current candidate and release scope](CURRENT_STATE.md) distinguish October 29
-engineering changes from scientific acceptance and historical checkpoints.
+[Current integration and release scope](CURRENT_STATE.md) distinguish the
+accepted development baseline from scientific acceptance and historical checkpoints.
 The concrete `citlali_successor_input_bindings` library owns application-boundary
 config/NetCDF/Tune/APT/raw binding and product loading. Production execution
 and acceptance tooling link it; production no longer includes the acceptance
@@ -11,10 +11,22 @@ Native direct output uses an exclusive staged-directory owner and no-replace
 publication; required FITS closes and FFTW creation have explicit resource
 owners. Configured POINT's separate atomic `reduNN` creation is unchanged.
 
-Current bright-POINT development execution and ownership are documented in
-[the consolidated pipeline](BRIGHT_POINT_PIPELINE.md). Its frozen ordinary MAP /
-BASE-POINT route supersedes historical statements below that MAP or FRUIT is
-unconnected. Other package unavailability and scientific boundaries remain.
+## Current application entry points
+
+| Entry | Owner and behavior |
+| --- | --- |
+| Native `citlali` | `main.cpp` dispatches the `citlali-development-v1` request through `default_development_execution.h` and `citlali_rtc_execution`; omitted terminal defaults to `ptc`, with explicit `rtc-only`, `cal`, saved `map` and bounded `point-fruit` routes |
+| Configured POINT | Python `configured_point_cli.py` orchestrates merged configuration, native subprocesses, reserved reduction directories and publication; `configured_point_*` helpers own preparation/resources/products; native RTC/CAL/PTC/MAP execution remains in C++, while Python retains configured POINT source-feedback and diagnostic helpers |
+| Shared native input service | `successor_input_bindings.*` owns configuration, NetCDF/Tune/APT/raw binding and product loading for application execution and acceptance tools |
+| Retained standard reduction | `standard_reduction_execution.h`, `ReductionSession`, mode processors and the retained `Engine` document compatibility and historical validation execution |
+
+The configured POINT wrapper is a separate application interface; it does not
+change the native omitted-terminal default. Packaging membership is explicit in
+`configured_point_runtime.RUNTIME_MODULES`, including retained helper dependencies.
+The [September bright-POINT pipeline](BRIGHT_POINT_PIPELINE.md) records the earlier
+MAP / BASE-POINT development checkpoint. Later configured POINT workflow and
+qualification are routed through [current state](CURRENT_STATE.md). Scientific
+admission, unavailable products and production limits retain their named owners.
 
 
 ## Current development entry — owner direction 2026-09-17
@@ -41,7 +53,9 @@ multiple readings retain their source-time interpolation. The WVR owner retains
 which representation was used, and the input adapter preserves raw header
 update metadata. Constant opacity still uses each sample's AST elevation.
 Missing or invalid opacity produces explicit unavailable CAL support. General
-legacy-input conversion and MAP/FRUIT remain unavailable. Missing required
+legacy-input conversion remains unavailable. Explicit saved-MAP and bounded
+POINT-FRUIT terminals exist; they do not imply general mode or production
+qualification. Missing required
 pointing stops the requested CAL handoff; neither input failure selects a
 successful RTC-only fallback. See `data/development/README.md` and status.
 
@@ -64,8 +78,11 @@ owners, thresholds, input identities and validity rules remain unchanged.
 
 ## APT-PROD-003 compact v2 repair boundary
 
-All APT-dependent validation and new baseline issuance are suspended until the
-compact v2 gates pass. The verbose observation APT v1 contract is historical:
+The original compact-v2 repair checkpoint suspended APT-dependent validation
+and new issuance pending its gates. Current representation/admission authority
+is the compact-v2 record linked below; the historical suspension is not a new
+blanket stop on subsequent owner-approved work. The verbose observation APT v1
+contract is historical:
 its detector-by-field transformation ledger is not admitted by any ordinary
 producer or guardian. The current authority is
 [`CANONICAL_APT_V2.md`](CANONICAL_APT_V2.md) and [ADR 0012](adr/0012-canonical-apt-v2-compact-normalization.md).
@@ -114,11 +131,10 @@ Use these companion authorities:
   WP-7.1 canonical-reconciliation boundary;
 - [`SCIENTIFIC_CONVENTIONS.md`](SCIENTIFIC_CONVENTIONS.md) for scientific
   identities, units, coordinate frames, indexing, and validity;
-- [`CANONICAL_APT_V1.md`](CANONICAL_APT_V1.md) for the accepted, currently
-  unactivated Citlali-produced canonical Beammap baseline APT contract;
-- [`CANONICAL_APT_OBSERVATION_V1.md`](CANONICAL_APT_OBSERVATION_V1.md) for the
-  accepted, currently unactivated observation-specific canonical APT contract
-  and machine boundary;
+- [`CANONICAL_APT_V2.md`](CANONICAL_APT_V2.md) for current compact-v2
+  representation and admission; [`CANONICAL_APT_V1.md`](CANONICAL_APT_V1.md) and
+  [`CANONICAL_APT_OBSERVATION_V1.md`](CANONICAL_APT_OBSERVATION_V1.md) retain
+  historical v1 contracts for explicit migration/comparison;
 - [`RETAINED_DEBT.md`](RETAINED_DEBT.md) for deliberate limitations, role
   owners, reopening triggers, and exit conditions;
 - [`adr/README.md`](adr/README.md) for durable consequential decisions;
@@ -135,7 +151,9 @@ arrived here but do not override the living status or this architecture map.
 ## Application Lineage And WP-7.1 Program Boundary
 
 Canonical application ancestry and scientific-contract ancestry are distinct.
-The canonical application authority is `codex/refactor-mainline`, currently at
+The canonical application authority is `codex/refactor-mainline`;
+[CURRENT_STATE.md](CURRENT_STATE.md) records the accepted source. At the
+historical August checkpoint it was
 `cb3d568c701217ee0248c77f6dccd0bab7deef31`. Exact integrated application
 `f0f423827ab321640e0cbcb003f7bf015368f694` is the Native Integration
 Baseline. It is integrated and substantially validated, but it is not labeled
@@ -312,10 +330,11 @@ headers include many pipeline helpers, and pipeline templates operate on
 engine-shaped arguments without always naming an interface. These are finite
 compatibility costs, not patterns to copy.
 
-## Runtime Control Flow
+## Retained Standard-Reduction Control Flow
 
-The active runtime is a session around a fresh set of reduction inputs and a
-fresh selected mode processor.
+This compatibility/historical runtime is a session around fresh reduction
+inputs and a selected mode processor. Current successor and configured POINT
+entry points are distinguished above.
 
 ```mermaid
 sequenceDiagram
@@ -742,7 +761,8 @@ frames, units, indexing, and missing values is defined in
 
 | Path | Architectural role |
 | --- | --- |
-| `src/citlali/cli` and `include/citlali/core/cli` | Process adapter, config file loading, standard mode selection, result reporting, runtime environment policy, and the unactivated strict-JSON canonical-APT contract protocol |
+| `src/citlali/cli` and `include/citlali/core/cli` | Native process/request adapter, concrete successor execution and shared input binding, result reporting, runtime environment and canonical-APT protocol dispatch |
+| `tools/timestream_successor/configured_point_*` | Configured POINT application orchestration, preparation, publication, deployment membership and product adapters; native RTC/CAL/PTC/MAP execution remains in C++, with configured POINT source-feedback and diagnostics retained in Python |
 | `include/citlali/core/session` | Reusable sequential run and structured result boundary |
 | `include/citlali/core/config` | Typed configuration values, enums, validation, and runtime planning |
 | `include/citlali/core/pipeline` | Reduction/iteration/observation orchestration, execution plans, cold-boundary validation, output policy, provenance, and compatibility adapters |
@@ -796,7 +816,10 @@ rollback, and release-composition disposition is explicit.
 - `src/citlali/cli/main.cpp` and the `citlali_cli` target;
 - `citlali_rtc_execution` and the existing concrete successor RTC owners,
   reached without an opt-in switch from the ordinary development invocation;
-- canonical-APT protocol dispatch and the RTC-only output/VAL terminal.
+- canonical-APT protocol dispatch and explicitly selected RTC/CAL/PTC, saved MAP
+  and bounded POINT-FRUIT terminals;
+- the separately configured POINT Python application and its curated deployment
+  boundary, within the development/qualification scope in current state.
 
 ### Retained Historical And Validation Paths
 

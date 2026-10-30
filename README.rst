@@ -10,12 +10,12 @@ While citlali is developed targeting LMT/TolTEC, it can also be adapted to
 with other telescope/detectors that shares similar architectural properties.
 
 
-Collaborator candidate — start here
-----------------------------------
+2026 refactor — start here
+-------------------------
 
-The `current state <doc/CURRENT_STATE.md>`_ identifies the exact engineering
-candidate, canonical integration branch, frozen POINT trials, accepted evidence
-and remaining release gates. The release target is POINT and SCIENCE on all
+The shared development baseline is ``codex/refactor-mainline``. The
+`current state <doc/CURRENT_STATE.md>`_ identifies the integrated application,
+separate ongoing pointing work, frozen trials and remaining release gates. The release target is POINT and SCIENCE on all
 three TolTEC arrays through TolProj configuration, validation and guarded
 submission, with TolTECA preparing and launching the selected runtime. Grant
 supplies beammap/APT products; beammap production and OOF are outside this target.
@@ -29,6 +29,11 @@ isolated from trial runtimes. Grant alone launches reductions and accepts
 scientific results. Local engineering checks do not establish calibration,
 SCIENCE/coadd, downstream-consumer or production acceptance.
 
+For development, use the `supported Spack workflow <spack/README.md>`_ and
+`architecture/source map <doc/ARCHITECTURE.md>`_. The
+`documentation guide <doc/README.md>`_ separates current instructions from
+scientific contracts and historical evidence.
+
 See the `staged engineering record <doc/ENGINEERING_CLEANUP_2026-10-29.md>`_
 for changes, checks and integration disposition, and the `CI guide
 <.github/README.md>`_ for source and native gates.
@@ -39,7 +44,7 @@ Historical build reference
 The platform and Conan instructions below describe earlier development
 snapshots. They are retained for historical reproduction, not the current
 supported deployment or qualification matrix. Follow the current-state and
-Spack links above for this candidate.
+Spack links above for the current development baseline.
 
 System requirements
 -------------------

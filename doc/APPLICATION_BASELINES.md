@@ -4,7 +4,7 @@ This is the short answer to “which Citlali?” It names durable application
 landmarks without turning branch names, validation directories, scientific
 contracts, or work programs into product versions.
 
-The current engineering/application candidate and release blockers are routed
+The current integrated development baseline and release blockers are routed
 through [CURRENT_STATE.md](CURRENT_STATE.md). The landmarks below preserve
 their original acceptance scope and dates.
 

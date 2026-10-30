@@ -4,6 +4,16 @@ Citlali documentation serves several audiences and evidence needs. Put new
 material in the narrowest applicable layer and link across layers instead of
 repeating it.
 
+## Start here
+
+Begin with [CURRENT_STATE.md](CURRENT_STATE.md) for the integrated baseline,
+ongoing pointing work and release boundaries. For usable application instructions,
+read [configured POINT deployment](../requirements/README.md); for native
+development, read [Spack](../spack/README.md). The
+[architecture/source map](ARCHITECTURE.md) explains where code belongs. The
+user-guide index below is an expanding documentation layer, not a prerequisite
+for those existing workflows.
+
 ## Documentation Layers
 
 | Need | Authority | Content |

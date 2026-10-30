@@ -1,8 +1,12 @@
 # Native Spack Build Lane
 
-This directory owns Citlali's successor native build entry. It does not
-replace the existing CMake/FetchContent build until the acceptance gates in
-`doc/TOLTECA_SPACK_BUILD_INTEGRATION_REVIEW_2026-07-31.md` pass.
+This directory owns the accepted Spack native development build entry.
+[ADR 0014](../doc/adr/0014-spack-build-foundation.md) records build authority;
+[current state](../doc/CURRENT_STATE.md) distinguishes integration, qualification
+and release. The existing CMake/FetchContent/Homebrew entry remains supplemental
+compatibility infrastructure. Immutable package/export/release acceptance has
+separate gates below. For this Mac's exact LLVM20/SDK26.5 realization, use the
+[October 30 qualification record](../doc/SPACK_QUALIFICATION_2026-10-30.md).
 
 ## Supported Development Sequence
 
@@ -191,9 +195,11 @@ $HOME/tolteca/bin/python tools/build/run_spack_citlali_dev.py test
 The script validates the concrete graph before every action, runs CMake/Ninja
 inside the exact Citlali dependency environment, and embeds the concrete root
 DAG hash in the CLI. It does not reinstall dependencies or the Citlali
-package. The current native checkpoint passes all 539 enabled CTests; the sole
-disabled lifecycle test remains explicitly reported by CTest. A measured
-no-op invocation completed in 0.82 seconds.
+package. The [October 30 qualification](../doc/SPACK_QUALIFICATION_2026-10-30.md)
+records 1,388 enabled CTests passing and one inherited disabled lifecycle test.
+An earlier development checkpoint passed 539 enabled tests and measured a
+0.82-second no-op invocation; those are historical results, not current timing
+or test-count claims.
 
 Use the timing harness for comparable clean, no-op, and incremental evidence:
 

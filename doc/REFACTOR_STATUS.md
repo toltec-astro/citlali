@@ -1,3 +1,21 @@
+## Local mainline integration and documentation consolidation — 2026-10-30
+
+Grant approved bringing exact candidate `44171fd3a6ba5924f8f4dba0324defe0922c597d`
+into `codex/refactor-mainline`. [Current state](CURRENT_STATE.md) is the concise
+entry point; the [integration ledger](INTEGRATION_LEDGER.md) records exact owner
+authority, prior canonical, governance incorporation and retained limits.
+Only documentation/acceptance records follow the qualified application source;
+application, tests, build logic, defaults and scientific contracts are unchanged.
+An independent exact-SHA review and live compare-and-swap precede local canonical
+movement. The external completion receipt records the actual final tip and gates.
+
+The local Mac Spack prerequisite is complete. Eligible hosted CI follows owner
+publication; Unity, immutable release/export, calibration, SCIENCE/coadds,
+downstream qualification and production remain separate. Newer pointing/handoff
+work, Citlali 4.x/5.x and all backups remain protected. No push or deletion is
+authorized by this completed integration. Older dated entries below describe
+their original checkpoints and are not competing current status.
+
 ## Isolated Mac Spack developer qualification completed — 2026-10-30
 
 Grant authorized the 44-dependency installation in the existing combined

@@ -1,0 +1,68 @@
+{
+  "schema": "citlali-owner-mainline-acceptance/v1",
+  "recorded_date": "2026-10-30",
+  "owner": "Grant Wilson",
+  "owner_directive": "Let's do what needs to be done to bring candidate 44171fd3a into refactor-mainline.  I'm hoping we end today with a seriously cleaned up and professional, clear, and understandable code base.",
+  "authorization": "Local development integration of exact44171fd3 and its documentation-only acceptance closure; no push, science/production promotion or deletion.",
+  "previous_mainline": "e32c4584dec07617d6caa857d39bf13047b6c4b0",
+  "accepted_application_source": "44171fd3a6ba5924f8f4dba0324defe0922c597d",
+  "accepted_application_tree": "82b89c29ce70b2e05f33e9aea02911590cea2ce1",
+  "pointing_cutoff": "797d013f115e403a30663eb92254082e8e742826",
+  "engineering_input": "5c46201057d6b6d1048aac2949a64e9a34e9bad3",
+  "acceptance_table": {
+    "path": "validation/pointing_engineering_candidate_2026-10-30/acceptance-table.json",
+    "sha256": "284b987f45c21d9882533b61c622ac95fccf55e4291d71c0832bec8789be4c95",
+    "dispositions_preserved": "All development, diagnostic, deferred and held distinctions remain; no wholesale scientific acceptance inferred."
+  },
+  "newer_pointing_handoff": "Not included. Continue independently in their protected workspaces.",
+  "governance": {
+    "original_accepted_commit": "06a3ade51c1b3f38887295433d913811bf25cd14",
+    "original_effectiveness_record": "77507836325eff9f469062d5884481ea37599594",
+    "september30_amendment_source": "59b03a0fd3e5d25481b9215994b61462d02446b3",
+    "september30_owner_authority_path": "validation/rtc_point_transfer_2026-09-28/COMPLETION_AUTHORITY.md",
+    "september30_owner_authority_sha256": "a7fd87b864513becc6df89f1b96aab2695d26d27244d2ad22cde675dac0c883d",
+    "normative_documents": [
+      {
+        "path": "doc/governance/ENGINEERING_GOVERNANCE.md",
+        "source_commit": "06a3ade51c1b3f38887295433d913811bf25cd14",
+        "sha256": "70769787ce2ef4b7323cd2a38e221ade4af3310e0ad6b7b682e08cb4e4d61e76"
+      },
+      {
+        "path": "doc/governance/REVIEW_AND_CONFORMANCE.md",
+        "source_commit": "06a3ade51c1b3f38887295433d913811bf25cd14",
+        "sha256": "691e6d6250102ef2f4a504397581ee67c5707d898ab20fb8dd9e874c47f99bb1"
+      },
+      {
+        "path": "doc/governance/TIMESTREAM_SUCCESSOR_GOVERNANCE.md",
+        "source_commit": "59b03a0fd3e5d25481b9215994b61462d02446b3",
+        "sha256": "7326daab5fc7682e651ba11be9ed1faf2353fbbbd9dee1deb843e2bd0c514101"
+      }
+    ],
+    "scope": "Incorporate existing owner-directed standing development amendment; no normative bytes or scientific contracts changed by this integration unit."
+  },
+  "prior_evidence": {
+    "spack_packet": "/Users/gwilson/.codex/visualizations/2026/10/29/01a188f2-4d30-7e60-88a8-956b50bb08cf/citlali-spack-qualification-20261030",
+    "completion_sha256": "3435a93a457407ba907397cf602d7b84a949f49b0eb0cba2b56dc951d06a1929",
+    "review_sha256": "90d0b7850267d6c3b03b68a3ccaf4f9f1bca937e159712b0b03dc5a03a0bdc18",
+    "seal_sha256": "2ac00b054b52982c99bb7b05a2013d152d9cce05ebb5370592a145df4e273826",
+    "native_enabled_tests": 1388,
+    "inherited_disabled_test": "MapFitterLifecycle.ExactProductSequence",
+    "baseline_tests": 207,
+    "full_config_preflight": "PASS",
+    "independent_review": "PASS with recorded limitations; no findings"
+  },
+  "hosted_ci_sequence": {
+    "original_table_requirement": "Eligible source CI after authorized owner transfer, explicit base codex/refactor-mainline.",
+    "detailed_scope": "ENG-E5 and CI documentation place actual eligible hosted checks after owner publication / candidate PR; those checks have not run for this local candidate.",
+    "new_owner_disposition": "This directive authorizes local integration now after exact-source local gates, supported Mac Spack and independent review. Owner publication followed by eligible hosted CI remains an explicit obligation before release; no hosted pass or release acceptance is claimed.",
+    "pr_base": "codex/refactor-mainline"
+  },
+  "operation": "After exact documentation-closure review and live ancestry verification, compare-and-swap refs/heads/codex/refactor-mainline from previous_mainline to reviewed descendant; then switch the reused clean worktree to mainline without changing files.",
+  "effectiveness_condition": "Integration completion is established by literal local canonical ancestry and the external post-operation receipt, not by the presence of this prepared file on a candidate branch.",
+  "final_exact_receipt": "/Users/gwilson/.codex/visualizations/2026/10/29/01a188f2-4d30-7e60-88a8-956b50bb08cf/citlali-mainline-integration-20261030/COMPLETION.json",
+  "retained_limits": [
+    "Unity and immutable package/release/export qualification remain separate.",
+    "Calibration, SCIENCE/coadds, downstream consumers and production still require their named evidence and owner decisions.",
+    "No normative scientific router, accepted-run ledger or historical authority is rewritten."
+  ]
+}

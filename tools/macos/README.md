@@ -1,7 +1,10 @@
-# macOS Homebrew Build
+# macOS Homebrew Compatibility Build
 
-This directory contains the macOS build path for Apple Silicon/Homebrew
-development machines.
+This is supplemental Apple Silicon/Homebrew compatibility infrastructure. Use
+the [supported Spack workflow](../../spack/README.md) for native development
+qualification, and [current state](../../doc/CURRENT_STATE.md) for exact source
+and acceptance boundaries. The instructions below retain the historical local
+compatibility workflow; they do not reproduce accepted Spack-backed evidence.
 
 ## Prerequisites
 
@@ -19,7 +22,7 @@ development machines.
 
 As of 2026-03-19, this machine can build with Apple Command Line Tools alone; full Xcode was not required for the verified build.
 
-## Normal Local Workflow
+## Historical Compatibility Workflow
 
 Bootstrap the standard `build/` directory once:
 

@@ -77,13 +77,14 @@ scientific authority and must not leak into Stage B authorship.
 
 ## Current Direction
 
-Start with `doc/CURRENT_STATE.md` for the October 29 candidate, integration
-identities and release boundaries. The owner-authorized bounded engineering
-cleanup is recorded in `doc/ENGINEERING_CLEANUP_2026-10-29.md`; scientific
-assessment remains in the pointing chat. This is task scope under existing
-governance, not an amendment or permission for unrelated work. No trial,
-frozen runtime, reduction, canonical integration, push or destructive cleanup
-is authorized by this engineering record.
+Start with `doc/CURRENT_STATE.md` for the integrated development baseline,
+ongoing pointing work and release boundaries. Owner-approved local integration
+of application `44171fd3a6ba5924f8f4dba0324defe0922c597d` is recorded in
+`validation/mainline_integration_2026-10-30/OWNER_ACCEPTANCE.json` and
+`doc/INTEGRATION_LEDGER.md`. The earlier engineering record remains historical
+scope/evidence; scientific assessment stays in the pointing workstream.
+This completed integration grants no authority for later integrations, pushes,
+reductions, frozen-runtime changes or destructive cleanup.
 
 The refactor follows the roadmap in `doc/REFACTOR_STATUS.md`. Project-owner
 additions Phase 4.1 and Phase 4.2 are complete. The accepted four-mode TolTECA
