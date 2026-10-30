@@ -1,0 +1,25 @@
+{
+  "trial": {
+    "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-source-recovery-152418-20261030/trial.json",
+    "sha256": "229ec59da325db0a7949e08a4fec75d150a3f834ddd2f30756f40fbc403abead"
+  },
+  "run": {
+    "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-source-recovery-152418-20261030/run-001/RUN.json",
+    "sha256": "c143873de7181443fc96181d5449df55307100cde1a8f9c821f1da03bd38b4ca"
+  },
+  "restoration": {
+    "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-source-recovery-152418-20261030/run-001/RESTORATION.json",
+    "sha256": "a70d9e70ea78256b44f8089e05097dc23abb5e5775c574d446857a5b12fdb774"
+  },
+  "summary": {
+    "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-source-recovery-152418-20261030/run-001/SUMMARY.json",
+    "sha256": "ca93c048e1e5a97051245a0dfb107c43df22305d3d0ac8871ebea4b5b98169e0"
+  },
+  "ideal_controls": {
+    "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-source-recovery-152418-20261030/run-001/IDEAL_CONTROLS.json",
+    "sha256": "e703a210c09af9a451faaa276599363ca0011916b9cd0c10c1d8d8f2350f7a15"
+  },
+  "authenticated_files": 18189,
+  "authenticated_ledger_sha256": "f2da3cc408904fac8a6d74998ed403d011311567c1c8f9367732ec9e5b71315a",
+  "replay": "assess.py reauthenticates saved manifest references, CAL payloads, bundles, FITS and measurements; no duplicate payload inventory retained"
+}

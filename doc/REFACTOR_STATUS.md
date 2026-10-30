@@ -1,3 +1,21 @@
+## Saved five-case POINT recovery assessed — 2026-10-30
+
+Grant completed the five-case152418 experiment. The saved-product
+[assessment](../validation/weighted_point_recovery_assessment_2026-10-30/REPORT.md)
+authenticates the original CAL restoration, exact REF image parity and fixed
+benchmark support. At M10 compact signed gains are99.46–101.41%; shoulder gains
+are93.02%,95.19%,84.37% for a1100/a1400/a2000. Broad-source shape and aperture
+losses remain, particularly a2000. Feedback-only seed differences decay strongly;
+M10 residual norms are0.00000145%,0.0000186%,0.01552% of the injected shoulder norm.
+These are descriptive transfer diagnostics, not absolute calibration acceptance.
+
+M5–M10 changes are tiny for a1100/a1400. a2000's REF peak changes0.202% and centroid
+0.00219″, while its shoulder response gains4.41 percentage points and seed residual
+norm falls1.50%→0.0155%. Preserve the owner's prospective M5 economy, but do not
+claim a2000 broad response is settled at M5. No iteration budget, source policy,
+noise weighting or2″ grid was changed. No new reduction, source fit, restoration,
+Unity operation or push occurred. Independent assessment review is the closure gate.
+
 ## Future POINT trials stop at M5 — owner direction, 2026-10-30
 
 Grant reports that the prepared five-case 152418 test is running and requests
