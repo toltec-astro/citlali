@@ -1,0 +1,1854 @@
+{
+  "schema": "citlali-acceptance-scope-inventory/v1",
+  "pinned_inputs": {
+    "mainline": "e32c4584dec07617d6caa857d39bf13047b6c4b0",
+    "engineering": "5c46201057d6b6d1048aac2949a64e9a34e9bad3",
+    "pointing": "797d013f115e403a30663eb92254082e8e742826",
+    "shared_fork": "77063575c4fac2bb207ca462435009358be396f6"
+  },
+  "selected_cutoff_status": "proposed immutable pointing cutoff; no branch freeze or movement",
+  "counts": {
+    "shared": 262,
+    "engineering": 12,
+    "pointing": 22,
+    "distinct_union": 296
+  },
+  "shared_groups": [
+    {
+      "id": "shared-1",
+      "date_start": "2026-09-19",
+      "date_end": "2026-09-21",
+      "topic": "Native RTC/CAL preparation, worker readiness, forward MAP and nominal beam/frame direction",
+      "count": 26,
+      "first_commit": "4ef390456fc7c64c616a1f4507f36b2987e01f5e",
+      "last_commit": "fd3c1ff151c766cc44cafec247f99dc930447f66",
+      "commit_shas": [
+        "4ef390456fc7c64c616a1f4507f36b2987e01f5e",
+        "ba173150fc8bba3d20b0c307ab19e23fe3700e95",
+        "868c911f6ed4e1d66eb4b945af5987a6654ae721",
+        "530743ec54670647a88c36452c80898e241e4575",
+        "0ef1c6e626630962a41ebab0cdd3b5833ee6b039",
+        "d4f13c13c1915665abf786cc074597e6360a969d",
+        "4bf470389fe7958f27bcda7a300baf3f31959b86",
+        "8332a80a09cfc1244bb9b53b5e095734b8713dc8",
+        "8926795986d5bd2071df4b15adbebd9896581adf",
+        "98380090e770f960b0decb07ebe3cabc77993132",
+        "66bc17af52f3b97afe64e408fa60e99de4a214b5",
+        "ae4842e89068e9bf83fa4ec0e3846fc108440ae0",
+        "310aa5134e8a8dc6e6ba8e2b00ae71b9489f8fb6",
+        "274c0aa8fe618241854583976c0820082c3b682b",
+        "5cd3e28396a08917986f3ec73314a69d3605bd0d",
+        "a3785432a6860eb7e516f0f48f918aee8ead457f",
+        "6f1d5a1722e6486dc67d8dcf70cda50179fc6cc4",
+        "d631e8ea73a13bb1d654ed696eec45914fcefc2a",
+        "3571a1bdd33f3545cd070a3e3012c916fcfcf50d",
+        "564d8a11964a0cb4fdf0961e9f8c7f9ff5907b96",
+        "f5d589c84fd75d2d4af95d06ed41b2c8af80ab45",
+        "686c280037762450b1870308c920e9191216dc16",
+        "6fd2d8079867bae14faded35e650dd6505813f2a",
+        "b319544483645b3591fee70aa5d4ea2ea12e3569",
+        "cbece637c7c4504df6dd0270f0bfc8f637ee7ee1",
+        "fd3c1ff151c766cc44cafec247f99dc930447f66"
+      ],
+      "acceptance": "Analytical topic grouping only; acceptance must be established from exact governing records."
+    },
+    {
+      "id": "shared-2",
+      "date_start": "2026-09-22",
+      "date_end": "2026-09-23",
+      "topic": "PTC-to-MAP, all-array POINT recovery, FRUIT continuation and response diagnostics",
+      "count": 54,
+      "first_commit": "7d16b8019a1f733e325bd48f419e6078e4f4c430",
+      "last_commit": "d488b0afc3f468bc394abd75dbe5dbcef5a04782",
+      "commit_shas": [
+        "7d16b8019a1f733e325bd48f419e6078e4f4c430",
+        "8e2dcff92aa1ff468137a63220e0d53e08faf34f",
+        "6bbb2b58bda3928bf044ef08cfe5dfa5ef30156f",
+        "2049d9e4e5d91f8590d6a2f82fab972ac72aff0b",
+        "7aa0d73e145816e1f5807263e7d5c3458710a414",
+        "4b7515f22a1b8555b2e44854bd17635fbf577996",
+        "a42373f7576ea9b90f3a3b17393122f25a802735",
+        "4c1aefac9ecacbdedeaaeffbe7a5038c2e564b88",
+        "912787f62862132295e0dddab660a6fc398e28c7",
+        "5af3c950d65baecfa4a9f692f2bbe250e8fc0442",
+        "7e34bcefc43bb7f1ff33eca1b1d92fdc0a61d0ab",
+        "131ef891537292c43b7eb35ea3f2080fe26e32af",
+        "fa94788f7ef411c12c149d3e5a290a2693801229",
+        "e93e8861be3b9d84049cc72d431fd72ab35d8959",
+        "38ab73d4437fbf14098d1d89d3424c6002fd2c36",
+        "e33020bbd0bc826f01059b6b665e3098ce7dbb60",
+        "8b4b667c05a32d58184d31a4d9b4c2f3d2f812b4",
+        "3e9b5512e42e47e67dbdfe06b4c4183d0c707f61",
+        "616b44b72ea697ff70a48424091aa070bd1c3de4",
+        "5b8a8ff763b325dc42372b5a54f2bc65bb9a22f8",
+        "4e8dcc37438559a44f7cab72b706a2ae1d50f6c0",
+        "af9faee61251a050493ce1df475a63490191f17b",
+        "12e1fc80a489ed898dd78357d5b46c4ecd24a058",
+        "2995d2553c6cbecd2def033669229257854c8d40",
+        "045eb9173952b94733d12343eb0e7a3f3686d944",
+        "0aaa11a67d8d6ce158a1d46feb9566d25f8d5d2b",
+        "d70233e1c22b96065f700d43ed65f952da3cf32a",
+        "3a544f3c93c1f5109765e0180e725992f3370154",
+        "ecf9aaf3c7911da588b26828c418f5193c02aee7",
+        "ff73cdd0e06380e1580e413ad2a59a06cd4cf81f",
+        "b9d455af113d46d42b83ba2ac7087de017e121ab",
+        "c4583af71e21ed4140bce01488c4ccbeaa5f0e03",
+        "b91730e753b2ff57ae6cdda4928b8e779567e7de",
+        "bd4563f4ac9506a861bea8377dd2ba9c5b0620e9",
+        "468533e7ee33e2ae7d86f4d52acdb84769069eca",
+        "dfc10ef5fd8ad880958c57278b6b07d36d841242",
+        "46bbeb182bb5e973c8356b51b2c8b509f7186c1b",
+        "dc4eab09e772f9ab9ae95d0ecd2f6d44f2ebf7c6",
+        "7327a9997911a0772807a25e82014e766dc10cd5",
+        "9b363175c1b8e595b02b6845784292bc9fba9af1",
+        "1c1393b4df31ae721597dabc82498eb000c02f59",
+        "e1fe84d3faf438c0382d219930aacf40341737b4",
+        "94297bf1fdbc60a91478b18cb4479cf99f19bfa3",
+        "9d95916ca3c40aab8e1c8f613ac954718cfce993",
+        "6b1e59c9e7032dcfe8181b85fed264ff805cbca4",
+        "5f5853bff67ff2f330400702461cb1afcd01fdb5",
+        "570dca932495774c5b99ccbf9ca394381172087c",
+        "f158cfb600b97a7ec4c0ca68443a0943887dc591",
+        "fc60fbfdb7100d74cdbfee96461ae9df4fca1390",
+        "26af74ac5e59d88a99da1ed4047a7a71a327fca0",
+        "698e5eea5d71da5d042dca28cd870838b9f4f57d",
+        "0bd282d89a3343dafa78d5b32c706e50e1f5af65",
+        "cc509e74c663d45f4a00a398b4ec1ca4364546e9",
+        "d488b0afc3f468bc394abd75dbe5dbcef5a04782"
+      ],
+      "acceptance": "Analytical topic grouping only; acceptance must be established from exact governing records."
+    },
+    {
+      "id": "shared-3",
+      "date_start": "2026-09-24",
+      "date_end": "2026-09-25",
+      "topic": "Shoulder/reference-basis/JINC counterfactuals, covariance/null gates, guarded and signed feedback studies",
+      "count": 74,
+      "first_commit": "ebb4316897ebe1c1f67f1bddb16400e825727d9e",
+      "last_commit": "11b4d2c07a81cc5876bd3da833c4168731e34aea",
+      "commit_shas": [
+        "ebb4316897ebe1c1f67f1bddb16400e825727d9e",
+        "6f00d638b804b897f5a626097e90f4e60bd85b24",
+        "ccddaf2e319ac0fa2860e7c4bf60eac115a6f861",
+        "948dfb487caf162b62a00ed6a3592b08f2e0a467",
+        "4120308df68e9b6a412781649ed7aa10581b70f1",
+        "a0935ff94ef05787aa088db5bb6154c780ba9d3a",
+        "246379db05b1d0fc114f4a4dc4de23f9496f6e6d",
+        "329bdbb0060e3f92f4328e5bcdfb311103ec52e5",
+        "2033a3983e943f92df1379bc0805026159992147",
+        "75454ba02735aff533e22a44c61896f36bc1f8ce",
+        "6ac6b9dc7709fc71e9c4c0cd54d9f24e8fdb71c9",
+        "5e52338ec1241585f32914912460e1fdde2c13f3",
+        "fb4901e17d9f56606c1d1b3c75375d4882c604be",
+        "5cb12f1a32c2ce50bd9653c21caa8d2dc9cd0190",
+        "8164d828e3c246db14d6cc775abb8c36ffd64178",
+        "f95324778fd1abaab22f91362483584c0de6d2c0",
+        "35f6fedb64da5d542696b807ab263e54d676fb5f",
+        "cde3c3661b53af8a5f4a07937d0c80b1c29cb2a4",
+        "2b2cf27e5e593e71f63f6aa1c8f3691694fc2567",
+        "a5c45cd7e38c9e48b0b37a73ba260859a3f52700",
+        "95ceacc22f0efee7724df99f94d4243739826f70",
+        "ba89e4e48347d429764618aa3b0245a9300ff1ff",
+        "7bc20c4a90c521f5e372e60e3b5feeef1bf3e2e2",
+        "7c673c35f694502a77df4b7a9362708905b7e450",
+        "16351d55f8bdc4032497bcbf6c1fa8df1540a22c",
+        "729e60c0944eb1a11285e319776582d1f16a988b",
+        "fd903fd44668837712e30746a8bafb2fabda2ce6",
+        "0dc24991cd8631bb6f240280f122ae26c89aad1e",
+        "dd043a7b7263e5e893e3a4a1f1306bd2c7b3e63e",
+        "41e82b2caec01eaa5584e7d215ac1e28d0f6b04d",
+        "f879e304e9e909d89ab0ad36d6c7533e299e9165",
+        "bd9e4f9895a430a561178cea16998e07eef6a07f",
+        "b05595f68950b4fcdb57add8daf54f714db35148",
+        "b3c65a4a7d7c3d1f33a2c362152c5d6999dcb59f",
+        "0c8d54c1b227e69abcf99a9188daa6d5f3c93675",
+        "0fb997ecefd55f56e1ef86173393a2ed27252f91",
+        "07fff9594f2d9234bb5546cead08bf97efeb72dc",
+        "15332a5744f0d7f6014f12da2275a30f809f3fe4",
+        "f49ed16d92947c01290122b67ec5dfe50442fee4",
+        "ee54efb6d32759003d4249f3a4ad90dbeb9c10d9",
+        "0a651e88a07cccd3431d54bc76d7b457df640e84",
+        "20b54cf93d4387a077d2c5a6c645aacb29f18247",
+        "2826e7ac4bf9314ca7b04e351a69acac4415c05e",
+        "bdd3d5645dc294fcaf84dbcc84d84e8c360f2aa2",
+        "9a2c2e8418c99d54d8453bdc29408c3e6a196e57",
+        "1371640d6a596099a55cb1014f6cc55236549ffb",
+        "b85bc07cf03b6a675e43dd55ea4fef9fa554c076",
+        "2aae3c5608e6fff7ce0e55337942a5ea25c51998",
+        "970a86dbcb1ad8a86b6025c91cfcecbf0f15b986",
+        "ad9eb745305e185e2440670d15d832d442a8b2a5",
+        "1761e943ff26ceb9998f3c2687e7a37bddc6808a",
+        "4a9beb9fbd23e4b88fd8e790d0ff9fc8017f70c1",
+        "cfcde23f4f6cd27588924c748c2fec07d8f3007e",
+        "ef9a36b364b600adf401d84c60b1ca87f6cf0f4a",
+        "0441f293e3daa5bab853efd43e278cb445fdec3c",
+        "110fab8d2325346eec20fe0e9b2a000ac2ffd27a",
+        "c702483454ceb54932431165b609af4f2d4fa04b",
+        "01be8c312f12db935ce629a81465cd9eb8a71427",
+        "cd3122ba399ea6e60f7ab30080b78af2e90253f2",
+        "0730b0b4f78d64215989922d0eae9435a6f79dd7",
+        "a305099348479c692a5a5b0deb2cc9b2fd4e6b11",
+        "839eadb85bb9eda97d71de8fd554308845b780a6",
+        "cbeb98bded4bc3831fc570ce89561c2c236b4596",
+        "908f71d302b0944c3b42a4fb5dd8dabf0a397ad5",
+        "49e5c47711b9e134b458b24b33e1ae20779db154",
+        "a3541d358592e36221436e96fde1156897ab88e2",
+        "acbf5ed1879127d7859688e34a5f354a9106833b",
+        "f79c0b7f32a9d25afb2a9498dca0ed0ed2750603",
+        "26a3047c654386e38adac860b91491136888bc64",
+        "ed0fd90a84260362da52e108367942f0343e1114",
+        "f5e02f9c40a4372e91210cc082dff948f3047130",
+        "257f6dbc1574f8f7d7108cf285b4f118d4061243",
+        "0ce7c527ca440687616540dba6f54d0e4bc990b3",
+        "11b4d2c07a81cc5876bd3da833c4168731e34aea"
+      ],
+      "acceptance": "Analytical topic grouping only; acceptance must be established from exact governing records."
+    },
+    {
+      "id": "shared-4",
+      "date_start": "2026-09-26",
+      "date_end": "2026-09-28",
+      "topic": "Bright-POINT BASE consolidation, archival evidence, rank/performance/RTC diagnostic campaigns",
+      "count": 65,
+      "first_commit": "5b2c01a94ffa9758c3c7def60762eaa7964e99c0",
+      "last_commit": "6c26c628ac9df374e0bc8bc5888ba5270a8d9daf",
+      "commit_shas": [
+        "5b2c01a94ffa9758c3c7def60762eaa7964e99c0",
+        "a50e0293b96ad7bc3d98dd97c09d764031ce2365",
+        "730a544e0c4157e7d6fa752195618d74153025f0",
+        "8f214e06c4e01722194e7bc8ea9a1d991974ddf4",
+        "84eb4d91947271f1037a586589411ee4942a5407",
+        "6a0b75236c8880e0ae588f9b21c8766ebaa4eb9c",
+        "43844bfe07b81c3f70bd01f370f46820982f5bba",
+        "1b2016120885d1e93e73ca33ab782c8df2c9fdd3",
+        "54adaeebd2068cf827fe39f0aae8c3fbddcb03e0",
+        "f7e39ffe1089eb0d9f29fcf44317fcb46517680e",
+        "263aed9b37dad1af8d643be10e5396eb376e281f",
+        "cf9cfee12d41c12e494fa904b6065b87cb503b41",
+        "9875aec4b2bea63e036d83691c0b35cbd9c6219e",
+        "ac2bee1febaab82b808f7f751374b797de033c6a",
+        "90a95c20de18fd41a64c78b6ac23960762b0e35a",
+        "c2481f0811f02969b7d891d42aabbdc556b82d39",
+        "ac1bf4eecc9973515195151bf865e25893e2e5d5",
+        "b47c13e1f5b745b94880218e347f77b4142686ff",
+        "7bd7e256b839f3a130225fe371ce2e46d1905e56",
+        "5435bdbdb4e6708e884ae4cb2b0fd93e74102ce5",
+        "cc5215609814d5a97a448ba04e8e382de8e19d56",
+        "e3cbf1eeadda256e4d9f400a834f9f7d462c1ae2",
+        "d32c0f8eec545382ee09cc65156c73d0357cfbbc",
+        "e67cf6c4303ca4516e5a5c0947e6df70e41242f2",
+        "11b0c313cffe6cc0583b7a9e70dcfa98e3137746",
+        "637e2adce4ca65e01510106273aa8e80c96f3433",
+        "516a283bc76bbfe1e259d92357bd191819b2782c",
+        "e28f6630fffaba77f78fc2c2cb883c7345ad92f4",
+        "b7746e3ca6f1615039a2b9d4a3aabe2df62a2a7f",
+        "08f81382d96afb0aad6bc1ed40543322887729b9",
+        "cec7917ef57ac37ed48fceffec33bc95a32cd78a",
+        "9c7586bb044cdacd59dcd06e7dafed505453212e",
+        "f25ca650de04b934cdb0d8e4b8bce73226ce4024",
+        "3bb6444ab5e97265cbcb8f197994a52603b481ae",
+        "d897dc0014da3c8d007fb74dff1e259d9abdf8d9",
+        "9ab86590cb7723304a79bed3ed2bf50d36834675",
+        "a0f7345fc0c0501e34e877f91104c4a78e61daf3",
+        "eafd243b88be6a634b89789dac3d67997f6fb0b5",
+        "ed388e84d0bea5e31c00234754852c2a17ae8be5",
+        "ab43474a7c4988fcc7d72023e6695c034f56c22a",
+        "b3d997456a8b9762d9fc323e37827f96b4ec7b37",
+        "f3428f67f92605211b410fcd2081b43aa579493c",
+        "38e917f4c731228ab827587df889c98b9489d1b1",
+        "43b510b3d01323c2de9cc41b2dfdb8d316b9ca4d",
+        "15223b675b60e5a004324c2d45cf104dcf2938f8",
+        "218a1b0fa2a9b2165d635dba4d11daa5233ddd38",
+        "b33787d1c597e623671f708238672e98421d6a34",
+        "482fa206d87ca1b59e11b82ec7352863b570a028",
+        "25f01f1ce8c71b66fea965c32b5972a56e070648",
+        "9178a92db69cf7f27557c01cea30ff1bf7c4872a",
+        "839f31b28b52de6a46bc9c2dc623673378839cfa",
+        "702d6f46728cd2fddb1540aa9fa4fec09ba93d27",
+        "e74d8d799d04ca1f11241600e0e1482fc787d256",
+        "17f0b9b9bcfdc605161b2c67dba7ccdf52ffdf72",
+        "c517444861022f70c95dde95ed13e6a6a259249b",
+        "ad8d9e9a44768b75b3a2526ed1391816e505b9a7",
+        "be5993971f17c00c309598630d19a17e8c3c7a7d",
+        "da94a43795cde31c80b0f642ddde258d65905d3a",
+        "ff92aa69d73aee9441e3269adf4ff4b9892ae509",
+        "9d28b2c6e134375b6f377ae59acc4e9f967ac3d4",
+        "a7351335f791c995e39d7cda4546412e3f4a5638",
+        "f7dc690f6c837cdb3eefe7560a0cc4852508e48b",
+        "105df3663f916e63ca6b62d5fb227c5d59e5ddd1",
+        "9b992d4addbf4e5b034130987ffbce9457467a26",
+        "6c26c628ac9df374e0bc8bc5888ba5270a8d9daf"
+      ],
+      "acceptance": "Analytical topic grouping only; acceptance must be established from exact governing records."
+    },
+    {
+      "id": "shared-5",
+      "date_start": "2026-09-29",
+      "date_end": "2026-10-02",
+      "topic": "Transfer cleanup and quality studies, calibration lineage, OOF preparation and source-offset AltAz",
+      "count": 30,
+      "first_commit": "e7fbc4e3156bf4c6b1f2267acd793af89912fead",
+      "last_commit": "6e2a467b85f07f15b8fdfe947bed81df833d11bb",
+      "commit_shas": [
+        "e7fbc4e3156bf4c6b1f2267acd793af89912fead",
+        "78c9aa2b4d8d29b2444d1a040605cfc5c485b38f",
+        "212dfe1e21143b5e36f8387044005a973821c497",
+        "c3a8a55291fec786d532972d814b6dd5204d9f76",
+        "0b96d1c9ca35cace9a106585c0ed8be8cd5293fe",
+        "b317e7041f118fce075320d595948d15d4da3c21",
+        "6eb15ca337604298074f574152a01a8a7f697647",
+        "a84eb2456fef4a8c2e768144dd75a47f21a83654",
+        "0132dc8ca2c72e0b7fd35439196f29365646b6ec",
+        "dbc7d47fcd537a2ca01e650f9db7fc031861ec32",
+        "59b03a0fd3e5d25481b9215994b61462d02446b3",
+        "518e05891cf8eb2e84621cdcfcea83525f3d1c49",
+        "c87c20d9a4435f4b9bbe88c81e3071751f2c4d57",
+        "4006f594154e7c4cd78d6ebf4d3e646af67bca17",
+        "8fe1b89cdbbfc66056c7a69c759476ac00df5dbb",
+        "881c0267032bf8192c5303c46aa772173d2e8b65",
+        "9cc300e383805b47cf86d5cc3706e705ae897843",
+        "4da46f8258c743486eeb8ef010f8753c267ec429",
+        "a6d2c4bb2b1ccce671c17ab29e723da3b57bc8db",
+        "6d9ad5e5c74f0b08687baba2ebeb1f25822d8cf3",
+        "32f76b3126c53013fcfd84d4ca1d8b5acb358921",
+        "0e63e6459112c0ddaeb284694612fd7d09b3d637",
+        "95b2fab06f0622c9c166bdc202ff710dec05f42d",
+        "f79db1faa8a85c6d84bc0dd387a18b8924b956e3",
+        "b98dc43aba98780c1a62ad8776af352bd498654e",
+        "74c76ce90429db559ee6cfbebe25540217c6f88e",
+        "c74e8a7562b9dd751ffb18a533bc16b2cb2e9bfe",
+        "524845cd7c730a1f9bf7dfb705f8d3bae1ba94a5",
+        "de5de6f6eeace636dd10e7bbe02076b497d124f2",
+        "6e2a467b85f07f15b8fdfe947bed81df833d11bb"
+      ],
+      "acceptance": "Analytical topic grouping only; acceptance must be established from exact governing records."
+    },
+    {
+      "id": "shared-6",
+      "date_start": "2026-10-28",
+      "date_end": "2026-10-29",
+      "topic": "Configured all-array POINT, disturbance policy, optical eligibility and inverse-noise FRUIT trial source",
+      "count": 13,
+      "first_commit": "4f61e7649d6c3186e6ccf4f3721fe7ad9283c71b",
+      "last_commit": "77063575c4fac2bb207ca462435009358be396f6",
+      "commit_shas": [
+        "4f61e7649d6c3186e6ccf4f3721fe7ad9283c71b",
+        "87e9217fc0016839d43684f539e93774199a32a1",
+        "19d7f932799af88cf041101a6bebc6f5e0318557",
+        "d1032b4d96c56145aeb140ead1afd4d0e6974cd2",
+        "dd5e54ad10cb7cfb624c92684a97fc5f0032b415",
+        "b17137eb64915da4aeae996ad638e3c896c8236c",
+        "4767cc1440d973ee883868e4d744b060883db895",
+        "f3d2e60a08e04e548dfd95ac509b10ed7a775066",
+        "c6ea76247213cdb8ce51c9ed935a9744b15beb9a",
+        "4f7d31957d2135601145c63387e310622fe16d64",
+        "df550415789c5777d31fa37e59989021f4600f50",
+        "331ff29ea1720b1454e671cbbab93814d8df8321",
+        "77063575c4fac2bb207ca462435009358be396f6"
+      ],
+      "acceptance": "Analytical topic grouping only; acceptance must be established from exact governing records."
+    }
+  ],
+  "segments": {
+    "shared": [
+      {
+        "sha": "4ef390456fc7c64c616a1f4507f36b2987e01f5e",
+        "date": "2026-09-19T09:46:46-04:00",
+        "subject": "Record owner-supplied Unity performance regression PASS"
+      },
+      {
+        "sha": "ba173150fc8bba3d20b0c307ab19e23fe3700e95",
+        "date": "2026-09-19T10:30:56-04:00",
+        "subject": "Reuse physical native partitions during RTC and PTC preparation"
+      },
+      {
+        "sha": "868c911f6ed4e1d66eb4b945af5987a6654ae721",
+        "date": "2026-09-19T10:50:00-04:00",
+        "subject": "Record measured observation preparation reuse and remaining network bindings"
+      },
+      {
+        "sha": "530743ec54670647a88c36452c80898e241e4575",
+        "date": "2026-09-19T13:49:37-04:00",
+        "subject": "Bind explicit native-cadence low-pass plans for shorter arrays"
+      },
+      {
+        "sha": "0ef1c6e626630962a41ebab0cdd3b5833ee6b039",
+        "date": "2026-09-19T14:08:04-04:00",
+        "subject": "Record tested short-array low-pass prerequisite and continuation"
+      },
+      {
+        "sha": "d4f13c13c1915665abf786cc074597e6360a969d",
+        "date": "2026-09-19T14:52:56-04:00",
+        "subject": "Add bounded CAL-input SPOD diagnostics and PTC comparison"
+      },
+      {
+        "sha": "4bf470389fe7958f27bcda7a300baf3f31959b86",
+        "date": "2026-09-19T15:05:36-04:00",
+        "subject": "Record reviewed PTC spectral diagnostic and bounded conclusions"
+      },
+      {
+        "sha": "8332a80a09cfc1244bb9b53b5e095734b8713dc8",
+        "date": "2026-09-19T18:36:15-04:00",
+        "subject": "Connect shared observation workers and matched PTC residual accounting"
+      },
+      {
+        "sha": "8926795986d5bd2071df4b15adbebd9896581adf",
+        "date": "2026-09-19T18:39:49-04:00",
+        "subject": "Distinguish supplied and actually requested campaign populations"
+      },
+      {
+        "sha": "98380090e770f960b0decb07ebe3cabc77993132",
+        "date": "2026-09-19T18:45:21-04:00",
+        "subject": "Preserve independent CAL causes when detector geometry is missing"
+      },
+      {
+        "sha": "66bc17af52f3b97afe64e408fa60e99de4a214b5",
+        "date": "2026-09-19T18:53:15-04:00",
+        "subject": "Preserve reviewed full-network readiness checkpoint and owner boundary"
+      },
+      {
+        "sha": "ae4842e89068e9bf83fa4ec0e3846fc108440ae0",
+        "date": "2026-09-19T22:25:57-04:00",
+        "subject": "Allow declared-invalid empty RTC pairs to remain unavailable without blocking useful detectors"
+      },
+      {
+        "sha": "310aa5134e8a8dc6e6ba8e2b00ae71b9489f8fb6",
+        "date": "2026-09-19T22:53:35-04:00",
+        "subject": "Verify CAL PTC receipt identities and close full-population Unity readiness"
+      },
+      {
+        "sha": "274c0aa8fe618241854583976c0820082c3b682b",
+        "date": "2026-09-20T11:39:06-04:00",
+        "subject": "Extend network worker comparison through twelve and require existing Unity inputs"
+      },
+      {
+        "sha": "5cd3e28396a08917986f3ec73314a69d3605bd0d",
+        "date": "2026-09-20T11:58:14-04:00",
+        "subject": "Bind Unity replay to existing observation files in owner test workspace"
+      },
+      {
+        "sha": "a3785432a6860eb7e516f0f48f918aee8ead457f",
+        "date": "2026-09-20T14:13:37-04:00",
+        "subject": "Repair cross-platform source and numeric policy comparisons"
+      },
+      {
+        "sha": "6f1d5a1722e6486dc67d8dcf70cda50179fc6cc4",
+        "date": "2026-09-21T07:22:43-04:00",
+        "subject": "Resume completed Unity campaign verification without repeating reductions"
+      },
+      {
+        "sha": "d631e8ea73a13bb1d654ed696eec45914fcefc2a",
+        "date": "2026-09-21T11:06:17-04:00",
+        "subject": "Record full Unity worker equivalence and remaining diagnostic continuation"
+      },
+      {
+        "sha": "3571a1bdd33f3545cd070a3e3012c916fcfcf50d",
+        "date": "2026-09-21T11:55:02-04:00",
+        "subject": "Parallelize saved-product PTC diagnostics with verified checkpoint reuse"
+      },
+      {
+        "sha": "564d8a11964a0cb4fdf0961e9f8c7f9ff5907b96",
+        "date": "2026-09-21T12:00:23-04:00",
+        "subject": "Require successful array task outcomes before diagnostic closure"
+      },
+      {
+        "sha": "f5d589c84fd75d2d4af95d06ed41b2c8af80ab45",
+        "date": "2026-09-21T12:04:15-04:00",
+        "subject": "Publish diagnostic bundles only after integrity metadata succeeds"
+      },
+      {
+        "sha": "686c280037762450b1870308c920e9191216dc16",
+        "date": "2026-09-21T13:12:59-04:00",
+        "subject": "Record verified full-network PTC diagnostics and bounded next experiment"
+      },
+      {
+        "sha": "6fd2d8079867bae14faded35e650dd6505813f2a",
+        "date": "2026-09-21T17:57:30-04:00",
+        "subject": "Implement forward MAP numerical core and verify blocked real input handoff"
+      },
+      {
+        "sha": "b319544483645b3591fee70aa5d4ea2ea12e3569",
+        "date": "2026-09-21T18:05:32-04:00",
+        "subject": "Reject inexact subnormal MAP arithmetic after independent review"
+      },
+      {
+        "sha": "cbece637c7c4504df6dd0270f0bfc8f637ee7ee1",
+        "date": "2026-09-21T18:07:49-04:00",
+        "subject": "Record reviewed MAP increment and precise real-pass blockers"
+      },
+      {
+        "sha": "fd3c1ff151c766cc44cafec247f99dc930447f66",
+        "date": "2026-09-21T21:12:32-04:00",
+        "subject": "Record owner-selected nominal beams and J2000 frame direction"
+      },
+      {
+        "sha": "7d16b8019a1f733e325bd48f419e6078e4f4c430",
+        "date": "2026-09-22T08:22:42-04:00",
+        "subject": "Implement saved successor PTC to ordinary forward MAP bundles"
+      },
+      {
+        "sha": "8e2dcff92aa1ff468137a63220e0d53e08faf34f",
+        "date": "2026-09-22T08:26:08-04:00",
+        "subject": "Keep unavailable MAP source probe advisory during bundle inspection"
+      },
+      {
+        "sha": "6bbb2b58bda3928bf044ef08cfe5dfa5ef30156f",
+        "date": "2026-09-22T08:31:04-04:00",
+        "subject": "Decode native dimensionless unit scalar in MAP bundle reader"
+      },
+      {
+        "sha": "2049d9e4e5d91f8590d6a2f82fab972ac72aff0b",
+        "date": "2026-09-22T08:35:59-04:00",
+        "subject": "Record reviewed three-array first forward MAP products and evidence"
+      },
+      {
+        "sha": "7aa0d73e145816e1f5807263e7d5c3458710a414",
+        "date": "2026-09-22T09:23:56-04:00",
+        "subject": "Prepare selected POINT 152389 successor identities and native support"
+      },
+      {
+        "sha": "4b7515f22a1b8555b2e44854bd17635fbf577996",
+        "date": "2026-09-22T09:27:34-04:00",
+        "subject": "Record reviewed POINT preparation checkpoint and pending source selection"
+      },
+      {
+        "sha": "a42373f7576ea9b90f3a3b17393122f25a802735",
+        "date": "2026-09-22T09:36:32-04:00",
+        "subject": "Bind owner-selected POINT no-mask treatment and verify native smoke pass"
+      },
+      {
+        "sha": "4c1aefac9ecacbdedeaaeffbe7a5038c2e564b88",
+        "date": "2026-09-22T09:51:03-04:00",
+        "subject": "Validate three-array POINT maps and record source measurements with exclusions"
+      },
+      {
+        "sha": "912787f62862132295e0dddab660a6fc398e28c7",
+        "date": "2026-09-22T09:56:03-04:00",
+        "subject": "Close reviewed POINT MAP milestone with preserved upstream exclusions"
+      },
+      {
+        "sha": "5af3c950d65baecfa4a9f692f2bbe250e8fc0442",
+        "date": "2026-09-22T10:25:13-04:00",
+        "subject": "Record POINT offset comparison and network failure diagnosis"
+      },
+      {
+        "sha": "7e34bcefc43bb7f1ff33eca1b1d92fdc0a61d0ab",
+        "date": "2026-09-22T10:29:54-04:00",
+        "subject": "Verify all contributions in POINT coordinate diagnostics"
+      },
+      {
+        "sha": "131ef891537292c43b7eb35ea3f2080fe26e32af",
+        "date": "2026-09-22T10:31:43-04:00",
+        "subject": "Preserve independent POINT investigation review"
+      },
+      {
+        "sha": "fa94788f7ef411c12c149d3e5a290a2693801229",
+        "date": "2026-09-22T10:46:53-04:00",
+        "subject": "Preserve outside-science RTC jumps without aborting networks"
+      },
+      {
+        "sha": "e93e8861be3b9d84049cc72d431fd72ab35d8959",
+        "date": "2026-09-22T10:55:00-04:00",
+        "subject": "Canonicalize retained RTC unavailable intervals"
+      },
+      {
+        "sha": "38ab73d4437fbf14098d1d89d3424c6002fd2c36",
+        "date": "2026-09-22T11:05:58-04:00",
+        "subject": "Record validated POINT network recovery and rebuilt maps"
+      },
+      {
+        "sha": "e33020bbd0bc826f01059b6b665e3098ce7dbb60",
+        "date": "2026-09-22T11:09:39-04:00",
+        "subject": "Close independent POINT network rescue review"
+      },
+      {
+        "sha": "8b4b667c05a32d58184d31a4d9b4c2f3d2f812b4",
+        "date": "2026-09-22T16:07:06-04:00",
+        "subject": "Add empirical POINT background and measurement companion"
+      },
+      {
+        "sha": "3e9b5512e42e47e67dbdfe06b4c4183d0c707f61",
+        "date": "2026-09-22T16:14:35-04:00",
+        "subject": "Guard source refit support and clarify empirical split results"
+      },
+      {
+        "sha": "616b44b72ea697ff70a48424091aa070bd1c3de4",
+        "date": "2026-09-22T16:18:29-04:00",
+        "subject": "Record POINT empirical companion results and validation evidence"
+      },
+      {
+        "sha": "5b8a8ff763b325dc42372b5a54f2bc65bb9a22f8",
+        "date": "2026-09-22T16:19:47-04:00",
+        "subject": "Correct empirical coverage summary evidence binding"
+      },
+      {
+        "sha": "4e8dcc37438559a44f7cab72b706a2ae1d50f6c0",
+        "date": "2026-09-22T16:20:58-04:00",
+        "subject": "Close independently reviewed POINT empirical companion"
+      },
+      {
+        "sha": "af9faee61251a050493ce1df475a63490191f17b",
+        "date": "2026-09-22T17:34:17-04:00",
+        "subject": "Compare all balanced POINT reconstructions on declared local footprints"
+      },
+      {
+        "sha": "12e1fc80a489ed898dd78357d5b46c4ecd24a058",
+        "date": "2026-09-22T17:43:34-04:00",
+        "subject": "Bind POINT pairing timing to saved MAP input manifest"
+      },
+      {
+        "sha": "2995d2553c6cbecd2def033669229257854c8d40",
+        "date": "2026-09-22T17:48:10-04:00",
+        "subject": "Record balanced POINT comparisons and local coverage evidence"
+      },
+      {
+        "sha": "045eb9173952b94733d12343eb0e7a3f3686d944",
+        "date": "2026-09-22T17:50:30-04:00",
+        "subject": "Close exact-SHA review of balanced POINT diagnostics"
+      },
+      {
+        "sha": "0aaa11a67d8d6ce158a1d46feb9566d25f8d5d2b",
+        "date": "2026-09-23T10:22:06-04:00",
+        "subject": "Add full-observation conditional correlated-noise POINT companion"
+      },
+      {
+        "sha": "d70233e1c22b96065f700d43ed65f952da3cf32a",
+        "date": "2026-09-23T10:27:24-04:00",
+        "subject": "Preserve failed uncertainty trials and compare matched Monte Carlo budgets"
+      },
+      {
+        "sha": "3a544f3c93c1f5109765e0180e725992f3370154",
+        "date": "2026-09-23T10:40:26-04:00",
+        "subject": "Record full-observation POINT additive uncertainty evidence and limits"
+      },
+      {
+        "sha": "ecf9aaf3c7911da588b26828c418f5193c02aee7",
+        "date": "2026-09-23T10:42:35-04:00",
+        "subject": "Close independent review of POINT additive uncertainty companion"
+      },
+      {
+        "sha": "ff73cdd0e06380e1580e413ad2a59a06cd4cf81f",
+        "date": "2026-09-23T12:01:01-04:00",
+        "subject": "Add bounded bright-POINT connected-support admission prototype"
+      },
+      {
+        "sha": "b9d455af113d46d42b83ba2ac7087de017e121ab",
+        "date": "2026-09-23T12:03:19-04:00",
+        "subject": "Match saved generator scale representation while preserving admission validity"
+      },
+      {
+        "sha": "c4583af71e21ed4140bce01488c4ccbeaa5f0e03",
+        "date": "2026-09-23T12:09:34-04:00",
+        "subject": "Record bright-POINT candidate comparisons and bounded recommendation"
+      },
+      {
+        "sha": "b91730e753b2ff57ae6cdda4928b8e779567e7de",
+        "date": "2026-09-23T12:11:04-04:00",
+        "subject": "Close independent review of bright-POINT admission candidate"
+      },
+      {
+        "sha": "bd4563f4ac9506a861bea8377dd2ba9c5b0620e9",
+        "date": "2026-09-23T12:43:07-04:00",
+        "subject": "Record POINT FRUIT input verification and unresolved application boundaries"
+      },
+      {
+        "sha": "468533e7ee33e2ae7d86f4d52acdb84769069eca",
+        "date": "2026-09-23T12:47:25-04:00",
+        "subject": "Record independent review of POINT FRUIT boundary checkpoint"
+      },
+      {
+        "sha": "dfc10ef5fd8ad880958c57278b6b07d36d841242",
+        "date": "2026-09-23T13:06:57-04:00",
+        "subject": "Implement bounded successor POINT feedback cycle with exact operand rejoin"
+      },
+      {
+        "sha": "46bbeb182bb5e973c8356b51b2c8b509f7186c1b",
+        "date": "2026-09-23T13:15:38-04:00",
+        "subject": "Correct saved-basis layout in POINT FRUIT diagnostics without rerunning cycle"
+      },
+      {
+        "sha": "dc4eab09e772f9ab9ae95d0ecd2f6d44f2ebf7c6",
+        "date": "2026-09-23T13:28:11-04:00",
+        "subject": "Record completed POINT 152389 first FRUIT cycle and corrected diagnostics"
+      },
+      {
+        "sha": "7327a9997911a0772807a25e82014e766dc10cd5",
+        "date": "2026-09-23T13:30:24-04:00",
+        "subject": "Close independent review of the bounded POINT feedback cycle"
+      },
+      {
+        "sha": "9b363175c1b8e595b02b6845784292bc9fba9af1",
+        "date": "2026-09-23T14:02:06-04:00",
+        "subject": "Add bounded POINT FRUIT continuation through ten total cycles"
+      },
+      {
+        "sha": "1c1393b4df31ae721597dabc82498eb000c02f59",
+        "date": "2026-09-23T14:06:14-04:00",
+        "subject": "Bind continuation to archived original parents and complete trajectory differences"
+      },
+      {
+        "sha": "e1fe84d3faf438c0382d219930aacf40341737b4",
+        "date": "2026-09-23T14:19:50-04:00",
+        "subject": "Record completed ten-cycle POINT trajectory and verified evidence"
+      },
+      {
+        "sha": "94297bf1fdbc60a91478b18cb4479cf99f19bfa3",
+        "date": "2026-09-23T14:22:48-04:00",
+        "subject": "Close independent review of POINT ten-cycle results"
+      },
+      {
+        "sha": "9d95916ca3c40aab8e1c8f613ac954718cfce993",
+        "date": "2026-09-23T15:53:00-04:00",
+        "subject": "Add saved post-FRUIT POINT noise and coupled uncertainty companion"
+      },
+      {
+        "sha": "6b1e59c9e7032dcfe8181b85fed264ff805cbca4",
+        "date": "2026-09-23T15:57:09-04:00",
+        "subject": "Preserve partial post-FRUIT diagnostics and failed ensemble outcomes"
+      },
+      {
+        "sha": "5f5853bff67ff2f330400702461cb1afcd01fdb5",
+        "date": "2026-09-23T16:01:42-04:00",
+        "subject": "Add bounded linear generator follow-up for retained sampling anomaly"
+      },
+      {
+        "sha": "570dca932495774c5b99ccbf9ca394381172087c",
+        "date": "2026-09-23T16:08:57-04:00",
+        "subject": "Record post-FRUIT A+B results and per-array uncertainty limitations"
+      },
+      {
+        "sha": "f158cfb600b97a7ec4c0ca68443a0943887dc591",
+        "date": "2026-09-23T16:11:28-04:00",
+        "subject": "Record independent post-FRUIT assessment review closure"
+      },
+      {
+        "sha": "fc60fbfdb7100d74cdbfee96461ae9df4fca1390",
+        "date": "2026-09-23T18:24:59-04:00",
+        "subject": "Add bounded POINT response and feedback robustness campaign"
+      },
+      {
+        "sha": "26af74ac5e59d88a99da1ed4047a7a71a327fca0",
+        "date": "2026-09-23T18:29:04-04:00",
+        "subject": "Preserve stopped-branch diagnostics and finite shoulder domain"
+      },
+      {
+        "sha": "698e5eea5d71da5d042dca28cd870838b9f4f57d",
+        "date": "2026-09-23T19:17:20-04:00",
+        "subject": "Expose POINT response measurement tables and D endpoint maps"
+      },
+      {
+        "sha": "0bd282d89a3343dafa78d5b32c706e50e1f5af65",
+        "date": "2026-09-23T19:31:15-04:00",
+        "subject": "Close POINT C+D campaign with qualified response and robustness evidence"
+      },
+      {
+        "sha": "cc509e74c663d45f4a00a398b4ec1ca4364546e9",
+        "date": "2026-09-23T19:32:16-04:00",
+        "subject": "Preserve linked POINT C+D independent review evidence"
+      },
+      {
+        "sha": "d488b0afc3f468bc394abd75dbe5dbcef5a04782",
+        "date": "2026-09-23T19:33:44-04:00",
+        "subject": "Record final POINT C+D review and sealed evidence receipt"
+      },
+      {
+        "sha": "ebb4316897ebe1c1f67f1bddb16400e825727d9e",
+        "date": "2026-09-24T08:43:41-04:00",
+        "subject": "Add bounded saved-PTC shoulder decomposition diagnostic"
+      },
+      {
+        "sha": "6f00d638b804b897f5a626097e90f4e60bd85b24",
+        "date": "2026-09-24T08:45:45-04:00",
+        "subject": "Record parent CPU time for saved-state analysis"
+      },
+      {
+        "sha": "ccddaf2e319ac0fa2860e7c4bf60eac115a6f861",
+        "date": "2026-09-24T08:55:39-04:00",
+        "subject": "Fix frozen shoulder figure margins and clarify timing scope"
+      },
+      {
+        "sha": "948dfb487caf162b62a00ed6a3592b08f2e0a467",
+        "date": "2026-09-24T09:03:02-04:00",
+        "subject": "Close authenticated POINT frozen-PTC shoulder analysis and review"
+      },
+      {
+        "sha": "4120308df68e9b6a412781649ed7aa10581b70f1",
+        "date": "2026-09-24T09:04:41-04:00",
+        "subject": "Record final frozen-PTC review and verified bundle seal"
+      },
+      {
+        "sha": "a0935ff94ef05787aa088db5bb6154c780ba9d3a",
+        "date": "2026-09-24T10:00:03-04:00",
+        "subject": "Add bounded a2000 reference-basis-sequence counterfactual"
+      },
+      {
+        "sha": "246379db05b1d0fc114f4a4dc4de23f9496f6e6d",
+        "date": "2026-09-24T10:02:05-04:00",
+        "subject": "Own segment eligibility across deferred reference-basis publication"
+      },
+      {
+        "sha": "329bdbb0060e3f92f4328e5bcdfb311103ec52e5",
+        "date": "2026-09-24T10:04:09-04:00",
+        "subject": "Preserve completed maps when terminal candidate diagnostics fail"
+      },
+      {
+        "sha": "2033a3983e943f92df1379bc0805026159992147",
+        "date": "2026-09-24T10:05:39-04:00",
+        "subject": "Keep failed terminal candidate artifacts separate from valid diagnostics"
+      },
+      {
+        "sha": "75454ba02735aff533e22a44c61896f36bc1f8ce",
+        "date": "2026-09-24T10:11:26-04:00",
+        "subject": "Scope diagnostic version check to Citlali provenance"
+      },
+      {
+        "sha": "6ac6b9dc7709fc71e9c4c0cd54d9f24e8fdb71c9",
+        "date": "2026-09-24T10:13:39-04:00",
+        "subject": "Allow CLI logger preamble in diagnostic version identity"
+      },
+      {
+        "sha": "5e52338ec1241585f32914912460e1fdde2c13f3",
+        "date": "2026-09-24T10:27:23-04:00",
+        "subject": "Close a2000 reference-sequence experiment and reuse replay fits"
+      },
+      {
+        "sha": "fb4901e17d9f56606c1d1b3c75375d4882c604be",
+        "date": "2026-09-24T10:29:56-04:00",
+        "subject": "Record reviewed a2000 reference-sequence bundle seal"
+      },
+      {
+        "sha": "5cb12f1a32c2ce50bd9653c21caa8d2dc9cd0190",
+        "date": "2026-09-24T12:08:15-04:00",
+        "subject": "Prepare explicit JINC arithmetic and saved POINT baseline recovery"
+      },
+      {
+        "sha": "8164d828e3c246db14d6cc775abb8c36ffd64178",
+        "date": "2026-09-24T12:13:24-04:00",
+        "subject": "Include explicit JINC fixture in check target"
+      },
+      {
+        "sha": "f95324778fd1abaab22f91362483584c0de6d2c0",
+        "date": "2026-09-24T12:15:30-04:00",
+        "subject": "Bind prior A+B closeout to its tracked immutable copy"
+      },
+      {
+        "sha": "35f6fedb64da5d542696b807ab263e54d676fb5f",
+        "date": "2026-09-24T12:20:39-04:00",
+        "subject": "Record authenticated POINT baselines and unresolved JINC numerical decisions"
+      },
+      {
+        "sha": "cde3c3661b53af8a5f4a07937d0c80b1c29cb2a4",
+        "date": "2026-09-24T12:22:28-04:00",
+        "subject": "Record independent review of gated JINC preparation"
+      },
+      {
+        "sha": "2b2cf27e5e593e71f63f6aa1c8f3691694fc2567",
+        "date": "2026-09-24T13:22:13-04:00",
+        "subject": "Freeze owner JINC accuracy criterion and original REF peak scales"
+      },
+      {
+        "sha": "a5c45cd7e38c9e48b0b37a73ba260859a3f52700",
+        "date": "2026-09-24T13:56:21-04:00",
+        "subject": "Implement bounded JINC cache and accumulation certificates with native AST export"
+      },
+      {
+        "sha": "95ceacc22f0efee7724df99f94d4243739826f70",
+        "date": "2026-09-24T14:09:43-04:00",
+        "subject": "Bind full POINT JINC input preparation to native AST and owner profile"
+      },
+      {
+        "sha": "ba89e4e48347d429764618aa3b0245a9300ff1ff",
+        "date": "2026-09-24T14:11:09-04:00",
+        "subject": "Preserve native plan WCS and omit commentary cards from JSON bindings"
+      },
+      {
+        "sha": "7bc20c4a90c521f5e372e60e3b5feeef1bf3e2e2",
+        "date": "2026-09-24T14:11:49-04:00",
+        "subject": "Import archived parent expectations before uniform handoff audit"
+      },
+      {
+        "sha": "7c673c35f694502a77df4b7a9362708905b7e450",
+        "date": "2026-09-24T14:16:19-04:00",
+        "subject": "Add bounded certified map matrix and preserve empty inherited support"
+      },
+      {
+        "sha": "16351d55f8bdc4032497bcbf6c1fa8df1540a22c",
+        "date": "2026-09-24T14:18:40-04:00",
+        "subject": "Freeze original full response domains and measure campaign resources"
+      },
+      {
+        "sha": "729e60c0944eb1a11285e319776582d1f16a988b",
+        "date": "2026-09-24T14:22:21-04:00",
+        "subject": "Add unchanged POINT response and bounded additive diagnostics stages"
+      },
+      {
+        "sha": "fd903fd44668837712e30746a8bafb2fabda2ce6",
+        "date": "2026-09-24T14:25:11-04:00",
+        "subject": "Preserve unavailable fitted backgrounds and empty certified domains"
+      },
+      {
+        "sha": "0dc24991cd8631bb6f240280f122ae26c89aad1e",
+        "date": "2026-09-24T14:29:00-04:00",
+        "subject": "Add compact scientific report and bind diagnostic stage inputs"
+      },
+      {
+        "sha": "dd043a7b7263e5e893e3a4a1f1306bd2c7b3e63e",
+        "date": "2026-09-24T14:34:04-04:00",
+        "subject": "Complete signed response, shape, uncertainty and support figures"
+      },
+      {
+        "sha": "41e82b2caec01eaa5584e7d215ac1e28d0f6b04d",
+        "date": "2026-09-24T14:37:22-04:00",
+        "subject": "Preserve exact FITS WCS with verified header-only republication"
+      },
+      {
+        "sha": "f879e304e9e909d89ab0ad36d6c7533e299e9165",
+        "date": "2026-09-24T14:44:37-04:00",
+        "subject": "Expose source-depth extrapolation and improve response figure scales"
+      },
+      {
+        "sha": "bd9e4f9895a430a561178cea16998e07eef6a07f",
+        "date": "2026-09-24T14:49:18-04:00",
+        "subject": "Assess the completed fixed JINC experiment and recommend the bounded next step"
+      },
+      {
+        "sha": "b05595f68950b4fcdb57add8daf54f714db35148",
+        "date": "2026-09-24T14:57:09-04:00",
+        "subject": "Preserve JINC experiment provenance and seal completed evidence"
+      },
+      {
+        "sha": "b3c65a4a7d7c3d1f33a2c362152c5d6999dcb59f",
+        "date": "2026-09-24T14:58:47-04:00",
+        "subject": "Keep complete colorbar labels within exported JINC figures"
+      },
+      {
+        "sha": "0c8d54c1b227e69abcf99a9188daa6d5f3c93675",
+        "date": "2026-09-24T14:59:16-04:00",
+        "subject": "Bind the final label-corrected report execution log"
+      },
+      {
+        "sha": "0fb997ecefd55f56e1ef86173393a2ed27252f91",
+        "date": "2026-09-24T15:02:02-04:00",
+        "subject": "Record independent final JINC numerical and rendered-report review"
+      },
+      {
+        "sha": "07fff9594f2d9234bb5546cead08bf97efeb72dc",
+        "date": "2026-09-24T15:04:28-04:00",
+        "subject": "Seal the complete reviewed POINT JINC comparison and stop"
+      },
+      {
+        "sha": "15332a5744f0d7f6014f12da2275a30f809f3fe4",
+        "date": "2026-09-24T17:12:58-04:00",
+        "subject": "Implement bounded covariance-aware neighborhood admission and null gates"
+      },
+      {
+        "sha": "f49ed16d92947c01290122b67ec5dfe50442fee4",
+        "date": "2026-09-24T17:15:35-04:00",
+        "subject": "Enforce authenticated null inputs, source absence and reviewed numerical gates"
+      },
+      {
+        "sha": "ee54efb6d32759003d4249f3a4ad90dbeb9c10d9",
+        "date": "2026-09-24T17:16:44-04:00",
+        "subject": "Keep numerical launch eligibility independent for each admission policy"
+      },
+      {
+        "sha": "0a651e88a07cccd3431d54bc76d7b457df640e84",
+        "date": "2026-09-24T17:29:36-04:00",
+        "subject": "Keep failed null maxima and dependent calibration thresholds unavailable"
+      },
+      {
+        "sha": "20b54cf93d4387a077d2c5a6c645aacb29f18247",
+        "date": "2026-09-24T17:33:00-04:00",
+        "subject": "Add guarded baseline replay and unavailable-threshold map diagnostics"
+      },
+      {
+        "sha": "2826e7ac4bf9314ca7b04e351a69acac4415c05e",
+        "date": "2026-09-24T17:35:26-04:00",
+        "subject": "Verify BASE operands and PTC state against each archived REF stage"
+      },
+      {
+        "sha": "bdd3d5645dc294fcaf84dbcc84d84e8c360f2aa2",
+        "date": "2026-09-24T17:36:00-04:00",
+        "subject": "Test that BASE state replay rejects changed native operands"
+      },
+      {
+        "sha": "9a2c2e8418c99d54d8453bdc29408c3e6a196e57",
+        "date": "2026-09-24T17:41:12-04:00",
+        "subject": "Report complete null outcomes and explicitly blocked admission comparisons"
+      },
+      {
+        "sha": "1371640d6a596099a55cb1014f6cc55236549ffb",
+        "date": "2026-09-24T17:50:15-04:00",
+        "subject": "Preserve failed-gate correlation experiment provenance and closeout"
+      },
+      {
+        "sha": "b85bc07cf03b6a675e43dd55ea4fef9fa554c076",
+        "date": "2026-09-24T17:56:06-04:00",
+        "subject": "Record independently reviewed POINT correlation failed-gate results"
+      },
+      {
+        "sha": "2aae3c5608e6fff7ce0e55337942a5ea25c51998",
+        "date": "2026-09-24T17:58:02-04:00",
+        "subject": "Record verified seal for POINT correlation admission experiment"
+      },
+      {
+        "sha": "970a86dbcb1ad8a86b6025c91cfcecbf0f15b986",
+        "date": "2026-09-25T08:17:50-04:00",
+        "subject": "Add bounded observation of archived POINT blank-fit failures"
+      },
+      {
+        "sha": "ad9eb745305e185e2440670d15d832d442a8b2a5",
+        "date": "2026-09-25T08:20:59-04:00",
+        "subject": "Report bounded optimizer exhaustion diagnosis without changing admission"
+      },
+      {
+        "sha": "1761e943ff26ceb9998f3c2687e7a37bddc6808a",
+        "date": "2026-09-25T08:22:55-04:00",
+        "subject": "Clarify function-evaluation limit and preserve diagnosis reproduction"
+      },
+      {
+        "sha": "4a9beb9fbd23e4b88fd8e790d0ff9fc8017f70c1",
+        "date": "2026-09-25T08:25:16-04:00",
+        "subject": "Record independently reviewed blank-fit diagnosis and limits"
+      },
+      {
+        "sha": "cfcde23f4f6cd27588924c748c2fec07d8f3007e",
+        "date": "2026-09-25T08:25:48-04:00",
+        "subject": "Record verified blank-fit diagnosis seal"
+      },
+      {
+        "sha": "ef9a36b364b600adf401d84c60b1ca87f6cf0f4a",
+        "date": "2026-09-25T09:17:31-04:00",
+        "subject": "Implement bounded expected-POINT guard and covariance amplitude acceptance"
+      },
+      {
+        "sha": "0441f293e3daa5bab853efd43e278cb445fdec3c",
+        "date": "2026-09-25T09:22:03-04:00",
+        "subject": "Enforce failed-screen publication and explicit centroid semantics"
+      },
+      {
+        "sha": "110fab8d2325346eec20fe0e9b2a000ac2ffd27a",
+        "date": "2026-09-25T09:33:16-04:00",
+        "subject": "Report expected-source replay and unapplied saved-map candidates"
+      },
+      {
+        "sha": "c702483454ceb54932431165b609af4f2d4fa04b",
+        "date": "2026-09-25T09:38:18-04:00",
+        "subject": "Record reviewed expected-source calibration and bounded completion"
+      },
+      {
+        "sha": "01be8c312f12db935ce629a81465cd9eb8a71427",
+        "date": "2026-09-25T09:40:44-04:00",
+        "subject": "Bind sealed expected-source evidence and closure review"
+      },
+      {
+        "sha": "cd3122ba399ea6e60f7ab30080b78af2e90253f2",
+        "date": "2026-09-25T13:35:17-04:00",
+        "subject": "Bind guarded feedback matrix to frozen source checks and thresholds"
+      },
+      {
+        "sha": "0730b0b4f78d64215989922d0eae9435a6f79dd7",
+        "date": "2026-09-25T13:43:14-04:00",
+        "subject": "Integrate fixed guarded measurements with bounded feedback trajectories"
+      },
+      {
+        "sha": "a305099348479c692a5a5b0deb2cc9b2fd4e6b11",
+        "date": "2026-09-25T13:51:12-04:00",
+        "subject": "Verify frozen native interventions with signed and masked controls"
+      },
+      {
+        "sha": "839eadb85bb9eda97d71de8fd554308845b780a6",
+        "date": "2026-09-25T14:20:29-04:00",
+        "subject": "Assess guarded POINT response, seed persistence and endpoint covariance"
+      },
+      {
+        "sha": "cbeb98bded4bc3831fc570ce89561c2c236b4596",
+        "date": "2026-09-25T14:39:19-04:00",
+        "subject": "Preserve fitted diagnostics across FITS publication recovery"
+      },
+      {
+        "sha": "908f71d302b0944c3b42a4fb5dd8dabf0a397ad5",
+        "date": "2026-09-25T14:44:30-04:00",
+        "subject": "Resume partial reports in fresh publication directories without refitting"
+      },
+      {
+        "sha": "49e5c47711b9e134b458b24b33e1ae20779db154",
+        "date": "2026-09-25T14:58:07-04:00",
+        "subject": "Add guarded comparison assessment and bounded evidence closure"
+      },
+      {
+        "sha": "a3541d358592e36221436e96fde1156897ab88e2",
+        "date": "2026-09-25T14:59:31-04:00",
+        "subject": "Distinguish initial and feedback-output guard SNR minima"
+      },
+      {
+        "sha": "acbf5ed1879127d7859688e34a5f354a9106833b",
+        "date": "2026-09-25T14:59:52-04:00",
+        "subject": "Recognize unittest-format CLI validation evidence"
+      },
+      {
+        "sha": "f79c0b7f32a9d25afb2a9498dca0ed0ed2750603",
+        "date": "2026-09-25T15:02:31-04:00",
+        "subject": "Complete guarded assessment with exact background delta and report timing"
+      },
+      {
+        "sha": "26a3047c654386e38adac860b91491136888bc64",
+        "date": "2026-09-25T15:09:45-04:00",
+        "subject": "Seal reviewed POINT guarded feedback comparison and record bounded outcome"
+      },
+      {
+        "sha": "ed0fd90a84260362da52e108367942f0343e1114",
+        "date": "2026-09-25T17:53:34-04:00",
+        "subject": "Add bounded cached-only a2000 saved-product diagnosis"
+      },
+      {
+        "sha": "f5e02f9c40a4372e91210cc082dff948f3047130",
+        "date": "2026-09-25T18:00:14-04:00",
+        "subject": "Correct saved seed turnover and expose own trajectory drift"
+      },
+      {
+        "sha": "257f6dbc1574f8f7d7108cf285b4f118d4061243",
+        "date": "2026-09-25T18:08:35-04:00",
+        "subject": "Publish cached a2000 measurement and pixel ledgers with precise figure labels"
+      },
+      {
+        "sha": "0ce7c527ca440687616540dba6f54d0e4bc990b3",
+        "date": "2026-09-25T18:14:09-04:00",
+        "subject": "Assess a2000 saved seed persistence and compact-response tradeoffs"
+      },
+      {
+        "sha": "11b4d2c07a81cc5876bd3da833c4168731e34aea",
+        "date": "2026-09-25T18:18:57-04:00",
+        "subject": "Seal independently reviewed a2000 saved-product diagnosis"
+      },
+      {
+        "sha": "5b2c01a94ffa9758c3c7def60762eaa7964e99c0",
+        "date": "2026-09-26T07:21:44-04:00",
+        "subject": "Record POINT recovery state and reviewed duplicate cleanup proposal"
+      },
+      {
+        "sha": "a50e0293b96ad7bc3d98dd97c09d764031ce2365",
+        "date": "2026-09-26T07:27:49-04:00",
+        "subject": "Record approved duplicate deletion and measured disk recovery"
+      },
+      {
+        "sha": "730a544e0c4157e7d6fa752195618d74153025f0",
+        "date": "2026-09-26T08:21:32-04:00",
+        "subject": "Add cached POINT importance assessment and explicit duplicate archive compaction"
+      },
+      {
+        "sha": "8f214e06c4e01722194e7bc8ea9a1d991974ddf4",
+        "date": "2026-09-26T08:22:40-04:00",
+        "subject": "Bind compaction execution to reviewed clean source"
+      },
+      {
+        "sha": "84eb4d91947271f1037a586589411ee4942a5407",
+        "date": "2026-09-26T08:38:20-04:00",
+        "subject": "Close POINT importance assessment and verified archive compaction"
+      },
+      {
+        "sha": "6a0b75236c8880e0ae588f9b21c8766ebaa4eb9c",
+        "date": "2026-09-26T10:14:47-04:00",
+        "subject": "Preserve local-data inventory and recovery records before RTC PTC purge"
+      },
+      {
+        "sha": "43844bfe07b81c3f70bd01f370f46820982f5bba",
+        "date": "2026-09-26T10:30:24-04:00",
+        "subject": "Record completed local RTC/PTC purge and raw package inventory"
+      },
+      {
+        "sha": "1b2016120885d1e93e73ca33ab782c8df2c9fdd3",
+        "date": "2026-09-26T11:14:55-04:00",
+        "subject": "Add bounded frozen-method independent POINT a2000 campaign"
+      },
+      {
+        "sha": "54adaeebd2068cf827fe39f0aae8c3fbddcb03e0",
+        "date": "2026-09-26T11:16:48-04:00",
+        "subject": "Keep diagnostic endpoint failures separate from feedback trajectory status"
+      },
+      {
+        "sha": "f7e39ffe1089eb0d9f29fcf44317fcb46517680e",
+        "date": "2026-09-26T11:35:26-04:00",
+        "subject": "Record independent POINT admission stop and verified compact closeout"
+      },
+      {
+        "sha": "263aed9b37dad1af8d643be10e5396eb376e281f",
+        "date": "2026-09-26T11:36:47-04:00",
+        "subject": "Label compact seal as bounded stop with comparison unavailable"
+      },
+      {
+        "sha": "cf9cfee12d41c12e494fa904b6065b87cb503b41",
+        "date": "2026-09-26T11:38:56-04:00",
+        "subject": "Publish independent POINT final review and bounded completion receipt"
+      },
+      {
+        "sha": "9875aec4b2bea63e036d83691c0b35cbd9c6219e",
+        "date": "2026-09-26T12:53:45-04:00",
+        "subject": "Permit conditional high-coverage transfer for bounded POINT rerun"
+      },
+      {
+        "sha": "ac2bee1febaab82b808f7f751374b797de033c6a",
+        "date": "2026-09-26T12:58:12-04:00",
+        "subject": "Retain policy-matched M0 injection controls for POINT comparison"
+      },
+      {
+        "sha": "90a95c20de18fd41a64c78b6ac23960762b0e35a",
+        "date": "2026-09-26T13:18:11-04:00",
+        "subject": "Record completed POINT 152430 fifteen-trajectory comparison and compact results"
+      },
+      {
+        "sha": "c2481f0811f02969b7d891d42aabbdc556b82d39",
+        "date": "2026-09-26T13:20:32-04:00",
+        "subject": "Clarify POINT fit-parameter records and retain checked warning diagnostics"
+      },
+      {
+        "sha": "ac1bf4eecc9973515195151bf865e25893e2e5d5",
+        "date": "2026-09-26T13:23:21-04:00",
+        "subject": "Record passing independent final POINT review and scratch cleanup"
+      },
+      {
+        "sha": "b47c13e1f5b745b94880218e347f77b4142686ff",
+        "date": "2026-09-26T14:50:09-04:00",
+        "subject": "Consolidate explicit bright POINT BASE pipeline and preserve shared numerical owners"
+      },
+      {
+        "sha": "7bd7e256b839f3a130225fe371ce2e46d1905e56",
+        "date": "2026-09-26T15:03:22-04:00",
+        "subject": "Record exact isolated BASE regression, compact evidence and RTC PTC handoff"
+      },
+      {
+        "sha": "5435bdbdb4e6708e884ae4cb2b0fd93e74102ce5",
+        "date": "2026-09-26T15:08:35-04:00",
+        "subject": "Record independent freeze review and final task scratch cleanup"
+      },
+      {
+        "sha": "cc5215609814d5a97a448ba04e8e382de8e19d56",
+        "date": "2026-09-26T16:25:07-04:00",
+        "subject": "Wire bounded PTC rank response experiment through shared POINT pipeline"
+      },
+      {
+        "sha": "e3cbf1eeadda256e4d9f400a834f9f7d462c1ae2",
+        "date": "2026-09-26T16:29:30-04:00",
+        "subject": "Preserve failed final-cycle outcomes in rank experiment reporting"
+      },
+      {
+        "sha": "d32c0f8eec545382ee09cc65156c73d0357cfbbc",
+        "date": "2026-09-26T16:51:07-04:00",
+        "subject": "Record completed PTC rank response and conditional noise comparison"
+      },
+      {
+        "sha": "e67cf6c4303ca4516e5a5c0947e6df70e41242f2",
+        "date": "2026-09-26T16:56:08-04:00",
+        "subject": "Propagate incomplete rank-matrix failures and record reviewed cleanup"
+      },
+      {
+        "sha": "11b0c313cffe6cc0583b7a9e70dcfa98e3137746",
+        "date": "2026-09-26T17:00:29-04:00",
+        "subject": "Close independently reviewed PTC rank response experiment"
+      },
+      {
+        "sha": "637e2adce4ca65e01510106273aa8e80c96f3433",
+        "date": "2026-09-27T10:36:43-04:00",
+        "subject": "Instrument bounded original-input POINT latency and shorter feedback runs"
+      },
+      {
+        "sha": "516a283bc76bbfe1e259d92357bd191819b2782c",
+        "date": "2026-09-27T10:41:06-04:00",
+        "subject": "Publish truthful atomic POINT readiness and measured startup attempts"
+      },
+      {
+        "sha": "e28f6630fffaba77f78fc2c2cb883c7345ad92f4",
+        "date": "2026-09-27T10:42:34-04:00",
+        "subject": "Fail closed after POINT publication or cleanup errors"
+      },
+      {
+        "sha": "b7746e3ca6f1615039a2b9d4a3aabe2df62a2a7f",
+        "date": "2026-09-27T11:10:11-04:00",
+        "subject": "Record unchanged POINT timing baseline before PCA alternatives"
+      },
+      {
+        "sha": "08f81382d96afb0aad6bc1ed40543322887729b9",
+        "date": "2026-09-27T11:26:11-04:00",
+        "subject": "Add bounded warm ALS and masked covariance POINT experiments"
+      },
+      {
+        "sha": "cec7917ef57ac37ed48fceffec33bc95a32cd78a",
+        "date": "2026-09-27T12:22:54-04:00",
+        "subject": "Record bounded POINT speed and PCA comparison with timing limitations"
+      },
+      {
+        "sha": "9c7586bb044cdacd59dcd06e7dafed505453212e",
+        "date": "2026-09-27T12:43:12-04:00",
+        "subject": "Close reviewed POINT comparison and verify bounded native cleanup"
+      },
+      {
+        "sha": "f25ca650de04b934cdb0d8e4b8bce73226ce4024",
+        "date": "2026-09-27T15:01:45-04:00",
+        "subject": "Instrument bounded RTC cost and pre-RTC response at warm rank10 N5"
+      },
+      {
+        "sha": "3bb6444ab5e97265cbcb8f197994a52603b481ae",
+        "date": "2026-09-27T15:12:22-04:00",
+        "subject": "Close native RTC injection mapping and diagnostic storage preflight gaps"
+      },
+      {
+        "sha": "d897dc0014da3c8d007fb74dff1e259d9abdf8d9",
+        "date": "2026-09-27T15:18:02-04:00",
+        "subject": "Recover sealed T5 prefix planes for metadata-independent strict comparison"
+      },
+      {
+        "sha": "9ab86590cb7723304a79bed3ed2bf50d36834675",
+        "date": "2026-09-27T15:38:49-04:00",
+        "subject": "Record measured RTC baseline populations and pre-RTC response before optimization"
+      },
+      {
+        "sha": "a0f7345fc0c0501e34e877f91104c4a78e61daf3",
+        "date": "2026-09-27T15:43:39-04:00",
+        "subject": "Batch RTC binary output while preserving every numerical and support byte"
+      },
+      {
+        "sha": "eafd243b88be6a634b89789dac3d67997f6fb0b5",
+        "date": "2026-09-27T16:06:32-04:00",
+        "subject": "Record RTC cost and source-response evidence with exact B equivalence"
+      },
+      {
+        "sha": "ed388e84d0bea5e31c00234754852c2a17ae8be5",
+        "date": "2026-09-27T16:10:17-04:00",
+        "subject": "Clarify conditional RTC beam effects and unavailable injection mapping"
+      },
+      {
+        "sha": "ab43474a7c4988fcc7d72023e6695c034f56c22a",
+        "date": "2026-09-27T16:17:33-04:00",
+        "subject": "Close RTC review and verified native scratch cleanup"
+      },
+      {
+        "sha": "b3d997456a8b9762d9fc323e37827f96b4ec7b37",
+        "date": "2026-09-27T17:45:00-04:00",
+        "subject": "Bind fixed 11 Hz RTC experiment to frozen affected population"
+      },
+      {
+        "sha": "f3428f67f92605211b410fcd2081b43aa579493c",
+        "date": "2026-09-27T18:30:10-04:00",
+        "subject": "Measure fixed 11 Hz notch tradeoff through final POINT maps"
+      },
+      {
+        "sha": "38e917f4c731228ab827587df889c98b9489d1b1",
+        "date": "2026-09-27T18:41:48-04:00",
+        "subject": "Close reviewed fixed11 comparison and guarded native cleanup"
+      },
+      {
+        "sha": "43b510b3d01323c2de9cc41b2dfdb8d316b9ca4d",
+        "date": "2026-09-27T21:09:24-04:00",
+        "subject": "Add bounded RTC step POINT diagnostics and selected-observation bindings"
+      },
+      {
+        "sha": "15223b675b60e5a004324c2d45cf104dcf2938f8",
+        "date": "2026-09-27T21:44:21-04:00",
+        "subject": "Record bounded POINT RTC step and active source-response assessment"
+      },
+      {
+        "sha": "218a1b0fa2a9b2165d635dba4d11daa5233ddd38",
+        "date": "2026-09-27T21:49:37-04:00",
+        "subject": "Preserve independent step review and pending cleanup approval"
+      },
+      {
+        "sha": "b33787d1c597e623671f708238672e98421d6a34",
+        "date": "2026-09-28T07:26:56-04:00",
+        "subject": "Complete owner-approved POINT step scratch cleanup"
+      },
+      {
+        "sha": "482fa206d87ca1b59e11b82ec7352863b570a028",
+        "date": "2026-09-28T09:29:07-04:00",
+        "subject": "Bind bounded a1100 four-network step consequence assessment"
+      },
+      {
+        "sha": "25f01f1ce8c71b66fea965c32b5972a56e070648",
+        "date": "2026-09-28T09:33:40-04:00",
+        "subject": "Keep level-shift review selection independent and missing source context explicit"
+      },
+      {
+        "sha": "9178a92db69cf7f27557c01cea30ff1bf7c4872a",
+        "date": "2026-09-28T09:35:04-04:00",
+        "subject": "Report only uncertainty endpoints actually verified"
+      },
+      {
+        "sha": "839f31b28b52de6a46bc9c2dc623673378839cfa",
+        "date": "2026-09-28T09:43:53-04:00",
+        "subject": "Repair four-network source-probe entry gate and preserve one replacement"
+      },
+      {
+        "sha": "702d6f46728cd2fddb1540aa9fa4fec09ba93d27",
+        "date": "2026-09-28T10:23:00-04:00",
+        "subject": "Assess step consequences on POINT152430 networks 1\u20134 with compact evidence"
+      },
+      {
+        "sha": "e74d8d799d04ca1f11241600e0e1482fc787d256",
+        "date": "2026-09-28T10:27:46-04:00",
+        "subject": "Record independent step-consequence review and pending cleanup scope"
+      },
+      {
+        "sha": "17f0b9b9bcfdc605161b2c67dba7ccdf52ffdf72",
+        "date": "2026-09-28T10:41:29-04:00",
+        "subject": "Complete owner-approved step-consequence scratch cleanup"
+      },
+      {
+        "sha": "c517444861022f70c95dde95ed13e6a6a259249b",
+        "date": "2026-09-28T11:31:36-04:00",
+        "subject": "Gate one retained-residual B replay under new finite owner budget"
+      },
+      {
+        "sha": "ad8d9e9a44768b75b3a2526ed1391816e505b9a7",
+        "date": "2026-09-28T13:04:35-04:00",
+        "subject": "Preserve partial retained-residual audit after failed FRUIT scope gate"
+      },
+      {
+        "sha": "be5993971f17c00c309598630d19a17e8c3c7a7d",
+        "date": "2026-09-28T13:07:19-04:00",
+        "subject": "Mark peaks unavailable for fully excluded retained-residual excerpts"
+      },
+      {
+        "sha": "da94a43795cde31c80b0f642ddde258d65905d3a",
+        "date": "2026-09-28T13:10:30-04:00",
+        "subject": "Record independent qualified review of partial residual evidence"
+      },
+      {
+        "sha": "ff92aa69d73aee9441e3269adf4ff4b9892ae509",
+        "date": "2026-09-28T14:23:22-04:00",
+        "subject": "Fix retained-residual FRUIT routing and prove native request contract"
+      },
+      {
+        "sha": "9d28b2c6e134375b6f377ae59acc4e9f967ac3d4",
+        "date": "2026-09-28T14:24:24-04:00",
+        "subject": "Bind one two-stage baseline launch and complete sealed B comparator"
+      },
+      {
+        "sha": "a7351335f791c995e39d7cda4546412e3f4a5638",
+        "date": "2026-09-28T14:46:01-04:00",
+        "subject": "Freeze D88 whole-run quarantine after exact complete B replay"
+      },
+      {
+        "sha": "f7dc690f6c837cdb3eefe7560a0cc4852508e48b",
+        "date": "2026-09-28T15:20:07-04:00",
+        "subject": "Record completed RTC quarantine comparison and preserved evidence"
+      },
+      {
+        "sha": "105df3663f916e63ca6b62d5fb227c5d59e5ddd1",
+        "date": "2026-09-28T15:25:42-04:00",
+        "subject": "Close two-stage RTC comparison with independent review"
+      },
+      {
+        "sha": "9b992d4addbf4e5b034130987ffbce9457467a26",
+        "date": "2026-09-28T21:14:42-04:00",
+        "subject": "Record independent POINT transfer storage stop and owner handoff"
+      },
+      {
+        "sha": "6c26c628ac9df374e0bc8bc5888ba5270a8d9daf",
+        "date": "2026-09-28T21:15:03-04:00",
+        "subject": "Clarify preserved work-order Markdown check notices"
+      },
+      {
+        "sha": "e7fbc4e3156bf4c6b1f2267acd793af89912fead",
+        "date": "2026-09-29T08:11:00-04:00",
+        "subject": "Prepare approved exact-manifest RTC scratch cleanup"
+      },
+      {
+        "sha": "78c9aa2b4d8d29b2444d1a040605cfc5c485b38f",
+        "date": "2026-09-29T08:15:08-04:00",
+        "subject": "Bind independent cleanup review and foreground owner handoff"
+      },
+      {
+        "sha": "212dfe1e21143b5e36f8387044005a973821c497",
+        "date": "2026-09-29T10:25:01-04:00",
+        "subject": "Verify completed RTC scratch cleanup and preserve execution receipts"
+      },
+      {
+        "sha": "c3a8a55291fec786d532972d814b6dd5204d9f76",
+        "date": "2026-09-29T11:14:02-04:00",
+        "subject": "Prepare bounded independent POINT transfer selector and foreground campaign"
+      },
+      {
+        "sha": "0b96d1c9ca35cace9a106585c0ed8be8cd5293fe",
+        "date": "2026-09-29T11:24:20-04:00",
+        "subject": "Fix transfer terminal evidence and pre-import resource limits"
+      },
+      {
+        "sha": "b317e7041f118fce075320d595948d15d4da3c21",
+        "date": "2026-09-29T11:35:43-04:00",
+        "subject": "Configure transfer build explicitly and add preflight-only verification"
+      },
+      {
+        "sha": "6eb15ca337604298074f574152a01a8a7f697647",
+        "date": "2026-09-29T11:41:10-04:00",
+        "subject": "Supply native POINT fixture binary and preserve source-keyed preflights"
+      },
+      {
+        "sha": "a84eb2456fef4a8c2e768144dd75a47f21a83654",
+        "date": "2026-09-29T12:19:40-04:00",
+        "subject": "Enable owner-approved bounded transfer diagnostic and PTC runtime profile"
+      },
+      {
+        "sha": "0132dc8ca2c72e0b7fd35439196f29365646b6ec",
+        "date": "2026-09-29T14:45:27-04:00",
+        "subject": "Compare saved POINT152420 source morphology with a common fit"
+      },
+      {
+        "sha": "dbc7d47fcd537a2ca01e650f9db7fc031861ec32",
+        "date": "2026-09-29T14:58:19-04:00",
+        "subject": "Contrast owner-selected redu09 POINT map at matching fit settings"
+      },
+      {
+        "sha": "59b03a0fd3e5d25481b9215994b61462d02446b3",
+        "date": "2026-09-30T07:53:59-04:00",
+        "subject": "Separate POINT auxiliary support and prepare bounded completion"
+      },
+      {
+        "sha": "518e05891cf8eb2e84621cdcfcea83525f3d1c49",
+        "date": "2026-09-30T08:01:00-04:00",
+        "subject": "Release completed transfer scratch within fixed retention budget"
+      },
+      {
+        "sha": "c87c20d9a4435f4b9bbe88c81e3071751f2c4d57",
+        "date": "2026-09-30T10:35:20-04:00",
+        "subject": "Assess completed POINT152420 campaign and park Q with fit limitations"
+      },
+      {
+        "sha": "4006f594154e7c4cd78d6ebf4d3e646af67bca17",
+        "date": "2026-09-30T13:15:31-04:00",
+        "subject": "Investigate POINT152420 calibration contrast and prepare bounded controls"
+      },
+      {
+        "sha": "8fe1b89cdbbfc66056c7a69c759476ac00df5dbb",
+        "date": "2026-09-30T13:22:19-04:00",
+        "subject": "Bind calibration audit dependencies and protect launch evidence"
+      },
+      {
+        "sha": "881c0267032bf8192c5303c46aa772173d2e8b65",
+        "date": "2026-09-30T16:52:20-04:00",
+        "subject": "Trace POINT152420 calibration factors through declared APT lineages"
+      },
+      {
+        "sha": "9cc300e383805b47cf86d5cc3706e705ae897843",
+        "date": "2026-09-30T16:56:04-04:00",
+        "subject": "Record independent POINT152420 calibration lineage review"
+      },
+      {
+        "sha": "4da46f8258c743486eeb8ef010f8753c267ec429",
+        "date": "2026-10-01T10:42:50-04:00",
+        "subject": "Assess saved POINT map quality and prepare bounded corrected reference batch and OOF handoff"
+      },
+      {
+        "sha": "a6d2c4bb2b1ccce671c17ab29e723da3b57bc8db",
+        "date": "2026-10-01T10:49:11-04:00",
+        "subject": "Repair physical-raster response loading and finalize POINT support diagnostics"
+      },
+      {
+        "sha": "6d9ad5e5c74f0b08687baba2ebeb1f25822d8cf3",
+        "date": "2026-10-01T12:34:15-04:00",
+        "subject": "Close bounded POINT quality assessment and refresh OOF handoff"
+      },
+      {
+        "sha": "32f76b3126c53013fcfd84d4ca1d8b5acb358921",
+        "date": "2026-10-01T13:14:35-04:00",
+        "subject": "Support bounded OOF scan-1 preparation and check saved LMTOOF interface"
+      },
+      {
+        "sha": "0e63e6459112c0ddaeb284694612fd7d09b3d637",
+        "date": "2026-10-01T13:20:34-04:00",
+        "subject": "Reject unequal OOF support at the existing LM solver boundary"
+      },
+      {
+        "sha": "95b2fab06f0622c9c166bdc202ff710dec05f42d",
+        "date": "2026-10-01T13:26:33-04:00",
+        "subject": "Record OOF preparation gates and explicit comparison launch blockers"
+      },
+      {
+        "sha": "f79db1faa8a85c6d84bc0dd387a18b8924b956e3",
+        "date": "2026-10-02T08:42:32-04:00",
+        "subject": "Prepare bounded a2000 OOF cold-M0 batch and operational consumer checks"
+      },
+      {
+        "sha": "b98dc43aba98780c1a62ad8776af352bd498654e",
+        "date": "2026-10-02T09:09:10-04:00",
+        "subject": "Assess saved a2000 OOF M0 maps and record scan identity defect"
+      },
+      {
+        "sha": "74c76ce90429db559ee6cfbebe25540217c6f88e",
+        "date": "2026-10-02T09:12:29-04:00",
+        "subject": "Correct independently reviewed OOF disk-size rounding"
+      },
+      {
+        "sha": "c74e8a7562b9dd751ffb18a533bc16b2cb2e9bfe",
+        "date": "2026-10-02T09:35:49-04:00",
+        "subject": "Prepare saved OOF JINC comparison and correct MAP acquisition identity"
+      },
+      {
+        "sha": "524845cd7c730a1f9bf7dfb705f8d3bae1ba94a5",
+        "date": "2026-10-02T09:44:58-04:00",
+        "subject": "Respect saved OOF support and enforce complete frozen JINC launch gates"
+      },
+      {
+        "sha": "de5de6f6eeace636dd10e7bbe02076b497d124f2",
+        "date": "2026-10-02T10:02:11-04:00",
+        "subject": "Assess OOF JINC morphology and preserve edge-cancellation limitations"
+      },
+      {
+        "sha": "6e2a467b85f07f15b8fdfe947bed81df833d11bb",
+        "date": "2026-10-02T12:19:48-04:00",
+        "subject": "Use source-offset AltAz for POINT/OOF maps and prepare saved OOF JINC comparison"
+      },
+      {
+        "sha": "4f61e7649d6c3186e6ccf4f3721fe7ad9283c71b",
+        "date": "2026-10-28T11:13:19-04:00",
+        "subject": "Connect configured all-array POINT requests to native forward processing"
+      },
+      {
+        "sha": "87e9217fc0016839d43684f539e93774199a32a1",
+        "date": "2026-10-28T11:27:25-04:00",
+        "subject": "Validate ordinary calibration controls and native POINT launch arguments"
+      },
+      {
+        "sha": "19d7f932799af88cf041101a6bebc6f5e0318557",
+        "date": "2026-10-28T11:53:14-04:00",
+        "subject": "Record local POINT evidence and owner-only reduction launches"
+      },
+      {
+        "sha": "d1032b4d96c56145aeb140ead1afd4d0e6974cd2",
+        "date": "2026-10-28T12:48:08-04:00",
+        "subject": "docs: diagnose saved POINT 152418 assessment failure"
+      },
+      {
+        "sha": "dd5e54ad10cb7cfb624c92684a97fc5f0032b415",
+        "date": "2026-10-28T14:07:27-04:00",
+        "subject": "docs: record local compromised-detector exclusion policy"
+      },
+      {
+        "sha": "b17137eb64915da4aeae996ad638e3c896c8236c",
+        "date": "2026-10-28T14:41:51-04:00",
+        "subject": "feat: exclude repeatedly disturbed unassessable POINT detectors"
+      },
+      {
+        "sha": "4767cc1440d973ee883868e4d744b060883db895",
+        "date": "2026-10-28T14:48:36-04:00",
+        "subject": "Bind detector exclusion to applied disturbance evidence and report early failures"
+      },
+      {
+        "sha": "f3d2e60a08e04e548dfd95ac509b10ed7a775066",
+        "date": "2026-10-28T14:53:13-04:00",
+        "subject": "Record reviewed disturbance rule and unrun 152418 owner trial"
+      },
+      {
+        "sha": "c6ea76247213cdb8ce51c9ed935a9744b15beb9a",
+        "date": "2026-10-29T11:44:43-04:00",
+        "subject": "docs: adopt configurable ten-percent optical response default"
+      },
+      {
+        "sha": "4f7d31957d2135601145c63387e310622fe16d64",
+        "date": "2026-10-29T12:45:51-04:00",
+        "subject": "Implement configured optical health, inverse-noise POINT and FRUIT"
+      },
+      {
+        "sha": "df550415789c5777d31fa37e59989021f4600f50",
+        "date": "2026-10-29T12:58:30-04:00",
+        "subject": "Keep every fitted science block in optical response resampling"
+      },
+      {
+        "sha": "331ff29ea1720b1454e671cbbab93814d8df8321",
+        "date": "2026-10-29T13:00:33-04:00",
+        "subject": "Normalize imported review record whitespace"
+      },
+      {
+        "sha": "77063575c4fac2bb207ca462435009358be396f6",
+        "date": "2026-10-29T13:07:49-04:00",
+        "subject": "Record reviewed weighted POINT runtime and owner-run trials"
+      }
+    ],
+    "engineering": [
+      {
+        "sha": "1bb75f1a9b337485e197b659144d9e8b6394e5bd",
+        "date": "2026-10-29T14:48:00-04:00",
+        "subject": "Unify production source policy and ordinary test builds"
+      },
+      {
+        "sha": "e1490b25735854005a96a29a1c9bdee9bb53bac4",
+        "date": "2026-10-29T14:52:35-04:00",
+        "subject": "Own native staged publication and FITS FFTW lifetimes"
+      },
+      {
+        "sha": "00b24dee6ecc484a7130d41bdb6a0c6bd6e41ce0",
+        "date": "2026-10-29T15:02:51-04:00",
+        "subject": "Extract shared successor input binding services"
+      },
+      {
+        "sha": "357b256e1642378d951d03a5880209b8737688b4",
+        "date": "2026-10-29T15:11:43-04:00",
+        "subject": "Package the configured POINT application with verified dependency locks"
+      },
+      {
+        "sha": "cd35fa6e9db7fc30c4b7be1f5a6be737868d04ef",
+        "date": "2026-10-29T15:12:12-04:00",
+        "subject": "Gate installed Python application and compatibility targets in CI"
+      },
+      {
+        "sha": "8c3b676ec9c3f5d8c7ccbb0f0f2ede97a959c983",
+        "date": "2026-10-29T15:22:26-04:00",
+        "subject": "Reject incompatible source inventories before freezing POINT runtimes"
+      },
+      {
+        "sha": "941ccf476da011fa72043488fa566f7aafe45785",
+        "date": "2026-10-29T15:23:16-04:00",
+        "subject": "Document collaborator engineering handoff and exact cleanup proposal"
+      },
+      {
+        "sha": "359e444f85aa1c56abf88846ab8e34c73332393b",
+        "date": "2026-10-29T16:01:08-04:00",
+        "subject": "Record approved metadata pruning and protected-state verification"
+      },
+      {
+        "sha": "3579f1055872aab546179c6d28556bb2ece1986b",
+        "date": "2026-10-29T16:09:53-04:00",
+        "subject": "Initialize runner-dependent caches inside the CI job"
+      },
+      {
+        "sha": "04f548774d32e7806e0f985a527453825e5628ef",
+        "date": "2026-10-29T18:55:46-04:00",
+        "subject": "docs: prepare staged working-folder consolidation and recovery"
+      },
+      {
+        "sha": "dba6ccdbf8d0585d4a682de4cc3b5a5a9606f336",
+        "date": "2026-10-30T10:17:55-04:00",
+        "subject": "docs: record completed 2026 workspace consolidation"
+      },
+      {
+        "sha": "5c46201057d6b6d1048aac2949a64e9a34e9bad3",
+        "date": "2026-10-30T11:32:48-04:00",
+        "subject": "docs: record verified local branch consolidation"
+      }
+    ],
+    "pointing": [
+      {
+        "sha": "2e4989a23cb9dd60f853ae2b1d1790cbc4bd88a2",
+        "date": "2026-10-29T16:06:42-04:00",
+        "subject": "study: separate optical response and temporal stability decisions"
+      },
+      {
+        "sha": "9bcbfcf539355a36faf18c5114492fd56c600fb0",
+        "date": "2026-10-29T16:10:40-04:00",
+        "subject": "docs: record independent optical decision study review"
+      },
+      {
+        "sha": "a8b720e17ef5b72afc2824d55570ca0ec1e159b7",
+        "date": "2026-10-29T18:44:07-04:00",
+        "subject": "study: test temporal changes and synthetic map impact tradeoffs"
+      },
+      {
+        "sha": "fae753e8bc0a7c787a0ae3e81d4762aca5bfcd7a",
+        "date": "2026-10-29T18:47:25-04:00",
+        "subject": "docs: record temporal study independent review and figures"
+      },
+      {
+        "sha": "284ac07d2e9b2601e7bbd67f5ca8537680e242ba",
+        "date": "2026-10-30T09:05:17-04:00",
+        "subject": "Audit saved POINT amplitude and calibration compatibility"
+      },
+      {
+        "sha": "3def84c209846c3c9f58459de51d107726e8dd1b",
+        "date": "2026-10-30T09:09:07-04:00",
+        "subject": "Record independent saved POINT audit review"
+      },
+      {
+        "sha": "d042083be71f76a406fb698707f7bde94c928d62",
+        "date": "2026-10-30T09:29:39-04:00",
+        "subject": "Prepare paired POINT detector-weight control with shared inputs"
+      },
+      {
+        "sha": "22094011128e5110d1cb9a1dc5afab0abd6685fd",
+        "date": "2026-10-30T09:35:29-04:00",
+        "subject": "Record reviewed and prepared 152418 weighting comparison"
+      },
+      {
+        "sha": "3bef4e2b97132c4b54a42ace9e14ee690d66adb4",
+        "date": "2026-10-30T10:21:23-04:00",
+        "subject": "Assess saved paired 152418 detector weighting results"
+      },
+      {
+        "sha": "a7769c95767178209a24e59bcf60900978448548",
+        "date": "2026-10-30T10:24:28-04:00",
+        "subject": "Record independent review of saved weighting assessment"
+      },
+      {
+        "sha": "ea61862a5f4bdc9c3dad0443a7ca295be1ff7e93",
+        "date": "2026-10-30T10:40:51-04:00",
+        "subject": "Record owner decision to retain noise weighting and inspect feedback"
+      },
+      {
+        "sha": "f5e53d8e7b7df4ce7af39b912fa305a1643a0d20",
+        "date": "2026-10-30T10:54:33-04:00",
+        "subject": "Inspect saved POINT feedback masks and sampling geometry"
+      },
+      {
+        "sha": "9ca9d13335771ae2cff28a40e845a0d0196475b4",
+        "date": "2026-10-30T10:55:41-04:00",
+        "subject": "Clarify feedback inspection figure labels"
+      },
+      {
+        "sha": "30995aa71ce6b74bdc410f3e97eac31694f4b389",
+        "date": "2026-10-30T10:58:09-04:00",
+        "subject": "Record independent review of saved feedback inspection"
+      },
+      {
+        "sha": "0bc3b7fe39e619900041b244ea389fc602ad312a",
+        "date": "2026-10-30T11:36:55-04:00",
+        "subject": "Define bounded weighted POINT source recovery test"
+      },
+      {
+        "sha": "e42b0368cb3ffe3d8d44488e749a39f3b8ab8d65",
+        "date": "2026-10-30T11:40:28-04:00",
+        "subject": "Record independent review of weighted source recovery plan"
+      },
+      {
+        "sha": "76c6237a0b7d82b95a59a3e71349eb13e60a79ea",
+        "date": "2026-10-30T12:10:25-04:00",
+        "subject": "Add bounded weighted POINT recovery diagnostic and owner runner"
+      },
+      {
+        "sha": "d0d3eeb7981975a2f43f1a55878668410aa6c20b",
+        "date": "2026-10-30T12:16:48-04:00",
+        "subject": "Close recovery terminal budget and native seed verification gaps"
+      },
+      {
+        "sha": "993a407efdc1bffe3fd2b2e9d089e3328d09d6ab",
+        "date": "2026-10-30T12:23:23-04:00",
+        "subject": "Record reviewed POINT recovery runtime and owner trial handoff"
+      },
+      {
+        "sha": "399e1ed2b52e13cebebf80b14587a43a65306243",
+        "date": "2026-10-30T12:58:24-04:00",
+        "subject": "Record M5 budget for future POINT diagnostic trials"
+      },
+      {
+        "sha": "574fda103975ab346933ba875adbb6a1fa8b1aa5",
+        "date": "2026-10-30T13:34:52-04:00",
+        "subject": "Assess saved 152418 source recovery seed decay and late FRUIT changes"
+      },
+      {
+        "sha": "797d013f115e403a30663eb92254082e8e742826",
+        "date": "2026-10-30T13:38:32-04:00",
+        "subject": "Record independent verification of saved POINT recovery assessment"
+      }
+    ]
+  },
+  "cutoff_delta_from_prior_plan": [
+    {
+      "sha": "574fda103975ab346933ba875adbb6a1fa8b1aa5",
+      "date": "2026-10-30T13:34:52-04:00",
+      "subject": "Assess saved 152418 source recovery seed decay and late FRUIT changes"
+    },
+    {
+      "sha": "797d013f115e403a30663eb92254082e8e742826",
+      "date": "2026-10-30T13:38:32-04:00",
+      "subject": "Record independent verification of saved POINT recovery assessment"
+    }
+  ],
+  "prior_inventory_sha256": "01b6c3eb4bee898fb367be956252d163d964945e5849e423b2c4d55398f6206d",
+  "scope_note": "Inventory coverage is complete; it is not proof of scientific or integration acceptance. Detailed milestone dispositions are in the table/reviews. Other archived October work is not silently imported."
+}

@@ -1,3 +1,4 @@
+#include "successor_experiment_profiles.h"
 // Private saved-product application adapter. Scientific arithmetic remains in
 // PTC, AST and MAP owners; this boundary parses and verifies persisted sources.
 #include <citlali/core/pipeline/ptc_map_handoff.h>
@@ -5,6 +6,8 @@
 #include <citlali/core/mapmaking/forward_map.h>
 #include <citlali/core/mapmaking/forward_map_admission.h>
 #include <fitsio.h>
+#include <citlali/core/pipeline/staged_output_directory.h>
+#include <citlali/core/utils/fits_handle.h>
 namespace {
 namespace mapmaking=citlali::mapmaking;
 struct MapFileLedger {
@@ -103,7 +106,7 @@ SavedMapNetwork load_saved_map_network(const YAML::Node &request,MapFileLedger &
         YAML::Dump(final["CAL"])==YAML::Dump(out.cal),"saved CAL/RTC publication differs");
     if(!cal_only) {
     require(out.ptc["schema"].as<std::string>()=="citlali-ptc-output-v2" && out.cal["schema"].as<std::string>()=="citlali-cal-output-v1" &&
-        out.ptc["rank"].as<int>()>0 && (out.ptc["method"].as<std::string>()=="observed-als" || (out.ptc["method"].as<std::string>()=="masked-covariance-count-v1" && out.input["observation"].as<int>()==152430 && (out.input["network"].as<int>()==11 || out.input["network"].as<int>()==12))) &&
+        out.ptc["rank"].as<int>()>0 && (out.ptc["method"].as<std::string>()=="observed-als" || (out.ptc["method"].as<std::string>()=="masked-covariance-count-v1" && citlali::cli::experiment_profiles::masked_covariance_count_152430(out.input))) &&
         out.ptc["unit"].as<std::string>()=="mJy/nominal-beam" && out.cal["unit"].as<std::string>()=="mJy/nominal-beam" &&
         out.ptc["centering"].as<std::string>()=="per-detector-eligible-arithmetic-mean-not-restored" &&
         out.ptc["use_policy"].as<std::string>()=="ptc-cal-observed-entry-use-2026-09-18-v2" &&
@@ -210,8 +213,9 @@ std::shared_ptr<const PtcMapPublication> load_map_segment(const SavedMapNetwork 
 void map_fits(const fs::path &path,const AstRtcTanGrid &wcs,const mapmaking::ForwardMapOperator &op,
     const mapmaking::ForwardMapValues &result,const std::string &array,double beam,
     bool empirical_inverse_noise=false) {
-    fitsfile *f=nullptr;int status=0;
-    fits_create_file(&f,path.c_str(),&status);require(!status,"MAP required FITS create failed");
+    citlali::utils::FitsHandle handle;int status=0;
+    fits_create_file(handle.address(),path.c_str(),&status);require(!status,"MAP required FITS create failed");
+    auto *f=handle.get();
     const auto size=wcs.rows*wcs.columns;
     std::vector<double> signal(size,NAN);for(std::size_t i=0;i<op.output_rows().size();++i)signal[op.output_rows()[i]]=result.signal[i];
     auto plane=[&](const char *name,int bitpix,int datatype,const void *data,const char *unit) {
@@ -234,11 +238,12 @@ void map_fits(const fs::path &path,const AstRtcTanGrid &wcs,const mapmaking::For
     plane("HITS",LONGLONG_IMG,TLONGLONG,hits.data(),"count");
     plane("NORM_SUPPORT",BYTE_IMG,TBYTE,op.normalization_support().data(),"1");
     plane("SCI_SUPPORT",BYTE_IMG,TBYTE,op.science_support().data(),"1");
-    int close_status=0;fits_close_file(f,&close_status);require(!status && !close_status,"MAP required FITS publication failed");
+    const int close_status=handle.close();require(!status && !close_status,"MAP required FITS publication failed");
     // Reopen and verify actual signal bytes; completion follows required I/O.
-    fits_open_file(&f,path.c_str(),READONLY,&status);std::vector<double> reread(size);int any=0;
-    fits_read_img(f,TDOUBLE,1,size,nullptr,reread.data(),&any,&status);fits_close_file(f,&status);
-    require(!status,"MAP required FITS reload failed");
+    fits_open_file(handle.address(),path.c_str(),READONLY,&status);require(!status,"MAP required FITS reopen failed");
+    f=handle.get();std::vector<double> reread(size);int any=0;
+    fits_read_img(f,TDOUBLE,1,size,nullptr,reread.data(),&any,&status);
+    const int read_close_status=handle.close();require(!status && !read_close_status,"MAP required FITS reload failed");
     for(std::size_t i=0;i<size;++i)require(reread[i]==signal[i] || (std::isnan(reread[i]) && std::isnan(signal[i])),"MAP FITS signal reload mismatch");
 }
 int execute_saved_map(const fs::path &input,const fs::path &output) {
@@ -262,7 +267,7 @@ int execute_saved_map(const fs::path &input,const fs::path &output) {
     const double cut=request["coverage_cut"].as<double>(),pixel=request["pixel_size_arcsec"].as<double>();
     require(std::isfinite(cut) && cut>=0 && cut<=1 && std::isfinite(pixel) && pixel>0,"MAP cut or pixel request invalid; above-one override route not implemented");
     require(request["networks"].IsSequence() && request["networks"].size()>0,"MAP needs explicit saved network membership");
-    fs::create_directories(staging);YAML::Node attempt;
+    citlali::pipeline::StagedOutputDirectory publication(output);YAML::Node attempt;
     attempt["schema"]="citlali-forward-map-attempt-v1";attempt["request_identity"]="sha256:"+request_sha;
     attempt["owner_binding"]="sha256:"+owner_sha;attempt["MAP_authority"]="SCI-MAP-v0.2-r0.4";
     attempt["source_revision"]=std::string(CITLALI_GIT_VERSION);attempt["outcome"]="incomplete";
@@ -550,7 +555,7 @@ int execute_saved_map(const fs::path &input,const fs::path &output) {
 #else
         attempt["process_peak_rss_bytes"]=usage.ru_maxrss*1024;
 #endif
-        write_yaml(staging/"attempt.yaml",attempt);fs::rename(staging,output);return 0;
+        write_yaml(staging/"attempt.yaml",attempt);publication.publish();return 0;
     } catch(const std::exception &e) {
         attempt["outcome"]="failed";attempt["cause"]=e.what();attempt["no_complete_output_directory"]=true;
         write_yaml(staging/"attempt.yaml",attempt);throw;

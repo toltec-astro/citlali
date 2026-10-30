@@ -32,12 +32,9 @@ def compare_support(weighted, equal, bind):
             or trajectory["applied_feedback_applications"] != budget
             or trajectory["stopping_reason"]
             != ("fixed_budget_completed" if budget else "feedback_disabled")
-            or [e["cycle_index"] for e in trajectory["cycles"]]
-            != list(range(budget + 1))
+            or [e["cycle_index"] for e in trajectory["cycles"]] != list(range(budget + 1))
         ):
-            raise ValueError(
-                "comparison requires both complete identical FRUIT budgets"
-            )
+            raise ValueError("comparison requires both complete identical FRUIT budgets")
     checks = []
     for cycle in range(budget + 1):
         plans = []
@@ -50,8 +47,7 @@ def compare_support(weighted, equal, bind):
             if (
                 result["cycle_index"] != cycle
                 or result["coefficient_family"] != family
-                or result["frozen_health_identity"]
-                != "sha256:" + record["frozen_health"]["sha256"]
+                or result["frozen_health_identity"] != "sha256:" + record["frozen_health"]["sha256"]
                 or set(result["arrays"]) != set(ARRAYS)
             ):
                 raise ValueError("comparison cycle/arm/health identity differs")
@@ -65,8 +61,7 @@ def compare_support(weighted, equal, bind):
                 if (
                     plan["array"] != array
                     or plan["cycle_index"] != cycle
-                    or plan["frozen_health_identity"]
-                    != result["frozen_health_identity"]
+                    or plan["frozen_health_identity"] != result["frozen_health_identity"]
                     or plan["WCS"] != bundle["WCS"]
                 ):
                     raise ValueError("comparison map plan identity differs")
@@ -75,9 +70,7 @@ def compare_support(weighted, equal, bind):
         for array in ARRAYS:
             a, b = (p[array] for p in plans)
             if a["observation"] != b["observation"] or a["WCS"] != b["WCS"]:
-                raise ValueError(
-                    f"comparison observation/grid differs: {array} cycle {cycle}"
-                )
+                raise ValueError(f"comparison observation/grid differs: {array} cycle {cycle}")
             if not a["segments"] or len(a["segments"]) != len(b["segments"]):
                 raise ValueError("comparison segment domains differ")
             for left, right in zip(a["segments"], b["segments"], strict=True):

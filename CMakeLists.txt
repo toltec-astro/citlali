@@ -64,35 +64,8 @@ else()
 endif()
 
 add_library(citlali STATIC)
-target_sources(citlali
-    PRIVATE
-    "src/citlali/core/config/timestream_enums.cpp"
-    "src/citlali/core/pipeline/ast_scan_motion.cpp"
-    "src/citlali/core/pipeline/ast_scan_motion_alignment.cpp"
-    "src/citlali/core/pipeline/timestream_rtc_common_mode.cpp"
-    "src/citlali/core/pipeline/timestream_cal_atmosphere.cpp"
-    "src/citlali/core/pipeline/timestream_cal_wvr.cpp"
-    "src/citlali/core/pipeline/ast_rtc_coordinates.cpp"
-    "src/citlali/core/pipeline/timestream_cal_pipeline.cpp"
-    "src/citlali/core/mapmaking/forward_map.cpp"
-    "src/citlali/core/mapmaking/jinc_discrete.cpp"
-    "src/citlali/core/mapmaking/jinc_certified.cpp"
-    "src/citlali/core/pipeline/timestream_ptc_numerics.cpp"
-    "src/citlali/core/pipeline/ptc_inverse_noise.cpp"
-    "src/citlali/core/pipeline/ptc_empirical_map_handoff.cpp"
-    "src/citlali/core/pipeline/point_optical_response.cpp"
-    "src/citlali/core/pipeline/fruit_cycle.cpp"
-    "src/citlali/core/pipeline/timestream_ptc_pipeline.cpp"
-    "src/citlali/core/pipeline/ptc_map_handoff.cpp"
-    "src/citlali/core/pipeline/timestream_identity_route_context.cpp"
-    "src/citlali/core/pipeline/output_root_lease.cpp"
-    "src/citlali/core/pipeline/reduction_restart_checkpoint.cpp"
-    "src/citlali/core/engine/calib.cpp"
-    "src/citlali/core/engine/telescope.cpp"
-    "src/citlali/core/utils/gauss_models.cpp"
-    "src/citlali/core/timestream/ptc/sensitivity.cpp"
-    "src/citlali/core/mapmaking/map.cpp"
-    )
+include(cmake/citlali_core_sources.cmake)
+citlali_add_core_sources(citlali "${CMAKE_CURRENT_SOURCE_DIR}")
 target_include_directories(citlali PUBLIC "include")
 target_link_libraries(citlali PUBLIC ${dep_libs})
 
@@ -109,27 +82,15 @@ endif()
 add_library(citlali::citlali ALIAS citlali)
 include(cmake/citlali_cal_authority.cmake)
 citlali_bind_cal_authority("${CMAKE_CURRENT_SOURCE_DIR}")
-if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
-    set_source_files_properties(src/citlali/core/pipeline/timestream_rtc_common_mode.cpp
-        src/citlali/core/pipeline/timestream_cal_atmosphere.cpp
-        src/citlali/core/pipeline/timestream_cal_wvr.cpp
-        src/citlali/core/pipeline/ast_rtc_coordinates.cpp
-        src/citlali/core/pipeline/timestream_cal_pipeline.cpp
-        src/citlali/core/pipeline/timestream_ptc_numerics.cpp
-        src/citlali/core/pipeline/ptc_inverse_noise.cpp
-        src/citlali/core/pipeline/ptc_empirical_map_handoff.cpp
-        src/citlali/core/pipeline/point_optical_response.cpp
-        src/citlali/core/mapmaking/jinc_discrete.cpp
-        src/citlali/core/mapmaking/jinc_certified.cpp
-        src/citlali/core/pipeline/fruit_cycle.cpp
-        src/citlali/core/pipeline/timestream_ptc_pipeline.cpp
-        PROPERTIES COMPILE_OPTIONS "-fno-fast-math;-ffp-contract=off")
-endif()
+
 
 ## optional targets
+include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/citlali_successor_input_bindings.cmake")
+citlali_add_successor_input_bindings("${CMAKE_CURRENT_SOURCE_DIR}")
+
 add_library(citlali_rtc_execution STATIC
     "src/citlali/cli/rtc_pipeline_execution.cpp")
-target_link_libraries(citlali_rtc_execution PUBLIC citlali::citlali)
+target_link_libraries(citlali_rtc_execution PUBLIC citlali_successor_input_bindings)
 target_include_directories(citlali_rtc_execution PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/tools/timestream_successor")
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     target_compile_options(citlali_rtc_execution PRIVATE -fno-fast-math -ffp-contract=off)
@@ -165,7 +126,7 @@ if (CITLALI_STANDALONE)
         "tools/timestream_successor/identity_route_acceptance.cpp")
     target_link_libraries(
         citlali_timestream_successor_identity_acceptance
-        PRIVATE citlali::citlali)
+        PRIVATE citlali_successor_input_bindings)
     target_include_directories(
         citlali_timestream_successor_identity_acceptance
         PRIVATE "include")
@@ -173,21 +134,21 @@ if (CITLALI_STANDALONE)
     # Bounded observational census: inert Learn/Consider evidence only.
     add_executable(citlali_rtc_event_census EXCLUDE_FROM_ALL
         "tools/timestream_successor/rtc_event_census.cpp")
-    target_link_libraries(citlali_rtc_event_census PRIVATE citlali::citlali)
+    target_link_libraries(citlali_rtc_event_census PRIVATE citlali_successor_input_bindings)
     target_include_directories(citlali_rtc_event_census PRIVATE "include")
 
     add_executable(citlali_rtc_event_assessment_census EXCLUDE_FROM_ALL
         "tools/timestream_successor/rtc_event_assessment_census.cpp")
-    target_link_libraries(citlali_rtc_event_assessment_census PRIVATE citlali::citlali)
+    target_link_libraries(citlali_rtc_event_assessment_census PRIVATE citlali_successor_input_bindings)
     target_include_directories(citlali_rtc_event_assessment_census PRIVATE "include")
     add_executable(citlali_rtc_science_reference EXCLUDE_FROM_ALL "tools/timestream_successor/rtc_science_reference.cpp")
-    target_link_libraries(citlali_rtc_science_reference PRIVATE citlali::citlali)
+    target_link_libraries(citlali_rtc_science_reference PRIVATE citlali_successor_input_bindings)
     target_include_directories(citlali_rtc_science_reference PRIVATE "include")
     if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
         target_compile_options(citlali_rtc_science_reference PRIVATE -fno-fast-math -ffp-contract=off)
     endif()
     add_executable(citlali_rtc_notch_recovery EXCLUDE_FROM_ALL "tools/timestream_successor/rtc_notch_recovery.cpp")
-    target_link_libraries(citlali_rtc_notch_recovery PRIVATE citlali::citlali)
+    target_link_libraries(citlali_rtc_notch_recovery PRIVATE citlali_successor_input_bindings)
     target_include_directories(citlali_rtc_notch_recovery PRIVATE "include")
     if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
         target_compile_options(citlali_rtc_notch_recovery PRIVATE -fno-fast-math -ffp-contract=off)
@@ -199,7 +160,7 @@ if (CITLALI_STANDALONE)
         target_compile_options(citlali_rtc_multidetector PRIVATE -fno-fast-math -ffp-contract=off)
     endif()
     add_executable(citlali_rtc_real_data_audit EXCLUDE_FROM_ALL "tools/timestream_successor/rtc_real_data_audit.cpp")
-    target_link_libraries(citlali_rtc_real_data_audit PRIVATE citlali::citlali)
+    target_link_libraries(citlali_rtc_real_data_audit PRIVATE citlali_successor_input_bindings)
     target_include_directories(citlali_rtc_real_data_audit PRIVATE "include")
     add_executable(citlali_rtc_jump_injection EXCLUDE_FROM_ALL "tools/timestream_successor/rtc_jump_injection.cpp")
     target_link_libraries(citlali_rtc_jump_injection PRIVATE citlali::citlali)
@@ -267,7 +228,9 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     target_compile_options(citlali_jinc_diagnostic PRIVATE -fno-fast-math -ffp-contract=off)
 endif()
 
-add_dependencies(check citlali_jinc_diagnostic)
+if(TARGET citlali_test_binaries)
+    add_dependencies(citlali_test_binaries citlali_jinc_diagnostic)
+endif()
 
 # Saved original-domain selector; same header owner as active RTC, no reduction.
 add_executable(citlali_rtc_point_select EXCLUDE_FROM_ALL tools/timestream_successor/rtc_point_select.cpp)

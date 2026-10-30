@@ -1,0 +1,43 @@
+{
+  "schema": "citlali-governance-incorporation-proposal/v1",
+  "scope": "Prepare record only; no normative document or canonical ledger changed.",
+  "canonical_acceptance_commit": "06a3ade51c1b3f38887295433d913811bf25cd14",
+  "canonical_effectiveness_commit": "77507836325eff9f469062d5884481ea37599594",
+  "accepted_current_records": [
+    {
+      "source_commit": "e32c4584dec07617d6caa857d39bf13047b6c4b0",
+      "path": "doc/governance/ENGINEERING_GOVERNANCE.md",
+      "sha256": "70769787ce2ef4b7323cd2a38e221ade4af3310e0ad6b7b682e08cb4e4d61e76"
+    },
+    {
+      "source_commit": "e32c4584dec07617d6caa857d39bf13047b6c4b0",
+      "path": "doc/governance/REVIEW_AND_CONFORMANCE.md",
+      "sha256": "691e6d6250102ef2f4a504397581ee67c5707d898ab20fb8dd9e874c47f99bb1"
+    },
+    {
+      "source_commit": "e32c4584dec07617d6caa857d39bf13047b6c4b0",
+      "path": "doc/governance/TIMESTREAM_SUCCESSOR_GOVERNANCE.md",
+      "sha256": "29fae6f789bb6133c1f5bcdaf0f15437f2eb8c4110f338d3a8de9a4d98ba88dc"
+    },
+    {
+      "source_commit": "e32c4584dec07617d6caa857d39bf13047b6c4b0",
+      "path": "doc/INTEGRATION_LEDGER.md",
+      "sha256": "2ded68bf7928267d33eee9f4204ad735f4b51abae9e69ebefcaabf7614ee5bc5"
+    }
+  ],
+  "amendment_source_commit": "59b03a0fd3e5d25481b9215994b61462d02446b3",
+  "amendment_records": [
+    {
+      "source_commit": "59b03a0fd3e5d25481b9215994b61462d02446b3",
+      "path": "doc/governance/TIMESTREAM_SUCCESSOR_GOVERNANCE.md",
+      "sha256": "7326daab5fc7682e651ba11be9ed1faf2353fbbbd9dee1deb843e2bd0c514101"
+    },
+    {
+      "source_commit": "59b03a0fd3e5d25481b9215994b61462d02446b3",
+      "path": "validation/rtc_point_transfer_2026-09-28/COMPLETION_AUTHORITY.md",
+      "sha256": "a7fd87b864513becc6df89f1b96aab2695d26d27244d2ad22cde675dac0c883d"
+    }
+  ],
+  "proposed_canonical_record": "At later exact owner-approved integration, record incorporation of the existing owner-directed September30 standing development amendment, bind original amendment source and normative digest plus exact candidate review. Retain original governance effectiveness history. The existing directive authorizes in-scope development, not canonical integration, remote writes, expanded science or production. No new amendment is proposed here.",
+  "remaining_gate": "Exact-candidate independent review and owner canonical-integration acceptance; historical authority-router current-status reconciliation must not alter frozen scientific contracts."
+}

@@ -5,6 +5,7 @@ import hashlib
 import io
 import json
 import math
+import os
 import struct
 import subprocess
 import tempfile
@@ -1802,7 +1803,10 @@ class CanonicalAptProtocolV1Test(unittest.TestCase):
         self.directory.cleanup()
 
     def protocol_cli(self) -> Path:
-        path = Path(__file__).resolve().parents[2] / "build/bin/citlali"
+        path = Path(os.environ.get(
+            "CITLALI_TEST_CLI",
+            str(Path(__file__).resolve().parents[2] / "build/bin/citlali"),
+        ))
         self.assertTrue(
             path.is_file(),
             "Phase-B protocol tests require the focused citlali_cli build",

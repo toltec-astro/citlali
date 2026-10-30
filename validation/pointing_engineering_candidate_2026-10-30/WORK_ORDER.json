@@ -1,0 +1,67 @@
+{
+  "work_order": "CITLALI-COMBINED-CANDIDATE-20261030",
+  "risk_tier": 2,
+  "owner": "Grant Wilson; this chat owns isolated candidate only",
+  "authorization": "Owner approved acceptance table and pointing cutoff797d013f; prepare one isolated combined candidate. Do not move refactor-mainline or push. Preserve ongoingpointing,4.x/5.x and allbackups.",
+  "source_inputs": {
+    "mainline": "e32c4584dec07617d6caa857d39bf13047b6c4b0",
+    "pointing_cutoff": "797d013f115e403a30663eb92254082e8e742826",
+    "engineering": "5c46201057d6b6d1048aac2949a64e9a34e9bad3"
+  },
+  "canonical_integration_authority": "codex/refactor-mainline remains unchanged at e32c4584dec07617d6caa857d39bf13047b6c4b0",
+  "candidate_branch": "codex/pointing-engineering-candidate-20261030",
+  "governance_read": [
+    "doc/governance/ENGINEERING_GOVERNANCE.md",
+    "doc/governance/TIMESTREAM_SUCCESSOR_GOVERNANCE.md",
+    "doc/governance/REVIEW_AND_CONFORMANCE.md"
+  ],
+  "accepted_scope_packet": "../citlali-mainline-acceptance-20261030",
+  "accepted_scope_hashes": {
+    "ACCEPTANCE_TABLE.txt": "8ca1fb9127ad2e17478bb7a82709cd3c1b63cb0edb20caa08dc0d7701e7c61bc",
+    "acceptance-table.json": "284b987f45c21d9882533b61c622ac95fccf55e4291d71c0832bec8789be4c95",
+    "review/acceptance-review.json": "ce29a1a5a3773a2632b7f851e7d7cc323e30d3e711d89fecec9a45ec64c21a07",
+    "scope-inventory.json": "2ebae700ff8f36d07726cd259869ce36731e261dc44f810a24866b9d29019e83",
+    "governance-incorporation-proposal.json": "09d12c88f427086802de6540be72db80768c8d5469a0fa82204e1fa4da3ec39e"
+  },
+  "purpose": "Combine approved pointing and engineering histories in one isolated development candidate, reconcile existing behavior/ownership/packaging/CI/docs, run available local checks and preserve exact source/evidence.",
+  "allowed": [
+    "One candidate worktree and one codex-prefixed branch",
+    "Fast-forward candidate from mainline snapshot to approved pointing cutoff, then ancestry-preserving local engineering merge",
+    "Bounded semantic conflict resolution and meaningful regression tests",
+    "Add new comparison module to maintained package and relevant tests to CI",
+    "Record accepted scope/cutoff and chronology; mark old OOF launch readiness historical/held",
+    "Local isolated builds/tests and coherent candidate commits",
+    "Fresh independent exact-source review and preservation checks"
+  ],
+  "excluded": [
+    "mainline movement",
+    "push or PR or workflow dispatch",
+    "new trials/observations",
+    "M5 trial adaptation",
+    "OOF repair/activation",
+    "new scientific defaults",
+    "legacy4x5x edits",
+    "cleanup/backup deletion",
+    "Unity access"
+  ],
+  "scientific_boundaries": [
+    "Keep checked-in v2 overlay1arcsec/.1/M10 distinct from frozen2arcsec/.15/M10 trials and futureM5 owner direction",
+    "Keep noise/optical policies, thresholds, frames/units, and failed/unavailable scientific states unchanged",
+    "No calibration/PPT/SCIENCE/coadd or production qualification claimed from candidate preparation"
+  ],
+  "review_axes": [
+    "scientific/behavioral",
+    "architecture/ownership",
+    "repository/evidence"
+  ],
+  "gate_policy": "Risk-proportionate focused then broader local native/Python/config/baseline/package/workflow gates. Record actual environment. Supported native Mac Spack remains required before mainline acceptance; fallback is supplemental. Hosted CI cannot run without excluded publication. No Unity access.",
+  "stop_or_reassess": [
+    "Unresolved scientific intent or numerical/default drift",
+    "Changes needed outside approved source owners",
+    "Source/backup/runtime mutation outside candidate",
+    "Native supported environment unavailable: preserve candidate, report gate pending; no silent substitution",
+    "Moving source branch: keep approved immutable cutoff and record later work separately"
+  ],
+  "created_utc": "2026-10-30T18:12:17.349702+00:00",
+  "candidate_path": "/Users/gwilson/.codex/worktrees/pointing-engineering-candidate-20261030/citlali-refactor"
+}

@@ -20,6 +20,7 @@
 #include <tula/logging.h>
 
 #include <citlali/core/utils/constants.h>
+#include <citlali/core/utils/fftw_resource.h>
 #include <citlali/core/utils/utils.h>
 
 #include <citlali/core/utils/gauss_models.h>
@@ -514,18 +515,12 @@ void WienerFilter::calc_vvq(MB &mb, const int map_index) {
 }
 
 void WienerFilter::calc_numerator() {
-    // set up fftw
-    fftw_complex *a;
-    fftw_complex *b;
-    fftw_plan pf, pr;
-
-    // allocate space for 2d ffts
-    a = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*n_rows*n_cols);
-    b = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*n_rows*n_cols);
-
-    // fftw plans
-    pf = fftw_plan_dft_2d(n_rows, n_cols, a, b, FFTW_FORWARD, FFTW_ESTIMATE);
-    pr = fftw_plan_dft_2d(n_rows, n_cols, a, b, FFTW_BACKWARD, FFTW_ESTIMATE);
+    // Plans die before their buffers, including when later work throws.
+    citlali::utils::FftwComplexBuffer a_owner(n_rows, n_cols), b_owner(n_rows, n_cols);
+    auto *a = a_owner.get(), *b = b_owner.get();
+    citlali::utils::FftwPlan pf_owner(n_rows, n_cols, a, b, FFTW_FORWARD, FFTW_ESTIMATE);
+    citlali::utils::FftwPlan pr_owner(n_rows, n_cols, a, b, FFTW_BACKWARD, FFTW_ESTIMATE);
+    auto pf = pf_owner.get(), pr = pr_owner.get();
 
     // set up inputs and outputs
     Eigen::MatrixXcd in(n_rows,n_cols), out(n_rows,n_cols);
@@ -566,19 +561,14 @@ void WienerFilter::calc_numerator() {
     // populate numerator with real(ifft(fft(f(x)) x fft(Q)))
     nume = out.real();
 
-    // destroy fftw plans
-    fftw_destroy_plan(pf);
-    fftw_destroy_plan(pr);
-    // free fftw vectors
-    fftw_free(a);
-    fftw_free(b);
 }
 
 inline const Eigen::MatrixXcd &WienerFilter::get_filter_template_fft() {
     if (!filter_template_fft_valid) {
-        fftw_complex *a = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*n_rows*n_cols);
-        fftw_complex *b = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*n_rows*n_cols);
-        fftw_plan pf = fftw_plan_dft_2d(n_rows, n_cols, a, b, FFTW_FORWARD, FFTW_ESTIMATE);
+        citlali::utils::FftwComplexBuffer a_owner(n_rows, n_cols), b_owner(n_rows, n_cols);
+        auto *a = a_owner.get(), *b = b_owner.get();
+        citlali::utils::FftwPlan pf_owner(n_rows, n_cols, a, b, FFTW_FORWARD, FFTW_ESTIMATE);
+        auto pf = pf_owner.get();
 
         Eigen::MatrixXcd in(n_rows, n_cols), out(n_rows, n_cols);
         in.real() = filter_template;
@@ -587,9 +577,6 @@ inline const Eigen::MatrixXcd &WienerFilter::get_filter_template_fft() {
         filter_template_fft = std::move(out);
         filter_template_fft_valid = true;
 
-        fftw_destroy_plan(pf);
-        fftw_free(a);
-        fftw_free(b);
     }
     return filter_template_fft;
 }
@@ -598,9 +585,10 @@ inline const Eigen::MatrixXcd &WienerFilter::get_filter_template_fft_scaled(bool
     const double scale = static_cast<double>(n_rows) * static_cast<double>(n_cols);
     if (normalize) {
         if (!filter_template_fft_normalized_scaled_valid) {
-            fftw_complex *a = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*n_rows*n_cols);
-            fftw_complex *b = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*n_rows*n_cols);
-            fftw_plan pf = fftw_plan_dft_2d(n_rows, n_cols, a, b, FFTW_FORWARD, FFTW_ESTIMATE);
+            citlali::utils::FftwComplexBuffer a_owner(n_rows, n_cols), b_owner(n_rows, n_cols);
+            auto *a = a_owner.get(), *b = b_owner.get();
+            citlali::utils::FftwPlan pf_owner(n_rows, n_cols, a, b, FFTW_FORWARD, FFTW_ESTIMATE);
+            auto pf = pf_owner.get();
 
             Eigen::MatrixXcd in(n_rows, n_cols), out(n_rows, n_cols);
             Eigen::MatrixXd kernel = filter_template;
@@ -616,9 +604,6 @@ inline const Eigen::MatrixXcd &WienerFilter::get_filter_template_fft_scaled(bool
             filter_template_fft_normalized_scaled = std::move(out);
             filter_template_fft_normalized_scaled_valid = true;
 
-            fftw_destroy_plan(pf);
-            fftw_free(a);
-            fftw_free(b);
         }
         return filter_template_fft_normalized_scaled;
     }
@@ -631,18 +616,12 @@ inline const Eigen::MatrixXcd &WienerFilter::get_filter_template_fft_scaled(bool
 }
 
 void WienerFilter::calc_denominator() {
-    // set up fftw
-    fftw_complex *a;
-    fftw_complex *b;
-    fftw_plan pf, pr;
-
-    // allocate space for 2d ffts
-    a = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*n_rows*n_cols);
-    b = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*n_rows*n_cols);
-
-    // fftw plans
-    pf = fftw_plan_dft_2d(n_rows, n_cols, a, b, FFTW_FORWARD, FFTW_ESTIMATE);
-    pr = fftw_plan_dft_2d(n_rows, n_cols, a, b, FFTW_BACKWARD, FFTW_ESTIMATE);
+    // Plans die before their buffers, including when later work throws.
+    citlali::utils::FftwComplexBuffer a_owner(n_rows, n_cols), b_owner(n_rows, n_cols);
+    auto *a = a_owner.get(), *b = b_owner.get();
+    citlali::utils::FftwPlan pf_owner(n_rows, n_cols, a, b, FFTW_FORWARD, FFTW_ESTIMATE);
+    citlali::utils::FftwPlan pr_owner(n_rows, n_cols, a, b, FFTW_BACKWARD, FFTW_ESTIMATE);
+    auto pf = pf_owner.get(), pr = pr_owner.get();
 
     // resize denominator
     denom.setZero(n_rows,n_cols);
@@ -851,12 +830,6 @@ void WienerFilter::calc_denominator() {
         }
     }
 
-    // destroy fftw plans
-    fftw_destroy_plan(pf);
-    fftw_destroy_plan(pr);
-    // free fftw vectors
-    fftw_free(a);
-    fftw_free(b);
 }
 
 template<class MB, class CD>
@@ -945,18 +918,12 @@ void WienerFilter::run_filter(MB &mb, const int map_index) {
 }
 
 void WienerFilter::run_convolve(bool normalize) {
-    // set up fftw
-    fftw_complex *a;
-    fftw_complex *b;
-    fftw_plan pf, pr;
-
-    // allocate space for 2d ffts
-    a = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*n_rows*n_cols);
-    b = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*n_rows*n_cols);
-
-    // fftw plans
-    pf = fftw_plan_dft_2d(n_rows, n_cols, a, b, FFTW_FORWARD, FFTW_ESTIMATE);
-    pr = fftw_plan_dft_2d(n_rows, n_cols, a, b, FFTW_BACKWARD, FFTW_ESTIMATE);
+    // Plans die before their buffers, including when later work throws.
+    citlali::utils::FftwComplexBuffer a_owner(n_rows, n_cols), b_owner(n_rows, n_cols);
+    auto *a = a_owner.get(), *b = b_owner.get();
+    citlali::utils::FftwPlan pf_owner(n_rows, n_cols, a, b, FFTW_FORWARD, FFTW_ESTIMATE);
+    citlali::utils::FftwPlan pr_owner(n_rows, n_cols, a, b, FFTW_BACKWARD, FFTW_ESTIMATE);
+    auto pf = pf_owner.get(), pr = pr_owner.get();
 
     // inputs and outputs to ffts
     Eigen::MatrixXcd in(n_rows,n_cols), out(n_rows,n_cols);
@@ -979,26 +946,15 @@ void WienerFilter::run_convolve(bool normalize) {
     nume = out.real();
     denom.setOnes(n_rows,n_cols);
 
-    // destroy fftw plans
-    fftw_destroy_plan(pf);
-    fftw_destroy_plan(pr);
-    // free fftw vectors
-    fftw_free(a);
-    fftw_free(b);
 }
 
 void WienerFilter::destripe(double threshold_factor) {
 
-    // allocate FFTW plans and buffers
-    fftw_complex *in, *out;
-    fftw_plan p_forward, p_backward;
-
-    in = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * n_rows * n_cols);
-    out = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * n_rows * n_cols);
-
-    // create plans
-    p_forward = fftw_plan_dft_2d(n_rows, n_cols, in, out, FFTW_FORWARD, FFTW_ESTIMATE);
-    p_backward = fftw_plan_dft_2d(n_rows, n_cols, out, in, FFTW_BACKWARD, FFTW_ESTIMATE);
+    citlali::utils::FftwComplexBuffer in_owner(n_rows, n_cols), out_owner(n_rows, n_cols);
+    auto *in = in_owner.get(), *out = out_owner.get();
+    citlali::utils::FftwPlan forward_owner(n_rows, n_cols, in, out, FFTW_FORWARD, FFTW_ESTIMATE);
+    citlali::utils::FftwPlan backward_owner(n_rows, n_cols, out, in, FFTW_BACKWARD, FFTW_ESTIMATE);
+    auto p_forward = forward_owner.get(), p_backward = backward_owner.get();
 
     // copy the image to the in buffer and set imaginary parts to zero
     for (int i = 0; i < n_rows; ++i) {
@@ -1044,11 +1000,6 @@ void WienerFilter::destripe(double threshold_factor) {
         }
     }
 
-    // cleanup
-    fftw_destroy_plan(p_forward);
-    fftw_destroy_plan(p_backward);
-    fftw_free(in);
-    fftw_free(out);
 }
 
 template<class MB>

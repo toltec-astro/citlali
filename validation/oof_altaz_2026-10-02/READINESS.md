@@ -1,5 +1,16 @@
 # Source-offset AltAz OOF JINC launch
 
+> **Historical launch record — held for replay (2026-10-30).** This selected
+> history contains pre-repair OOF replay helpers. The referenced external
+> passing review/preparation binds `a8c1f313f8ef688538e2aec0e1f20eb57ce1a58c`,
+> which is outside the approved pointing/engineering input history. Its
+> manifest-location and comparison-import fixes must be recovered and reviewed
+> under a separate OOF work scope before these instructions are runnable.
+> The former worktree path below is also retired. Preserve the historical
+> command and evidence; do not execute it from this candidate. No new OOF
+> repair, launch, optical qualification or budget is authorized here.
+> See [the candidate scope](../../doc/POINTING_ENGINEERING_CANDIDATE_2026-10-30.md).
+
 This work prepares three new map-only applications,152385/0/1–152387/0/1,
 a2000. Exact runtime readiness is recorded externally in
 `/Users/gwilson/work_toltec/local_data/citlali-validation/successor-oof-a2000-altaz-jinc-20261002/{GATES,PREPARED,review,FREEZE}.json`.

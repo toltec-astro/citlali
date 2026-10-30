@@ -18,6 +18,16 @@ if(NOT TARGET check)
     )
 endif()
 
+# One ordinary build aggregate for both entry points. Registration adds each
+# discovered executable to it, so a fresh build cannot hide missing binaries.
+# The explicit truth-only and TSAN executables remain separately requested.
+add_custom_target(citlali_test_binaries ALL)
+add_dependencies(check citlali_test_binaries)
+function(citlali_discover_tests target)
+    add_dependencies(citlali_test_binaries ${target})
+    gtest_discover_tests(${target} ${ARGN})
+endfunction()
+
 add_test(
     NAME citlali::build_gitversion_refresh
     COMMAND "${CMAKE_COMMAND}"
@@ -77,8 +87,7 @@ target_link_libraries(citlali_test
         GTest::gtest_main
         GTest::gmock
 )
-add_dependencies(check citlali_test)
-gtest_discover_tests(
+citlali_discover_tests(
     citlali_test
         WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
         TEST_PREFIX "citlali::"
@@ -104,8 +113,7 @@ target_link_libraries(citlali_jinc_map_contract_test
         citlali::citlali
         GTest::gtest_main
 )
-add_dependencies(check citlali_jinc_map_contract_test)
-gtest_discover_tests(
+citlali_discover_tests(
     citlali_jinc_map_contract_test
         WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
         TEST_PREFIX "citlali::jinc::"
@@ -170,8 +178,7 @@ target_compile_definitions(citlali_sci_align_test
     PRIVATE
         CITLALI_SCI_ALIGN_FIXTURE_DIR="${CMAKE_CURRENT_LIST_DIR}/fixtures/sci_align"
 )
-add_dependencies(check citlali_sci_align_test)
-gtest_discover_tests(
+citlali_discover_tests(
     citlali_sci_align_test
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
         TEST_PREFIX "citlali::sci_align::"
@@ -199,8 +206,7 @@ target_link_libraries(citlali_timestream_successor_native_paired_readout_test
         citlali::citlali
         GTest::gtest_main
 )
-add_dependencies(check citlali_timestream_successor_native_paired_readout_test)
-gtest_discover_tests(
+citlali_discover_tests(
     citlali_timestream_successor_native_paired_readout_test
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
         TEST_PREFIX "citlali::timestream_successor::native_paired_readout::"
@@ -230,8 +236,7 @@ target_link_libraries(citlali_timestream_successor_ast_scan_motion_test
         citlali::citlali
         GTest::gtest_main
 )
-add_dependencies(check citlali_timestream_successor_ast_scan_motion_test)
-gtest_discover_tests(
+citlali_discover_tests(
     citlali_timestream_successor_ast_scan_motion_test
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
         TEST_PREFIX "citlali::timestream_successor::ast_scan_motion::"
@@ -270,8 +275,7 @@ target_link_libraries(citlali_timestream_successor_identity_test
         citlali::citlali
         GTest::gtest_main
 )
-add_dependencies(check citlali_timestream_successor_identity_test)
-gtest_discover_tests(
+citlali_discover_tests(
     citlali_timestream_successor_identity_test
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
         TEST_PREFIX "citlali::timestream_successor::identity::"
@@ -302,10 +306,7 @@ target_link_libraries(
         citlali::citlali
         GTest::gtest_main
 )
-add_dependencies(
-    check citlali_timestream_successor_identity_route_context_test
-)
-gtest_discover_tests(
+citlali_discover_tests(
     citlali_timestream_successor_identity_route_context_test
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
         TEST_PREFIX "citlali::timestream_successor::identity_route_context::"
@@ -337,10 +338,7 @@ target_link_libraries(
         citlali::citlali
         GTest::gtest_main
 )
-add_dependencies(
-    check citlali_timestream_successor_d2_native_measurement_test
-)
-gtest_discover_tests(
+citlali_discover_tests(
     citlali_timestream_successor_d2_native_measurement_test
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
         TEST_PREFIX "citlali::timestream_successor::d2_native_measurement::"
@@ -362,8 +360,7 @@ set_target_properties(citlali_timestream_successor_rtc_spike_learn_test PROPERTI
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}")
 target_link_libraries(citlali_timestream_successor_rtc_spike_learn_test
     PRIVATE citlali::citlali GTest::gtest_main)
-add_dependencies(check citlali_timestream_successor_rtc_spike_learn_test)
-gtest_discover_tests(citlali_timestream_successor_rtc_spike_learn_test
+citlali_discover_tests(citlali_timestream_successor_rtc_spike_learn_test
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     TEST_PREFIX "citlali::timestream_successor::rtc_spike_learn::"
     DISCOVERY_MODE PRE_TEST)
@@ -378,8 +375,7 @@ set_target_properties(citlali_timestream_successor_rtc_event_background_test PRO
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}")
 target_link_libraries(citlali_timestream_successor_rtc_event_background_test
     PRIVATE citlali::citlali GTest::gtest_main)
-add_dependencies(check citlali_timestream_successor_rtc_event_background_test)
-gtest_discover_tests(citlali_timestream_successor_rtc_event_background_test
+citlali_discover_tests(citlali_timestream_successor_rtc_event_background_test
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     TEST_PREFIX "citlali::timestream_successor::rtc_event_background::"
     DISCOVERY_MODE PRE_TEST)
@@ -390,8 +386,7 @@ set_source_files_properties(timestream_rtc_event_assessment_header.cpp PROPERTIE
 set_target_properties(citlali_timestream_successor_rtc_event_assessment_test PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}")
 target_link_libraries(citlali_timestream_successor_rtc_event_assessment_test PRIVATE citlali::citlali GTest::gtest_main)
-add_dependencies(check citlali_timestream_successor_rtc_event_assessment_test)
-gtest_discover_tests(citlali_timestream_successor_rtc_event_assessment_test
+citlali_discover_tests(citlali_timestream_successor_rtc_event_assessment_test
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     TEST_PREFIX "citlali::timestream_successor::rtc_event_assessment::" DISCOVERY_MODE PRE_TEST)
 
@@ -401,8 +396,7 @@ set_source_files_properties(timestream_rtc_jump_consistency_header.cpp PROPERTIE
 set_target_properties(citlali_timestream_successor_rtc_jump_consistency_test PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}")
 target_link_libraries(citlali_timestream_successor_rtc_jump_consistency_test PRIVATE citlali::citlali GTest::gtest_main)
-add_dependencies(check citlali_timestream_successor_rtc_jump_consistency_test)
-gtest_discover_tests(citlali_timestream_successor_rtc_jump_consistency_test
+citlali_discover_tests(citlali_timestream_successor_rtc_jump_consistency_test
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     TEST_PREFIX "citlali::timestream_successor::rtc_jump_consistency::" DISCOVERY_MODE PRE_TEST)
 
@@ -412,8 +406,7 @@ set_source_files_properties(timestream_rtc_jump_transition_header.cpp PROPERTIES
 set_target_properties(citlali_timestream_successor_rtc_jump_transition_test PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}")
 target_link_libraries(citlali_timestream_successor_rtc_jump_transition_test PRIVATE citlali::citlali GTest::gtest_main)
-add_dependencies(check citlali_timestream_successor_rtc_jump_transition_test)
-gtest_discover_tests(citlali_timestream_successor_rtc_jump_transition_test
+citlali_discover_tests(citlali_timestream_successor_rtc_jump_transition_test
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     TEST_PREFIX "citlali::timestream_successor::rtc_jump_transition::" DISCOVERY_MODE PRE_TEST)
 
@@ -442,8 +435,7 @@ target_link_libraries(citlali_science_map_fits_products_test
         citlali::citlali
         GTest::gtest_main
 )
-add_dependencies(check citlali_science_map_fits_products_test)
-gtest_discover_tests(
+citlali_discover_tests(
     citlali_science_map_fits_products_test
         WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
         TEST_PREFIX "citlali::science_map_fits::"
@@ -491,8 +483,7 @@ target_link_libraries(citlali_jinc_parallel_ownership_test
         citlali::citlali
         GTest::gtest_main
 )
-add_dependencies(check citlali_jinc_parallel_ownership_test)
-gtest_discover_tests(
+citlali_discover_tests(
     citlali_jinc_parallel_ownership_test
         WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
         TEST_PREFIX "citlali::jinc_parallel_ownership::"
@@ -519,7 +510,7 @@ target_link_libraries(citlali_safety_test
 if(DEFINED LOGLEVEL AND NOT "${LOGLEVEL}" STREQUAL "")
     target_compile_definitions(citlali_safety_test PRIVATE LOGLEVEL=${LOGLEVEL})
 endif()
-gtest_discover_tests(
+citlali_discover_tests(
     citlali_safety_test
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
         TEST_PREFIX "citlali::safety::"
@@ -532,8 +523,7 @@ set_source_files_properties(timestream_rtc_jump_reassessment_header.cpp PROPERTI
 set_target_properties(citlali_timestream_successor_rtc_jump_reassessment_test PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}")
 target_link_libraries(citlali_timestream_successor_rtc_jump_reassessment_test PRIVATE citlali::citlali GTest::gtest_main)
-add_dependencies(check citlali_timestream_successor_rtc_jump_reassessment_test)
-gtest_discover_tests(citlali_timestream_successor_rtc_jump_reassessment_test
+citlali_discover_tests(citlali_timestream_successor_rtc_jump_reassessment_test
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     TEST_PREFIX "citlali::timestream_successor::rtc_jump_reassessment::" DISCOVERY_MODE PRE_TEST)
 
@@ -545,8 +535,7 @@ set_source_files_properties(timestream_rtc_jump_admission_header.cpp timestream_
 set_target_properties(citlali_timestream_successor_rtc_jump_exclusion_test PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}")
 target_link_libraries(citlali_timestream_successor_rtc_jump_exclusion_test PRIVATE citlali::citlali GTest::gtest_main)
-add_dependencies(check citlali_timestream_successor_rtc_jump_exclusion_test)
-gtest_discover_tests(citlali_timestream_successor_rtc_jump_exclusion_test
+citlali_discover_tests(citlali_timestream_successor_rtc_jump_exclusion_test
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     TEST_PREFIX "citlali::timestream_successor::rtc_jump_exclusion::" DISCOVERY_MODE PRE_TEST)
 
@@ -557,8 +546,7 @@ set_source_files_properties(timestream_rtc_transient_exclusion_header.cpp
 set_target_properties(citlali_timestream_successor_rtc_transient_exclusion_test PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}")
 target_link_libraries(citlali_timestream_successor_rtc_transient_exclusion_test PRIVATE citlali::citlali GTest::gtest_main)
-add_dependencies(check citlali_timestream_successor_rtc_transient_exclusion_test)
-gtest_discover_tests(citlali_timestream_successor_rtc_transient_exclusion_test
+citlali_discover_tests(citlali_timestream_successor_rtc_transient_exclusion_test
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     TEST_PREFIX "citlali::timestream_successor::rtc_transient_exclusion::" DISCOVERY_MODE PRE_TEST)
 
@@ -568,8 +556,7 @@ set_source_files_properties(timestream_rtc_donor_fill_header.cpp PROPERTIES SKIP
 set_target_properties(citlali_timestream_successor_rtc_donor_fill_test PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}")
 target_link_libraries(citlali_timestream_successor_rtc_donor_fill_test PRIVATE citlali::citlali GTest::gtest_main)
-add_dependencies(check citlali_timestream_successor_rtc_donor_fill_test)
-gtest_discover_tests(citlali_timestream_successor_rtc_donor_fill_test
+citlali_discover_tests(citlali_timestream_successor_rtc_donor_fill_test
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     TEST_PREFIX "citlali::timestream_successor::rtc_donor_fill::" DISCOVERY_MODE PRE_TEST)
 
@@ -579,8 +566,7 @@ set_source_files_properties(timestream_rtc_native_spectral_learn_header.cpp PROP
 set_target_properties(citlali_timestream_successor_rtc_native_spectral_learn_test PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}")
 target_link_libraries(citlali_timestream_successor_rtc_native_spectral_learn_test PRIVATE citlali::citlali GTest::gtest_main)
-add_dependencies(check citlali_timestream_successor_rtc_native_spectral_learn_test)
-gtest_discover_tests(citlali_timestream_successor_rtc_native_spectral_learn_test
+citlali_discover_tests(citlali_timestream_successor_rtc_native_spectral_learn_test
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     TEST_PREFIX "citlali::timestream_successor::rtc_native_spectral_learn::" DISCOVERY_MODE PRE_TEST)
 
@@ -590,8 +576,7 @@ set_source_files_properties(timestream_rtc_line_power_header.cpp PROPERTIES SKIP
 set_target_properties(citlali_timestream_successor_rtc_line_power_test PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}")
 target_link_libraries(citlali_timestream_successor_rtc_line_power_test PRIVATE citlali::citlali GTest::gtest_main)
-add_dependencies(check citlali_timestream_successor_rtc_line_power_test)
-gtest_discover_tests(citlali_timestream_successor_rtc_line_power_test
+citlali_discover_tests(citlali_timestream_successor_rtc_line_power_test
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     TEST_PREFIX "citlali::timestream_successor::rtc_line_power::" DISCOVERY_MODE PRE_TEST)
 
@@ -601,8 +586,7 @@ add_executable(citlali_rtc_line_transfer_test EXCLUDE_FROM_ALL
 )
 set_source_files_properties(timestream_rtc_line_transfer_header.cpp PROPERTIES SKIP_PRECOMPILE_HEADERS ON)
 target_link_libraries(citlali_rtc_line_transfer_test PRIVATE citlali::citlali GTest::gtest_main)
-add_dependencies(check citlali_rtc_line_transfer_test)
-gtest_discover_tests(citlali_rtc_line_transfer_test
+citlali_discover_tests(citlali_rtc_line_transfer_test
     WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
     TEST_PREFIX "citlali::"
     DISCOVERY_MODE PRE_TEST
@@ -622,8 +606,7 @@ target_link_libraries(citlali_rtc_notch_recovery_test PRIVATE citlali::citlali G
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     target_compile_options(citlali_rtc_notch_recovery_test PRIVATE -fno-fast-math -ffp-contract=off)
 endif()
-add_dependencies(check citlali_rtc_notch_recovery_test)
-gtest_discover_tests(citlali_rtc_notch_recovery_test WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR} TEST_PREFIX "citlali::" DISCOVERY_MODE PRE_TEST)
+citlali_discover_tests(citlali_rtc_notch_recovery_test WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR} TEST_PREFIX "citlali::" DISCOVERY_MODE PRE_TEST)
 
 add_executable(citlali_rtc_common_mode_test EXCLUDE_FROM_ALL
     test_timestream_rtc_common_mode.cpp timestream_rtc_common_mode_header.cpp)
@@ -632,8 +615,7 @@ target_link_libraries(citlali_rtc_common_mode_test PRIVATE citlali::citlali GTes
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     target_compile_options(citlali_rtc_common_mode_test PRIVATE -fno-fast-math -ffp-contract=off)
 endif()
-add_dependencies(check citlali_rtc_common_mode_test)
-gtest_discover_tests(citlali_rtc_common_mode_test WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR} TEST_PREFIX "citlali::" DISCOVERY_MODE PRE_TEST)
+citlali_discover_tests(citlali_rtc_common_mode_test WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR} TEST_PREFIX "citlali::" DISCOVERY_MODE PRE_TEST)
 add_executable(citlali_cal_numerics_test EXCLUDE_FROM_ALL test_timestream_cal_numerics.cpp
     timestream_cal_atmosphere_header.cpp timestream_cal_wvr_header.cpp)
 set_source_files_properties(timestream_cal_atmosphere_header.cpp timestream_cal_wvr_header.cpp PROPERTIES SKIP_PRECOMPILE_HEADERS ON)
@@ -641,13 +623,12 @@ target_link_libraries(citlali_cal_numerics_test PRIVATE citlali::citlali GTest::
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     target_compile_options(citlali_cal_numerics_test PRIVATE -fno-fast-math -ffp-contract=off)
 endif()
-add_dependencies(check citlali_cal_numerics_test)
-gtest_discover_tests(citlali_cal_numerics_test WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR} TEST_PREFIX "citlali::" DISCOVERY_MODE PRE_TEST)
+citlali_discover_tests(citlali_cal_numerics_test WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR} TEST_PREFIX "citlali::" DISCOVERY_MODE PRE_TEST)
 # The development default must execute the successor through the ordinary CLI.
 # This gate also proves unsupported requests never select the legacy route.
 if(TARGET citlali_cli)
     find_package(Python3 REQUIRED COMPONENTS Interpreter)
-    add_dependencies(check citlali_cli)
+    add_dependencies(citlali_test_binaries citlali_cli)
     add_test(NAME citlali::point_fruit_contract_cli
         COMMAND "${Python3_EXECUTABLE}"
             "${CMAKE_CURRENT_LIST_DIR}/test_point_fruit_contract_cli.py"
@@ -665,8 +646,7 @@ target_link_libraries(citlali_ptc_numerics_test PRIVATE citlali::citlali GTest::
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     target_compile_options(citlali_ptc_numerics_test PRIVATE -fno-fast-math -ffp-contract=off)
 endif()
-add_dependencies(check citlali_ptc_numerics_test)
-gtest_discover_tests(citlali_ptc_numerics_test WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR} TEST_PREFIX "citlali::" DISCOVERY_MODE PRE_TEST)
+citlali_discover_tests(citlali_ptc_numerics_test WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR} TEST_PREFIX "citlali::" DISCOVERY_MODE PRE_TEST)
 
 add_executable(citlali_ptc_inverse_noise_test EXCLUDE_FROM_ALL
     test_ptc_inverse_noise.cpp ptc_inverse_noise_header.cpp
@@ -679,8 +659,7 @@ target_link_libraries(citlali_ptc_inverse_noise_test PRIVATE citlali::citlali GT
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     target_compile_options(citlali_ptc_inverse_noise_test PRIVATE -fno-fast-math -ffp-contract=off)
 endif()
-add_dependencies(check citlali_ptc_inverse_noise_test)
-gtest_discover_tests(citlali_ptc_inverse_noise_test TEST_PREFIX "citlali::" DISCOVERY_MODE PRE_TEST)
+citlali_discover_tests(citlali_ptc_inverse_noise_test TEST_PREFIX "citlali::" DISCOVERY_MODE PRE_TEST)
 
 add_executable(citlali_point_optical_response_test EXCLUDE_FROM_ALL
     test_point_optical_response.cpp point_optical_response_header.cpp)
@@ -689,21 +668,18 @@ target_link_libraries(citlali_point_optical_response_test PRIVATE citlali::citla
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     target_compile_options(citlali_point_optical_response_test PRIVATE -fno-fast-math -ffp-contract=off)
 endif()
-add_dependencies(check citlali_point_optical_response_test)
-gtest_discover_tests(citlali_point_optical_response_test TEST_PREFIX "citlali::" DISCOVERY_MODE PRE_TEST)
+citlali_discover_tests(citlali_point_optical_response_test TEST_PREFIX "citlali::" DISCOVERY_MODE PRE_TEST)
 
 add_executable(citlali_point_weighted_bindings_test EXCLUDE_FROM_ALL
     test_point_weighted_bindings.cpp point_weighted_bindings_header.cpp)
 set_source_files_properties(point_weighted_bindings_header.cpp PROPERTIES SKIP_PRECOMPILE_HEADERS ON)
 target_link_libraries(citlali_point_weighted_bindings_test PRIVATE citlali::citlali GTest::gtest_main)
-add_dependencies(check citlali_point_weighted_bindings_test)
-gtest_discover_tests(citlali_point_weighted_bindings_test TEST_PREFIX "citlali::" DISCOVERY_MODE PRE_TEST)
+citlali_discover_tests(citlali_point_weighted_bindings_test TEST_PREFIX "citlali::" DISCOVERY_MODE PRE_TEST)
 
 add_executable(citlali_forward_map_test EXCLUDE_FROM_ALL test_forward_map.cpp forward_map_header.cpp ptc_map_handoff_header.cpp forward_map_admission_header.cpp val_map_handoff_header.cpp)
 set_source_files_properties(forward_map_header.cpp ptc_map_handoff_header.cpp forward_map_admission_header.cpp val_map_handoff_header.cpp PROPERTIES SKIP_PRECOMPILE_HEADERS ON)
 target_link_libraries(citlali_forward_map_test PRIVATE citlali::citlali GTest::gtest_main)
-add_dependencies(check citlali_forward_map_test)
-gtest_discover_tests(citlali_forward_map_test TEST_PREFIX "citlali::forward_map::" DISCOVERY_MODE PRE_TEST)
+citlali_discover_tests(citlali_forward_map_test TEST_PREFIX "citlali::forward_map::" DISCOVERY_MODE PRE_TEST)
 
 add_test(NAME citlali::forward_map_reload
     COMMAND ${Python3_EXECUTABLE} -m unittest discover
@@ -713,8 +689,7 @@ add_test(NAME citlali::forward_map_reload
 add_executable(citlali_fruit_cycle_test EXCLUDE_FROM_ALL test_fruit_cycle.cpp fruit_cycle_header.cpp)
 set_source_files_properties(fruit_cycle_header.cpp PROPERTIES SKIP_PRECOMPILE_HEADERS ON)
 target_link_libraries(citlali_fruit_cycle_test PRIVATE citlali::citlali GTest::gtest_main)
-add_dependencies(check citlali_fruit_cycle_test)
-gtest_discover_tests(citlali_fruit_cycle_test TEST_PREFIX "citlali::fruit::" DISCOVERY_MODE PRE_TEST)
+citlali_discover_tests(citlali_fruit_cycle_test TEST_PREFIX "citlali::fruit::" DISCOVERY_MODE PRE_TEST)
 
 # Explicit-input SCI-JINC discrete arithmetic; no observation certification.
 add_executable(citlali_jinc_discrete_test EXCLUDE_FROM_ALL test_jinc_discrete.cpp jinc_discrete_header.cpp)
@@ -722,8 +697,7 @@ target_link_libraries(citlali_jinc_discrete_test PRIVATE citlali::citlali GTest:
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     target_compile_options(citlali_jinc_discrete_test PRIVATE -fno-fast-math -ffp-contract=off)
 endif()
-add_dependencies(check citlali_jinc_discrete_test)
-gtest_discover_tests(citlali_jinc_discrete_test TEST_PREFIX "citlali::" DISCOVERY_MODE PRE_TEST)
+citlali_discover_tests(citlali_jinc_discrete_test TEST_PREFIX "citlali::" DISCOVERY_MODE PRE_TEST)
 
 set_source_files_properties(jinc_discrete_header.cpp PROPERTIES SKIP_PRECOMPILE_HEADERS ON)
 
@@ -733,12 +707,21 @@ target_compile_features(citlali_rtc_point_selection_test PRIVATE cxx_std_20)
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
   target_compile_options(citlali_rtc_point_selection_test PRIVATE -UNDEBUG -fno-fast-math -ffp-contract=off)
 endif()
-add_dependencies(check citlali_rtc_point_selection_test)
+add_dependencies(citlali_test_binaries citlali_rtc_point_selection_test)
 add_test(NAME citlali::rtc_point_selection COMMAND citlali_rtc_point_selection_test)
 
 # Retained pilot regression: YAML-backed items must not mutate their input.
 add_executable(citlali_rawobs_config_test EXCLUDE_FROM_ALL test_rawobs_config_identity.cpp)
 target_link_libraries(citlali_rawobs_config_test PRIVATE citlali::citlali GTest::gtest_main)
-add_dependencies(check citlali_rawobs_config_test)
-gtest_discover_tests(citlali_rawobs_config_test WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
+citlali_discover_tests(citlali_rawobs_config_test WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
     TEST_PREFIX "citlali::" DISCOVERY_MODE PRE_TEST)
+
+# Shared application input loaders, independent of the acceptance executable.
+add_executable(citlali_successor_input_bindings_test EXCLUDE_FROM_ALL
+    test_successor_input_bindings.cpp successor_input_bindings_header.cpp)
+set_source_files_properties(successor_input_bindings_header.cpp
+    PROPERTIES SKIP_PRECOMPILE_HEADERS ON)
+target_link_libraries(citlali_successor_input_bindings_test PRIVATE
+    citlali_successor_input_bindings GTest::gtest_main)
+citlali_discover_tests(citlali_successor_input_bindings_test
+    TEST_PREFIX "citlali::input_bindings::" DISCOVERY_MODE PRE_TEST)

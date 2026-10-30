@@ -1,0 +1,12 @@
+# Exact cached wheel artifacts; CPython 3.13, macOS arm64.
+# This platform-specific lock does not qualify Unity or native libraries.
+astropy==7.0.1 --hash=sha256:0785533096b5682148ab79b077ab0e17f254be17c9fa12cb7789b8109044fe95
+astropy-iers-data==0.2025.2.24.0.34.4 --hash=sha256:be8b3b75b09b1aa1d22de9b5243854e00d19936aca6d8f64466d16197c04bb28
+certifi==2025.1.31 --hash=sha256:ca78db4565a652026a4db2bcdf68f2fb589ea80d0be70e03929ed730746b84fe
+cftime==1.6.4.post1 --hash=sha256:7f27113f7ccd1ca32881fdcb9a4bec806a5f54ae621fc1c374f1171f3ed98ef2
+netCDF4==1.7.2 --hash=sha256:96653fc75057df196010818367c63ba6d7e9af603df0a7fe43fcdad3fe0e9e56
+numpy==2.2.3 --hash=sha256:a0c03b6be48aaf92525cccf393265e02773be8fd9551a2f9adbe7db1fa2b60f1
+packaging==24.2 --hash=sha256:09abb1bccd265c01f4a3aa3f7a7db064b36514d2cba19a2f694fe6150451a759
+pyerfa==2.0.1.5 --hash=sha256:be1aeb70390dd03a34faf96749d5cabc58437410b4aab7213c512323932427df
+PyYAML==6.0.2 --hash=sha256:50187695423ffe49e2deacb8cd10510bc361faac997de9efef88badc3bb9e2d1
+scipy==1.17.1 --hash=sha256:7ff200bf9d24f2e4d5dc6ee8c3ac64d739d3a89e2326ba68aaf6c4a2b838fd7d

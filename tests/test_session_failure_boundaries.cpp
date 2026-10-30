@@ -1,3 +1,4 @@
+#include <citlali/core/utils/fits_handle.h>
 #include <citlali/core/error/error.h>
 #include <citlali/core/pipeline/beammap_fit_validation.h>
 #include <citlali/core/pipeline/fits_image_metadata.h>
@@ -533,4 +534,50 @@ TEST(session_failure_boundaries, pointing_and_oof_require_source_offset_altaz) {
         EXPECT_THROW(citlali::pipeline::enforce_beammap_pixel_axes_policy(mode,citlali::config::MapPixelAxes::galactic),citlali::error::Error);
     }
     EXPECT_NO_THROW(citlali::pipeline::enforce_beammap_pixel_axes_policy(citlali::config::ReductionType::science,citlali::config::MapPixelAxes::radec));
+}
+
+
+namespace {
+int closed_test_fits_handles = 0;
+int count_fits_close(fitsfile *file, int *status) {
+    ++closed_test_fits_handles;
+    return fits_close_file(file, status);
+}
+int injected_fits_close_failure(fitsfile *file, int *status) {
+    fits_close_file(file, status);
+    *status = WRITE_ERROR;
+    return *status;
+}
+}
+
+TEST(fits_handle, rejection_after_open_closes_once) {
+    closed_test_fits_handles = 0;
+    EXPECT_THROW(([] {
+        // An in-memory malformed image exercises a real CFITSIO handle without
+        // reading observations or leaving an output file behind.
+        citlali::utils::FitsHandle file(count_fits_close);
+        int status = 0;
+        fits_create_file(file.address(), "mem://", &status);
+        if (status) throw std::runtime_error("synthetic FITS create failed");
+        long axes[2]{2, 3};
+        fits_create_img(file.get(), DOUBLE_IMG, 2, axes, &status);
+        long actual[2]{};
+        fits_get_img_size(file.get(), 2, actual, &status);
+        if (status || actual[0] != 41 || actual[1] != 41)
+            throw std::runtime_error("synthetic model geometry rejected");
+    }()), std::runtime_error);
+    EXPECT_EQ(closed_test_fits_handles, 1);
+}
+
+TEST(fits_handle, explicit_close_reports_failure_and_does_not_close_twice) {
+    citlali::utils::FitsHandle file(injected_fits_close_failure);
+    int status = 0;
+    fits_create_file(file.address(), "mem://", &status);
+    ASSERT_EQ(status, 0);
+    long axes[2]{2, 2};
+    fits_create_img(file.get(), DOUBLE_IMG, 2, axes, &status);
+    ASSERT_EQ(status, 0);
+    EXPECT_EQ(file.close(), WRITE_ERROR);
+    EXPECT_EQ(file.get(), nullptr);
+    EXPECT_EQ(file.close(), 0);
 }

@@ -5,6 +5,8 @@
 #include <citlali/core/pipeline/ptc_empirical_map_handoff.h>
 #include <citlali/core/pipeline/val_empirical_map_handoff.h>
 #include "point_weighted_bindings.h"
+#include <citlali/core/pipeline/staged_output_directory.h>
+#include <citlali/core/utils/fits_handle.h>
 #include "point_recovery_bindings.h"
 namespace {
 const std::array<std::string,3> weighted_arrays{"a1100","a1400","a2000"};
@@ -138,8 +140,8 @@ FruitOffsetModel point_read_model(const YAML::Node &binding,MapFileLedger &ledge
         "POINT feedback belongs to a different weighting arm");
     const auto map_sha=ledger.bind(bundle_path.parent_path()/"map.fits",feedback["map_sha256"].as<std::string>());
     citlali::cli::detail::validate_point_feedback_provenance(feedback,bundle,{sha,bundle_sha,map_sha,observation,"sha256:"+health_sha,weighted_arrays[array],cycle-1});
-    struct Handle {fitsfile *value=nullptr;~Handle(){if(value){int status=0;fits_close_file(value,&status);}}} handle;
-    int status=0,any=0;fits_open_file(&handle.value,path.c_str(),READONLY,&status);auto *f=handle.value;
+    citlali::utils::FitsHandle handle;
+    int status=0,any=0;fits_open_file(handle.address(),path.c_str(),READONLY,&status);auto *f=handle.get();
     require(!status,"POINT feedback FITS open failed");int ndim=0;long axes[2]{0,0};fits_get_img_dim(f,&ndim,&status);fits_get_img_size(f,2,axes,&status);
     auto number=[&](const char *k){double v=NAN;fits_read_key(f,TDOUBLE,k,&v,nullptr,&status);return v;};
     auto string=[&](const char *k){char v[FLEN_VALUE]{};fits_read_key(f,TSTRING,k,v,nullptr,&status);return std::string(v);};
@@ -163,7 +165,7 @@ FruitOffsetModel point_read_model(const YAML::Node &binding,MapFileLedger &ledge
     for(int hdu=1;hdu<=hdu_count;++hdu){int type=0;fits_movabs_hdu(f,hdu,&type,&status);char name[FLEN_VALUE]{};int key_status=0;fits_read_key(f,TSTRING,"EXTNAME",name,nullptr,&key_status);
         if(!key_status){valid_count+=std::string(name)=="VALID";admitted_count+=std::string(name)=="ADMITTED";}}
     require(!status && valid_count==1 && admitted_count==1,"POINT feedback named support planes differ");
-    fits_close_file(f,&status);handle.value=nullptr;require(!status,"POINT feedback read failed");
+    const int close_status=handle.close();require(!status && !close_status,"POINT feedback read failed");
     for(std::size_t i=0;i<size;++i)require(valid[i]<=1 && admitted[i]<=1 && (!admitted[i] || valid[i]) &&
         (!valid[i] || std::isfinite(values[i])) && (admitted[i] || !valid[i] || values[i]==0),"POINT feedback support/value mismatch");
     return FruitOffsetModel("sha256:"+sha,{std::size_t(axes[1]),std::size_t(axes[0]),"sha256:"+sha+":grid"},cx,cy,dx,dy,std::move(values),std::move(valid),40.);
@@ -221,14 +223,14 @@ int execute_weighted_point(const fs::path &input,const fs::path &output) {
     }
     require(std::all_of(arrays.begin(),arrays.end(),[](bool v){return v;}),"weighted POINT requires all three arrays");
     std::sort(networks.begin(),networks.end(),[](const auto &a,const auto &b){return a.saved.network<b.saved.network;});
-    fs::create_directories(staging);
+    citlali::pipeline::StagedOutputDirectory publication(output);
     if(stage=="health") {
         std::vector<PointOpticalNetwork> inputs;for(auto &n:networks)inputs.push_back(std::move(n.optical));
         PointOpticalRequest health_request;health_request.min_relative_response=threshold;
         const auto health=PointOpticalPlan::consider(PointOpticalEvidence::learn(inputs,health_request));
         auto record=point_health_record(*health);record["effective_config_sha256"]=config_sha;record["request_sha256"]=request_sha;
         record["source_revision"]=std::string(CITLALI_GIT_VERSION);write_yaml(staging/"health.yaml",record);
-        ledger.verify();fs::rename(staging,output);return 0;
+        ledger.verify();publication.publish();return 0;
     }
     const auto health_path=checked_file(request["health"]);const auto health_sha=ledger.bind(health_path);const auto health_record=YAML::LoadFile(health_path.string());
     require(health_record["effective_config_sha256"].as<std::string>()==config_sha,"POINT health config differs");
@@ -400,6 +402,6 @@ int execute_weighted_point(const fs::path &input,const fs::path &output) {
         bundle["product_identity"]="weighted-POINT:"+request_sha+":"+bundle["files"]["map.fits"].as<std::string>();
         write_yaml(directory/"bundle.yaml",bundle);diagnostics["arrays"][weighted_arrays[array]]=bundle;
     }
-    write_yaml(staging/"cycle.yaml",diagnostics);ledger.verify();fs::rename(staging,output);return 0;
+    write_yaml(staging/"cycle.yaml",diagnostics);ledger.verify();publication.publish();return 0;
 }
 } // namespace

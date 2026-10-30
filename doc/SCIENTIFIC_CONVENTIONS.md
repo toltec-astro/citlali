@@ -1,5 +1,10 @@
 # Citlali Scientific Conventions
 
+The [current candidate and release scope](CURRENT_STATE.md) route October 29
+engineering status separately from accepted scientific evidence. Engineering
+cleanup preserves the scientific contracts below; no qualification is inferred
+from resource ownership, packaging, CI, or branch ancestry.
+
 Current bright-POINT development execution and ownership are documented in
 [the consolidated pipeline](BRIGHT_POINT_PIPELINE.md). Its frozen ordinary MAP /
 BASE-POINT route supersedes historical statements below that MAP or FRUIT is

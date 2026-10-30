@@ -1,3 +1,4 @@
+#include <citlali/core/utils/fits_handle.h>
 // Private successor boundary: exact saved-input parsing and publication.
 // Model arithmetic/lifecycle, PTC, AST and MAP remain in their typed owners.
 #include <citlali/core/pipeline/fruit_cycle.h>
@@ -174,7 +175,8 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output,bool valida
         if(cycle==1 && branch.rfind("D-",0)==0)require(candidate_sha==owner["seeds"][array][branch]["sha256"].as<std::string>(),"FRUIT C+D first seed differs");
     }
     auto read_model=[&](const fs::path &path,const std::string &sha){
-    fitsfile *f=nullptr;int status=0,any=0;fits_open_file(&f,path.c_str(),READONLY,&status);
+    citlali::utils::FitsHandle handle;int status=0,any=0;fits_open_file(handle.address(),path.c_str(),READONLY,&status);
+    require(!status,"FRUIT candidate open failed");auto *f=handle.get();
     long axes[2];int ndim=0;fits_get_img_dim(f,&ndim,&status);fits_get_img_size(f,2,axes,&status);require(!status && ndim==2 && axes[0]==41 && axes[1]==41,"FRUIT candidate geometry");
     auto key=[&](const char *name){double v=NAN;fits_read_key(f,TDOUBLE,name,&v,nullptr,&status);return v;};
     const double cx=key("CRPIX1"),cy=key("CRPIX2"),dx=key("CDELT1"),dy=key("CDELT2"),ra=key("CRVAL1"),dec=key("CRVAL2"),equinox=key("EQUINOX");
@@ -184,7 +186,7 @@ int execute_saved_fruit(const fs::path &input,const fs::path &output,bool valida
         same(ra,parent["WCS"]["CRVAL1"].as<double>()) && same(dec,parent["WCS"]["CRVAL2"].as<double>()),"FRUIT candidate frame/unit/scale mismatch");
     std::vector<double> brightness(axes[0]*axes[1]);std::vector<std::uint8_t> valid(brightness.size());
     fits_read_img(f,TDOUBLE,1,brightness.size(),nullptr,brightness.data(),&any,&status);
-    fits_movnam_hdu(f,IMAGE_HDU,const_cast<char*>("VALID"),0,&status);fits_read_img(f,TBYTE,1,valid.size(),nullptr,valid.data(),&any,&status);fits_close_file(f,&status);require(!status,"FRUIT candidate read failed");
+    fits_movnam_hdu(f,IMAGE_HDU,const_cast<char*>("VALID"),0,&status);fits_read_img(f,TBYTE,1,valid.size(),nullptr,valid.data(),&any,&status);const int close_status=handle.close();require(!status && !close_status,"FRUIT candidate read failed");
     return FruitPointModel("sha256:"+sha,{std::size_t(axes[1]),std::size_t(axes[0]),"candidate-grid"},cx,cy,dx,dy,std::move(brightness),std::move(valid));
     };
     auto model=read_model(candidate,candidate_sha);

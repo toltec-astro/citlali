@@ -1,0 +1,322 @@
+{
+  "schema": "citlali-python-wheel-artifacts-v1",
+  "python": "CPython 3.13",
+  "platform": "macOS arm64",
+  "source": "existing local pip cache; full wheel bytes SHA-256 verified",
+  "native_libraries_qualified": false,
+  "artifacts": [
+    {
+      "filename": "astropy-7.0.1-cp313-cp313-macosx_11_0_arm64.whl",
+      "name": "astropy",
+      "version": "7.0.1",
+      "sha256": "0785533096b5682148ab79b077ab0e17f254be17c9fa12cb7789b8109044fe95",
+      "bytes": 6497653,
+      "tags": [
+        "cp313-cp313-macosx_11_0_arm64"
+      ]
+    },
+    {
+      "filename": "astropy_iers_data-0.2025.2.24.0.34.4-py3-none-any.whl",
+      "name": "astropy-iers-data",
+      "version": "0.2025.2.24.0.34.4",
+      "sha256": "be8b3b75b09b1aa1d22de9b5243854e00d19936aca6d8f64466d16197c04bb28",
+      "bytes": 1946502,
+      "tags": [
+        "py3-none-any"
+      ]
+    },
+    {
+      "filename": "build-1.2.2.post1-py3-none-any.whl",
+      "name": "build",
+      "version": "1.2.2.post1",
+      "sha256": "1d61c0887fa860c01971625baae8bdd338e517b836a2f70dd1f7aa3a6b2fc5b5",
+      "bytes": 22950,
+      "tags": [
+        "py3-none-any"
+      ]
+    },
+    {
+      "filename": "certifi-2025.1.31-py3-none-any.whl",
+      "name": "certifi",
+      "version": "2025.1.31",
+      "sha256": "ca78db4565a652026a4db2bcdf68f2fb589ea80d0be70e03929ed730746b84fe",
+      "bytes": 166393,
+      "tags": [
+        "py3-none-any"
+      ]
+    },
+    {
+      "filename": "cftime-1.6.4.post1-cp313-cp313-macosx_11_0_arm64.whl",
+      "name": "cftime",
+      "version": "1.6.4.post1",
+      "sha256": "7f27113f7ccd1ca32881fdcb9a4bec806a5f54ae621fc1c374f1171f3ed98ef2",
+      "bytes": 207395,
+      "tags": [
+        "cp313-cp313-macosx_11_0_arm64"
+      ]
+    },
+    {
+      "filename": "contourpy-1.3.1-cp313-cp313-macosx_11_0_arm64.whl",
+      "name": "contourpy",
+      "version": "1.3.1",
+      "sha256": "523a8ee12edfa36f6d2a49407f705a6ef4c5098de4f498619787e272de93f2d5",
+      "bytes": 255576,
+      "tags": [
+        "cp313-cp313-macosx_11_0_arm64"
+      ]
+    },
+    {
+      "filename": "cycler-0.12.1-py3-none-any.whl",
+      "name": "cycler",
+      "version": "0.12.1",
+      "sha256": "85cef7cff222d8644161529808465972e51340599459b8ac3ccbac5a854e0d30",
+      "bytes": 8321,
+      "tags": [
+        "py3-none-any"
+      ]
+    },
+    {
+      "filename": "fonttools-4.56.0-cp313-cp313-macosx_10_13_universal2.whl",
+      "name": "fonttools",
+      "version": "4.56.0",
+      "sha256": "f20e2c0dfab82983a90f3d00703ac0960412036153e5023eed2b4641d7d5e692",
+      "bytes": 2735127,
+      "tags": [
+        "cp313-cp313-macosx_10_13_universal2"
+      ]
+    },
+    {
+      "filename": "iniconfig-2.0.0-py3-none-any.whl",
+      "name": "iniconfig",
+      "version": "2.0.0",
+      "sha256": "b6a85871a79d2e3b22d2d1b94ac2824226a63c6b741c88f7ae975f18b6778374",
+      "bytes": 5892,
+      "tags": [
+        "py3-none-any"
+      ]
+    },
+    {
+      "filename": "kiwisolver-1.4.8-cp313-cp313-macosx_11_0_arm64.whl",
+      "name": "kiwisolver",
+      "version": "1.4.8",
+      "sha256": "68269e60ee4929893aad82666821aaacbd455284124817af45c11e50a4b42e3c",
+      "bytes": 65071,
+      "tags": [
+        "cp313-cp313-macosx_11_0_arm64"
+      ]
+    },
+    {
+      "filename": "matplotlib-3.10.0-cp313-cp313-macosx_11_0_arm64.whl",
+      "name": "matplotlib",
+      "version": "3.10.0",
+      "sha256": "12eaf48463b472c3c0f8dbacdbf906e573013df81a0ab82f0616ea4b11281908",
+      "bytes": 8043892,
+      "tags": [
+        "cp313-cp313-macosx_11_0_arm64"
+      ]
+    },
+    {
+      "filename": "netCDF4-1.7.2-cp313-cp313-macosx_14_0_arm64.whl",
+      "name": "netCDF4",
+      "version": "1.7.2",
+      "sha256": "96653fc75057df196010818367c63ba6d7e9af603df0a7fe43fcdad3fe0e9e56",
+      "bytes": 2455078,
+      "tags": [
+        "cp313-cp313-macosx_14_0_arm64"
+      ]
+    },
+    {
+      "filename": "nodeenv-1.9.1-py2.py3-none-any.whl",
+      "name": "nodeenv",
+      "version": "1.9.1",
+      "sha256": "ba11c9782d29c27c70ffbdda2d7415098754709be8a7056d79a737cd901155c9",
+      "bytes": 22314,
+      "tags": [
+        "py2-none-any",
+        "py3-none-any"
+      ]
+    },
+    {
+      "filename": "numpy-2.2.3-cp313-cp313-macosx_14_0_arm64.whl",
+      "name": "numpy",
+      "version": "2.2.3",
+      "sha256": "a0c03b6be48aaf92525cccf393265e02773be8fd9551a2f9adbe7db1fa2b60f1",
+      "bytes": 5130999,
+      "tags": [
+        "cp313-cp313-macosx_14_0_arm64"
+      ]
+    },
+    {
+      "filename": "packaging-24.2-py3-none-any.whl",
+      "name": "packaging",
+      "version": "24.2",
+      "sha256": "09abb1bccd265c01f4a3aa3f7a7db064b36514d2cba19a2f694fe6150451a759",
+      "bytes": 65451,
+      "tags": [
+        "py3-none-any"
+      ]
+    },
+    {
+      "filename": "pillow-11.1.0-cp313-cp313-macosx_11_0_arm64.whl",
+      "name": "pillow",
+      "version": "11.1.0",
+      "sha256": "cc1331b6d5a6e144aeb5e626f4375f5b7ae9934ba620c0ac6b3e43d5e683a0f0",
+      "bytes": 3101437,
+      "tags": [
+        "cp313-cp313-macosx_11_0_arm64"
+      ]
+    },
+    {
+      "filename": "pluggy-1.5.0-py3-none-any.whl",
+      "name": "pluggy",
+      "version": "1.5.0",
+      "sha256": "44e1ad92c8ca002de6377e165f3e0f1be63266ab4d554740532335b9d75ea669",
+      "bytes": 20556,
+      "tags": [
+        "py3-none-any"
+      ]
+    },
+    {
+      "filename": "pyerfa-2.0.1.5-cp39-abi3-macosx_11_0_arm64.whl",
+      "name": "pyerfa",
+      "version": "2.0.1.5",
+      "sha256": "be1aeb70390dd03a34faf96749d5cabc58437410b4aab7213c512323932427df",
+      "bytes": 329370,
+      "tags": [
+        "cp39-abi3-macosx_11_0_arm64"
+      ]
+    },
+    {
+      "filename": "pygments-2.19.1-py3-none-any.whl",
+      "name": "Pygments",
+      "version": "2.19.1",
+      "sha256": "9ea1544ad55cecf4b8242fab6dd35a93bbce657034b0611ee383099054ab6d8c",
+      "bytes": 1225293,
+      "tags": [
+        "py3-none-any"
+      ]
+    },
+    {
+      "filename": "pyparsing-3.2.1-py3-none-any.whl",
+      "name": "pyparsing",
+      "version": "3.2.1",
+      "sha256": "506ff4f4386c4cec0590ec19e6302d3aedb992fdc02c761e90416f158dacf8e1",
+      "bytes": 107716,
+      "tags": [
+        "py3-none-any"
+      ]
+    },
+    {
+      "filename": "pyproject_hooks-1.2.0-py3-none-any.whl",
+      "name": "pyproject_hooks",
+      "version": "1.2.0",
+      "sha256": "9e5c6bfa8dcc30091c74b0cf803c81fdd29d94f01992a7707bc97babb1141913",
+      "bytes": 10216,
+      "tags": [
+        "py3-none-any"
+      ]
+    },
+    {
+      "filename": "pyright-1.1.405-py3-none-any.whl",
+      "name": "pyright",
+      "version": "1.1.405",
+      "sha256": "a2cb13700b5508ce8e5d4546034cb7ea4aedb60215c6c33f56cec7f53996035a",
+      "bytes": 5905038,
+      "tags": [
+        "py3-none-any"
+      ]
+    },
+    {
+      "filename": "pytest-9.0.3-py3-none-any.whl",
+      "name": "pytest",
+      "version": "9.0.3",
+      "sha256": "2c5efc453d45394fdd706ade797c0a81091eccd1d6e4bccfcd476e2b8e0ab5d9",
+      "bytes": 375249,
+      "tags": [
+        "py3-none-any"
+      ]
+    },
+    {
+      "filename": "python_dateutil-2.9.0.post0-py2.py3-none-any.whl",
+      "name": "python-dateutil",
+      "version": "2.9.0.post0",
+      "sha256": "a8b2bc7bffae282281c8140a97d3aa9c14da0b136dfe83f850eea9a5f7470427",
+      "bytes": 229892,
+      "tags": [
+        "py2-none-any",
+        "py3-none-any"
+      ]
+    },
+    {
+      "filename": "PyYAML-6.0.2-cp313-cp313-macosx_11_0_arm64.whl",
+      "name": "PyYAML",
+      "version": "6.0.2",
+      "sha256": "50187695423ffe49e2deacb8cd10510bc361faac997de9efef88badc3bb9e2d1",
+      "bytes": 171679,
+      "tags": [
+        "cp313-cp313-macosx_11_0_arm64"
+      ]
+    },
+    {
+      "filename": "ruff-0.13.2-py3-none-macosx_11_0_arm64.whl",
+      "name": "ruff",
+      "version": "0.13.2",
+      "sha256": "c75e9d2a2fafd1fdd895d0e7e24b44355984affdde1c412a6f6d3f6e16b22d46",
+      "bytes": 12243588,
+      "tags": [
+        "py3-none-macosx_11_0_arm64"
+      ]
+    },
+    {
+      "filename": "scipy-1.17.1-cp313-cp313-macosx_14_0_arm64.whl",
+      "name": "scipy",
+      "version": "1.17.1",
+      "sha256": "7ff200bf9d24f2e4d5dc6ee8c3ac64d739d3a89e2326ba68aaf6c4a2b838fd7d",
+      "bytes": 20325719,
+      "tags": [
+        "cp313-cp313-macosx_14_0_arm64"
+      ]
+    },
+    {
+      "filename": "setuptools-80.0.0-py3-none-any.whl",
+      "name": "setuptools",
+      "version": "80.0.0",
+      "sha256": "a38f898dcd6e5380f4da4381a87ec90bd0a7eec23d204a5552e80ee3cab6bd27",
+      "bytes": 1240907,
+      "tags": [
+        "py3-none-any"
+      ]
+    },
+    {
+      "filename": "six-1.16.0-py2.py3-none-any.whl",
+      "name": "six",
+      "version": "1.16.0",
+      "sha256": "8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254",
+      "bytes": 11053,
+      "tags": [
+        "py2-none-any",
+        "py3-none-any"
+      ]
+    },
+    {
+      "filename": "typing_extensions-4.12.2-py3-none-any.whl",
+      "name": "typing_extensions",
+      "version": "4.12.2",
+      "sha256": "04e5ca0351e0f3f85c6853954072df659d0d13fac324d0072316b67d7794700d",
+      "bytes": 37438,
+      "tags": [
+        "py3-none-any"
+      ]
+    },
+    {
+      "filename": "wheel-0.45.1-py3-none-any.whl",
+      "name": "wheel",
+      "version": "0.45.1",
+      "sha256": "708e7481cc80179af0e556bbf0cc00b8444c7321e2700b8d8580231d13017248",
+      "bytes": 72494,
+      "tags": [
+        "py3-none-any"
+      ]
+    }
+  ]
+}

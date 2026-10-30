@@ -1,0 +1,1982 @@
+{
+  "schema": "citlali-mainline-acceptance-proposal/v1",
+  "generated_utc": "2026-10-30T17:55:14.750812+00:00",
+  "status": "table_and_cutoff_proposal_only_no_merge_or_source_edit",
+  "purpose": "Concrete proposed admission table for one later reviewed development checkpoint while ongoing pointing continues.",
+  "pinned_inputs": {
+    "mainline": "e32c4584dec07617d6caa857d39bf13047b6c4b0",
+    "engineering": "5c46201057d6b6d1048aac2949a64e9a34e9bad3",
+    "pointing": "797d013f115e403a30663eb92254082e8e742826",
+    "shared_fork": "77063575c4fac2bb207ca462435009358be396f6"
+  },
+  "cutoff_status": "Recommended immutable integration input. Active pointing branch is not frozen or moved.",
+  "cutoff_rationale": "797 closes independently reviewed saved assessment of the completed five-case experiment while leaving application/runtime source byte-identical to reviewed d0d3eeb. This is a more complete evidence checkpoint than399 without incorporating fresh runtime changes. It is a proposed integration input, not canonical acceptance or a branch freeze.",
+  "application_runtime_implementation": "d0d3eeb7981975a2f43f1a55878668410aa6c20b",
+  "counts": {
+    "shared": 262,
+    "engineering": 12,
+    "pointing": 22,
+    "distinct_union": 296
+  },
+  "summary_rows": [
+    {
+      "id": "A01",
+      "title": "RTC/CAL preparation, fixed filters and worker readiness",
+      "text": "ADMIT DEVELOPMENT. Existing owner work orders and reviews support concrete\n     preparation/projection/filter owners and explicit partial failure handling.\n     Preserve known failed/unavailable networks and fixed-filter qualification\n     limits; do not infer optimal rank or automatic cleaner selection.\n     Evidence: shared-early review, rows E1\u2013E2; shared group 1.",
+      "detailed_rows": [
+        "SE-E1"
+      ]
+    },
+    {
+      "id": "A02",
+      "title": "Forward MAP, frames/beam binding and network-boundary repair",
+      "text": "ADMIT DEVELOPMENT. Preserve reviewed typed handoffs, exact support and\n     identity checks, and the bounded network repair. Nominal beams are not\n     measured full transfer functions; old map replay is not validation of the\n     future combined candidate. Later AltAz changes have their own scope.\n     Evidence: shared-early review E3; shared groups 1\u20132; shared-late AltAz row.",
+      "detailed_rows": [
+        "SE-E3",
+        "SL-L16"
+      ]
+    },
+    {
+      "id": "A03",
+      "title": "Current FRUIT mechanics and expected-source/conditional-noise helpers",
+      "text": "ADMIT DEVELOPMENT. These are active dependencies of current configured\n     POINT, not merely archived studies. Preserve fresh-original-CAL feedback,\n     subtraction/rejoin, expected-source guards and their existing meanings.\n     Frozen-C0 sigma_A remains conditional diagnostic uncertainty; inclusion does\n     not qualify an ordinary calibrated amplitude error or prove convergence.\n     Evidence: shared-early E4\u2013E5/E8 and shared-late BASE records; groups 2\u20134.",
+      "detailed_rows": [
+        "SE-E4",
+        "SE-E5",
+        "SE-E8",
+        "SL-L03"
+      ]
+    },
+    {
+      "id": "A04",
+      "title": "BASE consolidation and later runtime/support/lineage repairs",
+      "text": "ADMIT DEVELOPMENT within recorded scope. Preserve byte-equivalent runtime\n     serialization where demonstrated, auxiliary-support separation, calibration\n     lineage checks and existing warm/full-resolve behavior. Keep experiment\n     controls explicitly gated; do not adopt fixed11, quarantine or covariance\n     treatments as defaults. Recorded campaign policies stay with their campaigns.\n     Evidence: shared-late review; shared groups 4\u20135.",
+      "detailed_rows": [
+        "SL-L02",
+        "SL-L06",
+        "SL-L09",
+        "SL-L11",
+        "SL-L12",
+        "SL-L13"
+      ]
+    },
+    {
+      "id": "A05",
+      "title": "Configured all-array POINT, compromised-detector and optical/noise policy",
+      "text": "ADMIT DEVELOPMENT. Existing owner decisions support the configured route,\n     bounded compromised-detector treatment, tunable 0.10 optical-response cut\n     and retained inverse-noise weighting. Preserve unassessable/unavailable\n     states. Conditional response intervals are not guaranteed repeated-sampling\n     coverage, and this row does not approve calibration or downstream SCIENCE.\n     Evidence: shared-late group 6 and pointing P03\u2013P04.",
+      "detailed_rows": [
+        "SL-L17",
+        "SL-L18",
+        "SL-L19",
+        "POINT-P04"
+      ]
+    },
+    {
+      "id": "A06",
+      "title": "Paired weighting, comparison and source-recovery interfaces",
+      "text": "ADMIT EXPLICIT DIAGNOSTIC DEVELOPMENT. Include reviewed opt-in controls and\n     repaired recovery binding, seed-expiry, resource and failure safeguards.\n     Preserve current default noise weighting and exact frozen trial identities.\n     Required future combination work: reconcile native output/resource owners,\n     include the comparison module in engineering's runtime inventory, and test\n     the source/wheel/frozen-runtime closure and new CI test selection.\n     Evidence: pointing P03/P06/P07; engineering E2\u2013E5.",
+      "detailed_rows": [
+        "POINT-P03",
+        "POINT-P06",
+        "POINT-P07",
+        "ENG-E2",
+        "ENG-E4",
+        "ENG-E5"
+      ]
+    },
+    {
+      "id": "A07",
+      "title": "Engineering build consistency, resource ownership and shared input services",
+      "text": "ADMIT DEVELOPMENT. Prior independent reviews support shared sources/strict\n     floating-point policy, ordinary test aggregate, safe output publication,\n     FITS/FFTW ownership and concrete input services. Preserve named historical\n     input profiles and numerical behavior. Test their interaction with pointing\n     on the exact combined version; old test totals do not establish that result.\n     Evidence: engineering E1\u2013E3, exact stage commits and final 941ccf review.",
+      "detailed_rows": [
+        "ENG-E1",
+        "ENG-E2",
+        "ENG-E3"
+      ]
+    },
+    {
+      "id": "A08",
+      "title": "Python deployment and repaired CI",
+      "text": "ADMIT DEVELOPMENT WITH KNOWN COMBINATION REPAIRS. Preserve the curated\n     runtime, locks and refusal to create incomplete cross-revision bundles.\n     Add the newer comparison module and five comparison/recovery test files to\n     the appropriate maintained inventories. Hosted execution and supported\n     native environment qualification remain future gates. Do not edit v4.x/5.x\n     or the repository default to enable CI; any source PR explicitly targets\n     codex/refactor-mainline after separately authorized publication.\n     Evidence: engineering E4\u2013E5; prior plan's verified CI trigger record.",
+      "detailed_rows": [
+        "ENG-E4",
+        "ENG-E5"
+      ]
+    },
+    {
+      "id": "A09",
+      "title": "Historical alternative methods, failed gates and comparative studies",
+      "text": "RETAIN DIAGNOSTIC CODE AND EVIDENCE. Preserve SPOD, uncertainty companions,\n     CORR/DIAG/JINC/CUT3, shoulder/seed/rank/fixed11/quarantine studies and temporal\n     counterexamples with their original limits. Some controls remain compiled\n     or callable; they must stay explicitly diagnostic and outside ordinary\n     default selection. Do not erase failed gates or call old policies adopted.\n     The current explicitly authorized recovery diagnostic in A06 is distinct\n     from parked older seed studies. Temporal research remains paused.\n     Evidence: shared-early E2/E6/E7/E9; shared-late experiment rows; pointing P01.",
+      "detailed_rows": [
+        "SE-E2",
+        "SE-E6",
+        "SE-E7",
+        "SE-E9",
+        "SL-L04",
+        "SL-L05",
+        "SL-L07",
+        "SL-L08",
+        "SL-L09",
+        "POINT-P01"
+      ]
+    },
+    {
+      "id": "A10",
+      "title": "Completed pointing assessments and calibration audit",
+      "text": "RETAIN REVIEWED EVIDENCE. The new saved assessment supports near-unity\n     compact incremental response within its tested design, incomplete broad\n     response and seed decay; it does not establish original-source truth or\n     absolute calibration. Preserve the pointing audit's outstanding amplitude,\n     error, frame/sign, PPT-consumer and downstream qualification issues.\n     Calibration/SCIENCE/coadd release claims remain held.\n     Evidence: pointing P02/P04/P05/P09 and their exact independent reviews.",
+      "detailed_rows": [
+        "POINT-P02",
+        "POINT-P04",
+        "POINT-P05",
+        "POINT-P09"
+      ]
+    },
+    {
+      "id": "A11",
+      "title": "Historical OOF AltAz replay scripts",
+      "text": "HOLD RUNNABLE READINESS; RETAIN HISTORY. Native AltAz development plumbing\n     can be considered within its recorded scope, but the old replay helpers\n     included in this history do not contain the later archived a8c1f313 repair.\n     That repair fixes input-manifest location and ambiguous comparison imports;\n     its successful preparation/review must not be credited to the older files.\n     For this POINT/engineering checkpoint, preserve the old scripts and all\n     repair evidence as historical/held material. Before claiming OOF replay\n     ready, recover/review the exact repair under a separate scope. Correct any\n     unqualified current readiness pointer in the future candidate's documentation.\n     OOF support/LM and frame-comparison limitations also remain as recorded;\n     no optical inference or production qualification is implied. This table\n     does not add OOF implementation or launch work.\n     Evidence: shared-late review and exact archived repair/preparation bindings.",
+      "detailed_rows": [
+        "SL-L14",
+        "SL-L15",
+        "SL-L16"
+      ]
+    },
+    {
+      "id": "A12",
+      "title": "Future POINT diagnostic trial budget",
+      "text": "RETAIN OWNER DIRECTION; HOLD NEW PREPARATION until coherent adaptation.\n     M0 plus at most M1\u2013M5 is the prospective owner limit. The preserved recovery\n     runner still encodes M10, 54 calls and M10 endpoints. A future trial must\n     update configuration, accounting and endpoint metrics together. Do not\n     shorten, rebuild or rebind the completed frozen M10 experiment.\n     Evidence: pointing P08 and preserved preparation/source identities.",
+      "detailed_rows": [
+        "POINT-P08"
+      ]
+    },
+    {
+      "id": "A13",
+      "title": "Governance amendment, current status and cleanup records",
+      "text": "PREPARE INCORPORATION; RETAIN HISTORY. The September 30 standing development\n     amendment already has an explicit owner directive. Prepare its exact source\n     and normative digest for a later accepted canonical record; do not create\n     new policy or treat branch presence as canonical effectiveness. Reconcile\n     chronological status without replacing frozen scientific contracts.\n     Keep all cleanup/recovery records, original evidence and dated counts.\n     Their inclusion does not repeat cleanup or authorize another deletion.\n     Evidence: governance-incorporation-proposal.json; engineering E6.",
+      "detailed_rows": [
+        "SL-L01",
+        "SL-L10",
+        "ENG-E6"
+      ]
+    }
+  ],
+  "detailed_rows": [
+    {
+      "id": "SE-E1",
+      "source_report": "review/shared-early-acceptance.json",
+      "original_row_id": "E1",
+      "disposition_record": {
+        "id": "E1",
+        "groups": [
+          "shared-1"
+        ],
+        "family": "RTC/CAL preparation, observation residency, fixed array filters and multi-network worker readiness",
+        "recommendation": "admit_development_with_limits",
+        "historical_authority": "Explicit owner-approved residency/shared-preparation and low-pass-first continuation; ADRs 0018\u20130022, SCI-RTC support/identity and existing CAL/PTC partial-completion contracts. Owner v2 completion direction preserves wholly producer-invalid pairs as unavailable.",
+        "reviewed_sources": [
+          "ba173150fc8bba3d20b0c307ab19e23fe3700e95",
+          "530743ec54670647a88c36452c80898e241e4575",
+          "ae4842e89068e9bf83fa4ec0e3846fc108440ae0",
+          "5cd3e28396a08917986f3ec73314a69d3605bd0d"
+        ],
+        "evidence": "Independent three-axis reviews are recorded for residency, low-pass and full-population readiness. Network12 5,968 binary outputs unchanged through residency/low-pass; direct convolution and full local population checks passed. Later owner-returned Unity evidence records 44 worker-count comparisons and all eleven supplied network diagnostics; network4 scan121 failure and missing networks6/10 remain explicit.",
+        "final_tree_disposition": "Retain concrete preparation/projection/filter owners and adapters as development application. Scientific eligibility, filter bytes/cadence binding and explicit partial failure remain unchanged; the filters are fixed development inputs, not a production bank.",
+        "limits": [
+          "Historical environment/results stay bound to their exact sources; no candidate-wide Spack pass is inferred.",
+          "ALS10 is a retained development setting, not demonstrated optimum.",
+          "No automatic rank, factor, notch or atmospheric interval selection."
+        ],
+        "owner_decision": "Admit reviewed implementation and its prerequisites to the proposed development checkpoint while retaining filter/observing-mode qualification debt.",
+        "references": [
+          {
+            "commit": "77063575c4fac2bb207ca462435009358be396f6",
+            "path": "handoff/TIMESTREAM_SUCCESSOR_RTC_PERFORMANCE_001_2026-09-18.md",
+            "sha256": "e525cd1d61c8b1b4021e7916b10907e996f276bd2d95a0f144113c4d5d5909fd",
+            "section": "Low-pass prerequisite / approved continuation / residency results"
+          },
+          {
+            "commit": "77063575c4fac2bb207ca462435009358be396f6",
+            "path": "validation/rtc_development_lowpass_2026-09-19/README.md",
+            "sha256": "d007cdc50477cdcb644d53dd63cb68478fdc8ae578938f5564e89d2ed7d8ae41"
+          },
+          {
+            "commit": "77063575c4fac2bb207ca462435009358be396f6",
+            "path": "doc/TIMESTREAM_SUCCESSOR_PTC_SPOD_001_2026-09-19.md",
+            "sha256": "67ebd6035411bce74afbf8c460513a153ce70417ac0e449a21e582d0afa11529",
+            "section": "Full available-network result"
+          }
+        ],
+        "code": [
+          {
+            "commit": "77063575c4fac2bb207ca462435009358be396f6",
+            "path": "include/citlali/core/pipeline/timestream_processing_scan_native.h",
+            "sha256": "a4dc4ddbed7c2278b8d3446a57cb9f7b3f190505f2aebd8059c831f58dd48773",
+            "interpretation": "Present in shared-fork tree; this does not prove combined-candidate behavior or production acceptance."
+          },
+          {
+            "commit": "77063575c4fac2bb207ca462435009358be396f6",
+            "path": "src/citlali/cli/rtc_array_filter_input.h",
+            "sha256": "e004cd20480d303e23acb522211b385fce631c50a82c4d462ce7c2521a899496",
+            "interpretation": "Present in shared-fork tree; this does not prove combined-candidate behavior or production acceptance."
+          },
+          {
+            "commit": "77063575c4fac2bb207ca462435009358be396f6",
+            "path": "src/citlali/cli/rtc_performance_trace.h",
+            "sha256": "e96239e2d9de81a866f6b582d1bf18ac7f9ea805b8e277f681ebfb1295df36bc",
+            "interpretation": "Present in shared-fork tree; this does not prove combined-candidate behavior or production acceptance."
+          },
+          {
+            "commit": "77063575c4fac2bb207ca462435009358be396f6",
+            "path": "src/citlali/core/pipeline/timestream_ptc_pipeline.cpp",
+            "sha256": "b38c0d37ba0d46ddf4fba7a81b14c7da4a5c70afd0179ed304276b2fb7bb1687",
+            "interpretation": "Present in shared-fork tree; this does not prove combined-candidate behavior or production acceptance."
+          }
+        ]
+      },
+      "status": "proposed scope disposition only; no canonical or scientific acceptance granted"
+    },
+    {
+      "id": "SE-E2",
+      "source_report": "review/shared-early-acceptance.json",
+      "original_row_id": "E2",
+      "disposition_record": {
+        "id": "E2",
+        "groups": [
+          "shared-1"
+        ],
+        "family": "SPOD/residual diagnostics, worker verification and diagnostic scheduling",
+        "recommendation": "retain_diagnostic_code_and_evidence",
+        "historical_authority": "Owner-authorized module probe and later bounded network diagnostics; preserve fixed 2/8-second profiles, 120-second pools and frozen numerical baseline. Full-population result recommends retaining ALS10; a further cleaner experiment was only proposed at that checkpoint.",
+        "reviewed_sources": [
+          "d4f13c13c1915665abf786cc074597e6360a969d",
+          "6f1d5a1722e6486dc67d8dcf70cda50179fc6cc4",
+          "f5d589c84fd75d2d4af95d06ed41b2c8af80ab45"
+        ],
+        "evidence": "Exact-source independent review reproduced six spectral profiles and 99 tool tests for the first probe. Subsequent compact owner-returned manifests support eleven-network diagnostics and 44 exact worker comparisons. Conditional residual controls do not estimate physical noise or source transfer.",
+        "final_tree_disposition": "Keep reusable diagnostics and recorded worker/cost evidence. These tools do not authorize automatic rejection, extra spectral cleaning or treating common-support diagnostic losses as production exclusions.",
+        "limits": [
+          "Single-run timing/speedup is not a general benchmark guarantee.",
+          "Near-11-Hz evidence is network-specific and conditional; it does not select a new cleaner."
+        ],
+        "owner_decision": "Retain diagnostic tooling and historical evidence, with no policy adoption or new campaign implicit in integration.",
+        "references": [
+          {
+            "commit": "77063575c4fac2bb207ca462435009358be396f6",
+            "path": "doc/TIMESTREAM_SUCCESSOR_PTC_SPOD_001_2026-09-19.md",
+            "sha256": "67ebd6035411bce74afbf8c460513a153ce70417ac0e449a21e582d0afa11529"
+          },
+          {
+            "commit": "77063575c4fac2bb207ca462435009358be396f6",
+            "path": "handoff/TIMESTREAM_SUCCESSOR_RTC_PERFORMANCE_001_2026-09-18.md",
+            "sha256": "e525cd1d61c8b1b4021e7916b10907e996f276bd2d95a0f144113c4d5d5909fd",
+            "section": "Unity worker equivalence and diagnostic continuation"
+          }
+        ],
+        "code": [
+          {
+            "commit": "77063575c4fac2bb207ca462435009358be396f6",
+            "path": "tools/timestream_successor/ptc_spod.py",
+            "sha256": "1f126132ff158ba8b859e355d70420da04a56d2f096eb571940fa9030e9a2773",
+            "interpretation": "Present in shared-fork tree; this does not prove combined-candidate behavior or production acceptance."
+          },
+          {
+            "commit": "77063575c4fac2bb207ca462435009358be396f6",
+            "path": "tools/timestream_successor/ptc_spod_residual.py",
+            "sha256": "06e959d3f976313807d86b5c7dc1da086e52790a6b71d0e94031ca333b15b26a",
+            "interpretation": "Present in shared-fork tree; this does not prove combined-candidate behavior or production acceptance."
+          },
+          {
+            "commit": "77063575c4fac2bb207ca462435009358be396f6",
+            "path": "tools/timestream_successor/run_ptc_spod.py",
+            "sha256": "3f035b0f9fcf008e1b3dddf57119db7655616037a96cc70e29b7893b87c71c96",
+            "interpretation": "Present in shared-fork tree; this does not prove combined-candidate behavior or production acceptance."
+          }
+        ]
+      },
+      "status": "proposed scope disposition only; no canonical or scientific acceptance granted"
+    },
+    {
+      "id": "SE-E3",
+      "source_report": "review/shared-early-acceptance.json",
+      "original_row_id": "E3",
+      "disposition_record": {
+        "id": "E3",
+        "groups": [
+          "shared-1",
+          "shared-2"
+        ],
+        "family": "Forward MAP, explicit frame/nominal-beam binding, POINT152389 and RTC network-boundary repair",
+        "recommendation": "admit_development_with_limits",
+        "historical_authority": "Owner requested first saved-PTC forward MAP, selected PTC uniform coefficients, 5/7.5/10 arcsec nominal beams and FK5/J2000.0; then explicitly selected POINT152389 and approved bounded network2/11 RTC boundary repair. SCI-MAP v0.2/r0.4 accepted content c8081c4ee4dc1c5132c3030a351073205fc3142a and exact producer/admission registrations; SCI-RTC r0.12 and SCI-VAL named consumer uses.",
+        "reviewed_sources": [
+          "b319544483645b3591fee70aa5d4ea2ea12e3569",
+          "7d16b8019a1f733e325bd48f419e6078e4f4c430",
+          "6bbb2b58bda3928bf044ef08cfe5dfa5ef30156f",
+          "4c1aefac9ecacbdedeaaeffbe7a5038c2e564b88",
+          "e93e8861be3b9d84049cc72d431fd72ab35d8959",
+          "38ab73d4437fbf14098d1d89d3424c6002fd2c36"
+        ],
+        "evidence": "Partial numerical core review was followed by connected real-map reviews. 152390 three-network bundles pass exact PTC/operator/WCS/support replay; POINT152389 reviewed nine-network result followed by explicit nw2/nw11 recovery with 7,616 nw0 binaries unchanged and exact map replay. Network3 scan5 ALS failure remains unavailable. Final repair recorded 1,289 runnable CTests, 175 successor tests, 207 baseline tests and required config pass locally.",
+        "final_tree_disposition": "Retain connected MAP handoff/typed support facts and reviewed boundary repair. Earlier missing-frame/beam and nine-network statuses are superseded only within the later exact scope. Later AltAz/configured POINT changes are reviewed separately by shared-late/cutoff owners, not silently credited to this older FK5 result.",
+        "limits": [
+          "Full upstream response, covariance, original-footprint exposure and coadd qualification were not established by the first forward pass.",
+          "Fixed nominal beams are not measured PSFs or full transfer functions.",
+          "Historical old-generation maps are not current candidate observational qualification."
+        ],
+        "owner_decision": "Admit the implementation prerequisites and scoped evidence; preserve inherited failures and unavailable product roles.",
+        "references": [
+          {
+            "commit": "77063575c4fac2bb207ca462435009358be396f6",
+            "path": "handoff/MAP_SUCCESSOR_FIRST_FORWARD_001_2026-09-21.md",
+            "sha256": "5858a9a243475cb078a60f106c69f4255d8ba77b09feeb3b21fead8800db8067"
+          },
+          {
+            "commit": "77063575c4fac2bb207ca462435009358be396f6",
+            "path": "validation/map_first_forward_owner_binding_2026-09-22.json",
+            "sha256": "219f6641b40a1cfc049eae24e320a14fe06f014bf804a87223a4b8772ea932aa"
+          },
+          {
+            "commit": "77063575c4fac2bb207ca462435009358be396f6",
+            "path": "handoff/evidence/MAP_SUCCESSOR_FIRST_FORWARD_REAL_2026-09-22.json",
+            "sha256": "350ecbb9063ca800191d7d8092b36c311db01882996b83e13c495b9c602b1422"
+          },
+          {
+            "commit": "77063575c4fac2bb207ca462435009358be396f6",
+            "path": "handoff/evidence/MAP_POINT_152389_FORWARD_2026-09-22.json",
+            "sha256": "f37f6cbccfd58b68472a983539d469ca56ae967922a6fd9d6db1ce2db90f53b2"
+          },
+          {
+            "commit": "77063575c4fac2bb207ca462435009358be396f6",
+            "path": "handoff/POINT_152389_NETWORK_RESCUE_2026-09-22.md",
+            "sha256": "a9989d4ae234d90e9c25c31d0e99dfa3af64fbbbac9eced7d2173063efaf80ee"
+          }
+        ],
+        "code": [
+          {
+            "commit": "77063575c4fac2bb207ca462435009358be396f6",
+            "path": "src/citlali/cli/map_saved_execution.h",
+            "sha256": "0b8b78fadc9c1887ede1792e717476cb45eee1a0f40085c5ca9df39bc62f0eab",
+            "interpretation": "Present in shared-fork tree; this does not prove combined-candidate behavior or production acceptance."
+          },
+          {
+            "commit": "77063575c4fac2bb207ca462435009358be396f6",
+            "path": "include/citlali/core/pipeline/ptc_map_handoff.h",
+            "sha256": "8d36d62185db8a3ebf2f0a4cb6c7994944521fa33410889f4446eef1f0113864",
+            "interpretation": "Present in shared-fork tree; this does not prove combined-candidate behavior or production acceptance."
+          },
+          {
+            "commit": "77063575c4fac2bb207ca462435009358be396f6",
+            "path": "include/citlali/core/pipeline/val_map_handoff.h",
+            "sha256": "6aec233d4bdec3e542c241ff190d2cf608f6b8d21c5e341c0080775df581fa72",
+            "interpretation": "Present in shared-fork tree; this does not prove combined-candidate behavior or production acceptance."
+          },
+          {
+            "commit": "77063575c4fac2bb207ca462435009358be396f6",
+            "path": "include/citlali/core/pipeline/timestream_rtc_event_treatment.h",
+            "sha256": "d6142e49d09497fba12149b22cd7bc8e93436ffcf1c7edbc37b2441432031e04",
+            "interpretation": "Present in shared-fork tree; this does not prove combined-candidate behavior or production acceptance."
+          }
+        ]
+      },
+      "status": "proposed scope disposition only; no canonical or scientific acceptance granted"
+    },
+    {
+      "id": "SE-E4",
+      "source_report": "review/shared-early-acceptance.json",
+      "original_row_id": "E4",
+      "disposition_record": {
+        "id": "E4",
+        "groups": [
+          "shared-2"
+        ],
+        "family": "Empirical/balanced/additive and post-FRUIT uncertainty companions",
+        "recommendation": "admit_bounded_helper_dependencies_retain_conditional_reports",
+        "historical_authority": "Bounded owner requests for saved-map empirical, balanced-split and conditional additive calculations; existing measured-source estimator preserved. These orders do not establish the separately unavailable SCI-POINT numerical method or a calibrated error model.",
+        "reviewed_sources": [
+          "5b8a8ff763b325dc42372b5a54f2bc65bb9a22f8",
+          "2995d2553c6cbecd2def033669229257854c8d40",
+          "3a544f3c93c1f5109765e0180e725992f3370154",
+          "6b1e59c9e7032dcfe8181b85fed264ff805cbca4",
+          "5f5853bff67ff2f330400702461cb1afcd01fdb5"
+        ],
+        "evidence": "Independent scoped reviews and synthetic controls recorded. Post-FRUIT records retain the failed original linear sampling check and prospective fixed follow-up. Source-depth/regional covariance assumptions, sparse overlapping blanks and a2000 applicability limits remain explicit.",
+        "final_tree_disposition": "Configured feedback at C imports point_additive learn and point_empirical helpers to construct the frozen initial C0/BASE source selector. Admit that helper use with its declared conditional semantics. Keep historical empirical/split/noise reports diagnostic, not ordinary calibrated amp_err or endpoint uncertainty.",
+        "limits": [
+          "Frozen-C0 source selection uncertainty is not current-pass detector noise weighting, adaptive-FRUIT repeatability, calibrated source error or convergence proof.",
+          "No uncertainty rescaling, significance threshold or calibration eligibility is adopted here."
+        ],
+        "owner_decision": "Admit only the existing bounded helper role, and retain conditional diagnostic reports without promoting their science claims.",
+        "references": [
+          {
+            "commit": "77063575c4fac2bb207ca462435009358be396f6",
+            "path": "handoff/POINT_152389_EMPIRICAL_COMPANION_2026-09-22.md",
+            "sha256": "373df88b129c2d93c08fceb359800e0428b8f29715690015b152fa264db1e701"
+          },
+          {
+            "commit": "77063575c4fac2bb207ca462435009358be396f6",
+            "path": "handoff/POINT_152389_BALANCED_PAIRINGS_2026-09-22.md",
+            "sha256": "953e3708c5bdbeda5addebe8b0554762d3a1faf249dc448467d7c44629944ebc"
+          },
+          {
+            "commit": "77063575c4fac2bb207ca462435009358be396f6",
+            "path": "handoff/POINT_152389_ADDITIVE_UNCERTAINTY_2026-09-23.md",
+            "sha256": "c5622e6b18a9410070fc3e9a7bcf89bfec17748068d8a361f34bc630104da879"
+          },
+          {
+            "commit": "77063575c4fac2bb207ca462435009358be396f6",
+            "path": "validation/point_152389_post_fruit_ab_2026-09-23/review.md",
+            "sha256": "223d3fb69da469edcfe478753ce5be864cd1ccc81ba4075e7b20eb075ef23700"
+          },
+          {
+            "commit": "77063575c4fac2bb207ca462435009358be396f6",
+            "path": "tools/timestream_successor/configured_point_feedback.py",
+            "sha256": "de5508b1f3587b3e606b619f1bb6890b06bacefed900cc3affa39f9584d9510d",
+            "section": "module docstring/imports/FeedbackContext"
+          }
+        ],
+        "code": [
+          {
+            "commit": "77063575c4fac2bb207ca462435009358be396f6",
+            "path": "tools/timestream_successor/point_additive.py",
+            "sha256": "b65e0e6eaf524d78c5f2c2c93a2f2ca91cc4a30185c261e2343cb94f5f124b1f",
+            "interpretation": "Present in shared-fork tree; this does not prove combined-candidate behavior or production acceptance."
+          },
+          {
+            "commit": "77063575c4fac2bb207ca462435009358be396f6",
+            "path": "tools/timestream_successor/point_empirical.py",
+            "sha256": "dcf11caf277cae6ed5a07c8bb0c66afae67ccb0b55a9f6b065c8c8fb3c2ef52a",
+            "interpretation": "Present in shared-fork tree; this does not prove combined-candidate behavior or production acceptance."
+          },
+          {
+            "commit": "77063575c4fac2bb207ca462435009358be396f6",
+            "path": "tools/timestream_successor/configured_point_feedback.py",
+            "sha256": "de5508b1f3587b3e606b619f1bb6890b06bacefed900cc3affa39f9584d9510d",
+            "interpretation": "Present in shared-fork tree; this does not prove combined-candidate behavior or production acceptance."
+          }
+        ]
+      },
+      "status": "proposed scope disposition only; no canonical or scientific acceptance granted"
+    },
+    {
+      "id": "SE-E5",
+      "source_report": "review/shared-early-acceptance.json",
+      "original_row_id": "E5",
+      "disposition_record": {
+        "id": "E5",
+        "groups": [
+          "shared-2"
+        ],
+        "family": "Measured-brightness BASE admission and fresh-original-CAL FRUIT replacement/rejoin mechanics",
+        "recommendation": "admit_development_with_limits",
+        "historical_authority": "Owner-approved threshold3 admission prototype then explicit one-cycle FRUIT request and subsequent bounded cycles2\u201310 continuation. Outside-disk no-feedback and identical-operand subtraction/rejoin were explicitly selected; historical original parents and failures preserved.",
+        "reviewed_sources": [
+          "c4583af71e21ed4140bce01488c4ccbeaa5f0e03",
+          "dfc10ef5fd8ad880958c57278b6b07d36d841242",
+          "46bbeb182bb5e973c8356b51b2c8b509f7186c1b",
+          "dc4eab09e772f9ab9ae95d0ecd2f6d44f2ebf7c6",
+          "1c1393b4df31ae721597dabc82498eb000c02f59",
+          "e1fe84d3faf438c0382d219930aacf40341737b4"
+        ],
+        "evidence": "Reviewed fresh zero controls exactly reproduce parents; one-cycle T=R+A closure below 1.81e-11; continuation preserves coverage/eligibility and known nw3 scan5 failure. Independent implementation and completed-run reviews pass with limits; basis-layout diagnostic repair did not alter science maps.",
+        "final_tree_disposition": "Retain typed FRUIT replacement, projection, fresh PTC and rejoin primitives and BASE helpers. Saved campaign10-cycle budget is historical, not authority for every future run. Later warm/weighted/current trial budgets have separate dated dispositions.",
+        "limits": [
+          "Brightness increase and numerical settling do not establish true source recovery or convergence.",
+          "Historical m10 remained unapplied; integration does not authorize cycle11 or automatic continuation.",
+          "No full adaptive uncertainty or production claim."
+        ],
+        "owner_decision": "Admit the bounded mechanics and archived demonstrations; preserve exact later pointing budget rules without changing active trial inputs.",
+        "references": [
+          {
+            "commit": "77063575c4fac2bb207ca462435009358be396f6",
+            "path": "handoff/POINT_152389_ADMISSION_PROTOTYPE_2026-09-23.md",
+            "sha256": "51c13525fb8d4a8fd7b1852d11a0f70a4b3c02b2bd1cd3768c43a08a1d2a772c"
+          },
+          {
+            "commit": "77063575c4fac2bb207ca462435009358be396f6",
+            "path": "handoff/POINT_152389_FIRST_FRUIT_CYCLE_2026-09-23.md",
+            "sha256": "15b5864892b3c0aa7515b5f032a75151caa08224a1dfe88b12c83692b79b51f3"
+          },
+          {
+            "commit": "77063575c4fac2bb207ca462435009358be396f6",
+            "path": "handoff/POINT_152389_FRUIT_TEN_CYCLES_2026-09-23.md",
+            "sha256": "ff14f9002373c38d5858f3dcaac687ff9a406cb202e9c910b379049dc995e4cc"
+          },
+          {
+            "commit": "77063575c4fac2bb207ca462435009358be396f6",
+            "path": "doc/BRIGHT_POINT_PIPELINE.md",
+            "sha256": "1e6f54ad608fab8b334c81bfc5578421eff795ba833588c72bdf799c49efd02d",
+            "section": "parked studies / downstream development reference"
+          }
+        ],
+        "code": [
+          {
+            "commit": "77063575c4fac2bb207ca462435009358be396f6",
+            "path": "include/citlali/core/pipeline/fruit_cycle.h",
+            "sha256": "d876661c99967279d8b493024ea2d93f0c13503101f2e918a03be683f4194383",
+            "interpretation": "Present in shared-fork tree; this does not prove combined-candidate behavior or production acceptance."
+          },
+          {
+            "commit": "77063575c4fac2bb207ca462435009358be396f6",
+            "path": "src/citlali/core/pipeline/fruit_cycle.cpp",
+            "sha256": "db74d883d78ddcc12b16a6777838f8de72c41a98878e9fa8027ed5acc321a85a",
+            "interpretation": "Present in shared-fork tree; this does not prove combined-candidate behavior or production acceptance."
+          },
+          {
+            "commit": "77063575c4fac2bb207ca462435009358be396f6",
+            "path": "tools/timestream_successor/point_fruit_trajectory.py",
+            "sha256": "30e3d8b7ddeb5302e63b3e528ba6e3ce90d3e8e4edba3563e2ec2d1940b6358c",
+            "interpretation": "Present in shared-fork tree; this does not prove combined-candidate behavior or production acceptance."
+          }
+        ]
+      },
+      "status": "proposed scope disposition only; no canonical or scientific acceptance granted"
+    },
+    {
+      "id": "SE-E6",
+      "source_report": "review/shared-early-acceptance.json",
+      "original_row_id": "E6",
+      "disposition_record": {
+        "id": "E6",
+        "groups": [
+          "shared-2",
+          "shared-3"
+        ],
+        "family": "Signed response/seed/threshold, frozen shoulder, REF-basis and map-only JINC counterfactuals",
+        "recommendation": "retain_diagnostic_code_and_evidence_no_policy_adoption",
+        "historical_authority": "Explicit bounded C+D response campaign followed by separately authorized frozen-PTC shoulder decomposition, a2000 REF-basis sequence and all-array map-only JINC experiment. Each preserves its own exact parent, fit, injection and budget scope.",
+        "reviewed_sources": [
+          "26af74ac5e59d88a99da1ed4047a7a71a327fca0",
+          "698e5eea5d71da5d042dca28cd870838b9f4f57d",
+          "6f00d638b804b897f5a626097e90f4e60bd85b24",
+          "ccddaf2e319ac0fa2860e7c4bf60eac115a6f861",
+          "6ac6b9dc7709fc71e9c4c0cd54d9f24e8fdb71c9",
+          "a5c45cd7e38c9e48b0b37a73ba260859a3f52700",
+          "0c8d54c1b227e69abcf99a9188daa6d5f3c93675"
+        ],
+        "evidence": "Independent artifact/review receipts retain conditional response and sign/seed tradeoffs. REF-basis scope deviation of22 unnecessary control fits is disclosed. JINC review found no consistent response-referenced precision gain, increased phase variation and unstable edge support; a2000 noise extrapolation remains explicit.",
+        "final_tree_disposition": "Keep reproducibility drivers, native experimental entry points and signed counterexamples with diagnostic labels. BRIGHT_POINT_PIPELINE.md at C parks CORR/DIAG/JINC/CUT3/shoulder refinements/seeds/extra cycles; configured policy remains POINT-EXPECTED/BASE. Retention or import of shared utilities does not adopt these experimental policies.",
+        "limits": [
+          "No universal source transfer, causal decomposition or error-model validity follows.",
+          "No blanket JINC, shoulder or seed refinement adoption.",
+          "Do not discard superseded/failed attempts or reset scientific labels to PASS."
+        ],
+        "owner_decision": "Retain research/reproduction material, with policy activation held for separate owner work orders.",
+        "references": [
+          {
+            "commit": "77063575c4fac2bb207ca462435009358be396f6",
+            "path": "validation/point_152389_response_robustness_cd_2026-09-23/INDEPENDENT_REVIEW.md",
+            "sha256": "053b9d0af921c8c086ad5964cd54ded135bfbfe80817cd87e2bfd31d8bfd834a"
+          },
+          {
+            "commit": "77063575c4fac2bb207ca462435009358be396f6",
+            "path": "handoff/POINT_152389_FROZEN_PTC_SHOULDER_2026-09-24.md",
+            "sha256": "efd8333b27f83314257678b51b201cf819842cc1b1ea879c75f523f0ce41fa3f"
+          },
+          {
+            "commit": "77063575c4fac2bb207ca462435009358be396f6",
+            "path": "handoff/POINT_152389_A2000_REF_BASIS_SEQUENCE_2026-09-24.md",
+            "sha256": "1596be8aceb7008144af6360bd4c577cf1154039f1cbce6675e3548080f6cb5c"
+          },
+          {
+            "commit": "77063575c4fac2bb207ca462435009358be396f6",
+            "path": "handoff/POINT_152389_MAP_ONLY_JINC_FULL_2026-09-24.md",
+            "sha256": "2a3620e270cb4e452f67cb1fd6f40feeaba31160fa744139bf02021f812812a6"
+          },
+          {
+            "commit": "77063575c4fac2bb207ca462435009358be396f6",
+            "path": "doc/BRIGHT_POINT_PIPELINE.md",
+            "sha256": "1e6f54ad608fab8b334c81bfc5578421eff795ba833588c72bdf799c49efd02d"
+          }
+        ],
+        "code": [
+          {
+            "commit": "77063575c4fac2bb207ca462435009358be396f6",
+            "path": "tools/timestream_successor/point_response_cd.py",
+            "sha256": "bb6492bcb4b377dca05283923bbbe5a5386e60e5da539f5197c1f992c899fc27",
+            "interpretation": "Present in shared-fork tree; this does not prove combined-candidate behavior or production acceptance."
+          },
+          {
+            "commit": "77063575c4fac2bb207ca462435009358be396f6",
+            "path": "tools/timestream_successor/point_frozen_shoulder.py",
+            "sha256": "e6adfec999c0e90f51428344e6120adea3e877686a9f1b99d89664d6f78f8f04",
+            "interpretation": "Present in shared-fork tree; this does not prove combined-candidate behavior or production acceptance."
+          },
+          {
+            "commit": "77063575c4fac2bb207ca462435009358be396f6",
+            "path": "tools/timestream_successor/point_jinc_full.py",
+            "sha256": "d1cddd080aa7e5f62411c14a0360abbabbd482626d981aace01b3d0907eab953",
+            "interpretation": "Present in shared-fork tree; this does not prove combined-candidate behavior or production acceptance."
+          }
+        ]
+      },
+      "status": "proposed scope disposition only; no canonical or scientific acceptance granted"
+    },
+    {
+      "id": "SE-E7",
+      "source_report": "review/shared-early-acceptance.json",
+      "original_row_id": "E7",
+      "disposition_record": {
+        "id": "E7",
+        "groups": [
+          "shared-3"
+        ],
+        "family": "Correlation-admission campaign with failed launch gates and blank-fit diagnosis",
+        "recommendation": "retain_failed_and_superseded_evidence_policy_held",
+        "historical_authority": "Owner-authorized fixed CORR/DIAG screening campaign; after blank fit failure, reviewed accounting amendment permitted prescribed fields and BASE replays while keeping new-policy feedback blocked. Follow-up blank-fit diagnosis did not itself repair or adopt a method.",
+        "reviewed_sources": [
+          "ee54efb6d32759003d4249f3a4ad90dbeb9c10d9",
+          "0a651e88a07cccd3431d54bc76d7b457df640e84",
+          "bdd3d5645dc294fcaf84dbcc84d84e8c360f2aa2",
+          "1371640d6a596099a55cb1014f6cc55236549ffb"
+        ],
+        "evidence": "All six thresholds unavailable because incomplete blank search maxima could not be relabeled absence. Three historical BASE10-cycle replays exact, but zero CORR/DIAG feedback trajectories in that campaign. Independent review passed truthful failure accounting, not failed scientific gates. Later POINT-EXPECTED campaign has distinct source and scope.",
+        "final_tree_disposition": "Keep original failed-gate and blank-fit evidence, exact replay tools and supersession trail. Their old unavailable outcomes stay unavailable. Later guarded screens are a new bounded result, not retrospective conversion of original failures into passes.",
+        "limits": [
+          "No original CORR/DIAG adoption, launch approval or false-alarm claim.",
+          "Finite fit nonconvergence is not physical absence; computational unavailability remains distinct."
+        ],
+        "owner_decision": "Admit these as failed/superseded diagnostic evidence only; retain separate later guard implementation decision.",
+        "references": [
+          {
+            "commit": "77063575c4fac2bb207ca462435009358be396f6",
+            "path": "validation/point_152389_correlation_admission_2026-09-24/FINAL_REVIEW.md",
+            "sha256": "690de7867858d53663bfa241a6cc30564c6f060feef3d2f7cbca43287c5f1788"
+          },
+          {
+            "commit": "77063575c4fac2bb207ca462435009358be396f6",
+            "path": "validation/point_152389_correlation_admission_2026-09-24/COMPLETION.json",
+            "sha256": "e0882de2ed7b0b00b3c37be3de94f7fca95aaac84d974dfad33ccc40ca459331"
+          },
+          {
+            "commit": "77063575c4fac2bb207ca462435009358be396f6",
+            "path": "validation/point_152389_blank_fit_diagnosis_2026-09-25/ASSESSMENT.md",
+            "sha256": "3a5a47af4e959063452d0dc0c8a2abf43cfb4f966210b7865934c51a1d829b71"
+          }
+        ],
+        "code": [
+          {
+            "commit": "77063575c4fac2bb207ca462435009358be396f6",
+            "path": "tools/timestream_successor/point_corr_admission.py",
+            "sha256": "cbb3cd4f2c9b264c2917505e267d854f1d8ca0dddcada0a64e77492780de773d",
+            "interpretation": "Present in shared-fork tree; this does not prove combined-candidate behavior or production acceptance."
+          },
+          {
+            "commit": "77063575c4fac2bb207ca462435009358be396f6",
+            "path": "tools/timestream_successor/diagnose_point_blank_fits.py",
+            "sha256": "7eafbf43ba931694d5a35ff93cb6b85f24f457e325c2d13ef8200afc2588dc64",
+            "interpretation": "Present in shared-fork tree; this does not prove combined-candidate behavior or production acceptance."
+          }
+        ]
+      },
+      "status": "proposed scope disposition only; no canonical or scientific acceptance granted"
+    },
+    {
+      "id": "SE-E8",
+      "source_report": "review/shared-early-acceptance.json",
+      "original_row_id": "E8",
+      "disposition_record": {
+        "id": "E8",
+        "groups": [
+          "shared-3"
+        ],
+        "family": "POINT-EXPECTED source guard and BASE helper use",
+        "recommendation": "admit_development_with_limits",
+        "historical_authority": "Exact owner directive selects one bounded Gaussian+constant fit, strict width/SNR, positive peak,20arcsec position and local-linear all-nuisance frozen-C0 amplitude propagation for diagnostic expected-source recognition. Valid rejection yields empty accepted products; computational failure remains unavailable. Historic fitter remains reproducible.",
+        "reviewed_sources": [
+          "0441f293e3daa5bab853efd43e278cb445fdec3c",
+          "110fab8d2325346eec20fe0e9b2a000ac2ffd27a"
+        ],
+        "evidence": "Independent final review passes exact trial census, all six recalibrated statistical screens and saved-map controls; all6144 fields plus768 stress reuses retained. Finite-difference Jacobian/covariance checks and prior repairs recorded. Validation fields were previously examined and C0 remains conditional.",
+        "final_tree_disposition": "point_expected.measure_expected/candidate is actively imported by configured_point_feedback at C; this is a development dependency, not wholly dormant historical evidence. Admit existing guard semantics while preserving diagnostic sigma_A and truthful unavailable/rejection states. Does not bind a new production SCI-POINT contract or calibrated PPT field.",
+        "limits": [
+          "Not a publication-grade error bar or exact ten-sigma false-alarm statement.",
+          "No nested simulation, retuned fit/search thresholds, weakened guard or universal calibration eligibility."
+        ],
+        "owner_decision": "Admit the existing bounded guard/helper use with explicit conditional limitations; later pointing-specific revisions reviewed separately.",
+        "references": [
+          {
+            "commit": "77063575c4fac2bb207ca462435009358be396f6",
+            "path": "validation/point_152389_expected_source_guard_2026-09-25/OWNER_DIRECTIVE.md",
+            "sha256": "03e3275992732d45e6cd428c0a801ab1b01891ffe9b47a6bfe54cb4652497259"
+          },
+          {
+            "commit": "77063575c4fac2bb207ca462435009358be396f6",
+            "path": "validation/point_152389_expected_source_guard_2026-09-25/FINAL_REVIEW.md",
+            "sha256": "f33b7f3d05c266f53cd7ea0bfcced6ff443ca7da3584c051c837b64470584980"
+          },
+          {
+            "commit": "77063575c4fac2bb207ca462435009358be396f6",
+            "path": "validation/point_152389_expected_source_guard_2026-09-25/COMPLETION.json",
+            "sha256": "cb1413887cb6eb04b545a0177fb3f7f9f09b405754142ac1e5bd74bc18041e20"
+          },
+          {
+            "commit": "77063575c4fac2bb207ca462435009358be396f6",
+            "path": "tools/timestream_successor/configured_point_feedback.py",
+            "sha256": "de5508b1f3587b3e606b619f1bb6890b06bacefed900cc3affa39f9584d9510d"
+          },
+          {
+            "commit": "77063575c4fac2bb207ca462435009358be396f6",
+            "path": "tools/timestream_successor/configured_point_config.py",
+            "sha256": "498d4c6d957e26718360aec516308a5617db95753cb96215fde56eaab9991c6b"
+          }
+        ],
+        "code": [
+          {
+            "commit": "77063575c4fac2bb207ca462435009358be396f6",
+            "path": "tools/timestream_successor/point_expected.py",
+            "sha256": "33ca2e4baf9cf48a55f956ab21778c04df4a6771e20f1aa29526303a26bd354b",
+            "interpretation": "Present in shared-fork tree; this does not prove combined-candidate behavior or production acceptance."
+          },
+          {
+            "commit": "77063575c4fac2bb207ca462435009358be396f6",
+            "path": "tools/timestream_successor/configured_point_feedback.py",
+            "sha256": "de5508b1f3587b3e606b619f1bb6890b06bacefed900cc3affa39f9584d9510d",
+            "interpretation": "Present in shared-fork tree; this does not prove combined-candidate behavior or production acceptance."
+          }
+        ]
+      },
+      "status": "proposed scope disposition only; no canonical or scientific acceptance granted"
+    },
+    {
+      "id": "SE-E9",
+      "source_report": "review/shared-early-acceptance.json",
+      "original_row_id": "E9",
+      "disposition_record": {
+        "id": "E9",
+        "groups": [
+          "shared-3"
+        ],
+        "family": "Guarded BASE-POINT/CORR/DIAG comparisons and saved a2000 diagnosis",
+        "recommendation": "retain_diagnostic_code_and_evidence_no_policy_adoption",
+        "historical_authority": "Separate owner-selected fixed45-trajectory guarded comparison, followed by saved-only diagnosis. Does not authorize production, default adoption, changed covariance, new source uncertainty, extra cycles or additional fits beyond the bounded records.",
+        "reviewed_sources": [
+          "a305099348479c692a5a5b0deb2cc9b2fd4e6b11",
+          "908f71d302b0944c3b42a4fb5dd8dabf0a397ad5",
+          "49e5c47711b9e134b458b24b33e1ae20779db154",
+          "acbf5ed1879127d7859688e34a5f354a9106833b",
+          "f79c0b7f32a9d25afb2a9498dca0ed0ed2750603"
+        ],
+        "evidence": "450 applications and495 accepted guard stages; independent exact source/artifact/figure/closure review. a2000 CORR shoulder gain improves but seed memory and compact-response/sign asymmetry worsen; no blanket superiority. Saved diagnosis reports conditional associations, not a proven unique cause. Original large bundle was sealed; later recovery/compaction records govern present physical layout.",
+        "final_tree_disposition": "Retain comparative research/evidence and reusable helpers without making CORR/DIAG the current development policy. Current source advertises POINT-EXPECTED and BASE; parked-method labels and archive restoration prerequisites remain.",
+        "limits": [
+          "Frozen sigma_A is not endpoint covariance or current-pass uncertainty.",
+          "Saved-only recommendation is not execution authorization.",
+          "This audit did not rehash the historical125GB bundle or regenerate products."
+        ],
+        "owner_decision": "Retain comparisons/negative tradeoffs and saved diagnosis as evidence; leave policy choice parked.",
+        "references": [
+          {
+            "commit": "77063575c4fac2bb207ca462435009358be396f6",
+            "path": "handoff/POINT_152389_GUARDED_FEEDBACK_COMPARISON_2026-09-25.md",
+            "sha256": "d3fb4e97fb1db54a47e73f8135a132b29b22d8d0928a906e026195f6a548b8e2"
+          },
+          {
+            "commit": "77063575c4fac2bb207ca462435009358be396f6",
+            "path": "validation/point_152389_guarded_feedback_comparison_2026-09-25/FINAL_REVIEW.md",
+            "sha256": "edee8c7b33c67fee7a4849ae5898f48ee5e5df0cd847d364c9cc5f3bc0b3e6a6"
+          },
+          {
+            "commit": "77063575c4fac2bb207ca462435009358be396f6",
+            "path": "validation/point_152389_guarded_feedback_comparison_2026-09-25/COMPLETION.json",
+            "sha256": "446eb664adaf1d7c862298378577c57a1f34e013264d5b5e4d2c1a75eac33e05"
+          },
+          {
+            "commit": "77063575c4fac2bb207ca462435009358be396f6",
+            "path": "validation/point_152389_a2000_saved_diagnosis_2026-09-25/ASSESSMENT.md",
+            "sha256": "a2caef76d7680b9a6c41c9da10c39bdc17bbf6523b90e4aee39dc556574ceecd"
+          },
+          {
+            "commit": "77063575c4fac2bb207ca462435009358be396f6",
+            "path": "doc/BRIGHT_POINT_PIPELINE.md",
+            "sha256": "1e6f54ad608fab8b334c81bfc5578421eff795ba833588c72bdf799c49efd02d"
+          }
+        ],
+        "code": [
+          {
+            "commit": "77063575c4fac2bb207ca462435009358be396f6",
+            "path": "tools/timestream_successor/point_guarded_feedback.py",
+            "sha256": "96e3bd23de3585ca5ff523907fa6313acd3ea259048a3aa3fead7628225cbff3",
+            "interpretation": "Present in shared-fork tree; this does not prove combined-candidate behavior or production acceptance."
+          },
+          {
+            "commit": "77063575c4fac2bb207ca462435009358be396f6",
+            "path": "tools/timestream_successor/point_saved_diagnosis.py",
+            "sha256": "0194aaeeff2892285d5b220290f91cc0935c0725d2e388404f9472fa7645b504",
+            "interpretation": "Present in shared-fork tree; this does not prove combined-candidate behavior or production acceptance."
+          }
+        ]
+      },
+      "status": "proposed scope disposition only; no canonical or scientific acceptance granted"
+    },
+    {
+      "id": "SL-L01",
+      "source_report": "review/shared-late-acceptance.json",
+      "original_row_id": "L01",
+      "disposition_record": {
+        "id": "L01",
+        "group": "shared-4",
+        "commits": [
+          "5b2c01a94ffa9758c3c7def60762eaa7964e99c0",
+          "a50e0293b96ad7bc3d98dd97c09d764031ce2365",
+          "730a544e0c4157e7d6fa752195618d74153025f0",
+          "8f214e06c4e01722194e7bc8ea9a1d991974ddf4",
+          "84eb4d91947271f1037a586589411ee4942a5407",
+          "6a0b75236c8880e0ae588f9b21c8766ebaa4eb9c",
+          "43844bfe07b81c3f70bd01f370f46820982f5bba"
+        ],
+        "commit_count": 7,
+        "milestone": "September 26 compaction, duplicate cleanup and RTC/PTC purge",
+        "recommendation": "RETAIN_EVIDENCE_AND_FAIL_CLOSED_READERS",
+        "recorded_authority": "Exact owner deletion directives recorded as completed; this task grants no further cleanup.",
+        "recorded_review": "Recorded independent inventory, scientific and post-removal checks; historical receipts only.",
+        "current_behavior_at_shared_fork": "Archive readers report intentionally removed payloads; recovery notices and compact evidence remain.",
+        "limitations_and_owner_decision": "Do not represent deleted RTC/PTC numeric payloads as recoverable without explicit upstream reprocessing. All current evidence remains protected.",
+        "citations": [
+          "77063575c4fac2bb207ca462435009358be396f6:doc/REFACTOR_STATUS.md",
+          "77063575c4fac2bb207ca462435009358be396f6:validation/local_data_rtc_ptc_purge_2026-09-26/REPORT.md",
+          "77063575c4fac2bb207ca462435009358be396f6:validation/point_152389_importance_compaction_2026-09-26/COMPLETION.json"
+        ],
+        "canonical_acceptance": "Not yet accepted for canonical integration; proposal only."
+      },
+      "status": "proposed scope disposition only; no canonical or scientific acceptance granted"
+    },
+    {
+      "id": "SL-L02",
+      "source_report": "review/shared-late-acceptance.json",
+      "original_row_id": "L02",
+      "disposition_record": {
+        "id": "L02",
+        "group": "shared-4",
+        "commits": [
+          "1b2016120885d1e93e73ca33ab782c8df2c9fdd3",
+          "54adaeebd2068cf827fe39f0aae8c3fbddcb03e0",
+          "f7e39ffe1089eb0d9f29fcf44317fcb46517680e",
+          "263aed9b37dad1af8d643be10e5396eb376e281f",
+          "cf9cfee12d41c12e494fa904b6065b87cb503b41",
+          "9875aec4b2bea63e036d83691c0b35cbd9c6219e",
+          "ac2bee1febaab82b808f7f751374b797de033c6a",
+          "90a95c20de18fd41a64c78b6ac23960762b0e35a",
+          "c2481f0811f02969b7d891d42aabbdc556b82d39",
+          "ac1bf4eecc9973515195151bf865e25893e2e5d5"
+        ],
+        "commit_count": 10,
+        "milestone": "Independent 152430 comparison and high-coverage continuation",
+        "recommendation": "ADMIT_BOUNDED_DEVELOPMENT_AND_RETAIN_STUDIES",
+        "recorded_authority": "Owner authorized fixed-method independent observation and then high-coverage informational semantics with genuine defect guards retained.",
+        "recorded_review": "Final c2481f0811f02969b7d891d42aabbdc556b82d39 passed with limits; executed ac2bee1febaab82b808f7f751374b797de033c6a.",
+        "current_behavior_at_shared_fork": "High coverage is informational within bounded POINT continuation; CORR/DIAG controls remain explicit historical study routes.",
+        "limitations_and_owner_decision": "No universal method/default promotion or source-quality claim. Preserve initial stopped attempt and superseded-run notices.",
+        "citations": [
+          "77063575c4fac2bb207ca462435009358be396f6:validation/point_152430_no_upper_coverage_veto_2026-09-26/OWNER_DIRECTIVE.md",
+          "77063575c4fac2bb207ca462435009358be396f6:validation/point_152430_no_upper_coverage_veto_2026-09-26/FINAL_REVIEW.json",
+          "77063575c4fac2bb207ca462435009358be396f6:doc/BRIGHT_POINT_PIPELINE.md"
+        ],
+        "canonical_acceptance": "Not yet accepted for canonical integration; proposal only."
+      },
+      "status": "proposed scope disposition only; no canonical or scientific acceptance granted"
+    },
+    {
+      "id": "SL-L03",
+      "source_report": "review/shared-late-acceptance.json",
+      "original_row_id": "L03",
+      "disposition_record": {
+        "id": "L03",
+        "group": "shared-4",
+        "commits": [
+          "b47c13e1f5b745b94880218e347f77b4142686ff",
+          "7bd7e256b839f3a130225fe371ce2e46d1905e56",
+          "5435bdbdb4e6708e884ae4cb2b0fd93e74102ce5"
+        ],
+        "commit_count": 3,
+        "milestone": "Bright-POINT BASE pipeline consolidation",
+        "recommendation": "ADMIT_DEVELOPMENT_REFERENCE",
+        "recorded_authority": "Owner froze ordinary MAP + BASE-POINT as downstream development reference; exploratory FRUIT studies parked.",
+        "recorded_review": "Status records isolated b47c13e1f5b745b94880218e347f77b4142686ff full M0-T10 exact equivalence and freeze review at5435bdbdb4e6708e884ae4cb2b0fd93e74102ce5.",
+        "current_behavior_at_shared_fork": "One original-input route retains shared RTC/CAL/PTC/MAP owners, source guard and explicit feedback with immutable parent.",
+        "limitations_and_owner_decision": "Cold rank10/T10 frozen reference stays historical; scoped later warm/N5 selection does not rewrite it. No all-mode/production qualification.",
+        "citations": [
+          "77063575c4fac2bb207ca462435009358be396f6:doc/BRIGHT_POINT_PIPELINE.md",
+          "77063575c4fac2bb207ca462435009358be396f6:handoff/RTC_PTC_MAP_FRUIT_BASELINE_2026-09-26.md"
+        ],
+        "canonical_acceptance": "Not yet accepted for canonical integration; proposal only."
+      },
+      "status": "proposed scope disposition only; no canonical or scientific acceptance granted"
+    },
+    {
+      "id": "SL-L04",
+      "source_report": "review/shared-late-acceptance.json",
+      "original_row_id": "L04",
+      "disposition_record": {
+        "id": "L04",
+        "group": "shared-4",
+        "commits": [
+          "cc5215609814d5a97a448ba04e8e382de8e19d56",
+          "e3cbf1eeadda256e4d9f400a834f9f7d462c1ae2",
+          "d32c0f8eec545382ee09cc65156c73d0357cfbbc",
+          "e67cf6c4303ca4516e5a5c0947e6df70e41242f2",
+          "11b0c313cffe6cc0583b7a9e70dcfa98e3137746"
+        ],
+        "commit_count": 5,
+        "milestone": "PTC rank-response study and truthful failure handling",
+        "recommendation": "ADMIT_DIAGNOSTIC_CODE_AND_FAILURE_REPAIR",
+        "recorded_authority": "Owner authorized ranks5/10/15 study on one observation/two networks.",
+        "recorded_review": "Repaired e67cf6c4303ca4516e5a5c0947e6df70e41242f2 independently passed; incomplete matrices now fail nonzero.",
+        "current_behavior_at_shared_fork": "Rank study route remains explicit; rank10 retained as reference.",
+        "limitations_and_owner_decision": "Rank15 sensitivity/shoulder tradeoff is evidence, not a new optimum/default or independent-observation confirmation.",
+        "citations": [
+          "77063575c4fac2bb207ca462435009358be396f6:validation/ptc_rank_response_2026-09-26/OWNER_DIRECTIVE.md",
+          "77063575c4fac2bb207ca462435009358be396f6:validation/ptc_rank_response_2026-09-26/FINAL_REVIEW.md"
+        ],
+        "canonical_acceptance": "Not yet accepted for canonical integration; proposal only."
+      },
+      "status": "proposed scope disposition only; no canonical or scientific acceptance granted"
+    },
+    {
+      "id": "SL-L05",
+      "source_report": "review/shared-late-acceptance.json",
+      "original_row_id": "L05",
+      "disposition_record": {
+        "id": "L05",
+        "group": "shared-4",
+        "commits": [
+          "637e2adce4ca65e01510106273aa8e80c96f3433",
+          "516a283bc76bbfe1e259d92357bd191819b2782c",
+          "e28f6630fffaba77f78fc2c2cb883c7345ad92f4",
+          "b7746e3ca6f1615039a2b9d4a3aabe2df62a2a7f",
+          "08f81382d96afb0aad6bc1ed40543322887729b9",
+          "cec7917ef57ac37ed48fceffec33bc95a32cd78a",
+          "9c7586bb044cdacd59dcd06e7dafed505453212e"
+        ],
+        "commit_count": 7,
+        "milestone": "POINT latency/PCA instrumentation and alternatives",
+        "recommendation": "ADMIT_DIAGNOSTIC_CODE_AND_FAILURE_REPAIRS",
+        "recorded_authority": "Owner authorized bounded comparison, atomic readiness and truthful failed publication accounting.",
+        "recorded_review": "cec7917ef57ac37ed48fceffec33bc95a32cd78a review passed with confounded timing limitations.",
+        "current_behavior_at_shared_fork": "Explicit speed modes include warm observed-entry ALS and masked covariance alternatives; ordinary scientific ownership retained.",
+        "limitations_and_owner_decision": "No intrinsic speed ordering or automatic stopping conclusion. Later owner selects warm rank10/N5 only for bounded RTC development.",
+        "citations": [
+          "77063575c4fac2bb207ca462435009358be396f6:validation/point_speed_pca_2026-09-27/OWNER_DIRECTIVE.md",
+          "77063575c4fac2bb207ca462435009358be396f6:validation/point_speed_pca_2026-09-27/FINAL_REVIEW.json",
+          "77063575c4fac2bb207ca462435009358be396f6:tools/timestream_successor/point_pipeline.py"
+        ],
+        "canonical_acceptance": "Not yet accepted for canonical integration; proposal only."
+      },
+      "status": "proposed scope disposition only; no canonical or scientific acceptance granted"
+    },
+    {
+      "id": "SL-L06",
+      "source_report": "review/shared-late-acceptance.json",
+      "original_row_id": "L06",
+      "disposition_record": {
+        "id": "L06",
+        "group": "shared-4",
+        "commits": [
+          "f25ca650de04b934cdb0d8e4b8bce73226ce4024",
+          "3bb6444ab5e97265cbcb8f197994a52603b481ae",
+          "d897dc0014da3c8d007fb74dff1e259d9abdf8d9",
+          "9ab86590cb7723304a79bed3ed2bf50d36834675",
+          "a0f7345fc0c0501e34e877f91104c4a78e61daf3",
+          "eafd243b88be6a634b89789dac3d67997f6fb0b5",
+          "ed388e84d0bea5e31c00234754852c2a17ae8be5",
+          "ab43474a7c4988fcc7d72023e6695c034f56c22a"
+        ],
+        "commit_count": 8,
+        "milestone": "RTC cost instrumentation and byte-preserving output optimization",
+        "recommendation": "ADMIT_DEVELOPMENT_IMPLEMENTATION",
+        "recorded_authority": "Owner explicitly selected warm fully re-solved rank10, M0+5 for the RTC study and authorized measured overhead repair.",
+        "recorded_review": "ed388e84d0bea5e31c00234754852c2a17ae8be5 final review pass; three B repeats exact; no demonstrated end-to-end speedup.",
+        "current_behavior_at_shared_fork": "Common batching/serialization preserves numerical/support bytes; scoped development profile and pre-RTC probe remain explicit.",
+        "limitations_and_owner_decision": "Not production qualification; do not generalize N5 to all modes or later live trial. Existing frozen cold/T10 and exact observations remain.",
+        "citations": [
+          "77063575c4fac2bb207ca462435009358be396f6:validation/rtc_cost_response_2026-09-27/OWNER_DIRECTIVE.md",
+          "77063575c4fac2bb207ca462435009358be396f6:validation/rtc_cost_response_2026-09-27/ASSESSMENT.md",
+          "77063575c4fac2bb207ca462435009358be396f6:validation/rtc_cost_response_2026-09-27/FINAL-REVIEW.json"
+        ],
+        "canonical_acceptance": "Not yet accepted for canonical integration; proposal only."
+      },
+      "status": "proposed scope disposition only; no canonical or scientific acceptance granted"
+    },
+    {
+      "id": "SL-L07",
+      "source_report": "review/shared-late-acceptance.json",
+      "original_row_id": "L07",
+      "disposition_record": {
+        "id": "L07",
+        "group": "shared-4",
+        "commits": [
+          "b3d997456a8b9762d9fc323e37827f96b4ec7b37",
+          "f3428f67f92605211b410fcd2081b43aa579493c",
+          "38e917f4c731228ab827587df889c98b9489d1b1"
+        ],
+        "commit_count": 3,
+        "milestone": "Fixed 11 Hz experimental notch",
+        "recommendation": "RETAIN_DIAGNOSTIC_CODE_NOT_ADOPTED",
+        "recorded_authority": "Owner authorized one exact fixed design/population comparison; no new classifier or repeated campaign.",
+        "recorded_review": "f3428f67f92605211b410fcd2081b43aa579493c final review passed; measured contribution, uncertainty and latency costs.",
+        "current_behavior_at_shared_fork": "Compiled optional fixed11 branch requires experimental selection/authority/design identities; separate fixed11-run mode remains.",
+        "limitations_and_owner_decision": "C-fixed11 is parked; B remains reference. Must preserve explicit diagnostic-only status and negative route tests; no default activation.",
+        "citations": [
+          "77063575c4fac2bb207ca462435009358be396f6:validation/rtc_fixed11_2026-09-27/OWNER_DIRECTIVE.md",
+          "77063575c4fac2bb207ca462435009358be396f6:validation/rtc_fixed11_2026-09-27/FINAL-REVIEW.json",
+          "77063575c4fac2bb207ca462435009358be396f6:src/citlali/cli/point_fixed11_input.h",
+          "77063575c4fac2bb207ca462435009358be396f6:src/citlali/cli/rtc_pipeline_execution.cpp"
+        ],
+        "canonical_acceptance": "Not yet accepted for canonical integration; proposal only."
+      },
+      "status": "proposed scope disposition only; no canonical or scientific acceptance granted"
+    },
+    {
+      "id": "SL-L08",
+      "source_report": "review/shared-late-acceptance.json",
+      "original_row_id": "L08",
+      "disposition_record": {
+        "id": "L08",
+        "group": "shared-4",
+        "commits": [
+          "43b510b3d01323c2de9cc41b2dfdb8d316b9ca4d",
+          "15223b675b60e5a004324c2d45cf104dcf2938f8",
+          "218a1b0fa2a9b2165d635dba4d11daa5233ddd38",
+          "b33787d1c597e623671f708238672e98421d6a34",
+          "482fa206d87ca1b59e11b82ec7352863b570a028",
+          "25f01f1ce8c71b66fea965c32b5972a56e070648",
+          "9178a92db69cf7f27557c01cea30ff1bf7c4872a",
+          "839f31b28b52de6a46bc9c2dc623673378839cfa",
+          "702d6f46728cd2fddb1540aa9fa4fec09ba93d27",
+          "e74d8d799d04ca1f11241600e0e1482fc787d256",
+          "17f0b9b9bcfdc605161b2c67dba7ccdf52ffdf72"
+        ],
+        "commit_count": 11,
+        "milestone": "RTC step and four-network consequence diagnostics",
+        "recommendation": "RETAIN_DIAGNOSTIC_CODE_AND_EVIDENCE",
+        "recorded_authority": "Two bounded owner-selected observations/populations; no new generic rejection threshold.",
+        "recorded_review": "15223b675b60e5a004324c2d45cf104dcf2938f8 and702d6f46728cd2fddb1540aa9fa4fec09ba93d27 reviews passed with limitations.",
+        "current_behavior_at_shared_fork": "Bounded original-domain probe and four-network native scope repair remain; summaries preserve lost/gained support and unavailable measurements.",
+        "limitations_and_owner_decision": "Avoidable exposure loss and general rejection remain unproven; no new temporal detector rule inferred.",
+        "citations": [
+          "77063575c4fac2bb207ca462435009358be396f6:validation/rtc_step_point_2026-09-27/FINAL-REVIEW.json",
+          "77063575c4fac2bb207ca462435009358be396f6:validation/rtc_step_consequences_2026-09-28/FINAL_REVIEW.json",
+          "77063575c4fac2bb207ca462435009358be396f6:doc/REFACTOR_STATUS.md"
+        ],
+        "canonical_acceptance": "Not yet accepted for canonical integration; proposal only."
+      },
+      "status": "proposed scope disposition only; no canonical or scientific acceptance granted"
+    },
+    {
+      "id": "SL-L09",
+      "source_report": "review/shared-late-acceptance.json",
+      "original_row_id": "L09",
+      "disposition_record": {
+        "id": "L09",
+        "group": "shared-4",
+        "commits": [
+          "c517444861022f70c95dde95ed13e6a6a259249b",
+          "ad8d9e9a44768b75b3a2526ed1391816e505b9a7",
+          "be5993971f17c00c309598630d19a17e8c3c7a7d",
+          "da94a43795cde31c80b0f642ddde258d65905d3a",
+          "ff92aa69d73aee9441e3269adf4ff4b9892ae509",
+          "9d28b2c6e134375b6f377ae59acc4e9f967ac3d4",
+          "a7351335f791c995e39d7cda4546412e3f4a5638",
+          "f7dc690f6c837cdb3eefe7560a0cc4852508e48b",
+          "105df3663f916e63ca6b62d5fb227c5d59e5ddd1",
+          "9b992d4addbf4e5b034130987ffbce9457467a26",
+          "6c26c628ac9df374e0bc8bc5888ba5270a8d9daf"
+        ],
+        "commit_count": 11,
+        "milestone": "Failed residual audit, repaired routing and frozen quarantine comparison",
+        "recommendation": "ADMIT_ROUTING_REPAIR_RETAIN_QUARANTINE_AS_DIAGNOSTIC",
+        "recorded_authority": "Owner separately authorized repaired B replay then finite D88 whole-run comparison; original failed scope gate preserved.",
+        "recorded_review": "f7dc690f6c837cdb3eefe7560a0cc4852508e48b pass with limits; reviewer reused context rather than fresh blank context, explicitly disclosed.",
+        "current_behavior_at_shared_fork": "Native routing repair shared by bounded scopes. Optional quarantine requires exact frozen manifest digest, identities and original-input development route.",
+        "limitations_and_owner_decision": "Retain B; Q mixed result is not generic detector veto. Later transfer study also parks Q. Fresh combined-candidate review must not inherit the historical fresh-context claim.",
+        "citations": [
+          "77063575c4fac2bb207ca462435009358be396f6:validation/rtc_retained_residuals_2026-09-28/FINAL_REVIEW.json",
+          "77063575c4fac2bb207ca462435009358be396f6:validation/rtc_two_stage_2026-09-28/ASSESSMENT.md",
+          "77063575c4fac2bb207ca462435009358be396f6:validation/rtc_two_stage_2026-09-28/FINAL_REVIEW.json",
+          "77063575c4fac2bb207ca462435009358be396f6:src/citlali/cli/rtc_quarantine_input.h"
+        ],
+        "canonical_acceptance": "Not yet accepted for canonical integration; proposal only."
+      },
+      "status": "proposed scope disposition only; no canonical or scientific acceptance granted"
+    },
+    {
+      "id": "SL-L10",
+      "source_report": "review/shared-late-acceptance.json",
+      "original_row_id": "L10",
+      "disposition_record": {
+        "id": "L10",
+        "group": "shared-5",
+        "commits": [
+          "e7fbc4e3156bf4c6b1f2267acd793af89912fead",
+          "78c9aa2b4d8d29b2444d1a040605cfc5c485b38f",
+          "212dfe1e21143b5e36f8387044005a973821c497"
+        ],
+        "commit_count": 3,
+        "milestone": "Approved September 29 scratch cleanup closeout",
+        "recommendation": "RETAIN_EVIDENCE_ONLY",
+        "recorded_authority": "Owner approved exact manifest cleanup; verification recorded complete.",
+        "recorded_review": "Committed cleanup review and completion verification bind historical operation.",
+        "current_behavior_at_shared_fork": "Historical helper/receipt retained; no new cleanup scope.",
+        "limitations_and_owner_decision": "No deletion or restoration authorized now.",
+        "citations": [
+          "77063575c4fac2bb207ca462435009358be396f6:validation/rtc_point_transfer_2026-09-28/cleanup_2026-09-29/REVIEW.json",
+          "77063575c4fac2bb207ca462435009358be396f6:validation/rtc_point_transfer_2026-09-28/cleanup_2026-09-29/COMPLETION_VERIFICATION.json"
+        ],
+        "canonical_acceptance": "Not yet accepted for canonical integration; proposal only."
+      },
+      "status": "proposed scope disposition only; no canonical or scientific acceptance granted"
+    },
+    {
+      "id": "SL-L11",
+      "source_report": "review/shared-late-acceptance.json",
+      "original_row_id": "L11",
+      "disposition_record": {
+        "id": "L11",
+        "group": "shared-5",
+        "commits": [
+          "c3a8a55291fec786d532972d814b6dd5204d9f76",
+          "0b96d1c9ca35cace9a106585c0ed8be8cd5293fe",
+          "b317e7041f118fce075320d595948d15d4da3c21",
+          "6eb15ca337604298074f574152a01a8a7f697647",
+          "a84eb2456fef4a8c2e768144dd75a47f21a83654",
+          "0132dc8ca2c72e0b7fd35439196f29365646b6ec",
+          "dbc7d47fcd537a2ca01e650f9db7fc031861ec32",
+          "59b03a0fd3e5d25481b9215994b61462d02446b3",
+          "518e05891cf8eb2e84621cdcfcea83525f3d1c49",
+          "c87c20d9a4435f4b9bbe88c81e3071751f2c4d57"
+        ],
+        "commit_count": 10,
+        "milestone": "Independent transfer, bounded runtime profile and auxiliary-support repair",
+        "recommendation": "ADMIT_DEVELOPMENT_REPAIRS_RETAIN_EXPERIMENTS",
+        "recorded_authority": "Owner authorized transfer build/runtime repairs and completion; explicit auxiliary measurement support separated from source/feedback policy.",
+        "recorded_review": "ASSESSMENT binds completed518e05891cf8eb2e84621cdcfcea83525f3d1c49 eight roles/40 feedback and scientific review supporting Q parked.",
+        "current_behavior_at_shared_fork": "Runtime profile requires explicit campaign authority. Shared auxiliary-support extraction preserves source/feedback scope; required failure handling retained.",
+        "limitations_and_owner_decision": "No unrestricted fit or production acceptance. Intermediate angle-bound fits superseded by later periodic-angle repair. Do not reactivate B/Q campaign.",
+        "citations": [
+          "77063575c4fac2bb207ca462435009358be396f6:validation/rtc_point_transfer_2026-09-28/COMPLETION_AUTHORITY.md",
+          "77063575c4fac2bb207ca462435009358be396f6:validation/rtc_point_transfer_2026-09-28/COMPLETION_PREFLIGHT.md",
+          "77063575c4fac2bb207ca462435009358be396f6:validation/rtc_point_transfer_2026-09-28/ASSESSMENT.md",
+          "77063575c4fac2bb207ca462435009358be396f6:src/citlali/cli/rtc_pipeline_execution.cpp"
+        ],
+        "canonical_acceptance": "Not yet accepted for canonical integration; proposal only."
+      },
+      "status": "proposed scope disposition only; no canonical or scientific acceptance granted"
+    },
+    {
+      "id": "SL-L12",
+      "source_report": "review/shared-late-acceptance.json",
+      "original_row_id": "L12",
+      "disposition_record": {
+        "id": "L12",
+        "group": "shared-5",
+        "commits": [
+          "4006f594154e7c4cd78d6ebf4d3e646af67bca17",
+          "8fe1b89cdbbfc66056c7a69c759476ac00df5dbb",
+          "881c0267032bf8192c5303c46aa772173d2e8b65",
+          "9cc300e383805b47cf86d5cc3706e705ae897843"
+        ],
+        "commit_count": 4,
+        "milestone": "Calibration lineage assessment and integrity regression",
+        "recommendation": "ADMIT_INTEGRITY_REGRESSION_RETAIN_OPEN_SCIENCE",
+        "recorded_authority": "Owner-authorized amplitude investigation traced declared APT parents; no correction/recalibration authorized by finding.",
+        "recorded_review": "881c0267032bf8192c5303c46aa772173d2e8b65 lineage review passed; common factor ratios reconstructed to6.66e-16.",
+        "current_behavior_at_shared_fork": "Canonical parent integrity remains checked; matched POINT development inputs are valid with their declared lineage.",
+        "limitations_and_owner_decision": "Integrity is not astrophysical superiority or absolute calibration acceptance. No missing/doubled correction demonstrated; frozen controls deferred.",
+        "citations": [
+          "77063575c4fac2bb207ca462435009358be396f6:validation/point152420_amplitude_investigation_2026-09-30/OWNER_DIRECTIVE.md",
+          "77063575c4fac2bb207ca462435009358be396f6:validation/point152420_amplitude_investigation_2026-09-30/APT_LINEAGE_REVIEW.md",
+          "77063575c4fac2bb207ca462435009358be396f6:validation/point152420_amplitude_investigation_2026-09-30/RESUME.md"
+        ],
+        "canonical_acceptance": "Not yet accepted for canonical integration; proposal only."
+      },
+      "status": "proposed scope disposition only; no canonical or scientific acceptance granted"
+    },
+    {
+      "id": "SL-L13",
+      "source_report": "review/shared-late-acceptance.json",
+      "original_row_id": "L13",
+      "disposition_record": {
+        "id": "L13",
+        "group": "shared-5",
+        "commits": [
+          "4da46f8258c743486eeb8ef010f8753c267ec429",
+          "a6d2c4bb2b1ccce671c17ab29e723da3b57bc8db",
+          "6d9ad5e5c74f0b08687baba2ebeb1f25822d8cf3"
+        ],
+        "commit_count": 3,
+        "milestone": "POINT map-quality closeout and raster/support repair",
+        "recommendation": "ADMIT_BOUNDED_REPAIR_RETAIN_QUALIFIED_EVIDENCE",
+        "recorded_authority": "Owner authorized corrected B reference/compact +/- only; no Q or new152430 campaign.",
+        "recorded_review": "COMPLETION binds a6d2c4bb2b1ccce671c17ab29e723da3b57bc8db; 3 trajectories/15 feedback, no retry; previous result preserved within conditional scale.",
+        "current_behavior_at_shared_fork": "Physical raster response loading and support reporting corrected; saved assessments explicitly deny demonstrated improvement over historical R.",
+        "limitations_and_owner_decision": "POINT milestone closed; unused allowances parked. Conditional uncertainty is not calibration/pointing accuracy or paired significance.",
+        "citations": [
+          "77063575c4fac2bb207ca462435009358be396f6:validation/point_quality_2026-10-01/OWNER_DIRECTIVE.md",
+          "77063575c4fac2bb207ca462435009358be396f6:validation/point_quality_2026-10-01/COMPLETION.md",
+          "77063575c4fac2bb207ca462435009358be396f6:handoff/POINT_TO_OOF_COMPLETION_2026-10-01.md"
+        ],
+        "canonical_acceptance": "Not yet accepted for canonical integration; proposal only."
+      },
+      "status": "proposed scope disposition only; no canonical or scientific acceptance granted"
+    },
+    {
+      "id": "SL-L14",
+      "source_report": "review/shared-late-acceptance.json",
+      "original_row_id": "L14",
+      "disposition_record": {
+        "id": "L14",
+        "group": "shared-5",
+        "commits": [
+          "32f76b3126c53013fcfd84d4ca1d8b5acb358921",
+          "0e63e6459112c0ddaeb284694612fd7d09b3d637",
+          "95b2fab06f0622c9c166bdc202ff710dec05f42d",
+          "f79db1faa8a85c6d84bc0dd387a18b8924b956e3",
+          "b98dc43aba98780c1a62ad8776af352bd498654e",
+          "74c76ce90429db559ee6cfbebe25540217c6f88e"
+        ],
+        "commit_count": 6,
+        "milestone": "OOF scan-1 plumbing, metadata preparation and fail-closed support boundary",
+        "recommendation": "ADMIT_DEVELOPMENT_PLUMBING_HOLD_OPTICAL_USE",
+        "recorded_authority": "Owner-authorized bounded OOF preparation, then a2000 M0 comparison superseding unstarted a1100 proposal.",
+        "recorded_review": "0e63e6459112c0ddaeb284694612fd7d09b3d637 tests pass; external95b2fab review accepts engineering preparation only.",
+        "current_behavior_at_shared_fork": "Shared native owners enforce OOF identity/no POINT gates/no feedback. Unequal valid counts rejected before flawed LM solver boundary.",
+        "limitations_and_owner_decision": "OOF is outside immediate POINT/engineering product qualification. General LM equal-count defect and half-cell discrepancy remain; no inversion/optical inference or new OOF run.",
+        "citations": [
+          "77063575c4fac2bb207ca462435009358be396f6:validation/oof_preparation_2026-10-01/READINESS.md",
+          "77063575c4fac2bb207ca462435009358be396f6:validation/oof_a2000_m0_2026-10-01/READINESS.md",
+          "77063575c4fac2bb207ca462435009358be396f6:validation/oof_a2000_m0_2026-10-01/COMPLETION.md",
+          "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-oof-cold-m0-20261001/review/95b2fab06f0622c9c166bdc202ff710dec05f42d.json"
+        ],
+        "canonical_acceptance": "Not yet accepted for canonical integration; proposal only."
+      },
+      "status": "proposed scope disposition only; no canonical or scientific acceptance granted"
+    },
+    {
+      "id": "SL-L15",
+      "source_report": "review/shared-late-acceptance.json",
+      "original_row_id": "L15",
+      "disposition_record": {
+        "id": "L15",
+        "group": "shared-5",
+        "commits": [
+          "c74e8a7562b9dd751ffb18a533bc16b2cb2e9bfe",
+          "524845cd7c730a1f9bf7dfb705f8d3bae1ba94a5",
+          "de5de6f6eeace636dd10e7bbe02076b497d124f2"
+        ],
+        "commit_count": 3,
+        "milestone": "Saved OOF JINC and MAP acquisition identity repair",
+        "recommendation": "ADMIT_IDENTITY_REPAIR_RETAIN_DIAGNOSTIC_TOOL",
+        "recorded_authority": "Owner authorized three fixed-sample JINC maps with specific numerical adequacy and preserved original products.",
+        "recorded_review": "COMPLETION binds524845cd7c730a1f9bf7dfb705f8d3bae1ba94a5 successful map-only applications; bounded limitations preserved.",
+        "current_behavior_at_shared_fork": "New MAP scan1 provenance corrected; original erroneous scan2 strings remain historical with lineage. Shared JINC exact-root/ceil-square semantics retained.",
+        "limitations_and_owner_decision": "Signed-denominator edge artifacts and cross-frame morphology limits remain; no blanket scientific quality or OOF activation.",
+        "citations": [
+          "77063575c4fac2bb207ca462435009358be396f6:validation/oof_jinc_2026-10-02/WORK_ORDER.md",
+          "77063575c4fac2bb207ca462435009358be396f6:validation/oof_jinc_2026-10-02/COMPLETION.md"
+        ],
+        "canonical_acceptance": "Not yet accepted for canonical integration; proposal only."
+      },
+      "status": "proposed scope disposition only; no canonical or scientific acceptance granted"
+    },
+    {
+      "id": "SL-L16",
+      "source_report": "review/shared-late-acceptance.json",
+      "original_row_id": "L16",
+      "disposition_record": {
+        "id": "L16",
+        "group": "shared-5",
+        "commits": [
+          "6e2a467b85f07f15b8fdfe947bed81df833d11bb"
+        ],
+        "commit_count": 1,
+        "milestone": "POINT/OOF source-offset AltAz native ownership and old OOF launch scripts",
+        "recommendation": "ADMIT_NATIVE_FRAME_DIRECTION_HOLD_OLD_OOF_REPLAY",
+        "recorded_authority": "Explicit owner directive: ordinary POINT and OOF maps use delta-source offset AltAz; no calibration/kernel/selection changes.",
+        "recorded_review": "External final review is a8c1f313f8ef688538e2aec0e1f20eb57ce1a58c, a child outside selected history; native code unchanged but validation scripts repaired.",
+        "current_behavior_at_shared_fork": "C contains correct inherited native frame implementation plus pre-repair OOF scripts. READINESS still gives historical launch instruction tied to external records.",
+        "limitations_and_owner_decision": "Do not borrow a8c1 review to bless C scripts. Mark old OOF README/READINESS command historical/held in future candidate scope; no OOF repair/launch now. If replay requested later, recover exact3-file repair plus two tests and fresh validation in separate unit.",
+        "citations": [
+          "77063575c4fac2bb207ca462435009358be396f6:validation/oof_altaz_2026-10-02/WORK_ORDER.md",
+          "77063575c4fac2bb207ca462435009358be396f6:validation/oof_altaz_2026-10-02/READINESS.md",
+          "77063575c4fac2bb207ca462435009358be396f6:validation/oof_altaz_2026-10-02/altaz_campaign.py",
+          "77063575c4fac2bb207ca462435009358be396f6:validation/oof_altaz_2026-10-02/compare_saved.py",
+          "77063575c4fac2bb207ca462435009358be396f6:validation/oof_altaz_2026-10-02/test_altaz.py",
+          "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-oof-a2000-altaz-jinc-20261002/GATES.json",
+          "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-oof-a2000-altaz-jinc-20261002/PREPARED.json",
+          "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-oof-a2000-altaz-jinc-20261002/review.json",
+          "/Users/gwilson/work_toltec/local_data/citlali-validation/successor-oof-a2000-altaz-jinc-20261002/FREEZE.json",
+          "a8c1f313f8ef688538e2aec0e1f20eb57ce1a58c:validation/oof_altaz_2026-10-02/altaz_campaign.py",
+          "a8c1f313f8ef688538e2aec0e1f20eb57ce1a58c:validation/oof_altaz_2026-10-02/compare_saved.py",
+          "a8c1f313f8ef688538e2aec0e1f20eb57ce1a58c:validation/oof_altaz_2026-10-02/test_altaz.py"
+        ],
+        "canonical_acceptance": "Not yet accepted for canonical integration; proposal only."
+      },
+      "status": "proposed scope disposition only; no canonical or scientific acceptance granted"
+    },
+    {
+      "id": "SL-L17",
+      "source_report": "review/shared-late-acceptance.json",
+      "original_row_id": "L17",
+      "disposition_record": {
+        "id": "L17",
+        "group": "shared-6",
+        "commits": [
+          "4f61e7649d6c3186e6ccf4f3721fe7ad9283c71b",
+          "87e9217fc0016839d43684f539e93774199a32a1",
+          "19d7f932799af88cf041101a6bebc6f5e0318557"
+        ],
+        "commit_count": 3,
+        "milestone": "Configured all-array POINT boundary",
+        "recommendation": "ADMIT_DEVELOPMENT_APPLICATION",
+        "recorded_authority": "Owner authorized ordinary TolTECA-prepared YAML through shared all-array native forward POINT. Operational correction gives Grant sole launch control.",
+        "recorded_review": "87e9217fc0016839d43684f539e93774199a32a1 exact review passed168 tests after MJD/flxscale/quiet-option repair.",
+        "current_behavior_at_shared_fork": "Explicit v1 route normalizes recognized time sentinel in derived copy and rejects unsupported scaling before processing.",
+        "limitations_and_owner_decision": "Supplemental local build only. Source review never authorizes observations; calibration/SCIENCE/coadd and supported environments remain unqualified.",
+        "citations": [
+          "77063575c4fac2bb207ca462435009358be396f6:validation/configured_point_2026-10-28/WORK_ORDER.md",
+          "77063575c4fac2bb207ca462435009358be396f6:validation/configured_point_2026-10-28/REVIEW.md",
+          "77063575c4fac2bb207ca462435009358be396f6:handoff/CONFIGURABLE_POINT_LOCAL_RESULT_2026-10-28.md"
+        ],
+        "canonical_acceptance": "Not yet accepted for canonical integration; proposal only."
+      },
+      "status": "proposed scope disposition only; no canonical or scientific acceptance granted"
+    },
+    {
+      "id": "SL-L18",
+      "source_report": "review/shared-late-acceptance.json",
+      "original_row_id": "L18",
+      "disposition_record": {
+        "id": "L18",
+        "group": "shared-6",
+        "commits": [
+          "d1032b4d96c56145aeb140ead1afd4d0e6974cd2",
+          "dd5e54ad10cb7cfb624c92684a97fc5f0032b415",
+          "b17137eb64915da4aeae996ad638e3c896c8236c",
+          "4767cc1440d973ee883868e4d744b060883db895",
+          "f3d2e60a08e04e548dfd95ac509b10ed7a775066"
+        ],
+        "commit_count": 5,
+        "milestone": "Observation-local compromised-detector exclusion",
+        "recommendation": "ADMIT_OWNER_SELECTED_DEVELOPMENT_POLICY",
+        "recorded_authority": "Owner explicitly adopted repeated-level-shift/unassessable-remainder paired exclusion with one original-input reapplication and separate counts.",
+        "recorded_review": "4767cc1440d973ee883868e4d744b060883db895 exact review closes applied-plan binding and missing failure-count output;37 Python/3 native focused reproduced.",
+        "current_behavior_at_shared_fork": "Native RTC owns exclusion; policy is explicit opt-in; cannot silently reuse excluded donor.",
+        "limitations_and_owner_decision": "This approved predicate is distinct from parked temporal-change research/quarantine controls. No arbitrary new duration/threshold, scientific benefit or final contributor-count claim.",
+        "citations": [
+          "77063575c4fac2bb207ca462435009358be396f6:doc/COMPROMISED_DETECTOR_POLICY_2026-10-28.md",
+          "77063575c4fac2bb207ca462435009358be396f6:validation/configured_point_2026-10-28/DISTURBANCE_WORK_ORDER.md",
+          "77063575c4fac2bb207ca462435009358be396f6:validation/configured_point_2026-10-28/DISTURBANCE_REVIEW.md"
+        ],
+        "canonical_acceptance": "Not yet accepted for canonical integration; proposal only."
+      },
+      "status": "proposed scope disposition only; no canonical or scientific acceptance granted"
+    },
+    {
+      "id": "SL-L19",
+      "source_report": "review/shared-late-acceptance.json",
+      "original_row_id": "L19",
+      "disposition_record": {
+        "id": "L19",
+        "group": "shared-6",
+        "commits": [
+          "c6ea76247213cdb8ce51c9ed935a9744b15beb9a",
+          "4f7d31957d2135601145c63387e310622fe16d64",
+          "df550415789c5777d31fa37e59989021f4600f50",
+          "331ff29ea1720b1454e671cbbab93814d8df8321",
+          "77063575c4fac2bb207ca462435009358be396f6"
+        ],
+        "commit_count": 5,
+        "milestone": "Optical health, inverse-noise weighted POINT and fresh-residual FRUIT",
+        "recommendation": "ADMIT_OWNER_SELECTED_DEVELOPMENT_CANDIDATE",
+        "recorded_authority": "Owner chose tunable0.10 optical threshold, noise/response direction and conditional resampled intervals with limitations.",
+        "recorded_review": "331ff29ea1720b1454e671cbbab93814d8df8321 final native/application reviews pass after bootstrap population repair; frozen runtime matching recorded atC.",
+        "current_behavior_at_shared_fork": "Explicit v2 connects immutable optical health, weighted ALS/MAP and fresh original-CAL feedback; v1 stays selectable.",
+        "limitations_and_owner_decision": "Conditional intervals lack demonstrated repeated-sampling coverage; normalization is not map precision. Observational source-recovery, calibration, SCIENCE/coadd and production unresolved; later pointing cutoff governs prospective M5, never rebind frozen M10.",
+        "citations": [
+          "77063575c4fac2bb207ca462435009358be396f6:doc/OPTICAL_RESPONSE_POLICY_2026-10-29.md",
+          "77063575c4fac2bb207ca462435009358be396f6:validation/weighted_point_2026-10-29/WORK_ORDER.md",
+          "77063575c4fac2bb207ca462435009358be396f6:validation/weighted_point_2026-10-29/FINAL_APPLICATION_REVIEW.md",
+          "77063575c4fac2bb207ca462435009358be396f6:validation/weighted_point_2026-10-29/FINAL_NATIVE_REVIEW.md",
+          "77063575c4fac2bb207ca462435009358be396f6:handoff/WEIGHTED_POINT_PREPARED_2026-10-29.md"
+        ],
+        "canonical_acceptance": "Not yet accepted for canonical integration; proposal only."
+      },
+      "status": "proposed scope disposition only; no canonical or scientific acceptance granted"
+    },
+    {
+      "id": "ENG-E1",
+      "source_report": "review/engineering-acceptance.json",
+      "original_row_id": "E1",
+      "disposition_record": {
+        "id": "E1",
+        "title": "Build/test source consistency",
+        "commits": [
+          "1bb75f1a9b337485e197b659144d9e8b6394e5bd"
+        ],
+        "recorded_authority": "October29 owner engineering work order; separate build-environment scope.",
+        "current_behavior": "One production source/strict-FP list and ordinary test aggregate; scientific policy unchanged.",
+        "existing_review": "Stage review and final941ccf review pass within bounded engineering scope.",
+        "evidence": "Fresh fallback build;1366 enabled CTests at stage1,207 baseline and full config. Later1382 CTests in shared final build.",
+        "proposed_disposition": "admit_development",
+        "remaining": "Combined-candidate native macOS Spack and exact source/test identity; existing fallback evidence is supplemental.",
+        "canonical_integration": "not accepted or performed for this continuation",
+        "production_authorization": "none created",
+        "evidence_records": [
+          {
+            "source_commit": "5c46201057d6b6d1048aac2949a64e9a34e9bad3",
+            "path": "doc/ENGINEERING_CLEANUP_2026-10-29.md",
+            "sha256": "1478ebd5f3192624c76e7fd8cd76b3ed0ee4cf8a9c755548f4db988ac565757f"
+          }
+        ]
+      },
+      "status": "proposed scope disposition only; no canonical or scientific acceptance granted"
+    },
+    {
+      "id": "ENG-E2",
+      "source_report": "review/engineering-acceptance.json",
+      "original_row_id": "E2",
+      "disposition_record": {
+        "id": "E2",
+        "title": "Safe native output and FITS/FFTW ownership",
+        "commits": [
+          "e1490b25735854005a96a29a1c9bdee9bb53bac4"
+        ],
+        "recorded_authority": "October29 owner engineering work order, stage2.",
+        "current_behavior": "Exclusive staging/no-replace publication; required failures propagate; concrete resource owners.",
+        "existing_review": "Independent stage and final reviews pass;1375 native tests at stage2.",
+        "evidence": "Synthetic failure/allocation/lifetime/no-clobber tests on macOS.",
+        "proposed_disposition": "admit_development",
+        "remaining": "Reconcile native weighted execution with new pointing request/recovery semantics; Linux renameat2 qualification separate; no fsync crash-durability claim.",
+        "canonical_integration": "not accepted or performed for this continuation",
+        "production_authorization": "none created",
+        "evidence_records": [
+          {
+            "source_commit": "5c46201057d6b6d1048aac2949a64e9a34e9bad3",
+            "path": "doc/ENGINEERING_CLEANUP_2026-10-29.md",
+            "sha256": "1478ebd5f3192624c76e7fd8cd76b3ed0ee4cf8a9c755548f4db988ac565757f"
+          }
+        ]
+      },
+      "status": "proposed scope disposition only; no canonical or scientific acceptance granted"
+    },
+    {
+      "id": "ENG-E3",
+      "source_report": "review/engineering-acceptance.json",
+      "original_row_id": "E3",
+      "disposition_record": {
+        "id": "E3",
+        "title": "Shared successor input services",
+        "commits": [
+          "00b24dee6ecc484a7130d41bdb6a0c6bd6e41ce0"
+        ],
+        "recorded_authority": "October29 owner engineering work order, stage3.",
+        "current_behavior": "Concrete compiled service removes production inclusion of acceptance executable; six explicit callers and historical named profiles retained.",
+        "existing_review": "Independent equivalence and boundary review pass, final941ccf review pass.",
+        "evidence": "1382 enabled CTests;207 baseline; full config;12 helper blocks checked equivalent; all affected historical callers compile.",
+        "proposed_disposition": "admit_development",
+        "remaining": "Combined native requests/profiles/provenance tests; no expansion of historical experimental input permissions.",
+        "canonical_integration": "not accepted or performed for this continuation",
+        "production_authorization": "none created",
+        "evidence_records": [
+          {
+            "source_commit": "5c46201057d6b6d1048aac2949a64e9a34e9bad3",
+            "path": "doc/ENGINEERING_CLEANUP_2026-10-29.md",
+            "sha256": "1478ebd5f3192624c76e7fd8cd76b3ed0ee4cf8a9c755548f4db988ac565757f"
+          }
+        ]
+      },
+      "status": "proposed scope disposition only; no canonical or scientific acceptance granted"
+    },
+    {
+      "id": "ENG-E4",
+      "source_report": "review/engineering-acceptance.json",
+      "original_row_id": "E4",
+      "disposition_record": {
+        "id": "E4",
+        "title": "Python package, locks and cross-revision runtime safety",
+        "commits": [
+          "357b256e1642378d951d03a5880209b8737688b4",
+          "8c3b676ec9c3f5d8c7ccbb0f0f2ede97a959c983"
+        ],
+        "recorded_authority": "October29 work order stage4 and bounded independent-review repair.",
+        "current_behavior": "Curated runtime/resources, target inventory validation and refusal before creating an incomplete frozen runtime.",
+        "existing_review": "Initial packaging P2 repaired; exact8c3b review closes finding; final941ccf review passes.",
+        "evidence": "273 synthetic tests; offline Mac arm64 CPython3.13.2 recreation, import/resource checks and lint/types.",
+        "proposed_disposition": "admit_development_with_combination_repair",
+        "remaining": "Include pointing comparison module in authoritative inventory; test source/wheel/frozen closure; Linux and other Python versions separately qualify; no frozen runtime overwrite.",
+        "canonical_integration": "not accepted or performed for this continuation",
+        "production_authorization": "none created",
+        "evidence_records": [
+          {
+            "source_commit": "5c46201057d6b6d1048aac2949a64e9a34e9bad3",
+            "path": "doc/ENGINEERING_CLEANUP_2026-10-29.md",
+            "sha256": "1478ebd5f3192624c76e7fd8cd76b3ed0ee4cf8a9c755548f4db988ac565757f"
+          },
+          {
+            "source_commit": "5c46201057d6b6d1048aac2949a64e9a34e9bad3",
+            "path": "requirements/README.md",
+            "sha256": "afafbc7fcc8a4fffba21bb1cfa55cca26dceb61185f6a0c585794ebe259254c6"
+          }
+        ]
+      },
+      "status": "proposed scope disposition only; no canonical or scientific acceptance granted"
+    },
+    {
+      "id": "ENG-E5",
+      "source_report": "review/engineering-acceptance.json",
+      "original_row_id": "E5",
+      "disposition_record": {
+        "id": "E5",
+        "title": "Source CI and expression-context repair",
+        "commits": [
+          "cd35fa6e9db7fc30c4b7be1f5a6be737868d04ef",
+          "3579f1055872aab546179c6d28556bb2ece1986b"
+        ],
+        "recorded_authority": "October29 bounded build/CI implementation and owner-requested repair.",
+        "current_behavior": "Python3.11/3.13 source matrix; runner cache values initialized in job steps.",
+        "existing_review": "Independent exact3579f source/actionlint and shell checks pass.",
+        "evidence": "Actionlint1.7.12 reproduces old two failures then validates all3 repaired workflows. Hosted execution not established by retained record.",
+        "proposed_disposition": "admit_development_with_combination_repair",
+        "remaining": "Add new comparison/recovery tests to explicit selector; eligible source CI on future candidate PR explicitly based on mainline after authorized transfer. Do not alter v4.x/default to enable manual native workflow.",
+        "canonical_integration": "not accepted or performed for this continuation",
+        "production_authorization": "none created",
+        "evidence_records": [
+          {
+            "source_commit": "5c46201057d6b6d1048aac2949a64e9a34e9bad3",
+            "path": "doc/ENGINEERING_CLEANUP_2026-10-29.md",
+            "sha256": "1478ebd5f3192624c76e7fd8cd76b3ed0ee4cf8a9c755548f4db988ac565757f"
+          },
+          {
+            "source_commit": "5c46201057d6b6d1048aac2949a64e9a34e9bad3",
+            "path": ".github/README.md",
+            "sha256": "2891c454de43fc9c6a09e44bdd3da66b4e6592a520381d8785b389d1477c8dc9"
+          }
+        ]
+      },
+      "status": "proposed scope disposition only; no canonical or scientific acceptance granted"
+    },
+    {
+      "id": "ENG-E6",
+      "source_report": "review/engineering-acceptance.json",
+      "original_row_id": "E6",
+      "disposition_record": {
+        "id": "E6",
+        "title": "Engineering handoff and completed cleanup history",
+        "commits": [
+          "941ccf476da011fa72043488fa566f7aafe45785",
+          "359e444f85aa1c56abf88846ab8e34c73332393b",
+          "04f548774d32e7806e0f985a527453825e5628ef",
+          "dba6ccdbf8d0585d4a682de4cc3b5a5a9606f336",
+          "5c46201057d6b6d1048aac2949a64e9a34e9bad3"
+        ],
+        "recorded_authority": "Final engineering review and separately recorded exact cleanup approvals. Current user authorizes table/cutoff only.",
+        "current_behavior": "Documentation/preservation records; no application numerical change.",
+        "existing_review": "Final941ccf documentation review plus retained cleanup validation; no new verification of old backup byte trees in this table task.",
+        "evidence": "Current10 local branches/7 registered folders/3 stashes; historical counts retain their dates. Later remote-cleanup evidence remains in separate sealed packets.",
+        "proposed_disposition": "retain_documentary_evidence",
+        "remaining": "Reconcile duplicated/historical status entries on future candidate without replaying cleanup, deleting evidence, or claiming new integration/science acceptance.",
+        "canonical_integration": "not accepted or performed for this continuation",
+        "production_authorization": "none created",
+        "evidence_records": [
+          {
+            "source_commit": "5c46201057d6b6d1048aac2949a64e9a34e9bad3",
+            "path": "doc/ENGINEERING_CLEANUP_2026-10-29.md",
+            "sha256": "1478ebd5f3192624c76e7fd8cd76b3ed0ee4cf8a9c755548f4db988ac565757f"
+          },
+          {
+            "source_commit": "5c46201057d6b6d1048aac2949a64e9a34e9bad3",
+            "path": "doc/CURRENT_STATE.md",
+            "sha256": "f183a5907a137f7de7fb35e6e3e6a1201d39c75b6dfa292cf21de654c604b2ef"
+          },
+          {
+            "source_commit": "5c46201057d6b6d1048aac2949a64e9a34e9bad3",
+            "path": "doc/REPOSITORY_CLEANUP_PROPOSAL_2026-10-29.md",
+            "sha256": "8902f62fccf6c34984b1d04bcbb5d7fde44d89fe852d3c03bc7af62d62eecca1"
+          },
+          {
+            "source_commit": "5c46201057d6b6d1048aac2949a64e9a34e9bad3",
+            "path": "doc/REPOSITORY_CONSOLIDATION_2026-10-30.md",
+            "sha256": "fc73ce13623f698837cb04673c623eed22302b608442649b21e0a468363557a0"
+          },
+          {
+            "source_commit": "5c46201057d6b6d1048aac2949a64e9a34e9bad3",
+            "path": "doc/BRANCH_CONSOLIDATION_2026-10-30.md",
+            "sha256": "78ad6594bf771b5b1173dd6e5d7ab272e5382797f04f083be5876ef745e93629"
+          }
+        ]
+      },
+      "status": "proposed scope disposition only; no canonical or scientific acceptance granted"
+    },
+    {
+      "id": "POINT-P01",
+      "source_report": "review/pointing-cutoff.json",
+      "original_row_id": "P01",
+      "disposition_record": {
+        "id": "P01",
+        "family": "Optical/temporal separation studies",
+        "commit_shas": [
+          "2e4989a23cb9dd60f853ae2b1d1790cbc4bd88a2",
+          "9bcbfcf539355a36faf18c5114492fd56c600fb0",
+          "a8b720e17ef5b72afc2824d55570ca0ec1e159b7",
+          "fae753e8bc0a7c787a0ae3e81d4762aca5bfcd7a"
+        ],
+        "proposal": "Retain as inactive research and failed-gate evidence; hold activation.",
+        "historical_authority": "Owner authorized synthetic studies while retaining configurable 0.10 optical cut; later owner paused temporal research.",
+        "review_evidence": "2e4989a23cb9dd60f853ae2b1d1790cbc4bd88a2 and a8b720e17ef5b72afc2824d55570ca0ec1e159b7 independently pass for truthful experimental evidence, not method readiness.",
+        "current_code_role": "Standalone validation prototypes only. Static grep of src/include/tools/data finds no imports/references to the study module/path names; this is a bounded wiring check, not a whole-program proof.",
+        "limitations": [
+          "Two strict-XFAIL stationary-response counterexamples block the initial temporal veto.",
+          "Learned direct-contrast intervals fail nominal 99% coverage; no automatic detector admission/restoration or harm threshold accepted."
+        ],
+        "owner_acceptance_proposal": "Include study code/results with failed-readiness labels intact; do not activate or require a new temporal certificate to consolidate POINT.",
+        "sources": [
+          "validation/optical_decision_separation_2026-10-29/WORK_ORDER.md",
+          "validation/optical_decision_separation_2026-10-29/INDEPENDENT_REVIEW.md",
+          "validation/temporal_change_2026-10-29/WORK_ORDER.md",
+          "validation/temporal_change_2026-10-29/INDEPENDENT_REVIEW.md"
+        ],
+        "canonical_status": "Not canonically integrated; this row proposes scope acceptance only.",
+        "future_combined_source_status": "Requires separately authorized candidate preparation, exact-source gates and independent review."
+      },
+      "status": "proposed scope disposition only; no canonical or scientific acceptance granted"
+    },
+    {
+      "id": "POINT-P02",
+      "source_report": "review/pointing-cutoff.json",
+      "original_row_id": "P02",
+      "disposition_record": {
+        "id": "P02",
+        "family": "Saved POINT/calibration compatibility audit",
+        "commit_shas": [
+          "284ac07d2e9b2601e7bbd67f5ca8537680e242ba",
+          "3def84c209846c3c9f58459de51d107726e8dd1b"
+        ],
+        "proposal": "Retain as reviewed evidence; hold calibration/SCIENCE eligibility claims.",
+        "historical_authority": "Owner paused temporal development and authorized saved-product arithmetic/read-only consumer tracing only.",
+        "review_evidence": "Exact 284ac07d2e9b2601e7bbd67f5ca8537680e242ba review passed with limitations; both audit scripts reproduced byte-identical JSON.",
+        "current_code_role": "No application implementation change in this unit.",
+        "limitations": [
+          "Current native POINT products lack qualified amplitude/error/correction/PPT compatibility.",
+          "Actual consumers ignore false eligibility metadata and unchecked error units; metadata alone is not a publication guard.",
+          "Missing successor calibration brackets 152391/152393 remain later work."
+        ],
+        "owner_acceptance_proposal": "Include audit and its open release obligations; do not imply calibration issuance or downstream SCIENCE acceptance.",
+        "sources": [
+          "validation/point_calibration_audit_2026-10-30/WORK_ORDER.md",
+          "validation/point_calibration_audit_2026-10-30/REPORT.md",
+          "validation/point_calibration_audit_2026-10-30/REVIEW.md"
+        ],
+        "canonical_status": "Not canonically integrated; this row proposes scope acceptance only.",
+        "future_combined_source_status": "Requires separately authorized candidate preparation, exact-source gates and independent review."
+      },
+      "status": "proposed scope disposition only; no canonical or scientific acceptance granted"
+    },
+    {
+      "id": "POINT-P03",
+      "source_report": "review/pointing-cutoff.json",
+      "original_row_id": "P03",
+      "disposition_record": {
+        "id": "P03",
+        "family": "Paired equal-versus-noise weighting control",
+        "commit_shas": [
+          "d042083be71f76a406fb698707f7bde94c928d62",
+          "22094011128e5110d1cb9a1dc5afab0abd6685fd"
+        ],
+        "proposal": "Admit as explicitly opt-in diagnostic development code.",
+        "historical_authority": "WORK_ORDER authorizes one paired 152418 comparison, shared upstream CAL/health, unchanged default noise arm and sole owner launches.",
+        "review_evidence": "Exact d042083be71f76a406fb698707f7bde94c928d62 independent review passed; 14 native and 102 focused Python tests reproduced; broader 1,368 enabled CTests/268 Python/207 baseline/config evidence recorded.",
+        "current_code_role": "Native PTC owns coefficient control; Python owns shared execution/comparison. Runtime comparison module is new and must enter engineering central runtime inventory; CI test selector must include its test.",
+        "limitations": [
+          "Local AppleClang/Homebrew supplemental environment, KIDs dirty realization; not supported Spack/Unity qualification.",
+          "Unit coefficients are an arbitrary control scale, not measured precision.",
+          "Combined cleaning-plus-mapmaking effect does not separate the two contributions."
+        ],
+        "owner_acceptance_proposal": "Include diagnostic opt-in and comparison evidence identity without changing default inverse-noise policy; reconcile module packaging and new tests with engineering.",
+        "sources": [
+          "validation/point_weight_control_2026-10-30/WORK_ORDER.md",
+          "validation/point_weight_control_2026-10-30/INDEPENDENT_REVIEW.md",
+          "validation/point_weight_control_2026-10-30/COMPLETION.md",
+          "data/configured_point_v2.yaml",
+          "tools/timestream_successor/configured_point_comparison.py"
+        ],
+        "canonical_status": "Not canonically integrated; this row proposes scope acceptance only.",
+        "future_combined_source_status": "Requires separately authorized candidate preparation, exact-source gates and independent review."
+      },
+      "status": "proposed scope disposition only; no canonical or scientific acceptance granted"
+    },
+    {
+      "id": "POINT-P04",
+      "source_report": "review/pointing-cutoff.json",
+      "original_row_id": "P04",
+      "disposition_record": {
+        "id": "P04",
+        "family": "Paired weighting assessment and retained noise-weighting decision",
+        "commit_shas": [
+          "3bef4e2b97132c4b54a42ace9e14ee690d66adb4",
+          "a7769c95767178209a24e59bcf60900978448548",
+          "ea61862a5f4bdc9c3dad0443a7ca295be1ff7e93"
+        ],
+        "proposal": "Retain reviewed observation evidence and explicit owner direction.",
+        "historical_authority": "Owner completed both arms, then explicitly retained noise weighting and directed saved feedback inspection; proposed hybrid treatment remained unapproved.",
+        "review_evidence": "Exact 3bef4e2b97132c4b54a42ace9e14ee690d66adb4 reviewed with no findings; 33 array/cycle and 726 segment comparisons, identical HITS and metric reproduction recorded.",
+        "current_code_role": "No application implementation change in this unit.",
+        "limitations": [
+          "Peak differences are combined weighting/feedback consequences, not known true-flux loss or detector fault.",
+          "Both arms remain calibration-ineligible; background common-domain comparison retains mask differences."
+        ],
+        "owner_acceptance_proposal": "Carry the retained noise policy and assessment limitations forward; no automatic hybrid-weight experiment or detector restoration.",
+        "sources": [
+          "validation/point_weight_control_2026-10-30/ASSESSMENT_WORK_ORDER.md",
+          "validation/point_weight_control_2026-10-30/ASSESSMENT.md",
+          "validation/point_weight_control_2026-10-30/ASSESSMENT_COMPLETION.md",
+          "doc/REFACTOR_STATUS.md"
+        ],
+        "canonical_status": "Not canonically integrated; this row proposes scope acceptance only.",
+        "future_combined_source_status": "Requires separately authorized candidate preparation, exact-source gates and independent review."
+      },
+      "status": "proposed scope disposition only; no canonical or scientific acceptance granted"
+    },
+    {
+      "id": "POINT-P05",
+      "source_report": "review/pointing-cutoff.json",
+      "original_row_id": "P05",
+      "disposition_record": {
+        "id": "P05",
+        "family": "Saved feedback masks and sampling inspection",
+        "commit_shas": [
+          "f5e53d8e7b7df4ce7af39b912fa305a1643a0d20",
+          "9ca9d13335771ae2cff28a40e845a0d0196475b4",
+          "30995aa71ce6b74bdc410f3e97eac31694f4b389"
+        ],
+        "proposal": "Retain as evidence-only diagnostics.",
+        "historical_authority": "Owner authorized saved-mask/profile/sampling inspection with noise weighting retained, no new reductions or source fits.",
+        "review_evidence": "Exact 9ca9d13335771ae2cff28a40e845a0d0196475b4 independently passed after figure-label clarification; twenty associations and headless saved-only reproduction checked.",
+        "current_code_role": "No application implementation change in this unit.",
+        "limitations": [
+          "Sampling and omitted-mask brightness do not establish true flux loss or predicted pipeline attenuation.",
+          "No new source-support or sampling policy is selected."
+        ],
+        "owner_acceptance_proposal": "Include inspected evidence and limitations; any selection/sampling policy comparison remains separately bounded.",
+        "sources": [
+          "validation/point_feedback_inspection_2026-10-30/WORK_ORDER.md",
+          "validation/point_feedback_inspection_2026-10-30/REPORT.md",
+          "validation/point_feedback_inspection_2026-10-30/COMPLETION.md"
+        ],
+        "canonical_status": "Not canonically integrated; this row proposes scope acceptance only.",
+        "future_combined_source_status": "Requires separately authorized candidate preparation, exact-source gates and independent review."
+      },
+      "status": "proposed scope disposition only; no canonical or scientific acceptance granted"
+    },
+    {
+      "id": "POINT-P06",
+      "source_report": "review/pointing-cutoff.json",
+      "original_row_id": "P06",
+      "disposition_record": {
+        "id": "P06",
+        "family": "Five-case source-recovery definition and prior-work recovery",
+        "commit_shas": [
+          "0bc3b7fe39e619900041b244ea389fc602ad312a",
+          "e42b0368cb3ffe3d8d44488e749a39f3b8ab8d65"
+        ],
+        "proposal": "Retain historical approved design; implementation/assessment supersede its pending-stage status.",
+        "historical_authority": "Owner requested bounded current-policy test recovered from September 25, fixing noise weighting and 2 arcsec trial grid. Later implementation WORK_ORDER records explicit implementation/preparation approval.",
+        "review_evidence": "Exact 0bc3b7fe39e619900041b244ea389fc602ad312a review passed with limitations; source/weighted AltAz adaptation and 54-call ceiling reconcile.",
+        "current_code_role": "No application implementation change in this unit.",
+        "limitations": [
+          "Initial PLAN says proposal-only in its historical scope; later work order supplies actual implementation authority.",
+          "No Gaussian-tail completion, new scientific threshold or faint-SCIENCE generalization follows."
+        ],
+        "owner_acceptance_proposal": "Preserve definition and prior-work dispositions with chronological supersession; do not mistake historical proposal-only text for current global no-development authority.",
+        "sources": [
+          "validation/weighted_point_recovery_plan_2026-10-30/WORK_ORDER.md",
+          "validation/weighted_point_recovery_plan_2026-10-30/PLAN.md",
+          "validation/weighted_point_recovery_plan_2026-10-30/PRIOR_WORK.md",
+          "validation/weighted_point_recovery_plan_2026-10-30/COMPLETION.md",
+          "validation/weighted_point_recovery_plan_2026-10-30/IMPLEMENTATION_WORK_ORDER.md"
+        ],
+        "canonical_status": "Not canonically integrated; this row proposes scope acceptance only.",
+        "future_combined_source_status": "Requires separately authorized candidate preparation, exact-source gates and independent review."
+      },
+      "status": "proposed scope disposition only; no canonical or scientific acceptance granted"
+    },
+    {
+      "id": "POINT-P07",
+      "source_report": "review/pointing-cutoff.json",
+      "original_row_id": "P07",
+      "disposition_record": {
+        "id": "P07",
+        "family": "Recovery diagnostic implementation, repair and frozen preparation",
+        "commit_shas": [
+          "76c6237a0b7d82b95a59a3e71349eb13e60a79ea",
+          "d0d3eeb7981975a2f43f1a55878668410aa6c20b",
+          "993a407efdc1bffe3fd2b2e9d089e3328d09d6ab"
+        ],
+        "proposal": "Admit as explicit diagnostic development code; preserve completed frozen M10 identity.",
+        "historical_authority": "IMPLEMENTATION_WORK_ORDER records owner-approved five-case 152418 implementation and owner-run preparation, signed post-CAL perturbations and one-use M1 seed; no ordinary science policy replacement.",
+        "review_evidence": "Exact repaired d0d3eeb7981975a2f43f1a55878668410aa6c20b review passed; terminal-resource and seed-expiry findings closed. Final focused 5 runner/3 native recovery/10 FRUIT checks reproduced; recorded 1,372 enabled CTests, 207 baseline and config gates.",
+        "current_code_role": "Explicit bound diagnostic requests only; ordinary route remains prior numerical behavior. No src/include/tools/data/CMake/cmake differences occur from reviewed d0d3eeb through proposed797 cutoff.",
+        "limitations": [
+          "Local fallback evidence is supplemental; supported build qualification still required for integration.",
+          "Runtime remains M10 historical experiment; no future launch authorization from inclusion.",
+          "Native no-op and saved REF parity support bounded diagnostics, not absolute calibration or release readiness."
+        ],
+        "owner_acceptance_proposal": "Include repaired diagnostic interface and runners with explicit binding/failure safeguards; preserve snapshots and original products. Reconcile native ownership/publication safety with engineering before candidate acceptance.",
+        "sources": [
+          "validation/weighted_point_recovery_plan_2026-10-30/IMPLEMENTATION_WORK_ORDER.md",
+          "validation/weighted_point_recovery_plan_2026-10-30/IMPLEMENTATION_REVIEW.json",
+          "validation/weighted_point_recovery_plan_2026-10-30/IMPLEMENTATION_COMPLETION.md",
+          "validation/weighted_point_recovery_plan_2026-10-30/PREPARED.json",
+          "tools/timestream_successor/run_point_recovery.py",
+          "src/citlali/cli/point_recovery_bindings.h"
+        ],
+        "canonical_status": "Not canonically integrated; this row proposes scope acceptance only.",
+        "future_combined_source_status": "Requires separately authorized candidate preparation, exact-source gates and independent review."
+      },
+      "status": "proposed scope disposition only; no canonical or scientific acceptance granted"
+    },
+    {
+      "id": "POINT-P08",
+      "source_report": "review/pointing-cutoff.json",
+      "original_row_id": "P08",
+      "disposition_record": {
+        "id": "P08",
+        "family": "Prospective M5 diagnostic-trial budget",
+        "commit_shas": [
+          "399e1ed2b52e13cebebf80b14587a43a65306243"
+        ],
+        "proposal": "Retain owner direction; hold new trial preparation until coherent adaptation.",
+        "historical_authority": "Owner directed subsequent POINT diagnostic trials to M0 plus at most M1\u2013M5, with no automatic extension; existing frozen M10 unchanged.",
+        "review_evidence": "399e1ed2b52e13cebebf80b14587a43a65306243 is documentation-only direction, with explicit implementation gap. No fresh runtime review is claimed.",
+        "current_code_role": "No application implementation change in this unit.",
+        "limitations": [
+          "run_point_recovery.py still uses range(first,11), 54 calls and M10 endpoint semantics.",
+          "Checked-in v2 overlay defaults remain pixel_size_arcsec1.0, coverage_cut0.1, max_iters10. Trial-specific2 arcsec/0.15 is not a global default."
+        ],
+        "owner_acceptance_proposal": "Include prospective M5 decision honestly; preserve M10 reproducibility code. Any future diagnostic launch must first adapt config, accounting and endpoint metrics together under its own scope. Do not rewrite general SCIENCE or overlay defaults.",
+        "sources": [
+          "doc/REFACTOR_STATUS.md",
+          "tools/timestream_successor/run_point_recovery.py",
+          "tools/timestream_successor/prepare_point_recovery.py",
+          "data/configured_point_v2.yaml"
+        ],
+        "canonical_status": "Not canonically integrated; this row proposes scope acceptance only.",
+        "future_combined_source_status": "Requires separately authorized candidate preparation, exact-source gates and independent review."
+      },
+      "status": "proposed scope disposition only; no canonical or scientific acceptance granted"
+    },
+    {
+      "id": "POINT-P09",
+      "source_report": "review/pointing-cutoff.json",
+      "original_row_id": "P09",
+      "disposition_record": {
+        "id": "P09",
+        "family": "Completed five-case saved recovery assessment and review",
+        "commit_shas": [
+          "574fda103975ab346933ba875adbb6a1fa8b1aa5",
+          "797d013f115e403a30663eb92254082e8e742826"
+        ],
+        "proposal": "Retain as reviewed completed evidence; recommended cutoff closure.",
+        "historical_authority": "Owner requested saved-evidence assessment of completed campaign including M5 versus M10; no new processing or policy change.",
+        "review_evidence": "Assessment574fda103975ab346933ba875adbb6a1fa8b1aa5 independently passed; 797d013f is documentary review closure. Review independently authenticates761 bindings/16,565 restored payloads,198 exact REF planes,660 response quantities,3,630 segment records and120 seed records.",
+        "current_code_role": "Only validation assessment script/metrics/figures and status after399; no application runtime modification.",
+        "limitations": [
+          "One observation, finite post-CAL shapes; optics bypassed.",
+          "Compact gains close to unity are incremental response, not original-source truth or absolute calibration.",
+          "Broad response remains deficient, especially a2000; its shoulder gain changes4.4125 percentage points fromM5 toM10.",
+          "Preserve prospective M5 economy without calling all-array broad recovery settled or increasing passes automatically."
+        ],
+        "owner_acceptance_proposal": "Include completed assessment and independent closure at797 rather than older399 status that still reported the trial running. Retain unresolved calibration and source-selection causal questions.",
+        "sources": [
+          "validation/weighted_point_recovery_assessment_2026-10-30/WORK_ORDER.md",
+          "validation/weighted_point_recovery_assessment_2026-10-30/REPORT.md",
+          "validation/weighted_point_recovery_assessment_2026-10-30/REVIEW.md",
+          "validation/weighted_point_recovery_assessment_2026-10-30/INPUTS.json"
+        ],
+        "canonical_status": "Not canonically integrated; this row proposes scope acceptance only.",
+        "future_combined_source_status": "Requires separately authorized candidate preparation, exact-source gates and independent review."
+      },
+      "status": "proposed scope disposition only; no canonical or scientific acceptance granted"
+    }
+  ],
+  "source_reports": [
+    {
+      "path": "review/shared-early-acceptance.json",
+      "sha256": "a0dcd736fcffc055345ab985ab57f5b44aa8c6ed25e580811e25edb46d1c953e",
+      "namespace": "SE",
+      "row_count": 9
+    },
+    {
+      "path": "review/shared-late-acceptance.json",
+      "sha256": "01cd4c21b64e305f6346777dc7a35d7aba367a167c3f3a56e1abdd2bdcfcdb15",
+      "namespace": "SL",
+      "row_count": 19
+    },
+    {
+      "path": "review/engineering-acceptance.json",
+      "sha256": "5cce5c23d70201416a2e974e05855fdd148ade77f38f9af588b5f8e5e8cf2b2a",
+      "namespace": "ENG",
+      "row_count": 6
+    },
+    {
+      "path": "review/pointing-cutoff.json",
+      "sha256": "28159cdc5df3e83822c90dce25cf07d4e82e6fa2aaba1aa9bad9723eba0ea0b7",
+      "namespace": "POINT",
+      "row_count": 9
+    }
+  ],
+  "text_sha256": "8ca1fb9127ad2e17478bb7a82709cd3c1b63cb0edb20caa08dc0d7701e7c61bc",
+  "scope_inventory_sha256": "2ebae700ff8f36d07726cd259869ce36731e261dc44f810a24866b9d29019e83",
+  "governance_incorporation_proposal": {
+    "path": "governance-incorporation-proposal.json",
+    "sha256": "09d12c88f427086802de6540be72db80768c8d5469a0fa82204e1fa4da3ec39e",
+    "canonical_write_performed": false
+  },
+  "proposed_owner_decision": "Admit bounded development work and explicit diagnostic interfaces into a future candidate, preserve historical evidence and failed gates, retain hold on old OOF replay readiness/new M5 trial preparation/science-release claims, use exact pointing797 and engineering5c. This decision is not a merge, trial, cleanup, publication or production approval.",
+  "known_combination_work": [
+    "Reconcile native ownership/publication with pointing diagnostics and provenance.",
+    "Unify runtime inventory including configured_point_comparison and validate source/wheel/frozen closure.",
+    "Add five newer comparison/recovery test files to explicit source CI selector.",
+    "Label old OOF AltAz READINESS launch instructions historical/held; do not bring missing a8c1f313 repair into scope automatically.",
+    "Reconcile current status and prepare existing governance amendment incorporation without changing scientific contracts."
+  ],
+  "held_operational_claims": [
+    "OOF replay at old scripts; exact later repaired evidence applies to a8c1f313f8ef688538e2aec0e1f20eb57ce1a58c outside selected history.",
+    "Any new POINT diagnostic launch before coordinated M5 configuration/accounting/endpoints preparation.",
+    "Calibration/PPT/SCIENCE/coadd eligibility, Linux/Unity deployment qualification and production."
+  ],
+  "settings": {
+    "general_v2_overlay": {
+      "pixel_size_arcsec": 1.0,
+      "coverage_cut": 0.1,
+      "max_iters": 10
+    },
+    "frozen_comparison_recovery_trials": {
+      "pixel_size_arcsec": 2.0,
+      "coverage_cut": 0.15,
+      "max_iters": 10
+    },
+    "prospective_diagnostic_budget": "M0 then at most M1-M5; preserved runner remains historical M10 until future scoped preparation.",
+    "optical_min_relative_response": 0.1,
+    "modifications_performed": false
+  },
+  "trial_record": "Saved cutoff record says completed five-case M10 campaign; no live process check or intervention.",
+  "required_before_mainline": [
+    "Concrete candidate-preparation authorization and isolated exact-source candidate.",
+    "Semantics/gates listed in prior plan and this table; supported Mac Spack or explicit governed exception.",
+    "Eligible source CI after authorized owner transfer, explicit base codex/refactor-mainline.",
+    "Fresh exact-source three-axis independent review, affected-mode evidence disposition and exact owner acceptance."
+  ],
+  "preservation": [
+    "all pointing source/dirt/processes and frozen inputs/runtime/products",
+    "all Citlali4.x/5.x branches/tags/folders and repository default",
+    "codex/structural-refactor and all recovery/archive/stash evidence",
+    "pilot fallback and shared build dependency roots",
+    "all existing worktrees"
+  ],
+  "verification_limits": [
+    "No new scientific derivation or historical numerical result reproduction.",
+    "No tests/build/reductions/Unity/merge simulations.",
+    "No complete old backup/runtime byte-tree rehash.",
+    "This table is not new scientific authority or application acceptance."
+  ],
+  "review_location": "review/acceptance-review.json; verdict binds final table hashes separately."
+}

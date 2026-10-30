@@ -1,5 +1,16 @@
 # Citlali Integration Ledger
 
+## Owner-approved isolated candidate preparation — 2026-10-30
+
+Grant approved the acceptance table and pointing cutoff `797d013f115e403a30663eb92254082e8e742826`
+for the [bounded candidate](POINTING_ENGINEERING_CANDIDATE_2026-10-30.md) with
+engineering `5c46201057d6b6d1048aac2949a64e9a34e9bad3`. This is a candidate-local
+record of scope approval, not a canonical integration receipt. Canonical stays
+at `e32c4584dec07617d6caa857d39bf13047b6c4b0`; no push is authorized. The existing
+September 30 amendment is proposed for later exact canonical incorporation,
+with original accepted governance and scientific contracts preserved.
+
+
 ## RTC performance integration and bounded cleanup — 2026-09-18
 
 - Owner accepted the cleanup proposal after pushing reviewed performance

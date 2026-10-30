@@ -1,3 +1,4 @@
+#include <citlali/core/utils/fftw_resource.h>
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 #include <tula/logging.h>
@@ -437,4 +438,62 @@ TEST_F(UtilsTest, indexofthresh) {
         EXPECT_GT(std::abs(data.coeff(index) - center), stddev);
     }
 }
+
+// Counters are test-only resource-release probes, never runtime state.
+int released_fftw_buffers = 0;
+int destroyed_fftw_plans = 0;
+void count_buffer_release(void *buffer) {
+    ++released_fftw_buffers;
+    fftw_free(buffer);
+}
+void count_plan_destroy(fftw_plan plan) {
+    ++destroyed_fftw_plans;
+    fftw_destroy_plan(plan);
+}
+void *reject_fftw_allocation(std::size_t) { return nullptr; }
+fftw_plan reject_fftw_plan(int, int, fftw_complex *, fftw_complex *, int, unsigned) {
+    return nullptr;
+}
+
+TEST(fftw_resource, rejects_null_allocation_and_releases_earlier_buffer) {
+    released_fftw_buffers = 0;
+    EXPECT_THROW(([] {
+        citlali::utils::FftwComplexBuffer first(2, 2, fftw_malloc, count_buffer_release);
+        citlali::utils::FftwComplexBuffer second(2, 2, reject_fftw_allocation);
+    }()), std::runtime_error);
+    EXPECT_EQ(released_fftw_buffers, 1);
+    EXPECT_THROW(citlali::utils::FftwComplexBuffer(0, 2), std::invalid_argument);
+    EXPECT_THROW(citlali::utils::FftwComplexBuffer(2, -1), std::invalid_argument);
+}
+
+TEST(fftw_resource, rejects_null_plan_and_releases_prior_plan_and_buffers) {
+    released_fftw_buffers = destroyed_fftw_plans = 0;
+    EXPECT_THROW(([] {
+        citlali::utils::FftwComplexBuffer first(2, 2, fftw_malloc, count_buffer_release);
+        citlali::utils::FftwComplexBuffer second(2, 2, fftw_malloc, count_buffer_release);
+        citlali::utils::FftwPlan forward(2, 2, first.get(), second.get(),
+            FFTW_FORWARD, FFTW_ESTIMATE, fftw_plan_dft_2d, count_plan_destroy);
+        citlali::utils::FftwPlan backward(2, 2, first.get(), second.get(),
+            FFTW_BACKWARD, FFTW_ESTIMATE, reject_fftw_plan);
+    }()), std::runtime_error);
+    EXPECT_EQ(destroyed_fftw_plans, 1);
+    EXPECT_EQ(released_fftw_buffers, 2);
+}
+
+TEST(fftw_resource, preserves_forward_inverse_planning_and_values) {
+    citlali::utils::FftwComplexBuffer input(2, 2), output(2, 2);
+    citlali::utils::FftwPlan forward(2, 2, input.get(), output.get(), FFTW_FORWARD, FFTW_ESTIMATE);
+    citlali::utils::FftwPlan backward(2, 2, output.get(), input.get(), FFTW_BACKWARD, FFTW_ESTIMATE);
+    for (int i = 0; i < 4; ++i) {
+        input.get()[i][0] = i + 1;
+        input.get()[i][1] = 0;
+    }
+    fftw_execute(forward.get());
+    fftw_execute(backward.get());
+    for (int i = 0; i < 4; ++i) {
+        EXPECT_DOUBLE_EQ(input.get()[i][0] / 4, i + 1);
+        EXPECT_DOUBLE_EQ(input.get()[i][1], 0);
+    }
+}
+
 }  // namespace

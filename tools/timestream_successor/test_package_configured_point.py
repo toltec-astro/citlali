@@ -9,6 +9,7 @@ import sys
 
 import pytest
 
+from configured_point_runtime import RUNTIME_MODULES
 from package_configured_point import DATA_FILES, REQUIRED_TOOLS, TOOL_DIR, digest, package
 
 
@@ -21,14 +22,19 @@ def source(tmp_path):
     root = tmp_path / "checkout"
     root.mkdir()
     git(root, "init", "-q")
-    for relative in [*(TOOL_DIR / name for name in REQUIRED_TOOLS), *DATA_FILES, TOOL_DIR / "transitive_import.py"]:
+    for relative in [*(TOOL_DIR / name for name in REQUIRED_TOOLS), *DATA_FILES, TOOL_DIR / "unrelated_historical_tool.py"]:
         path = root / relative
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text("# fixture\n")
     (root / TOOL_DIR / "configured_point_cli.py").write_text(
-        'import json,sys\nfrom transitive_import import MARKER\n'
+        'import json,sys\nfrom configured_point_config import MARKER\n'
         'print(json.dumps({"args":sys.argv[1:],"marker":MARKER}))\n')
-    (root / TOOL_DIR / "transitive_import.py").write_text('MARKER="bundled-source"\n')
+    (root / TOOL_DIR / "configured_point_config.py").write_text(
+        'from configured_point_comparison import MARKER\n')
+    (root / TOOL_DIR / "configured_point_comparison.py").write_text('MARKER="bundled-source"\n')
+    (root / TOOL_DIR / "unrelated_historical_tool.py").write_text('raise RuntimeError("historical tool must not ship")\n')
+    (root / TOOL_DIR / "configured_point_runtime.py").write_text(
+        "RUNTIME_MODULES = " + repr(RUNTIME_MODULES) + "\n")
     git(root, "add", ".")
     git(root, "-c", "user.name=Runtime test", "-c", "user.email=test@example.invalid", "commit", "-qm", "fixture")
     revision = git(root, "rev-parse", "HEAD")
@@ -67,7 +73,8 @@ def test_copied_launcher_finds_exact_bundle_and_preserves_arguments(source, tmp_
     assert manifest["python"]["dependency_roots"]
     assert manifest["python"]["package_contents_pinned"] is False
     copied_members = {entry["path"] for entry in manifest["files"]}
-    assert "tools/timestream_successor/transitive_import.py" in copied_members
+    assert "tools/timestream_successor/unrelated_historical_tool.py" not in copied_members
+    assert {name for name in copied_members if name.endswith(".py")} == {str(TOOL_DIR / name) for name in REQUIRED_TOOLS}
     assert "tools/timestream_successor/configured_point_weighted.py" in copied_members
     assert "tools/timestream_successor/configured_point_feedback.py" in copied_members
     assert "data/configured_point_v2.yaml" in copied_members
@@ -76,9 +83,10 @@ def test_copied_launcher_finds_exact_bundle_and_preserves_arguments(source, tmp_
     assert not list(destination.rglob("__pycache__"))
 
 
-@pytest.mark.parametrize("relative", ["manifest.json", "bin/citlali-native", "tools/timestream_successor/transitive_import.py",
+@pytest.mark.parametrize("relative", ["manifest.json", "bin/citlali-native", "tools/timestream_successor/configured_point_config.py",
                                       "data/config.yaml", "data/configured_point_v2.yaml",
                                       "tools/timestream_successor/configured_point_weighted.py",
+                                      "tools/timestream_successor/configured_point_comparison.py",
                                       "tools/timestream_successor/configured_point_feedback.py",
                                       "data/development/bright_point_base_v1/a1400-rtc.json"])
 def test_snapshot_launcher_rejects_changed_manifest_or_payload(source, tmp_path, relative):
@@ -113,7 +121,7 @@ def test_changed_external_python_wrapper_is_rejected(source, tmp_path):
 def test_source_can_change_after_packaging_without_changing_frozen_payload(source, tmp_path):
     root, native, python = source
     launcher = package(root, native, python, tmp_path / "runtime")
-    (root / TOOL_DIR / "transitive_import.py").write_text('MARKER="changed source"\n')
+    (root / TOOL_DIR / "unrelated_historical_tool.py").write_text('MARKER="changed source"\n')
     native.write_text("changed source binary")
     result = invoke(launcher)
     assert result.returncode == 0, result.stderr
@@ -165,3 +173,62 @@ def test_uncommitted_required_helper_is_rejected(source, tmp_path):
     native.write_text("#!/bin/sh\nprintf '%s\\n' " + shlex.quote("citlali " + revision[:9]) + "\n")
     with pytest.raises(ValueError, match="not committed"):
         package(root, native, python, tmp_path / "runtime")
+
+
+@pytest.mark.parametrize("case", [
+    "added", "removed", "duplicate", "non_tuple", "invalid_name",
+    "nonliteral", "syntax_error", "missing_declaration", "missing_file",
+    "multiple_assignments", "augmented_assignment",
+])
+def test_incompatible_target_runtime_rejected_before_destination(source, tmp_path, case):
+    root, native, python = source
+    marker = tmp_path / "target-code-executed"
+    declaration = "RUNTIME_MODULES = " + repr(RUNTIME_MODULES) + "\n"
+    variants = {
+        "added": "RUNTIME_MODULES = " + repr((*RUNTIME_MODULES, "new_runtime_member")),
+        "removed": "RUNTIME_MODULES = " + repr(RUNTIME_MODULES[:-1]),
+        "duplicate": "RUNTIME_MODULES = " + repr((*RUNTIME_MODULES, RUNTIME_MODULES[0])),
+        "non_tuple": "RUNTIME_MODULES = " + repr(list(RUNTIME_MODULES)),
+        "invalid_name": "RUNTIME_MODULES = " + repr((*RUNTIME_MODULES, "../outside")),
+        "nonliteral": "RUNTIME_MODULES = (__import__('pathlib').Path(" + repr(str(marker))
+                      + ").write_text('executed'),)",
+        "syntax_error": "RUNTIME_MODULES = (",
+        "missing_declaration": "# This source generation has no declaration.\n",
+        "multiple_assignments": declaration + declaration,
+        "augmented_assignment": declaration + "RUNTIME_MODULES += ('new_runtime_member',)\n",
+    }
+    target = root / TOOL_DIR / "configured_point_runtime.py"
+    if case == "missing_file":
+        target.unlink()
+    else:
+        target.write_text(variants[case])
+    if case == "added":
+        # Reproduce an older installed packager targeting a newer clean source.
+        (root / TOOL_DIR / "new_runtime_member.py").write_text("VALUE = 1\n")
+        cli = root / TOOL_DIR / "configured_point_cli.py"
+        cli.write_text("import new_runtime_member\n" + cli.read_text())
+    git(root, "add", "-A")
+    git(root, "-c", "user.name=Runtime test", "-c", "user.email=test@example.invalid",
+        "commit", "-qm", "target runtime declaration " + case)
+    revision = git(root, "rev-parse", "HEAD")
+    native.write_text("#!/bin/sh\nprintf '%s\\n' " + shlex.quote("citlali " + revision[:9]) + "\n")
+    destination = tmp_path / "fresh-parent" / "runtime"
+    with pytest.raises(ValueError, match="use the packager from the target source revision"):
+        package(root, native, python, destination)
+    assert not destination.parent.exists()
+    assert not marker.exists()
+
+
+def test_compatible_target_declaration_is_read_without_execution(source, tmp_path):
+    root, native, python = source
+    target = root / TOOL_DIR / "configured_point_runtime.py"
+    target.write_text(target.read_text() + "raise RuntimeError('target module must not execute')\n")
+    git(root, "add", "-A")
+    git(root, "-c", "user.name=Runtime test", "-c", "user.email=test@example.invalid",
+        "commit", "-qm", "compatible literal with nonexecuted target code")
+    revision = git(root, "rev-parse", "HEAD")
+    native.write_text("#!/bin/sh\nprintf '%s\\n' " + shlex.quote("citlali " + revision[:9]) + "\n")
+    launcher = package(root, native, python, tmp_path / "runtime")
+    result = invoke(launcher)
+    assert result.returncode == 0, result.stderr
+    assert json.loads(result.stdout)["marker"] == "bundled-source"

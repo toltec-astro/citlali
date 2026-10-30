@@ -1,3 +1,28 @@
+## Isolated pointing/engineering candidate authorized — 2026-10-30
+
+Grant approved the acceptance table and exact pointing cutoff
+`797d013f115e403a30663eb92254082e8e742826`, and authorized one isolated combined
+candidate with engineering `5c46201057d6b6d1048aac2949a64e9a34e9bad3`.
+The [candidate work order](POINTING_ENGINEERING_CANDIDATE_2026-10-30.md)
+records the accepted development/diagnostic/evidence scope and preserved holds.
+This candidate owns only its new worktree and branch. Canonical remains at
+`e32c4584dec07617d6caa857d39bf13047b6c4b0`; moving it or pushing is forbidden.
+Ongoing pointing may advance independently beyond the chosen cutoff.
+
+The cutoff includes the completed five-case saved assessment and independent
+review; no newer runtime changes are inferred. General v2 overlay defaults
+remain 1 arcsec / coverage 0.1 / M10, distinct from the frozen trial's
+2 arcsec / 0.15 / M10 and the prospective M5 diagnostic budget. No trial,
+M5 preparation, calibration/SCIENCE/coadd qualification or production is
+activated by candidate assembly. Historical OOF replay instructions are held
+until their separately archived repair is recovered and qualified.
+
+Local combination and gates are in progress. Prior branch test results do not
+establish combined-source success. Supported Spack, exact-source review and
+later owner acceptance remain separate gates. Existing pointing runtimes,
+legacy 4.x/5.x, all recovery evidence, stashes and dependency consumers remain
+protected. Older entries below retain their original dated scope.
+
 ## Saved five-case POINT recovery assessed — 2026-10-30
 
 Grant completed the five-case152418 experiment. The saved-product
@@ -184,6 +209,93 @@ Twelve physical cases across sixteen fixed noise realizations support response
 separation but do not validate that temporal veto. The candidate requires
 revision before activation; no detector restoration, calibration acceptance,
 Spack qualification or new observational run follows from these synthetic tests.
+## Local branch consolidation completed — 2026-10-30
+
+The [owner-approved branch archival](BRANCH_CONSOLIDATION_2026-10-30.md) completed
+104 → 41 → 10 local branches. All 94 retired names are mapped to permanent
+archive refs, plus 12 historical roots recovered from branch logs; independent
+restore and post-operation checks passed. Seven working folders, pointing work,
+4.x/5.x, three stashes and existing recovery evidence remain protected. Historical
+verifiers use isolated restoration of original labels/checkout state. No science
+acceptance, canonical integration, push or remote deletion was performed.
+
+## Grouped refactor-folder consolidation completed — 2026-10-30
+
+Grant expanded cleanup to grouped retirement after verified local backups and
+restricted it to 2026 refactor work, excluding 4.x/5.x. The [operation record](REPOSITORY_CONSOLIDATION_2026-10-30.md)
+records 13 retired folders and seven retained: five refactor workspaces plus two
+legacy/performance checkouts. All 104 branches, three stashes and original
+recovery evidence remain. Current pointing and its retained pilot fallback remain
+protected. Saved OOF replay and pending launch preparations retain exact-source
+recovery prerequisites; they are not cancelled or scientifically accepted by
+archival. Native/scientific qualification, canonical integration, push and
+production authority are unchanged.
+
+## Working-folder consolidation prepared — 2026-10-29
+
+Grant authorized preparation toward 3–5 active working folders with exact small
+deletion batches approved separately. The [bounded consolidation record](REPOSITORY_CONSOLIDATION_2026-10-29.md)
+selects five core folders, accounts for all other 15, and proposes only the
+source-only paired-guard folder for the first approval. All 104 branch tips,
+three stashes, the detached checkout and historical recovery commits are
+preserved in independently restored backups. Three older folders’ 467 unsaved
+entries have byte-verified archives. Pointing remains active and untouched.
+Build/runtime dependencies hold the later batches; ignored binaries are not
+assumed reproducible. No existing working folder, branch, stash or original
+recovery artifact was deleted. Application/scientific status and integration,
+push and production authority are unchanged.
+
+## Hosted CI workflow validation repair — 2026-10-29
+
+GitHub [run 40942913840](https://github.com/toltec-astro/citlali/actions/runs/40942913840)
+at engineering source `941ccf476da011fa72043488fa566f7aafe45785` failed with zero
+jobs. The introduced job-level `runner.temp` expressions were invalid for that
+scope; YAML parsing and shell syntax checks had missed them. The bounded
+[repair record](ENGINEERING_CLEANUP_2026-10-29.md) moves cache initialization
+into a runtime step and adds explicit configuration for the existing custom
+runner label. Actionlint 1.7.12 reproduces the defect and passes all three
+workflows after repair. Hosted execution of the repaired revision remains an
+owner-run gate. Application behavior, native/scientific evidence and the
+completed 33-registration cleanup are unchanged.
+
+## Approved missing-worktree cleanup completed — 2026-10-29
+
+Grant approved only the [exact 33-registration metadata batch](REPOSITORY_CLEANUP_PROPOSAL_2026-10-29.md).
+Repeated identity/absence, archive, object-reachability and dry-run checks passed
+before pruning. Exactly 33 registrations were removed; all 20 existing worktrees
+remain, and a fresh prune preview is empty. Immediate before/after checks found
+all 104 branch tips, three stashes, shared reflogs, dirty-file contents, 41
+original recovery bundles, two preservation artifacts and checked frozen runtime
+files unchanged. Independent preflight and post-operation verification passed.
+The two reflog-only commits remain recoverable through the verified bundle and
+its retained prerequisites. No existing checkout, branch, trial or recovery
+artifact was removed. The execution occurred at engineering source
+`941ccf476da011fa72043488fa566f7aafe45785`; this documentation follow-up preserves
+that source as ancestry and records the completed owner decision. Application,
+scientific and supported-environment qualification status is unchanged.
+
+## Collaborator engineering candidate — 2026-10-29
+
+The bounded [engineering work order](ENGINEERING_CLEANUP_2026-10-29.md) has
+completed build/test parity, native publication/resource ownership, shared
+application input services and curated Python deployment. The implementation
+snapshot is `8c3b676ec9c3f5d8c7ccbb0f0f2ede97a959c983`; documentation and
+preservation proposals follow as separate commits. All 1,382 enabled native
+tests, 207 baseline tests, full config preflight and 273 configured POINT
+Python tests pass. The inherited disabled native lifecycle test remains
+explicit. Mac environment recreation and focused lint/typing pass; supported
+Spack/Unity and Linux runtime qualification remain open. No reduction ran.
+
+[Current state](CURRENT_STATE.md) gives exact canonical/candidate/frozen-trial
+identities, release blockers and the owner integration proposal. Grant confirmed
+trials finished, enabling these local engineering checks; scientific product
+assessment remains in the original chat. Original checkout and frozen runtime
+identities are preserved. Repository inventory and recoverable metadata/object
+backups supported an [exact proposed cleanup batch](REPOSITORY_CLEANUP_PROPOSAL_2026-10-29.md),
+later approved and completed as recorded above. No branch deletion, push or
+canonical integration occurred.
+
+The older entries below retain their dated scope and acceptance status.
 
 ## Weighted POINT and FRUIT implementation candidate — 2026-10-29
 
