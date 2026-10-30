@@ -1,3 +1,24 @@
+## Saved shoulder feedback and residuals audited — 2026-10-30
+
+The [saved-product audit](../validation/point_shoulder_feedback_audit_2026-10-30/REPORT.md)
+verifies the REF/SHOULDER feedback chain at fixed inverse-noise weighting and 2″
+grid. At m9, 50.05%, 39.71%, 42.16% of known shoulder brightness lies outside
+feedback for a1100/a1400/a2000; 91.58%, 91.40%, 83.27% of M10 squared recovery
+error lies there. These are geometric fractions, not missing flux fractions.
+a2000 local response gains are 90.57% inside and 63.01% outside its mask.
+All candidate domains are valid, with no boundary or unsupported contact.
+Saved counts bound below-threshold omitted shoulder brightness despite absent
+pixel-level ratio/scale rasters. Feedback omission is a leading hypothesis to
+test, not a proven sole cause; residual detector-time arrays are unavailable.
+
+a2000 m4→m9 feedback growth is mainly brightness evolution on common pixels,
+not the five newly selected pixels. More iterations alone are not demonstrated
+to repair the remaining broad-response deficit. Preserve the prospective M5 cap.
+A spatially bounded source-protection comparison with a matching seed control is
+recommended for a separately defined owner decision. No policy, threshold,
+calibration, runtime, weighting or grid change; no reductions, fits, restoration,
+Unity or push. Verification and independent review are recorded with the audit.
+
 ## Saved five-case POINT recovery assessed — 2026-10-30
 
 Grant completed the five-case152418 experiment. The saved-product
