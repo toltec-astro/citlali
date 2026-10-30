@@ -1,3 +1,52 @@
+## Return to connected POINT–SCIENCE–POINT delivery — owner direction, 2026-10-30
+
+Grant redirects this lane from further broad-source feedback optimization to
+sound connected POINT–SCIENCE–POINT products. Pause further wing-protection
+experiments and retain the completed audit as a known limitation. Temporal
+research remains paused. This records a delivery priority, not acceptance of
+calibration, extended-source recovery, or new scientific thresholds.
+
+The existing local pilot is POINT 152389 → SCIENCE 152390 → POINT 152391, extended
+through SCIENCE 152392 → POINT 152393 for the NGC4449 multi-observation coadd, on
+all three arrays. POINT 152418 remains the independent check. Resume from the
+[existing calibration audit](../validation/point_calibration_audit_2026-10-30/REPORT.md):
+usable and discoverable POINT products, truthful amplitude/error and pointing
+frame/sign, protected calibration consumption, and exact calibrated APT selection
+for SCIENCE. Do not silently mix reference and successor POINT brackets.
+All selected local input links resolve; missing inputs do not currently require
+Unity access. The current configured adapter requires POINT, delta-source AltAz,
+and disabled coadd; it is not yet the ordinary celestial SCIENCE/coadd route.
+The local SCIENCE runtime remains deliberately unavailable. Address that concrete
+connection alongside POINT publication, reusing existing science/map owners.
+The established A/reference, B/successor with compatible reference calibration,
+and C/successor with successor-derived calibration comparison remains the target.
+
+Read-only comparison with the other active chat, “Review Citlali cleanup scope,”
+finds its isolated combined candidate at c83375dc030095821999a0e0ff435f13bf82b914,
+combining approved pointing cutoff 797d013f and engineering 5c462010. Combined
+verification is ongoing; mainline remains unchanged. That lane owns engineering
+consolidation. This lane prioritizes the connected scientific/product interface.
+The later shoulder audit changes no application paths and need not reopen that
+candidate's selected runtime. No message or change was sent to the other chat.
+
+No reduction or new experiment is authorized by this status entry. Retain noise
+weighting, the tunable 10% optical-response cut, selected-trial 2″ grid and prospective
+M5 diagnostic budget. The general configured overlay has different historical
+defaults; pilot settings must be explicit. Grant alone launches observations.
+Revisit wing research if connected-pilot evidence shows it blocks usable pointing,
+calibration or the intended SCIENCE products; do not make optimization a prerequisite
+without that link. Missing scientific meaning remains a real blocker, not something
+to paper over with a file-format adapter.
+
+Tier 1 documentation-only recording. Preflight: TolTEC skill, engineering/successor/
+review governance, living status, calibration audit and combined-candidate scope.
+Base 50c6321bad52de9a2e2a9f131309d37b9b4f234a; initially clean existing owned branch
+codex/configurable-point-20261028. Scientific/behavioral: owner priority recorded,
+no algorithm or eligibility change. Architecture: unchanged. Repository/evidence:
+only this status entry; existing results, original project and other worktree
+preserved. Verification: exact candidate/source comparison and whitespace check;
+build/config/CTest are not applicable. No Unity, native execution, push or integration.
+
 ## Saved shoulder feedback and residuals audited — 2026-10-30
 
 The [saved-product audit](../validation/point_shoulder_feedback_audit_2026-10-30/REPORT.md)
