@@ -1,5 +1,11 @@
 ## Completed 152418 paired weighting assessment — 2026-10-30
 
+Owner follow-up: retain noise weighting. Grant directs attention to whether the
+a1100/a1400 FRUIT source feedback captures the source adequately. The current
+follow-up is saved-evidence inspection and discussion; it does not authorize
+changing feedback settings, preparing a new reduction or launching one. The
+earlier hybrid-weight experiment remains a recommendation, not an active task.
+
 Grant completed both arms. The [saved-product assessment](../validation/point_weight_control_2026-10-30/ASSESSMENT.md)
 reauthenticates exact detector/sample support across all three arrays and M0–M10:
 33 array-cycle comparisons, 726 segment pairs, identical HITS. Coefficient-dependent
