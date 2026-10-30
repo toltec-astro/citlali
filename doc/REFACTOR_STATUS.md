@@ -1,3 +1,28 @@
+## Future POINT trials stop at M5 — owner direction, 2026-10-30
+
+Grant reports that the prepared five-case 152418 test is running and requests
+that future runs stop at M5 because little change has been apparent by then.
+For subsequent POINT diagnostic trials, use M0 plus at most five feedback
+applications (M1–M5), with no automatic extension. Preserve the final-step drift
+and source-recovery/model-memory diagnostics; numerical settling alone does not
+establish scientific adequacy. Any later proposal for additional passes must
+identify the evidence and obtain an explicit owner decision.
+
+The running, frozen M10 experiment is unchanged. Its completed M5–M10 evidence
+can be assessed when Grant reports completion. No process was inspected or
+interrupted, no bound runtime/input/manifest was edited, and no reduction or
+monitoring was launched. This records a prospective trial budget, not a change
+to general SCIENCE or production defaults. The current diagnostic runner still
+encodes M10: adapting and verifying its budgets, endpoint measurements and
+configuration together belongs to the next trial preparation.
+
+Documentation-only recording under the engineering, successor and review
+governance read for this turn. Base993a407efdc1bffe3fd2b2e9d089e3328d09d6ab;
+initial worktree clean on codex/configurable-point-20261028. Scope is this status
+entry only. Scientific/behavioral: owner direction recorded, runtime unchanged.
+Architecture: unchanged. Evidence/repository: historical frozen records preserved.
+Verification: diff and whitespace checks; builds/reductions are not applicable.
+
 ## Weighted POINT recovery diagnostic implemented — 2026-10-30
 
 Grant approved implementation and owner-run preparation of the five-case152418
