@@ -1,3 +1,18 @@
+## Saved a1100/a1400 feedback inspection — 2026-10-30
+
+Grant retains noise weighting and authorized saved-mask/profile/sampling inspection
+only. The [inspection](../validation/point_feedback_inspection_2026-10-30/REPORT.md)
+verifies all twenty M0–M9 model associations and exact selected-pixel values. Both
+masks stop changing after M2. a1400 has omitted positive shoulder brightness in all
+four quadrants; a1100 is more asymmetric and mixed with negative structure.
+Idealized containing-pixel sampling of saved Gaussian shapes gives 2″ relative L2
+shape errors of 20.84%/18.24%, roughly halved at 1″, with negligible signed total
+brightness error. These are representation diagnostics, not predicted flux losses.
+No source refits, reductions, runtime/configuration changes, threshold decisions,
+new trial preparations or calibration issuance occurred. Feedback support and
+sampling merit separate controlled tests after owner approval; temporal studies
+remain paused.
+
 ## Completed 152418 paired weighting assessment — 2026-10-30
 
 Owner follow-up: retain noise weighting. Grant directs attention to whether the
