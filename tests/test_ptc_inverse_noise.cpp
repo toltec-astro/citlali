@@ -107,6 +107,49 @@ TEST(PtcInverseNoise, EqualNoiseReducesToExistingUniformCleaning) {
     EXPECT_LT((weighted.cleaned.values-uniform.values).norm(),1e-10);
 }
 
+TEST(PtcInverseNoise, EqualControlMatchesUnweightedSvdButKeepsNoiseQualificationAndFruit) {
+    const auto x=fixture();auto mask=PtcMask::Ones(x.rows(),x.cols()).eval();auto free=mask;
+    free.col(7).setZero(); // Unsupported noise must not acquire a unity fallback.
+    const auto r=request();
+    const auto equal=inverse_noise_ptc(x,mask,free,r,"equal",PointWeighting::equal_control);
+    const auto weighted=inverse_noise_ptc(x,mask,free,r,"weighted");
+    ASSERT_TRUE(equal.fit.converged);ASSERT_TRUE(weighted.fit.converged);
+    EXPECT_EQ(equal.fit_columns,weighted.fit_columns);
+    EXPECT_TRUE((equal.cleaned.causes==weighted.cleaned.causes).all());
+    const PtcMatrix centered=x.leftCols(7).rowwise()-x.leftCols(7).colwise().mean();
+    Eigen::JacobiSVD<Eigen::MatrixXd> svd(centered,Eigen::ComputeThinV);
+    const Eigen::MatrixXd basis=svd.matrixV().leftCols(r.rank);
+    EXPECT_LT((equal.cleaned.values.leftCols(7)-(centered-centered*basis*basis.transpose())).norm(),1e-9);
+    EXPECT_GT((equal.cleaned.values-weighted.cleaned.values).norm(),1e-5);
+    for(int d=0;d<7;++d) {
+        EXPECT_EQ(equal.detectors[d].reference_variance,weighted.detectors[d].reference_variance);
+        EXPECT_EQ(equal.detectors[d].cleaning_coefficient,1.);
+        EXPECT_EQ(equal.detectors[d].map_coefficient,1.);
+    }
+    EXPECT_FALSE(equal.detectors[7].map_coefficient);
+    PtcMatrix operand=PtcMatrix::Constant(x.rows(),x.cols(),12.);
+    const auto residual=FruitResidual::subtract("equal-fruit",PtcMatrix(x+operand),mask,operand,mask);
+    const auto fruit=inverse_noise_fruit(residual,free,r,"equal",PointWeighting::equal_control);
+    EXPECT_LT((fruit.total.leftCols(7)-fruit.noise.cleaned.values.leftCols(7)-operand.leftCols(7)).norm(),1e-10);
+    EXPECT_THROW(inverse_noise_ptc(x,mask,free,r,"bad",static_cast<PointWeighting>(99)),std::invalid_argument);
+}
+
+TEST(PtcEmpiricalMap, EqualControlCannotMasqueradeAsNoiseWeightsOrRestoreUnavailableMeasurements) {
+    const auto q=publication();auto data=records();
+    for(auto &record:data) {
+        record.noise.weighting=PointWeighting::equal_control;
+        record.noise.cleaning_coefficient=record.noise.map_coefficient=1.;
+    }
+    EXPECT_THROW(PtcEmpiricalCoefficients::publish(q,"id","noise",data,"support"),std::invalid_argument);
+    const auto g=PtcEmpiricalCoefficients::publish(q,"id","noise",data,"support",PointWeighting::equal_control);
+    const auto admission=ValEmpiricalMapAdmission::bind(q,g,ast(q));
+    EXPECT_EQ(g->value(admission.at(0,0,0).coefficient_qc,0,0),1.);
+    EXPECT_EQ(g->value(admission.at(0,1,0).coefficient_qc,0,1),1.);
+    EXPECT_NE(PtcEmpiricalCoefficients::family_for(PointWeighting::equal_control),PtcEmpiricalCoefficients::family);
+    data[0].noise.reference_variance.reset();data[0].noise.reference_reason="unavailable";
+    EXPECT_THROW(PtcEmpiricalCoefficients::publish(q,"id","noise",data,"support",PointWeighting::equal_control),std::invalid_argument);
+}
+
 TEST(PtcInverseNoise, CalibratedUnitScalingTransformsVariancesCoefficientsAndOutputs) {
     const auto x=fixture();const auto a=run(x),b=run(3*x);
     ASSERT_TRUE(a.fit.converged);ASSERT_TRUE(b.fit.converged);

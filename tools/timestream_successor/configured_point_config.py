@@ -42,6 +42,7 @@ class PointRequest:
     min_relative_response: float | None = None
     feedback_enabled: bool = False
     feedback_iterations: int = 0
+    weight_comparison: bool = False
 
 
 def _mapping(value, path, allowed=None, required=()):
@@ -238,7 +239,8 @@ def load_request(config: dict, launch_dir: Path) -> PointRequest:
     _enum(successor["migration"], migration, "successor.migration")
     _mapping(successor, "successor", allowed=(
         "schema", "migration", "arrays", "cleaning", "rtc", "map", "feedback", "products",
-        *(("detector_response",) if weighted else ())))
+        *(("detector_response", "weight_comparison") if weighted else ())))
+    weight_comparison = _bool(successor.get("weight_comparison", False), "successor.weight_comparison")
     arrays = successor.get("arrays", list(ARRAYS))
     if not isinstance(arrays, list) or any(type(a) is not str for a in arrays) or len(arrays) != 3 or set(arrays) != set(ARRAYS):
         raise ValueError("successor.arrays must contain a1100, a1400 and a2000 exactly once")
@@ -363,6 +365,8 @@ def load_request(config: dict, launch_dir: Path) -> PointRequest:
         map=dict(method="containing-pixel", frame="delta-source-AltAz", pixel_size_arcsec=pixel, coverage_cut=coverage),
         feedback=dict(enabled=feedback_enabled), products=dict(fits=True, fit_diagnostics=fit_diagnostics, retain_intermediates=retain))
     if weighted:
+        if weight_comparison:
+            effective["successor"]["weight_comparison"] = True
         effective["successor"]["detector_response"] = dict(min_relative_response=min_response)
         effective["successor"]["feedback"]["max_iters"] = feedback_iterations
         effective["successor_effective"] = dict(
@@ -380,6 +384,10 @@ def load_request(config: dict, launch_dir: Path) -> PointRequest:
             limitations=["Empirical residual variance is not an independently calibrated detector or map covariance.",
                          "The response threshold is an owner-selected policy, not a calibrated observation-wide false-rejection rate.",
                          "Corrected-frame feedback and weighting require owner-run all-array validation; no production qualification is inferred."])
+        if weight_comparison:
+            effective["successor_effective"]["weight_comparison"] = (
+                "paired inverse-noise and equal-control cleaning/map coefficients; shared CAL and health; "
+                "same FRUIT recipe, independent source trajectories; exact support comparison required")
     return PointRequest(effective, output_dir, workers, verbose, retain, fit_diagnostics,
                         method, ranks, pixel, coverage, rtc_profiles, ARRAYS, dispositions,
-                        weighted, min_response, feedback_enabled, feedback_iterations)
+                        weighted, min_response, feedback_enabled, feedback_iterations, weight_comparison)

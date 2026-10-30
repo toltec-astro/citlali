@@ -21,6 +21,7 @@ PLANES = ('PRIMARY', 'NUMERATOR', 'NORMALIZATION', 'HITS',
 UNITS = ('mJy/beam', 'mJy/beam', '1', 'count', '1', '1')
 UNIFORM_FAMILY = 'SCI-PTC:uniform_constant@draft-0.1'
 EMPIRICAL_FAMILY = 'OWNER-PTC:empirical-inverse-noise@2026-10-29-v1'
+CONTROL_FAMILY = 'OWNER-PTC:equal-weight-control@2026-10-30-v1'
 EMPIRICAL_UNITS = ('mJy/beam', 'beam/mJy', 'beam2/mJy2', 'count', '1', '1')
 EMPIRICAL_INTERPRETATION = 'empirical-analysis-coefficient-not-map-precision'
 FRAME = dict(ASTFRAME='delta-source-AltAz', CTYPE1='AZOFFSET',
@@ -52,8 +53,8 @@ def _inspect_map(root, observation, array):
     # schema remains readable, while new empirical units require their own
     # explicit family and cannot be relabelled as uniform or map precision.
     family = bundle.get('coefficient_family', UNIFORM_FAMILY)
-    require(family in (UNIFORM_FAMILY, EMPIRICAL_FAMILY), 'unsupported MAP coefficient family')
-    empirical = family == EMPIRICAL_FAMILY
+    require(family in (UNIFORM_FAMILY, EMPIRICAL_FAMILY, CONTROL_FAMILY), 'unsupported MAP coefficient family')
+    empirical = family in (EMPIRICAL_FAMILY, CONTROL_FAMILY)
     units = EMPIRICAL_UNITS if empirical else UNITS
     extra = {}
     if empirical:
@@ -149,10 +150,10 @@ def publish_maps(map_products: Path, destination: Path, observation: int,
     require(not destination.exists(), 'POINT publication destination must be fresh')
     # Validate every required array before making any discoverable result.
     sources = [_inspect_map(map_products / array, observation, array) for array in arrays]
-    if any(source.get('coefficient_family') == EMPIRICAL_FAMILY for source in sources):
+    if any(source.get('coefficient_family') in (EMPIRICAL_FAMILY, CONTROL_FAMILY) for source in sources):
         require(set(arrays) == set(ARRAYS) and len(arrays) == 3,
                 'empirical POINT requires all three arrays')
-        require(all(source.get('coefficient_family') == EMPIRICAL_FAMILY for source in sources),
+        require(len({source.get('coefficient_family') for source in sources}) == 1,
                 'POINT arrays cannot mix empirical and uniform coefficient families')
         require(len({source['native_cycle_index'] for source in sources}) == 1 and
                 len({source['frozen_health_identity'] for source in sources}) == 1,
@@ -173,10 +174,13 @@ def publish_maps(map_products: Path, destination: Path, observation: int,
                       normalization='dimensionless gridding sum; not inverse variance',
                       calibration_eligible=False, legacy_analysis_compatible=False,
                       fit_status='not_requested')
-        if source.get('coefficient_family') == EMPIRICAL_FAMILY:
+        if source.get('coefficient_family') in (EMPIRICAL_FAMILY, CONTROL_FAMILY):
             record['normalization'] = (
                 'sum of empirical inverse-noise analysis coefficients in beam2/mJy2; '
                 'not map precision or significance')
+            if source['coefficient_family'] == CONTROL_FAMILY:
+                record['normalization'] = ('sum of equal-control coefficients, each 1 beam2/mJy2; '
+                                           'arbitrary control scale, not measured noise or map precision')
         if fit_diagnostics:
             from point_reference import measure_forward
             guard = measure_forward(

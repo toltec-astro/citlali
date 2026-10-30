@@ -147,7 +147,7 @@ def orchestration(tmp_path, monkeypatch):
         (root / 'receipt.yaml').write_text('original: RTC\n')
         (root / 'processing-scans.yaml').write_text('scans: [1, 2]\n')
     prepared = dict(networks=[0, 7, 11], effective_config=effective, observation=152389)
-    request = SimpleNamespace(verbose=False, feedback_enabled=True, feedback_iterations=2)
+    request = SimpleNamespace(verbose=False, feedback_enabled=True, feedback_iterations=2, weight_comparison=False)
     record = dict(stages=[])
     state = SimpleNamespace(work=work, reduction=reduction, prepared=prepared, request=request,
                             record=record, calls=[], selections=[], defect=None, stop=None)

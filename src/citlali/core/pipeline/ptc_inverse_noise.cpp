@@ -108,7 +108,9 @@ std::vector<PtcDetectorNoiseEvidence> reference_noise(const PtcMatrix &values,
 }
 
 PtcInverseNoiseResult inverse_noise_ptc(const PtcMatrix &values,
-    const PtcMask &eligible,const PtcMask &source_free,PtcSolverRequest request,std::string scope) {
+    const PtcMask &eligible,const PtcMask &source_free,PtcSolverRequest request,std::string scope,PointWeighting weighting) {
+    if(weighting!=PointWeighting::inverse_noise && weighting!=PointWeighting::equal_control)
+        throw std::invalid_argument("POINT unsupported weighting control");
     if(values.rows()<1 || values.cols()<1 || eligible.rows()!=values.rows() || eligible.cols()!=values.cols() ||
        source_free.rows()!=values.rows() || source_free.cols()!=values.cols() ||
        (eligible>1).any() || (source_free>1).any())
@@ -118,6 +120,10 @@ PtcInverseNoiseResult inverse_noise_ptc(const PtcMatrix &values,
             throw std::invalid_argument("PTC inverse noise eligible calibrated value is nonfinite");
     PtcInverseNoiseResult out;out.scope=std::move(scope);out.fit.request=request;
     out.detectors=reference_noise(values,eligible,source_free);
+    for(auto &e:out.detectors) {
+        e.weighting=weighting;
+        if(e.cleaning_coefficient && weighting==PointWeighting::equal_control)e.cleaning_coefficient=1.;
+    }
     out.effective_eligible=eligible;
     out.cleaned.values=PtcMatrix::Zero(values.rows(),values.cols());
     out.cleaned.causes=PtcMask::Constant(values.rows(),values.cols(),17);
@@ -131,7 +137,7 @@ PtcInverseNoiseResult inverse_noise_ptc(const PtcMatrix &values,
         PtcMatrix whitened=PtcMatrix::Zero(values.rows(),out.fit_columns.size());
         PtcMask compact(values.rows(),out.fit_columns.size());
         for(std::size_t c=0;c<out.fit_columns.size();++c) {
-            const auto d=out.fit_columns[c];const double sigma=std::sqrt(*out.detectors[d].reference_variance);
+            const auto d=out.fit_columns[c];const double sigma=weighting==PointWeighting::equal_control?1.:std::sqrt(*out.detectors[d].reference_variance);
             compact.col(c)=out.effective_eligible.col(d);
             for(Eigen::Index t=0;t<values.rows();++t)if(compact(t,c)) {
                 whitened(t,c)=values(t,d)/sigma;
@@ -144,7 +150,7 @@ PtcInverseNoiseResult inverse_noise_ptc(const PtcMatrix &values,
         out.cleaned.failed_times=applied.failed_times;out.cleaned.factorizations=applied.factorizations;
         out.cleaned.factor_reuses=applied.factor_reuses;out.cleaned.seconds=applied.seconds;
         for(std::size_t c=0;c<out.fit_columns.size();++c) {
-            const auto d=out.fit_columns[c];const double sigma=std::sqrt(*out.detectors[d].reference_variance);
+            const auto d=out.fit_columns[c];const double sigma=weighting==PointWeighting::equal_control?1.:std::sqrt(*out.detectors[d].reference_variance);
             out.cleaned.causes.col(d)=applied.causes.col(c);
             for(Eigen::Index t=0;t<values.rows();++t)if(applied.causes(t,c)==0) {
                 const double value=applied.values(t,c)*sigma;
@@ -165,7 +171,7 @@ PtcInverseNoiseResult inverse_noise_ptc(const PtcMatrix &values,
             if(!(variance>=0) || !std::isfinite(variance))e.remaining_reason="nonfinite-remaining-variance";
             else {
                 e.remaining_variance=variance;
-                e.map_coefficient=1/std::max(*e.reference_variance,variance);
+                e.map_coefficient=weighting==PointWeighting::equal_control?1.:1/std::max(*e.reference_variance,variance);
                 e.remaining_reason="available";
             }
         }
@@ -174,10 +180,10 @@ PtcInverseNoiseResult inverse_noise_ptc(const PtcMatrix &values,
 }
 
 PtcInverseNoiseFruitResult inverse_noise_fruit(std::shared_ptr<const FruitResidual> residual,
-    const PtcMask &source_free,PtcSolverRequest request,std::string scope) {
+    const PtcMask &source_free,PtcSolverRequest request,std::string scope,PointWeighting weighting) {
     if(!residual)throw std::invalid_argument("PTC inverse noise requires an exact FRUIT residual");
     PtcInverseNoiseFruitResult out;out.residual=std::move(residual);
-    out.noise=inverse_noise_ptc(out.residual->values(),out.residual->eligible(),source_free,request,std::move(scope));
+    out.noise=inverse_noise_ptc(out.residual->values(),out.residual->eligible(),source_free,request,std::move(scope),weighting);
     out.total=PtcMatrix::Zero(out.noise.cleaned.values.rows(),out.noise.cleaned.values.cols());
     for(Eigen::Index t=0;t<out.total.rows();++t)for(Eigen::Index d=0;d<out.total.cols();++d)
         if(out.noise.cleaned.causes(t,d)==0) {

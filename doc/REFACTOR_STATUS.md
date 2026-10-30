@@ -1,3 +1,19 @@
+## Paired 152418 weight-control preparation — 2026-10-30
+
+Grant authorized a controlled equal-versus-noise-weight comparison on 152418,
+with all reductions reserved to his shell. The bounded
+[work order](../validation/point_weight_control_2026-10-30/WORK_ORDER.md) adds an
+explicit comparison-only equal-coefficient arm through the current configured
+POINT route. It shares original CAL and frozen health with the noise-weighted
+arm, preserves all other settings and the ten-pass FRUIT recipe, and requires
+exact support agreement at every cycle. Source models evolve independently as
+consequences of weighting. Initial maps isolate the pre-feedback contrast.
+The default noise-weighted route, 0.10 cut, unresolved-detector decisions and
+calibration eligibility are unchanged. Temporal studies remain paused.
+No observation has been run or scientific amplitude conclusion drawn for this
+comparison; preparation/review and owner commands are recorded in
+[the handoff](../validation/point_weight_control_2026-10-30/HANDOFF.md).
+
 ## POINT/calibration audit; temporal research paused — 2026-10-30
 
 Grant paused temporal-change development and redirected this thread to saved

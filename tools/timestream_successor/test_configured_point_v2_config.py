@@ -56,6 +56,17 @@ def test_v1_retains_its_exact_effective_profile_and_new_state_is_inactive(config
     assert request.cleaning_method == 'observed-als'
 
 
+def test_weight_comparison_is_explicit_v2_only(weighted_config, config, tmp_path):
+    assert not load_request(weighted_config, tmp_path).weight_comparison
+    weighted_config['successor']['weight_comparison'] = True
+    parsed = load_request(weighted_config, tmp_path)
+    assert parsed.weight_comparison and parsed.effective_config['successor']['weight_comparison'] is True
+    for invalid in ('true', 1, None):
+        weighted_config['successor']['weight_comparison'] = invalid
+        with pytest.raises(ValueError, match='boolean'):
+            load_request(weighted_config, tmp_path)
+
+
 @pytest.mark.parametrize('omit', ['block', 'threshold'])
 def test_optical_threshold_default_is_recorded_even_when_omitted(weighted_config, tmp_path, omit):
     if omit == 'block':

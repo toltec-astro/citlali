@@ -6,6 +6,11 @@
 
 namespace citlali::pipeline {
 class FruitResidual;
+// Explicit experimental ablation; never a fallback for unavailable noise.
+// Equal control retains the same variance-availability tests but uses coefficient
+// 1 (mJy/nominal-beam)^-2 in cleaning and mapping. This arbitrary scale cancels
+// from the map signal and is not measured precision.
+enum class PointWeighting { inverse_noise, equal_control };
 
 // Owner-approved empirical POINT policy. These are empirical analysis weights,
 // in inverse squared calibrated brightness units, not a covariance model or a
@@ -13,6 +18,7 @@ class FruitResidual;
 inline constexpr std::string_view ptc_inverse_noise_policy =
     "owner-ptc-empirical-inverse-noise-2026-10-29-v1";
 struct PtcDetectorNoiseEvidence {
+    PointWeighting weighting=PointWeighting::inverse_noise;
     std::size_t eligible_count=0, source_free_count=0, reference_count=0,
         remaining_count=0;
     // Offset is mJy/nominal-beam, slope is dimensionless, variances are
@@ -47,7 +53,7 @@ struct PtcInverseNoiseResult {
 // 1/max(v_ref,v_remaining). Unsupported estimates remain unavailable.
 PtcInverseNoiseResult inverse_noise_ptc(const PtcMatrix &values,
     const PtcMask &eligible,const PtcMask &source_free,PtcSolverRequest,
-    std::string scope="");
+    std::string scope="", PointWeighting weighting=PointWeighting::inverse_noise);
 
 struct PtcInverseNoiseFruitResult {
     PtcInverseNoiseResult noise;
@@ -59,5 +65,5 @@ struct PtcInverseNoiseFruitResult {
 // cleaned product cannot substitute for that parent.
 PtcInverseNoiseFruitResult inverse_noise_fruit(
     std::shared_ptr<const FruitResidual>,const PtcMask &source_free,
-    PtcSolverRequest,std::string scope="");
+    PtcSolverRequest,std::string scope="", PointWeighting weighting=PointWeighting::inverse_noise);
 } // namespace citlali::pipeline

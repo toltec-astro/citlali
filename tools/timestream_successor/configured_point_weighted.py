@@ -44,12 +44,17 @@ def health_summary(path):
     return summary
 
 
-def execute(prepared, work, reduction, native, request, record, *, native_call, bind, write_json):
+def execute(prepared, work, reduction, native, request, record, *, native_call, bind, write_json,
+            shared_work=None, shared_health=None, weighting_control='inverse-noise'):
     from configured_point_feedback import initialize, update
 
+    if weighting_control not in ('inverse-noise', 'equal-control') or (
+            weighting_control == 'equal-control' and (not request.weight_comparison or shared_health is None)):
+        raise ValueError('equal control requires explicit comparison and shared health')
+    upstream_work = work if shared_work is None else shared_work
     networks = []
     for nw in prepared['networks']:
-        root = work / 'upstream/products' / f'network{nw}'
+        root = upstream_work / 'upstream/products' / f'network{nw}'
         networks.append(dict(root=str(root),
             input=bind(prepared['effective_config'].parent / f'network{nw}-input.json'),
             receipt_sha256=bind(root / 'receipt.yaml')['sha256'],
@@ -58,17 +63,25 @@ def execute(prepared, work, reduction, native, request, record, *, native_call, 
     base = dict(schema='citlali-configured-weighted-point-v1',
                 effective_config=bind(prepared['effective_config']), networks=networks,
                 verbose=request.verbose)
-    health_request = work / 'health-request.json'
-    write_json(health_request, dict(base, stage='health'))
-    record['stages'].append(native_call(native, health_request, work / 'health',
-                                      terminal='map', verbose=request.verbose))
-    health = work / 'health/products/health.yaml'
+    if shared_health is None:
+        health_request = work / 'health-request.json'
+        write_json(health_request, dict(base, stage='health'))
+        record['stages'].append(native_call(native, health_request, work / 'health',
+                                          terminal='map', verbose=request.verbose))
+        health = work / 'health/products/health.yaml'
+    else:
+        health = Path(shared_health['path'])
+        if bind(health) != shared_health:
+            raise ValueError('comparison shared health changed')
     frozen_health = bind(health)
     summary = health_summary(health)
     summary_path = reduction / 'detector-health.json'
     write_json(summary_path, summary)
     record['detector_health'] = bind(summary_path)
     record['frozen_health'] = frozen_health
+    if request.weight_comparison:
+        record['weighting_control'] = weighting_control
+        base['weighting_control'] = weighting_control
     for array, counts in summary['arrays'].items():
         print(f"{array} optical response: kept {counts['retained']}; "
               f"weak {counts['weak_response']}, reversed {counts['sign_mismatch']}, "
@@ -92,7 +105,9 @@ def execute(prepared, work, reduction, native, request, record, *, native_call, 
                                           terminal='map', verbose=request.verbose))
         products = stage_dir / 'products'
         result = yaml.safe_load((products / 'cycle.yaml').read_text())
-        if bind(health) != frozen_health or result['cycle_index'] != cycle or result['frozen_health_identity'] != 'sha256:' + frozen_health['sha256']:
+        from configured_point_products import EMPIRICAL_FAMILY, CONTROL_FAMILY
+        family = CONTROL_FAMILY if weighting_control == 'equal-control' else EMPIRICAL_FAMILY
+        if bind(health) != frozen_health or result['cycle_index'] != cycle or result['frozen_health_identity'] != 'sha256:' + frozen_health['sha256'] or result['coefficient_family'] != family:
             raise ValueError('weighted cycle identity differs')
         if set(result['arrays']) != set(ARRAYS):
             raise ValueError('weighted cycle must produce all three arrays')
@@ -100,13 +115,13 @@ def execute(prepared, work, reduction, native, request, record, *, native_call, 
         for array in ARRAYS:
             bundle = result['arrays'][array]
             actual = yaml.safe_load((products / array / 'bundle.yaml').read_text())
-            if actual != bundle or bundle['array'] != array or bundle['observation'] != f"obs:{prepared['observation']}_0_2" or bundle['cycle_index'] != cycle or bundle['frozen_health_identity'] != result['frozen_health_identity']:
+            if actual != bundle or bundle['array'] != array or bundle['observation'] != f"obs:{prepared['observation']}_0_2" or bundle['cycle_index'] != cycle or bundle['frozen_health_identity'] != result['frozen_health_identity'] or bundle['coefficient_family'] != family:
                 raise ValueError('weighted array publication identity differs')
             entry['arrays'][array] = {k: bundle[k] for k in
                                      ('contributing_detectors', 'contributing_samples', 'product_identity')}
         trajectory['cycles'].append(entry)
         trajectory['applied_feedback_applications'] = cycle
-        print(f'Weighted POINT map {cycle}/{budget}: all three arrays complete', flush=True)
+        print(f'POINT {weighting_control} map {cycle}/{budget}: all three arrays complete', flush=True)
         if cycle == budget:
             trajectory['stopping_reason'] = 'fixed_budget_completed' if budget else 'feedback_disabled'
             break

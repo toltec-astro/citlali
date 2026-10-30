@@ -6,7 +6,9 @@
 namespace citlali::pipeline {
 std::shared_ptr<const PtcEmpiricalCoefficients> PtcEmpiricalCoefficients::publish(
     std::shared_ptr<const PtcMapPublication> parent,std::string identity,std::string noise_identity,
-    std::vector<PtcEmpiricalDetectorRecord> detectors,std::string support) {
+    std::vector<PtcEmpiricalDetectorRecord> detectors,std::string support,PointWeighting weighting) {
+    if(weighting!=PointWeighting::inverse_noise && weighting!=PointWeighting::equal_control)
+        throw std::invalid_argument("PTC unsupported coefficient weighting");
     if(!parent || identity.empty() || noise_identity.empty() || support!=parent->identity().support_reference ||
        detectors.size()!=parent->identity().detectors.size())
         throw std::invalid_argument("PTC empirical coefficient exact publication/support binding absent");
@@ -15,7 +17,7 @@ std::shared_ptr<const PtcEmpiricalCoefficients> PtcEmpiricalCoefficients::publis
     out->noise_identity_=std::move(noise_identity);out->detectors_=std::move(detectors);
     for(std::size_t d=0;d<out->detectors_.size();++d) {
         const auto &record=out->detectors_[d];const auto &e=record.noise;
-        if(record.detector!=out->parent_->identity().detectors[d] || e.reference_reason.empty() || e.remaining_reason.empty())
+        if(e.weighting!=weighting || record.detector!=out->parent_->identity().detectors[d] || e.reference_reason.empty() || e.remaining_reason.empty())
             throw std::invalid_argument("PTC empirical coefficient detector/evidence identity differs");
         if(e.eligible_count>out->parent_->identity().slots.size() || e.source_free_count>e.eligible_count ||
            e.reference_count>e.source_free_count || e.remaining_count>e.source_free_count ||
@@ -25,7 +27,7 @@ std::shared_ptr<const PtcEmpiricalCoefficients> PtcEmpiricalCoefficients::publis
         if(e.reference_variance) {
             const double v=*e.reference_variance;
             if(!(v>0) || !std::isfinite(v) || e.reference_count<=2 ||
-               !e.cleaning_coefficient || *e.cleaning_coefficient!=1/v || !std::isfinite(1/v) || !(1/v>0))
+               !e.cleaning_coefficient || *e.cleaning_coefficient!=(weighting==PointWeighting::equal_control?1.:1/v) || !std::isfinite(1/v) || !(1/v>0))
                 throw std::invalid_argument("PTC empirical coefficient invalid reference variance");
         } else if(e.cleaning_coefficient || e.remaining_variance || e.map_coefficient)
             throw std::invalid_argument("PTC empirical coefficient cannot replace missing reference noise");
@@ -34,7 +36,7 @@ std::shared_ptr<const PtcEmpiricalCoefficients> PtcEmpiricalCoefficients::publis
             const double v=*e.remaining_variance;
             if(!e.reference_variance || !(v>=0) || !std::isfinite(v) || e.remaining_count<2)
                 throw std::invalid_argument("PTC empirical coefficient invalid remaining variance");
-            coefficient=1/std::max(*e.reference_variance,v);
+            coefficient=weighting==PointWeighting::equal_control?1.:1/std::max(*e.reference_variance,v);
             if(!e.map_coefficient || *e.map_coefficient!=*coefficient || !std::isfinite(*coefficient) || !(*coefficient>0))
                 throw std::invalid_argument("PTC empirical coefficient differs from conservative variance rule");
         } else if(e.map_coefficient)

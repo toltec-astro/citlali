@@ -25,6 +25,10 @@
 # in force. The initial noise/source masks are POINT-specific, not SCIENCE masks.
 # Coadds, noise-map covariance products, legacy PPT calibration compatibility and
 # automatic pointing corrections remain outside this configured POINT profile.
+# Optional successor.weight_comparison: true is a diagnostic paired ablation:
+# shared CAL/health, equal versus inverse-noise cleaning/map weights, independent
+# identical FRUIT recipes. Exact support checks must pass for a matched pair.
+# It adds an equal-control arm; it does not change the default noise-weighted arm.
 runtime:
   reduction_type: pointing
   verbose: false

@@ -212,6 +212,10 @@ def execute(config_path, native, *, launch_dir=None):
             q = map_request(prepared, work / 'upstream', work / 'map-request.json', owner, request)
             record['stages'].append(native_call(native, q, work / 'map', terminal='map', verbose=request.verbose))
             map_products = work / 'map/products'
+        if request.weight_comparison:
+            from configured_point_comparison import execute_equal_arm
+            execute_equal_arm(prepared, work, reduction, native, request, record,
+                native_call=native_call, bind=bind, write_json=write_json, publish_maps=publish_maps)
         # Publish into hidden staging first. A failed required product never
         # leaves a discoverable, apparently complete observation directory.
         staged = work / 'publish'

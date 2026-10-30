@@ -29,7 +29,7 @@ public:
     static std::shared_ptr<const PtcEmpiricalCoefficients> publish(
         std::shared_ptr<const PtcMapPublication>,std::string coefficient_identity,
         std::string noise_identity,std::vector<PtcEmpiricalDetectorRecord>,
-        std::string stored_support_reference);
+        std::string stored_support_reference,PointWeighting weighting=PointWeighting::inverse_noise);
     std::optional<double> value(const EmpiricalCoefficientDecision &,
         std::size_t time,std::size_t detector) const;
     const auto &parent() const noexcept {return parent_;}
@@ -37,6 +37,10 @@ public:
     const auto &noise_identity() const noexcept {return noise_identity_;}
     const auto &detectors() const noexcept {return detectors_;}
     static constexpr std::string_view family="OWNER-PTC:empirical-inverse-noise@2026-10-29-v1";
+    static constexpr std::string_view control_family="OWNER-PTC:equal-weight-control@2026-10-30-v1";
+    static constexpr std::string_view family_for(PointWeighting mode) {
+        return mode==PointWeighting::equal_control?control_family:family;
+    }
     static constexpr std::string_view unit="(mJy/nominal-beam)^-2";
     static constexpr std::string_view interpretation="empirical-analysis-coefficient-not-map-precision";
 private:
