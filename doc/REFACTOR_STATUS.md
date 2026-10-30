@@ -1,3 +1,19 @@
+## Completed 152418 paired weighting assessment — 2026-10-30
+
+Grant completed both arms. The [saved-product assessment](../validation/point_weight_control_2026-10-30/ASSESSMENT.md)
+reauthenticates exact detector/sample support across all three arrays and M0–M10:
+33 array-cycle comparisons, 726 segment pairs, identical HITS. Coefficient-dependent
+output coverage masks differ and are recorded; background comparisons use common
+pixels. Final noise-weighted peaks are 33.16%/16.57%/2.10% below equal weights in
+a1100/a1400/a2000, while background scatter falls by factors 3.00/2.64/2.14.
+a1100's deficit is already 32.37% at M0 and persists after numerical settling;
+a2000 FRUIT recovers most of its much larger initial deficit. Compact aperture
+measurements corroborate the a1100 brightness difference. This identifies the
+combined weighting/feedback effect, not true flux loss or faulty detectors.
+Cleaning-versus-mapmaking attribution and photometric qualification remain open.
+No reductions, runtime changes, threshold changes or calibration issuance occurred
+during this audit. Temporal studies remain paused.
+
 ## Paired 152418 weight-control preparation — 2026-10-30
 
 Grant authorized a controlled equal-versus-noise-weight comparison on 152418,
@@ -10,8 +26,8 @@ exact support agreement at every cycle. Source models evolve independently as
 consequences of weighting. Initial maps isolate the pre-feedback contrast.
 The default noise-weighted route, 0.10 cut, unresolved-detector decisions and
 calibration eligibility are unchanged. Temporal studies remain paused.
-No observation has been run or scientific amplitude conclusion drawn for this
-comparison; preparation/review and owner commands are recorded in
+At preparation, no observation had been run or amplitude conclusion drawn for this
+comparison. Preparation/review and owner commands are recorded in
 [the handoff](../validation/point_weight_control_2026-10-30/HANDOFF.md).
 
 ## POINT/calibration audit; temporal research paused — 2026-10-30
