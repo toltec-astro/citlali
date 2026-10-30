@@ -15,9 +15,10 @@ complete at implementation merge `c83375dc030095821999a0e0ff435f13bf82b914`, fol
 by documentation/evidence closure. [Local validation](../validation/pointing_engineering_candidate_2026-10-30/LOCAL_VALIDATION.json)
 passes: 1,388 enabled CTests, 207 baseline and 300 Python application tests, full
 configuration preflight and supporting checks. One inherited test is disabled.
-Independent source review has no findings. Supported Mac Spack qualification is
-pending 44 dependency installations for the current OS; fallback checks remain
-supplemental. Canonical remains `e32c4584dec07617d6caa857d39bf13047b6c4b0`.
+Independent source review has no findings. The subsequent [Mac Spack qualification](SPACK_QUALIFICATION_2026-10-30.md)
+installs all 44 dependencies and passes the supported developer native gate,
+including 1,388 enabled CTests. Its two-line fixture initialization repair changes
+no production source. Earlier fallback checks remain supplemental. Canonical remains `e32c4584dec07617d6caa857d39bf13047b6c4b0`.
 No push or canonical movement is authorized. The active pointing workspace may
 continue independently; this checkout never replaces its frozen runtime.
 
@@ -75,7 +76,7 @@ beammap production and OOF are outside this release target.
 | Established pointing-derived calibration consumed by SCIENCE | Compatibility/owner acceptance remains open |
 | All-array SCIENCE and genuine multi-observation coadds | Required release milestone; not established by configured POINT engineering tests |
 | Existing downstream consumers | Product/units/layout qualification remains open |
-| Native environment | Supported Spack profiles are `macos-llvm20` and `unity-gcc13`; this task's AppleClang/Homebrew checks are supplemental |
+| Native environment | Isolated `macos-llvm20` developer gate passes; owner-run `unity-gcc13` remains separate; earlier AppleClang/Homebrew checks are supplemental |
 | Python deployment | Exact Mac recreation verified; target-platform qualification is stated in the deployment record |
 | Production/release | No promotion or expanded authorization from this work |
 

@@ -1,0 +1,305 @@
+{
+  "schema": "citlali-spack-qualification/v1",
+  "disposition": "local Mac developer native gate passed; integration and production remain held",
+  "source_base": "b090da0458271c618568802fde1cf5c39f5dd5d2",
+  "production_source_unchanged_from_base": true,
+  "test_patch_sha256": "fb463467c77ce0537996f34c553dd15891e94e31c8bffccba57aa70abb8328e7",
+  "test_file_sha256": "798f3f859a2c00c833944a28cf1bac03f7e9bb91c7bd37794fa3e612322b80e5",
+  "exact_final_binding": "External packet COMPLETION.json and review/final-exact-sha-review.json bind the final commit, refreshed CLI and final gates without a self-referential commit hash.",
+  "external_packet": "/Users/gwilson/.codex/visualizations/2026/10/29/01a188f2-4d30-7e60-88a8-956b50bb08cf/citlali-spack-qualification-20261030",
+  "environment": {
+    "profile": "macos-llvm20",
+    "os": "goldengate / macOS 27",
+    "compiler": "LLVM Clang 20.1.8 via concrete Spack wrappers",
+    "cxx_standard": "strict C++23",
+    "build_type": "Release",
+    "openmp": true,
+    "wiener_openmp": true,
+    "sdkroot": "/Library/Developer/CommandLineTools/SDKs/MacOSX26.5.sdk",
+    "deployment_target": "27.0",
+    "spack_spec_target": "m4",
+    "observed_wrapper_target_argument": "-mcpu=apple-m1",
+    "dag_hash": "kqk3pl4f6jgsb5yksobnynlx2gmnqks6",
+    "lock_sha256": "00964e0c57c1df96b0ddc3f6d214bef1c1ab8f59cc4e5c4da653cefbcb915238",
+    "dependencies_installed": 44,
+    "external_providers": 4,
+    "citlali_root_package_installed": false,
+    "mixed_dependency_sdk_evidence": "See exact per-package inventory; 21 cache records mention SDK27, one Kidscpp SDK26.5, four unversioned SDKs, 18 without explicit SDK. Interface/cache records are not proof of native compilation."
+  },
+  "results": {
+    "enabled_ctest": 1388,
+    "failed_ctest": 0,
+    "inherited_disabled": [
+      "citlali::MapFitterLifecycle.ExactProductSequence"
+    ],
+    "focused_repaired_registrations": 4,
+    "baseline_tests": 207,
+    "full_config_require_all": "PASS",
+    "installed_synthetic_consumers": {
+      "tula": "PASS",
+      "kidscpp": "PASS"
+    },
+    "strict_cpp23_standalone_headers": 4,
+    "standalone_help_version": "PASS",
+    "managed_runtime_binding": "dag-match",
+    "successful_gate_unexpected_errors": 0,
+    "warnings": "Duplicate rpath linker warnings retained; no test disabling, numerical relaxation or scientific-source change.",
+    "supplemental_fixture_registrations": 4
+  },
+  "gate_records": [
+    {
+      "name": "native-baseline",
+      "source": "b090da0458271c618568802fde1cf5c39f5dd5d2",
+      "arguments": [
+        "/Users/gwilson/GitHub/spack/bin/spack",
+        "-e",
+        "/Users/gwilson/.codex/worktrees/pointing-engineering-candidate-20261030/citlali-refactor/build/spack-candidate/environment",
+        "build-env",
+        "citlali",
+        "--",
+        "/Users/gwilson/tolteca/bin/python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tools/baseline",
+        "-p",
+        "test_*.py"
+      ],
+      "exit_code": 0,
+      "started_utc": "2026-10-30T19:20:47.824479+00:00",
+      "finished_utc": "2026-10-30T19:21:17.617869+00:00",
+      "log": "/Users/gwilson/.codex/visualizations/2026/10/29/01a188f2-4d30-7e60-88a8-956b50bb08cf/citlali-spack-qualification-20261030/logs/native-baseline.log"
+    },
+    {
+      "name": "fixture-build",
+      "source": "b090da0458271c618568802fde1cf5c39f5dd5d2",
+      "working_diff_sha256": "fb463467c77ce0537996f34c553dd15891e94e31c8bffccba57aa70abb8328e7",
+      "arguments": [
+        "/Users/gwilson/tolteca/bin/python",
+        "/Users/gwilson/.codex/worktrees/pointing-engineering-candidate-20261030/citlali-refactor/tools/build/run_spack_citlali_dev.py",
+        "build",
+        "--profile",
+        "macos-llvm20",
+        "--source",
+        "/Users/gwilson/.codex/worktrees/pointing-engineering-candidate-20261030/citlali-refactor",
+        "--spack",
+        "/Users/gwilson/GitHub/spack/bin/spack",
+        "--spack-python",
+        "/Users/gwilson/tolteca/bin/python",
+        "--environment",
+        "/Users/gwilson/.codex/worktrees/pointing-engineering-candidate-20261030/citlali-refactor/build/spack-candidate/environment",
+        "--build-dir",
+        "/Users/gwilson/.codex/worktrees/pointing-engineering-candidate-20261030/citlali-refactor/build/spack-native",
+        "-j",
+        "8"
+      ],
+      "exit_code": 0,
+      "started_utc": "2026-10-30T19:27:39.196442+00:00",
+      "finished_utc": "2026-10-30T19:28:07.443468+00:00",
+      "log": "/Users/gwilson/.codex/visualizations/2026/10/29/01a188f2-4d30-7e60-88a8-956b50bb08cf/citlali-spack-qualification-20261030/logs/fixture-build.log"
+    },
+    {
+      "name": "fixture-focused-jinc",
+      "source": "b090da0458271c618568802fde1cf5c39f5dd5d2",
+      "working_diff_sha256": "fb463467c77ce0537996f34c553dd15891e94e31c8bffccba57aa70abb8328e7",
+      "arguments": [
+        "/Users/gwilson/GitHub/spack/bin/spack",
+        "-e",
+        "/Users/gwilson/.codex/worktrees/pointing-engineering-candidate-20261030/citlali-refactor/build/spack-candidate/environment",
+        "build-env",
+        "citlali",
+        "--",
+        "ctest",
+        "--test-dir",
+        "/Users/gwilson/.codex/worktrees/pointing-engineering-candidate-20261030/citlali-refactor/build/spack-native",
+        "--output-on-failure",
+        "-R",
+        "jinc_map_contract.(production_population_paths_agree|beammap_production_dispatch)"
+      ],
+      "exit_code": 0,
+      "started_utc": "2026-10-30T19:28:07.446073+00:00",
+      "finished_utc": "2026-10-30T19:28:10.062315+00:00",
+      "log": "/Users/gwilson/.codex/visualizations/2026/10/29/01a188f2-4d30-7e60-88a8-956b50bb08cf/citlali-spack-qualification-20261030/logs/fixture-focused-jinc.log"
+    },
+    {
+      "name": "fixture-ctest",
+      "source": "b090da0458271c618568802fde1cf5c39f5dd5d2",
+      "working_diff_sha256": "fb463467c77ce0537996f34c553dd15891e94e31c8bffccba57aa70abb8328e7",
+      "arguments": [
+        "/Users/gwilson/tolteca/bin/python",
+        "/Users/gwilson/.codex/worktrees/pointing-engineering-candidate-20261030/citlali-refactor/tools/build/run_spack_citlali_dev.py",
+        "test",
+        "--profile",
+        "macos-llvm20",
+        "--source",
+        "/Users/gwilson/.codex/worktrees/pointing-engineering-candidate-20261030/citlali-refactor",
+        "--spack",
+        "/Users/gwilson/GitHub/spack/bin/spack",
+        "--spack-python",
+        "/Users/gwilson/tolteca/bin/python",
+        "--environment",
+        "/Users/gwilson/.codex/worktrees/pointing-engineering-candidate-20261030/citlali-refactor/build/spack-candidate/environment",
+        "--build-dir",
+        "/Users/gwilson/.codex/worktrees/pointing-engineering-candidate-20261030/citlali-refactor/build/spack-native",
+        "-j",
+        "8"
+      ],
+      "exit_code": 0,
+      "started_utc": "2026-10-30T19:28:10.074020+00:00",
+      "finished_utc": "2026-10-30T19:29:13.325407+00:00",
+      "log": "/Users/gwilson/.codex/visualizations/2026/10/29/01a188f2-4d30-7e60-88a8-956b50bb08cf/citlali-spack-qualification-20261030/logs/fixture-ctest.log"
+    },
+    {
+      "name": "fixture-developer-version",
+      "source": "b090da0458271c618568802fde1cf5c39f5dd5d2",
+      "working_diff_sha256": "fb463467c77ce0537996f34c553dd15891e94e31c8bffccba57aa70abb8328e7",
+      "arguments": [
+        "/Users/gwilson/GitHub/spack/bin/spack",
+        "-e",
+        "/Users/gwilson/.codex/worktrees/pointing-engineering-candidate-20261030/citlali-refactor/build/spack-candidate/environment",
+        "build-env",
+        "citlali",
+        "--",
+        "/Users/gwilson/.codex/worktrees/pointing-engineering-candidate-20261030/citlali-refactor/build/spack-native/citlali",
+        "--version"
+      ],
+      "exit_code": 0,
+      "started_utc": "2026-10-30T19:29:13.345971+00:00",
+      "finished_utc": "2026-10-30T19:29:14.889431+00:00",
+      "log": "/Users/gwilson/.codex/visualizations/2026/10/29/01a188f2-4d30-7e60-88a8-956b50bb08cf/citlali-spack-qualification-20261030/logs/fixture-developer-version.log"
+    },
+    {
+      "name": "fixture-full-config-preflight",
+      "source": "b090da0458271c618568802fde1cf5c39f5dd5d2",
+      "working_diff_sha256": "fb463467c77ce0537996f34c553dd15891e94e31c8bffccba57aa70abb8328e7",
+      "arguments": [
+        "/Users/gwilson/tolteca/bin/python",
+        "/Users/gwilson/.codex/worktrees/pointing-engineering-candidate-20261030/citlali-refactor/tools/config/run_config_preflight.py",
+        "--require-all",
+        "--repo-root",
+        "/Users/gwilson/.codex/worktrees/pointing-engineering-candidate-20261030/citlali-refactor",
+        "--work-dir",
+        "/Users/gwilson/.codex/visualizations/2026/10/29/01a188f2-4d30-7e60-88a8-956b50bb08cf/citlali-spack-qualification-20261030/fixture-config-preflight"
+      ],
+      "exit_code": 0,
+      "started_utc": "2026-10-30T19:29:14.898409+00:00",
+      "finished_utc": "2026-10-30T19:29:25.986687+00:00",
+      "log": "/Users/gwilson/.codex/visualizations/2026/10/29/01a188f2-4d30-7e60-88a8-956b50bb08cf/citlali-spack-qualification-20261030/logs/fixture-full-config-preflight.log"
+    },
+    {
+      "name": "fixture-native-linked-libraries",
+      "source": "b090da0458271c618568802fde1cf5c39f5dd5d2",
+      "working_diff_sha256": "fb463467c77ce0537996f34c553dd15891e94e31c8bffccba57aa70abb8328e7",
+      "arguments": [
+        "/usr/bin/otool",
+        "-L",
+        "/Users/gwilson/.codex/worktrees/pointing-engineering-candidate-20261030/citlali-refactor/build/spack-native/citlali"
+      ],
+      "exit_code": 0,
+      "started_utc": "2026-10-30T19:29:26.006991+00:00",
+      "finished_utc": "2026-10-30T19:29:26.091560+00:00",
+      "log": "/Users/gwilson/.codex/visualizations/2026/10/29/01a188f2-4d30-7e60-88a8-956b50bb08cf/citlali-spack-qualification-20261030/logs/fixture-native-linked-libraries.log"
+    },
+    {
+      "name": "fixture-native-load-commands",
+      "source": "b090da0458271c618568802fde1cf5c39f5dd5d2",
+      "working_diff_sha256": "fb463467c77ce0537996f34c553dd15891e94e31c8bffccba57aa70abb8328e7",
+      "arguments": [
+        "/usr/bin/otool",
+        "-l",
+        "/Users/gwilson/.codex/worktrees/pointing-engineering-candidate-20261030/citlali-refactor/build/spack-native/citlali"
+      ],
+      "exit_code": 0,
+      "started_utc": "2026-10-30T19:29:26.098292+00:00",
+      "finished_utc": "2026-10-30T19:29:26.171325+00:00",
+      "log": "/Users/gwilson/.codex/visualizations/2026/10/29/01a188f2-4d30-7e60-88a8-956b50bb08cf/citlali-spack-qualification-20261030/logs/fixture-native-load-commands.log"
+    },
+    {
+      "name": "fixture-standalone-version",
+      "source": "b090da0458271c618568802fde1cf5c39f5dd5d2",
+      "working_diff_sha256": "fb463467c77ce0537996f34c553dd15891e94e31c8bffccba57aa70abb8328e7",
+      "arguments": [
+        "/Users/gwilson/.codex/worktrees/pointing-engineering-candidate-20261030/citlali-refactor/build/spack-native/citlali",
+        "--version"
+      ],
+      "exit_code": 0,
+      "started_utc": "2026-10-30T19:29:26.181137+00:00",
+      "finished_utc": "2026-10-30T19:29:26.250582+00:00",
+      "log": "/Users/gwilson/.codex/visualizations/2026/10/29/01a188f2-4d30-7e60-88a8-956b50bb08cf/citlali-spack-qualification-20261030/logs/fixture-standalone-version.log"
+    },
+    {
+      "name": "fixture-standalone-help",
+      "source": "b090da0458271c618568802fde1cf5c39f5dd5d2",
+      "working_diff_sha256": "fb463467c77ce0537996f34c553dd15891e94e31c8bffccba57aa70abb8328e7",
+      "arguments": [
+        "/Users/gwilson/.codex/worktrees/pointing-engineering-candidate-20261030/citlali-refactor/build/spack-native/citlali",
+        "--help"
+      ],
+      "exit_code": 0,
+      "started_utc": "2026-10-30T19:29:26.257767+00:00",
+      "finished_utc": "2026-10-30T19:29:26.326278+00:00",
+      "log": "/Users/gwilson/.codex/visualizations/2026/10/29/01a188f2-4d30-7e60-88a8-956b50bb08cf/citlali-spack-qualification-20261030/logs/fixture-standalone-help.log"
+    },
+    {
+      "name": "fixture-managed-version",
+      "source": "b090da0458271c618568802fde1cf5c39f5dd5d2",
+      "working_diff_sha256": "fb463467c77ce0537996f34c553dd15891e94e31c8bffccba57aa70abb8328e7",
+      "arguments": [
+        "/Users/gwilson/.codex/worktrees/pointing-engineering-candidate-20261030/citlali-refactor/build/spack-native/citlali",
+        "--version"
+      ],
+      "exit_code": 0,
+      "started_utc": "2026-10-30T19:29:26.332888+00:00",
+      "finished_utc": "2026-10-30T19:29:26.416092+00:00",
+      "log": "/Users/gwilson/.codex/visualizations/2026/10/29/01a188f2-4d30-7e60-88a8-956b50bb08cf/citlali-spack-qualification-20261030/logs/fixture-managed-version.log"
+    }
+  ],
+  "reassessments": [
+    {
+      "trigger": "LLVM20 strict C++23 and SDK27 math headers incompatible",
+      "disposition": "Select installed SDK26.5 only in isolated process environment, retain target27, exact compiler, sources, lock and failed stage. Independent reassessment passed."
+    },
+    {
+      "trigger": "Native CTest exposes uninitialized run_polarization in two unpolarized synthetic fixtures",
+      "disposition": "Two explicit false initializations in test_jinc_map_contract.cpp only. OS crash/disassembly establish missing fg access; production initializes flag already. Full native rerun passes."
+    },
+    {
+      "trigger": "Clingo bootstrap PYTHONPATH hides repository for direct Python script invocation",
+      "disposition": "Prepend candidate root while retaining bootstrap path. Complete require-all config rerun passes. No script edit."
+    }
+  ],
+  "limitations": [
+    "Local Mac developer build qualification only; Citlali installed root/export, immutable release and target Linux/Unity qualification are separate.",
+    "No observational run, full Kidscpp real-reader qualification, calibration, SCIENCE/coadds, scientific acceptance or production authorization.",
+    "Prior supplemental Python/application checks remain separately bound; unchanged source does not turn them into Spack-backed observational evidence.",
+    "Mainline movement, pushes, cleanup and modifications to ongoing pointing, legacy 4.x/5.x and backups remain forbidden."
+  ],
+  "evidence_sha256": {
+    "installation-results.json": "f0f790e9013fa5ea358c5fae04a57d2f48721ffe8a324fd3b73c963936074a42",
+    "logs/dependency-install.log": "c8bc4664fa21cd1461553811b09c5e88364671e004490a4622a425da4280151d",
+    "logs/dependency-install-sdk26-retry.log": "e43ecf362cc597ef05c287a5a82c939ce19f247af3c3e6514c591f9549924702",
+    "sdk-reassessment/reassessment.json": "6113366e63ef1d2dbf0b3b78f8fd805f0357b2faab31941fa619fcfaf9564bd9",
+    "sdk-reassessment/probe.json": "dcc3dfe364bb02cbde91fcb9078ca3d8eebd7baec8b2c6a4c8a2909e1ae3d5fc",
+    "review/installed-dependency-environment.json": "8454253a9872dd6017e8f20e91002670a28487935a6b9700ac7991e21cd1167d",
+    "review/consumer-results.json": "e18b790fe5b1e83c1826eb8f0f546a1f8e15b0d19fb9c636d2b934c97fcdd30b",
+    "review/independent-plan-review.json": "7234af78195ed542136cfbbb18664251b53da23ee5f0c515cb1084ec9e1b57c9",
+    "review/independent-sdk-reassessment.json": "aef272a0752c17aef33d246aef4653222a2ca05b00929b58fded0fb2a41c1b17",
+    "review/independent-jinc-fixture-reassessment.json": "0b166f62a657060207f486b91dca8fc744e7a06df203fcec10582f055843d7d4",
+    "review/scout-config-import-probe.json": "ff3e9a62a0635ed2fe53adeee7a58a0c4cfe63f4059dce836a02bdadefa753d7",
+    "fixture-repair.json": "3a05154f5d8bd370faddf9758f697722deb1d7bd1980c387f150dbeeaeed7195",
+    "jinc-os-crash-stacks.json": "41b22abb32bd7621137de3750ac08cf39b4aee599668567c9997aa65f0bdb3da",
+    "jinc-fault-disassembly.txt": "5773fa669e4687f28c2bd3422638ff6670ec3f976e9f44320632306a76b43943",
+    "logs/native-developer-all.log": "5521e6d3e98e3257e09558937266de2a8c62b5605adde0ba3bc1282d56110f85",
+    "logs/native-baseline.log": "6658dd3c2215ebc9f56009e82e918f89a451a25140fcfdb9935215e712e938fd",
+    "logs/fixture-build.log": "944edbc8abbd0557a911965f01473dd6fc393631d6ad54cd583b5a1dd76577dc",
+    "logs/fixture-focused-jinc.log": "c4427fa7efc5af0f0770cdcdb974708d759e03003cafe9149d9ebb66b435ca9d",
+    "logs/fixture-ctest.log": "198b508d18dc002f93d2460544dde4bc7f3457ba51d0d03f98425f7b65ac6295",
+    "logs/fixture-full-config-preflight.log": "32ae989b8195ae5eff62531862270ca26fff7d9e6b0c38d08b7aa5cc441db8e7",
+    "logs/fixture-native-linked-libraries.log": "fb3122952e6151996f845919d24bdcaf4b176b0e123210c3be5bdf5dc091ec1b",
+    "logs/fixture-native-load-commands.log": "3f67d83dff48f6eb968039c8e0dddca3ada492321baa6468faed7cd77d175d7d",
+    "logs/fixture-managed-version.log": "5b8bfec285e7f93d0c07acb708bb2397d473e3060e8dab45594919ea2b240a1e",
+    "initial-preservation-report.json": "2ec221f8f1809b7ebb804c265005b8f9fb48a86eb8d1b88cb28e48f13b456255",
+    "review/supplemental-fixture-check.json": "2566b4569766a89dfcc2aa32d93ac8f53ab0508d7507bfca9f7a360c3e142d5b"
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "work_order": "CITLALI-SPACK-QUALIFICATION-20261030",
+  "owner": "Grant Wilson; this chat owns isolated candidate build qualification",
+  "risk_tier": 2,
+  "owner_directive": "Let's complete the Spack qualification. Install the 44 dependencies in the isolated environment, but don't move refactor-mainline or push anything. Preserve ongoing pointing work, Citlali 4.x/5.x, and all backups.",
+  "source": "b090da0458271c618568802fde1cf5c39f5dd5d2",
+  "mainline": "e32c4584dec07617d6caa857d39bf13047b6c4b0",
+  "branch": "codex/pointing-engineering-candidate-20261030",
+  "worktree": "/Users/gwilson/.codex/worktrees/pointing-engineering-candidate-20261030/citlali-refactor",
+  "initial_candidate_clean": true,
+  "governance_read": [
+    "doc/governance/ENGINEERING_GOVERNANCE.md",
+    "doc/governance/TIMESTREAM_SUCCESSOR_GOVERNANCE.md",
+    "doc/governance/REVIEW_AND_CONFORMANCE.md"
+  ],
+  "authority": [
+    "doc/CURRENT_STATE.md",
+    "doc/REFACTOR_STATUS.md",
+    "doc/adr/0014-spack-build-foundation.md",
+    "spack/README.md",
+    "spack/upstream-revisions.json",
+    "validation/citlali_v2_spack_validation_authority.json"
+  ],
+  "scope": "Reuse existing isolated candidate; install fixed 44-dependency Spack graph; build, check exact compiler/runtime/source identities, run native and configuration/baseline/installed-consumer gates, record and independently review evidence. Build-environment scope only; coherent evidence/docs commit after verification.",
+  "wip": "Separate build qualification; no new application implementation slot or branch.",
+  "owned_outputs": "/Users/gwilson/.codex/worktrees/pointing-engineering-candidate-20261030/citlali-refactor/build/spack-candidate",
+  "dependency_install_store": "/Users/gwilson/.codex/worktrees/pointing-engineering-candidate-20261030/citlali-refactor/build/spack-candidate/store",
+  "upstream_store_read_only": "/Users/gwilson/GitHub/spack/opt/spack",
+  "dag_hash": "kqk3pl4f6jgsb5yksobnynlx2gmnqks6",
+  "lock_sha256": "00964e0c57c1df96b0ddc3f6d214bef1c1ab8f59cc4e5c4da653cefbcb915238",
+  "excluded": [
+    "mainline movement",
+    "push/PR/workflow dispatch",
+    "Unity access",
+    "observations or new reductions",
+    "scientific/numerical/default changes",
+    "ongoing pointing workspace/runtime edits",
+    "legacy 4.x/5.x edits",
+    "backup deletion or worktree cleanup",
+    "unrelated sibling-repository changes"
+  ],
+  "stop_or_reassess": [
+    "graph/source identity drift",
+    "writes outside owned isolated environment",
+    "package/build failure requiring bounded repair or scope change",
+    "scientific/default change needed",
+    "supported environment or required fixture unavailable"
+  ],
+  "created_utc": "2026-10-30T18:53:12.226319+00:00",
+  "native_gate_authority": ".github/workflows/spack-native-checks.yml and tools/build/run_spack_citlali_dev.py",
+  "gate_scope": "Dependency install, fresh supported developer CLI/ordinary aggregate/CTest, complete native baseline and require-all configuration; additional first-party installed-consumer, standalone-header, runtime-linkage and managed-DAG checks. Citlali root package installation/export and immutable release qualification are separate, not claimed.",
+  "reassessments": [
+    {
+      "trigger": "LLVM20 strict C++23 and SDK27 math headers incompatible",
+      "disposition": "Select installed SDK26.5 only in isolated process environment, retain target27, exact compiler, sources, lock and failed stage. Independent reassessment passed."
+    },
+    {
+      "trigger": "Native CTest exposes uninitialized run_polarization in two unpolarized synthetic fixtures",
+      "disposition": "Two explicit false initializations in test_jinc_map_contract.cpp only. OS crash/disassembly establish missing fg access; production initializes flag already. Full native rerun passes."
+    },
+    {
+      "trigger": "Clingo bootstrap PYTHONPATH hides repository for direct Python script invocation",
+      "disposition": "Prepend candidate root while retaining bootstrap path. Complete require-all config rerun passes. No script edit."
+    }
+  ]
+}

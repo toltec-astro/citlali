@@ -1,3 +1,24 @@
+## Isolated Mac Spack developer qualification completed — 2026-10-30
+
+Grant authorized the 44-dependency installation in the existing combined
+candidate. The [qualification record](SPACK_QUALIFICATION_2026-10-30.md) and
+[receipt](../validation/spack_qualification_2026-10-30/QUALIFICATION.json) record
+all 44 installed, fresh LLVM20/strict-C++23 native build, all 1,388 enabled
+CTests, 207 baseline tests, full require-all configuration preflight, installed
+synthetic consumers, four standalone headers and managed runtime identity.
+One inherited test stays disabled. SDK26.5 selection resolves the SDK27/LLVM20
+header incompatibility while preserving the real macOS27 target and exact lock.
+Two unpolarized JINC fixtures now explicitly initialize their polarization flag;
+production algorithms, defaults and scientific contracts are unchanged.
+
+Final exact-source review, executable refresh and preservation are bound in the
+external evidence packet. The local Mac developer prerequisite is complete;
+root-package release/export, owner-run Unity, hosted CI and scientific/production
+acceptance remain separate. Canonical remains
+`e32c4584dec07617d6caa857d39bf13047b6c4b0`. No push or mainline move is authorized.
+Active pointing, legacy 4.x/5.x, backups and upstream dependency store are protected.
+The following assembly entry retains its earlier pre-installation checkpoint.
+
 ## Isolated pointing/engineering candidate authorized — 2026-10-30
 
 Grant approved the acceptance table and exact pointing cutoff

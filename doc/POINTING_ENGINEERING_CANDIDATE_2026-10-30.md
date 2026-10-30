@@ -107,13 +107,17 @@ behavioral, architecture/ownership and repository/evidence axes. It reproduced
 packet holds the final exact-commit follow-up and executable refresh after this
 documentation-only closure. No prior branch pass is credited as a combined pass.
 
-The local build uses AppleClang 17/Homebrew with isolated byte-verified copies
+At this assembly checkpoint, the local build used AppleClang 17/Homebrew with isolated byte-verified copies
 of all 18 dependency source trees, preserving their existing local modifications.
 This is supplemental evidence. The supported `macos-llvm20` Spack configuration
 and graph resolve successfully, but current OS `goldengate` differs from the
 installed store's `tahoe` packages: 44 dependencies need installation before a
 supported build. No dependencies were installed or accepted-store state changed.
-The resolved environment is retained for later qualification. Supported native
+The resolved environment is retained for later qualification. This is the
+historical pre-installation checkpoint. Grant subsequently authorized the
+[Mac Spack qualification](SPACK_QUALIFICATION_2026-10-30.md), which installs all
+44 dependencies and passes the supported developer native gate; the original
+local-validation receipt remains unchanged. Supported native
 macOS Spack, owner-run Linux/Unity qualification, eligible hosted source CI and
 scientific/production release are distinct claims. GitHub checks cannot run
 through this unit's forbidden publication; no 4.x/5.x or default-branch change

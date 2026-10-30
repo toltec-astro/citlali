@@ -568,6 +568,7 @@ TEST(jinc_map_contract,
     std::string pixel_axes = "altaz";
 
     mapmaking::JincMapmaker maker;
+    maker.run_polarization = false;
     maker.r_max = 3.0;
     maker.subpixel_n = 1;
     maker.array_names = {{0, "a1100"}, {1, "a1400"}, {2, "a2000"}};
@@ -690,6 +691,7 @@ TEST(jinc_map_contract,
     const std::vector<CalibScan> calib_scans{{apt}, {apt}};
 
     mapmaking::JincMapmaker jinc;
+    jinc.run_polarization = false;
     jinc.logger = logger;
     jinc.r_max = 3.0;
     jinc.subpixel_n = 1;
