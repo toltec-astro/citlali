@@ -14,7 +14,9 @@ M5–M10 changes are tiny for a1100/a1400. a2000's REF peak changes0.202% and ce
 norm falls1.50%→0.0155%. Preserve the owner's prospective M5 economy, but do not
 claim a2000 broad response is settled at M5. No iteration budget, source policy,
 noise weighting or2″ grid was changed. No new reduction, source fit, restoration,
-Unity operation or push occurred. Independent assessment review is the closure gate.
+Unity operation or push occurred. Independent exact-source assessment review passed
+with recorded limitations; the [review record](../validation/weighted_point_recovery_assessment_2026-10-30/REVIEW.md)
+includes independent numerical and identity reproduction.
 
 ## Future POINT trials stop at M5 — owner direction, 2026-10-30
 

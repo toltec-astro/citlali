@@ -178,5 +178,5 @@ Assessment verification: all saved-map metric comparisons and identity assertion
 passed. The first arithmetic implementation emitted NumPy matmul runtime warnings;
 it was replaced with explicit finite-array scalar sums and rerun with runtime
 warnings treated as errors, successfully and with unchanged conclusions. Figures
-were inspected headlessly. This record requires independent exact-source review
-before its final closure. No scientific release qualification is claimed.
+were inspected headlessly. Independent exact-source review
+[passed with recorded limitations](REVIEW.md). No scientific release qualification is claimed.
