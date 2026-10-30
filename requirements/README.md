@@ -1,6 +1,6 @@
 # Configured POINT Python deployment
 
-The installable application contains an explicit 29-module runtime plus its packaging command. It preserves the existing configured POINT options, TolTECA merged-YAML boundary, versioned schemas, native `--version` delegation, and copyable TolProj launcher. The native engine and its shared libraries remain separate dependencies. `0.0.0` identifies an unqualified packaging candidate, not a collaborator release.
+The installable application contains an explicit 30-module runtime plus its packaging command. It preserves the existing configured POINT options, TolTECA merged-YAML boundary, versioned schemas, native `--version` delegation, and copyable TolProj launcher. The native engine and its shared libraries remain separate dependencies. `0.0.0` identifies an unqualified packaging candidate, not a collaborator release.
 
 The source compatibility target is CPython 3.11–3.13. CPython 3.13.2 on macOS arm64 has been exercised locally. Linux/Unity and the other Python versions remain qualification targets; compatibility declarations are not validation evidence. Use the accepted Spack native realization for supported Unity qualification. Neither these Python files nor local tests establish SCIENCE, coadd, calibration, or production acceptance.
 

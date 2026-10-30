@@ -8,6 +8,7 @@ responsible for full semantic admission of the bound bundle.
 from __future__ import annotations
 
 import copy
+from datetime import datetime, timezone
 import csv
 import hashlib
 import io
@@ -19,7 +20,7 @@ import netCDF4
 import numpy as np
 import yaml
 
-from configured_point_types import FileBinding, InputBinding, PreparedPoint
+from configured_point_types import FileBinding, InputBinding, PointingMetadata, PreparedPoint
 
 
 ARRAYS = ("a1100", "a1400", "a2000")
@@ -182,6 +183,79 @@ def _text(nc, name):
     return "".join(str(item) for item in np.asarray(value).ravel()).strip(" \x00")
 
 
+def _pointing_metadata(
+    nc, observation: int, calibration: list, telescope: FileBinding
+) -> PointingMetadata:
+    """Observe OG PPT metadata while TEL is open; do not learn corrections.
+
+    Missing/masked/nonfinite scientific metadata withholds only the handoff.
+    I/O and software errors propagate. TelTime is the same Unix-second series
+    used by native CAL and OG's mean-MJD publication, before any resampling.
+    """
+    result = PointingMetadata(
+        status="unavailable",
+        cause=None,
+        meta={},
+        applied_pointing_offsets={},
+        telescope=telescope,
+    )
+    try:
+
+        def scalar(name):
+            _require(name in nc.variables, "missing pointing header: " + name)
+            value = nc[name][...]
+            _require(
+                value.size == 1 and not np.ma.is_masked(value), "invalid pointing header: " + name
+            )
+            value = float(value.item())
+            _require(np.isfinite(value), "nonfinite pointing header: " + name)
+            return value
+
+        source = _text(nc, "Header.Source.SourceName")
+        _require(bool(source), "empty pointing source name")
+        key = "Data.TelescopeBackend.TelTime"
+        _require(key in nc.variables, "missing pointing telescope time")
+        times = nc[key][...]
+        _require(
+            times.ndim == 1
+            and times.size > 0
+            and not np.ma.is_masked(times)
+            and np.isfinite(times).all(),
+            "invalid pointing telescope time",
+        )
+        mean_unix = float(np.asarray(times, dtype=float).mean())
+        mjd = mean_unix / 86400.0 + 40587.0
+        _require(np.isfinite(mjd) and mjd > 0, "invalid pointing mean MJD")
+        # A UTC observation date, distinct from wall-clock product creation.
+        date = datetime.fromtimestamp(mean_unix, timezone.utc).isoformat()
+        meta = dict(obsnum=observation, source=source, date=date, mjd=mjd)
+        for axis in ("Az", "El"):
+            for kind in ("User", "Paddle"):
+                key = f"Header.PointModel.{axis}{kind}Off"
+                meta[key] = scalar(key)
+        astrometry = [item for item in calibration if item.get("type") == "astrometry"]
+        _require(len(astrometry) == 1, "one explicit astrometry item required for pointing handoff")
+        axes = {}
+        for entry in astrometry[0].get("pointing_offsets", []):
+            if "axes_name" not in entry:
+                continue
+            axis, values = entry["axes_name"], entry.get("value_arcsec")
+            _require(
+                axis in ("az", "alt")
+                and axis not in axes
+                and isinstance(values, list)
+                and len(values) in (1, 2)
+                and all(type(v) in (int, float) and np.isfinite(v) for v in values),
+                "invalid applied pointing offsets for handoff",
+            )
+            axes[axis] = list(values)
+        _require(set(axes) == {"az", "alt"}, "missing applied pointing offset axes")
+        result.update(status="available", meta=meta, applied_pointing_offsets=axes)
+    except (ValueError, OverflowError) as exc:
+        result["cause"] = str(exc)
+    return result
+
+
 def _write(path, value):
     with path.open("x") as stream:
         json.dump(value, stream, indent=2, allow_nan=False)
@@ -275,6 +349,7 @@ def prepare(
             or _text(nc, "Header.Dcs.ObsPgm") == "Pointing",
             "telescope is not a POINT acquisition",
         )
+        pointing_metadata = _pointing_metadata(nc, obs, calibration, telescope)
     for name, path in interfaces.items():
         if name == "hwpr":
             bindings.bind(path, "listed HWPR input; inert with polarimetry disabled")
@@ -461,4 +536,5 @@ def prepare(
         effective_config=ep,
         bindings=list(bindings.records.values()),
         native_cells=sum(row["rows"] * row["channels"] for row in inventory),
+        pointing_metadata=pointing_metadata,
     )

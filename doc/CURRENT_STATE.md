@@ -4,6 +4,17 @@ As of 2026-10-30. This page distinguishes the collaborator target, implemented
 engineering candidate, and accepted operational evidence. Historical records
 remain authoritative for their exact scope and source identities.
 
+## POINT handoff continuation — 2026-10-30
+
+The owner-authorized continuation from the combined closure is on
+`codex/point-handoff-20261030`, in its own worktree. The
+[handoff report](../validation/point_handoff_2026-10-30/REPORT.md) records restored
+OG pointing-input compatibility and complete all-array astrometry-table
+publication through existing TolTECA. Flux uncertainties remain unavailable and
+TolProj rejects their use for flux calibration. This advances the interface; it
+does not qualify SCIENCE/coadds, change scientific settings or replace frozen
+runtimes. No reductions or canonical integration are authorized here.
+
 ## Current isolated preparation — 2026-10-30
 
 Grant approved pointing cutoff `797d013f115e403a30663eb92254082e8e742826`

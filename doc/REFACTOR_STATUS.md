@@ -1,3 +1,20 @@
+## POINT correction compatibility and table handoff — 2026-10-30
+
+Grant authorized a bounded continuation of combined candidate
+`b090da0458271c618568802fde1cf5c39f5dd5d2` in
+`codex/point-handoff-20261030`. The [work order](../validation/point_handoff_2026-10-30/WORK_ORDER.md)
+and [report](../validation/point_handoff_2026-10-30/REPORT.md) record single-dated
+constant support, OG observation-span and whole-second epoch behavior, validated
+saved-CAL support, and all-array POINT ECSV publication for existing TolTECA.
+The real pinned consumers pass synthetic discovery/correction checks; TolProj
+rejects unavailable flux errors. No flux uncertainty or scientific eligibility
+is invented. Nonzero applied POINT corrections withhold the table pending a
+qualified residual adapter; old variable-offset CAL receipts cannot silently
+change timing convention. Noise weighting, optical cut, FRUIT and grid remain
+unchanged. Wing study paused; no reductions, Unity, pushes, activation or canonical
+movement. Local verification and independent review are recorded in the linked
+packet; supported Spack and owner-run connected pilot qualification remain held.
+
 ## Isolated pointing/engineering candidate authorized — 2026-10-30
 
 Grant approved the acceptance table and exact pointing cutoff

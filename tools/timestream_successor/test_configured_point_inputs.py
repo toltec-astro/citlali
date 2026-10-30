@@ -263,3 +263,60 @@ def test_unsupported_or_noncanonical_acquisition_rejected(tmp_path, name):
     config["inputs"][0]["meta"]["name"] = name
     with pytest.raises(ValueError, match="acquisition name"):
         run(config, launch, profiles)
+
+
+def add_pointing_metadata(config, launch):
+    with netCDF4.Dataset(launch / 'recomputed.nc', 'a') as nc:
+        text(nc, 'Header.Source.SourceName', 'Jupiter')
+        nc.createDimension('telescope_samples', 3)
+        nc.createVariable('Data.TelescopeBackend.TelTime', 'f8', ('telescope_samples',))[:] = [1700000000.125, 1700000001.25, 1700000002.75]
+        for name, value in [('AzUser', .0001), ('AzPaddle', -.0002), ('ElUser', -.0003), ('ElPaddle', .0004)]:
+            nc.createVariable('Header.PointModel.' + name + 'Off', 'f8', ())[...] = value
+    config['inputs'][0]['cal_items'].append(dict(type='astrometry', pointing_offsets=[
+        dict(axes_name='az', value_arcsec=[0.]), dict(axes_name='alt', value_arcsec=[0.]),
+    ]))
+
+
+def test_point_table_metadata_binds_same_tel_and_preserves_header_units(tmp_path):
+    config, launch, profiles = fixture(tmp_path)
+    add_pointing_metadata(config, launch)
+    result = run(config, launch, profiles)
+    metadata = result['pointing_metadata']
+    assert metadata['status'] == 'available' and metadata['cause'] is None
+    assert metadata['meta']['obsnum'] == OBS
+    assert metadata['meta']['source'] == 'Jupiter'
+    assert metadata['meta']['Header.PointModel.AzPaddleOff'] == -.0002
+    assert metadata['meta']['Header.PointModel.ElUserOff'] == -.0003
+    assert metadata['meta']['mjd'] == np.mean([1700000000.125, 1700000001.25, 1700000002.75]) / 86400. + 40587.
+    assert metadata['meta']['date'].endswith('+00:00')
+    assert metadata['applied_pointing_offsets'] == {'az': [0.], 'alt': [0.]}
+    assert metadata['telescope']['sha256'] == sha(launch / 'recomputed.nc')
+    ast = json.loads((result['effective_config'].parent / 'ast-source-binding.json').read_text())
+    assert metadata['telescope'] == ast['telescope']
+
+
+@pytest.mark.parametrize('defect', ['missing', 'masked_time', 'nonfinite_header', 'missing_astrometry'])
+def test_point_metadata_unavailable_does_not_invent_values_or_block_maps(tmp_path, defect):
+    config, launch, profiles = fixture(tmp_path)
+    if defect != 'missing':
+        add_pointing_metadata(config, launch)
+        with netCDF4.Dataset(launch / 'recomputed.nc', 'a') as nc:
+            if defect == 'masked_time':
+                nc['Data.TelescopeBackend.TelTime'][1] = np.ma.masked
+            if defect == 'nonfinite_header':
+                nc['Header.PointModel.AzUserOff'][...] = np.nan
+        if defect == 'missing_astrometry':
+            config['inputs'][0]['cal_items'].pop()
+    result = run(config, launch, profiles)
+    metadata = result['pointing_metadata']
+    assert metadata['status'] == 'unavailable' and metadata['cause']
+    assert not metadata['meta'] and not metadata['applied_pointing_offsets']
+    assert result['observation_request'].is_file()
+
+
+def test_nonzero_applied_pointing_offsets_are_carried_without_undoing_them(tmp_path):
+    config, launch, profiles = fixture(tmp_path)
+    add_pointing_metadata(config, launch)
+    config['inputs'][0]['cal_items'][-1]['pointing_offsets'][0]['value_arcsec'] = [2., 3.]
+    result = run(config, launch, profiles)
+    assert result['pointing_metadata']['applied_pointing_offsets']['az'] == [2., 3.]

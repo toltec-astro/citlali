@@ -2,7 +2,8 @@
 
 The filenames are discoverable by the existing project interface. The six MAP
 planes retain their successor meanings; neither legacy image-analysis nor PPT
-calibration compatibility is implied by discovery.
+calibration compatibility is implied by discovery. The separate POINT table
+adapter supports the established astrometry handoff with unavailable errors.
 """
 
 from pathlib import Path
@@ -208,6 +209,7 @@ def publish_maps(
     *,
     fit_diagnostics: bool,
     verbose: bool,
+    pointing_metadata: dict | None = None,
 ) -> list[dict]:
     """Publish to a fresh reduNN/<obs>/raw directory; never replace a reduction.
 
@@ -243,7 +245,7 @@ def publish_maps(
             "empirical POINT arrays have different cycle or frozen health identities",
         )
     destination.mkdir(parents=True, exist_ok=False)
-    records = []
+    records, guards = [], {}
     for array, source in zip(arrays, sources):
         name = f"toltec_point_{observation:06d}_{array}_successor.fits"
         output = destination / name
@@ -317,7 +319,17 @@ def publish_maps(
                     guard=guard,
                 ),
             )
+            guards[array] = guard
             record.update(fit_status=guard["status"], fit=fit_name)
-        save_json(destination / f"point-product-{array}.json", record)
         records.append(record)
+    from configured_point_table import publish_pointing_table
+
+    table = publish_pointing_table(destination, observation, guards, records, pointing_metadata)
+    for record in records:
+        record.update(
+            pointing_table_diagnostic="point-table.json",
+            pointing_table=table["table"],
+            pointing_eligible=table["pointing_eligible"],
+        )
+        save_json(destination / f"point-product-{record['array']}.json", record)
     return records

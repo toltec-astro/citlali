@@ -16,6 +16,7 @@ RUNTIME_MODULES = (
     "configured_point_inputs",
     "configured_point_products",
     "configured_point_runtime",
+    "configured_point_table",
     "configured_point_types",
     "configured_point_weighted",
     "inspect_forward_map",

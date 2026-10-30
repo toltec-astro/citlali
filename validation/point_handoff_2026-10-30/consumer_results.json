@@ -1,0 +1,127 @@
+{
+  "scope": "Synthetic table publication and actual pinned consumer functions only; no reduction, flux calibration or full TolTECA process",
+  "sources": [
+    {
+      "repository": "/Users/gwilson/GitHub/tolteca",
+      "revision": "2791e6a1e6349ad1d3ac549a648f41cbc51b98c7",
+      "path": "tolteca/reduce/engines/citlali.py",
+      "sha256": "1e1b311aacdec2874a48858cf3911abf7ff1ae97dfda935f35994aebcf49f4f3"
+    },
+    {
+      "repository": "/Users/gwilson/GitHub/tolproj",
+      "revision": "6309a5a852a0412cee867992aff01341a56b0ebf",
+      "path": "tolproj/steps/calibrate_flxscale.py",
+      "sha256": "bf63173a50836dce7350385b3a65e4384c7c9dee583cbad4d517bf91ca2b2f0e"
+    },
+    {
+      "repository": "/Users/gwilson/GitHub/tolproj",
+      "revision": "6309a5a852a0412cee867992aff01341a56b0ebf",
+      "path": "tolproj/errors.py",
+      "sha256": "1dd728b1cf93343389e86b37325431d64c96dbf87be0707ab33020f04454e0aa"
+    }
+  ],
+  "implementation_sha256": {
+    "tools/timestream_successor/configured_point_table.py": "55d652347ed14da5b5eb74708b9be62857ef6fba0385fccae92b1be23e068dd6",
+    "tools/timestream_successor/configured_point_config.py": "7c0ad6eb1aa51d0f9250be9028055b513afdcf233a9b58a92111fabfc23e88fb"
+  },
+  "synthetic": {
+    "bracket": {
+      "resolved": [
+        [
+          -7.2,
+          4.2
+        ],
+        [
+          4.0,
+          -6.0
+        ],
+        [
+          60000.123456,
+          60002.234567
+        ]
+      ],
+      "configured_adapter": "accepted"
+    },
+    "reversed": {
+      "resolved": [
+        [
+          -7.2,
+          4.2
+        ],
+        [
+          4.0,
+          -6.0
+        ],
+        [
+          60000.123456,
+          60002.234567
+        ]
+      ],
+      "configured_adapter": "accepted"
+    },
+    "single_before": {
+      "resolved": [
+        [
+          -7.2
+        ],
+        [
+          4.0
+        ],
+        [
+          60000.123456
+        ]
+      ],
+      "configured_adapter": "accepted"
+    },
+    "single_after": {
+      "resolved": [
+        [
+          4.2
+        ],
+        [
+          -6.0
+        ],
+        [
+          60002.234567
+        ]
+      ],
+      "configured_adapter": "accepted"
+    },
+    "exact_observation": {
+      "resolved": [
+        [
+          -7.2
+        ],
+        [
+          4.0
+        ],
+        [
+          60000.123456
+        ]
+      ],
+      "configured_adapter": "accepted"
+    }
+  },
+  "published_table_sha256": {
+    "152389": "e621edbca0c9c48bccc3182a449eafa14e890dfedf784acceff289970c41ac3c",
+    "152391": "a8e4461ba4414d1151ac791bf78ef7390f55046a753fbd713c24bca743805e97"
+  },
+  "flux_calibration_rejections": {
+    "152389": "Pointing product <synthetic-project>/pointings/reduced/redu00/152389/raw/ppt_successor_pointing_152389_citlali.ecsv has invalid recovered flux for a1100.",
+    "152391": "Pointing product <synthetic-project>/pointings/reduced/redu00/152391/raw/ppt_successor_pointing_152391_citlali.ecsv has invalid recovered flux for a1100."
+  },
+  "checks": {
+    "all_three_array_identity": true,
+    "amplitudes_and_units": true,
+    "signed_centroids": true,
+    "unavailable_errors_rejected": true,
+    "conventional_discovery": true,
+    "tolteca_calobj_discovery": true
+  },
+  "limits": [
+    "Conditional sigma_A is not used as amp_err.",
+    "Calibration eligibility metadata alone is not enforced by the legacy reader; nonfinite errors enforce the hold.",
+    "Pointing eligibility is a publication guard, not observed scientific acceptance.",
+    "Native interpolation/AST execution is covered separately by C++ tests."
+  ]
+}
