@@ -1,6 +1,6 @@
 # Citlali collaborator candidate — current state
 
-As of 2026-10-29. This page distinguishes the collaborator target, implemented
+As of 2026-10-30. This page distinguishes the collaborator target, implemented
 engineering candidate, and accepted operational evidence. Historical records
 remain authoritative for their exact scope and source identities.
 
@@ -81,9 +81,10 @@ acceptance merely from graph containment or passing tests.
 [Owner-run target qualification](ENGINEERING_OWNER_QUALIFICATION_2026-10-29.md)
 provides isolated Unity build/check instructions. The
 [cleanup record](REPOSITORY_CLEANUP_PROPOSAL_2026-10-29.md) documents Grant's
-subsequent exact approval and removal of 33 missing registrations. All 20
-existing worktrees, 104 branches, three stashes and recovery artifacts were
-verified intact. Further cleanup requires its own exact approval.
+subsequent exact approval and removal of 33 missing registrations. At that
+checkpoint, all 20 existing worktrees, 104 branches, three stashes and recovery
+artifacts were verified intact. The separately approved October 30 consolidation
+is recorded below.
 
 [CI](../.github/README.md) separates hosted source checks from a prepared native
 Spack job. No CI step launches an observation. Required data cannot be skipped
@@ -109,13 +110,14 @@ checkpoints. The September 30 standing owner amendment and the present bounded
 engineering work order govern their own later scope; neither changes scientific
 contracts or grants integration/production authority.
 
-## Working-folder consolidation preparation — 2026-10-29
+## Refactor working-folder consolidation completed — 2026-10-30
 
-Grant authorized safe preparation toward five core working folders, preserving
-pointing and recovery evidence, with small approval batches before deletion.
-The [consolidation record](REPOSITORY_CONSOLIDATION_2026-10-29.md) names all
-20 folders, verified independent backups, dependencies and the first one-folder
-proposal. No existing folder or branch has been deleted under this new request.
-The pointing chat is active; inventory and backup cutoffs are recorded separately.
-Current engineering/pointing builds still use the older science checkout’s
-dependency sources, so that folder is retained.
+The [completed grouped cleanup](REPOSITORY_CONSOLIDATION_2026-10-30.md) retired 13
+historical 2026-refactor working folders after full recovery checks. Seven folders
+remain: five refactor workspaces and two protected legacy/performance workspaces.
+All 104 local branches, three stashes and original recovery evidence remain.
+4.x/5.x source and refs were untouched. Current pointing and its pilot fallback
+remain available; archived historical OOF checks/replays require exact-path
+restoration. Physical consolidation does not change scientific or integration
+acceptance. The October 29 one-folder approval proposal is superseded by Grant's
+October 30 grouped-consolidation directive and completed operation record.

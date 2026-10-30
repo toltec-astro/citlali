@@ -1,3 +1,15 @@
+## Grouped refactor-folder consolidation completed — 2026-10-30
+
+Grant expanded cleanup to grouped retirement after verified local backups and
+restricted it to 2026 refactor work, excluding 4.x/5.x. The [operation record](REPOSITORY_CONSOLIDATION_2026-10-30.md)
+records 13 retired folders and seven retained: five refactor workspaces plus two
+legacy/performance checkouts. All 104 branches, three stashes and original
+recovery evidence remain. Current pointing and its retained pilot fallback remain
+protected. Saved OOF replay and pending launch preparations retain exact-source
+recovery prerequisites; they are not cancelled or scientifically accepted by
+archival. Native/scientific qualification, canonical integration, push and
+production authority are unchanged.
+
 ## Working-folder consolidation prepared — 2026-10-29
 
 Grant authorized preparation toward 3–5 active working folders with exact small

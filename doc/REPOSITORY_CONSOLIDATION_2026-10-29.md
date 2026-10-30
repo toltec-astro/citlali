@@ -1,5 +1,9 @@
 # Citlali working-folder consolidation — 2026-10-29
 
+> Historical preparation record. Grant expanded this to grouped, backed-up
+> 2026-refactor consolidation on October 30, excluding 4.x/5.x work.
+> See the [completed operation record](REPOSITORY_CONSOLIDATION_2026-10-30.md).
+
 Status: preservation completed; first one-folder removal batch proposed, **not executed**.
 Owner: Grant Wilson. This is a bounded cleanup work order, not a governance amendment.
 
