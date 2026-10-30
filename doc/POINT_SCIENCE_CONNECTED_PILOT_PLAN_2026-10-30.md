@@ -66,6 +66,19 @@ approval; sibling repositories remain read-only during this planning task.
 
 ### Batch 1 — Make the POINT handoff truthful and consumable
 
+**Preserve the working OG corrections.** The subsequent
+[OG compatibility audit](../validation/pointing_og_compatibility_2026-10-30/REPORT.md)
+verifies tangent-az/elevation axes, arcsecond units, signs, User/Paddle composition,
+single downstream negation and saved-FITS orientation. These are recovered existing
+behavior, not open scientific-design choices. The actual TolTECA resolver exactly
+reproduces the saved SCIENCE bracket corrections. Add the demonstrated single-PPT
+positive-date rejection, legacy observation-span inputs and fractional-second epoch
+conversion to the bounded compatibility work. The current new CAL conversion differs
+from OG integer-second truncation by less than0.001″ for these saved brackets, but
+needs explicit same-time tests/disposition rather than an assertion of exact parity.
+Do not redesign TolTECA or apply a second cosine/sign/correction. Complete the
+PPT→TolTECA→native correction fixture, including previously applied POINT offsets.
+
 **Result:** a qualified three-array POINT table is discoverable in the ordinary
 project; an unqualified result cannot silently enter calibration or astrometry.
 

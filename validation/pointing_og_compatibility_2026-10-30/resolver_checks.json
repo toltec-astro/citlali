@@ -1,0 +1,207 @@
+{
+  "configuration_cases": {
+    "bracket_sorted": {
+      "accepted": true
+    },
+    "single_before": {
+      "accepted": false,
+      "reason": "inputs[0].cal_items[1].pointing_offsets.modified_julian_date requires two increasing positive actual epochs"
+    },
+    "single_after": {
+      "accepted": false,
+      "reason": "inputs[0].cal_items[1].pointing_offsets.modified_julian_date requires two increasing positive actual epochs"
+    },
+    "constant_without_epoch": {
+      "accepted": true
+    },
+    "two_values_without_epochs": {
+      "accepted": false,
+      "reason": "inputs[0].cal_items[1].pointing_offsets requires actual epochs for two-value offsets"
+    }
+  },
+  "scope": "Pinned resolver arithmetic on fixtures and saved reference metadata; not successor end-to-end correction qualification",
+  "source": {
+    "repository": "/Users/gwilson/GitHub/tolteca",
+    "revision": "2791e6a1e6349ad1d3ac549a648f41cbc51b98c7",
+    "path": "tolteca/reduce/engines/citlali.py",
+    "sha256": "1e1b311aacdec2874a48858cf3911abf7ff1ae97dfda935f35994aebcf49f4f3"
+  },
+  "synthetic": {
+    "bracket_sorted": [
+      [
+        -7.2,
+        4.2
+      ],
+      [
+        4.0,
+        -6.0
+      ],
+      [
+        60000.0,
+        60002.0
+      ]
+    ],
+    "bracket_input_reversed": [
+      [
+        -7.2,
+        4.2
+      ],
+      [
+        4.0,
+        -6.0
+      ],
+      [
+        60000.0,
+        60002.0
+      ]
+    ],
+    "single_before": [
+      [
+        -7.2
+      ],
+      [
+        4.0
+      ],
+      [
+        60000.0
+      ]
+    ],
+    "single_after": [
+      [
+        4.2
+      ],
+      [
+        -6.0
+      ],
+      [
+        60002.0
+      ]
+    ],
+    "same_observation_once": [
+      [
+        -7.2
+      ],
+      [
+        4.0
+      ],
+      [
+        60000.0
+      ]
+    ]
+  },
+  "saved_reference": {
+    "152390": {
+      "resolved": [
+        [
+          -8.403992188685542,
+          -10.438279151916504
+        ],
+        [
+          1.257425770999287,
+          -0.37166276574134827
+        ],
+        [
+          61090.27452368787,
+          61090.29516409608
+        ]
+      ],
+      "saved": [
+        [
+          -8.403992188685542,
+          -10.438279151916504
+        ],
+        [
+          1.257425770999287,
+          -0.37166276574134827
+        ],
+        [
+          61090.27452368787,
+          61090.29516409608
+        ]
+      ],
+      "max_absolute_difference": 0.0,
+      "telescope_offsets_rad": {
+        "Header.PointModel.AzUserOff": -4.738186513956961e-05,
+        "Header.PointModel.AzPaddleOff": 0.0,
+        "Header.PointModel.ElUserOff": 7.925002006269596e-05,
+        "Header.PointModel.ElPaddleOff": 0.0
+      },
+      "fractional_epoch_comparison": {
+        "new_minus_legacy_epoch_seconds": [
+          0.8466320037841797,
+          0.1779015064239502
+        ],
+        "common_time_domain_unix": [
+          1771482918.846632,
+          1771484702.0
+        ],
+        "max_same_time_abs_offset_difference_arcsec": [
+          0.0009654105649961053,
+          0.0007731157467503191
+        ],
+        "scope": "Maximum over overlapping bracket support from endpoint evaluation of linear difference; not sample-schedule or map-result parity"
+      }
+    },
+    "152392": {
+      "resolved": [
+        [
+          -8.755760388390684,
+          -9.092263221740723
+        ],
+        [
+          0.16599909439852567,
+          0.6797776222229004
+        ],
+        [
+          61090.29516409608,
+          61090.315462809784
+        ]
+      ],
+      "saved": [
+        [
+          -8.755760388390684,
+          -9.092263221740723
+        ],
+        [
+          0.16599909439852567,
+          0.6797776222229004
+        ],
+        [
+          61090.29516409608,
+          61090.315462809784
+        ]
+      ],
+      "max_absolute_difference": 0.0,
+      "telescope_offsets_rad": {
+        "Header.PointModel.AzUserOff": -3.922478398676143e-05,
+        "Header.PointModel.AzPaddleOff": 0.0,
+        "Header.PointModel.ElUserOff": 8.185667831876209e-05,
+        "Header.PointModel.ElPaddleOff": 0.0
+      },
+      "fractional_epoch_comparison": {
+        "new_minus_legacy_epoch_seconds": [
+          0.1779015064239502,
+          0.9867653846740723
+        ],
+        "common_time_domain_unix": [
+          1771484702.1779015,
+          1771486455.0
+        ],
+        "max_same_time_abs_offset_difference_arcsec": [
+          0.00018933040802338041,
+          0.0002890730438691591
+        ],
+        "scope": "Maximum over overlapping bracket support from endpoint evaluation of linear difference; not sample-schedule or map-result parity"
+      }
+    }
+  },
+  "inputs": {
+    "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/reference/v2-science/refactor/NGC4449/reduced/redu03/astrometry_provenance.yaml": "4ae571016dfb318b49b98324a7b3d2838dbf809374635df8dbd373c6a4158618",
+    "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/reference/v2-science/pointings/reduced/redu00/152389/raw/ppt_commissioning_pointing_152389_citlali.ecsv": "277a35f7e3f0858b37281ee6b13ef3dde58d67fcf916ab72dfed1e8a74497671",
+    "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/reference/v2-science/pointings/reduced/redu00/152391/raw/ppt_commissioning_pointing_152391_citlali.ecsv": "69d87aa8aa1059e002db8fb9d89c541ed7f4fe57aaf6ccfc349dd072423beeae",
+    "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/reference/v2-science/pointings/reduced/redu00/152393/raw/ppt_commissioning_pointing_152393_citlali.ecsv": "ad06ccf831a65e4f972305b021188e19ec562b1f1db0a21b07a9c4791472ce8a",
+    "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/reference/v2-science/refactor/NGC4449/reduced/tel_toltec_2026-02-19_152390_00_0002_recomputed.nc": "7c2882290f1a3212c78b3ba0c19b5c36e08774d1482f8b304398c0616cd3fb98",
+    "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/reference/v2-science/refactor/NGC4449/reduced/tel_toltec_2026-02-19_152392_00_0002_recomputed.nc": "16bb5954bed49d602f39ca4a9d206b50055d03907b8543ae940d46c6b012ede9",
+    "/Users/gwilson/.codex/worktrees/pointing-engineering-candidate-20261030/citlali-refactor/tools/timestream_successor/configured_point_config.py": "c6809d68d739d60d4e45ee18f0109c7992e2c4cc59a1b5dfc16115ee41ec3fab"
+  }
+}

@@ -1,3 +1,26 @@
+## OG pointing convention preservation verified; ingress gaps retained — 2026-10-30
+
+The [OG compatibility audit](../validation/pointing_og_compatibility_2026-10-30/REPORT.md)
+compares original fork376e002, preserved OGffc6b907, frozen V2 references and
+combined successor b090da/c83375dc. Physical tangent-az/elevation axes, units,
+correction signs, detector rotation and persisted FITS orientation agree. The
+actual pinned TolTECA resolver reproduces saved152390/152392 correction endpoints
+and MJDs exactly; five signed synthetic resolver cases and six existing native
+coordinate/interpolation tests pass. No new reduction, fit or build occurred.
+
+Configured POINT currently rejects TolTECA's one-PPT positive-MJD constant input
+and legacy two-value observation-span inputs. New CAL preserves fractional seconds
+where OG truncated epoch seconds; same-time differences are below0.001″ in these
+saved brackets, not a universal bound or scientific acceptance threshold. Native
+sampling also differs from the old common grid. Conventional successor PPT output
+is still absent, so complete end-to-end correction compatibility is not claimed.
+
+The connected plan now requires preservation of recovered OG behavior and closure
+of these concrete compatibility cases, rather than redesigning the correction.
+No application or scientific policy was changed. Wing/temporal studies remain paused;
+originals, OG and combined checkouts remain untouched. Independent review is recorded
+with this audit at closure.
+
 ## Connected pilot implementation plan prepared — 2026-10-30
 
 The [minimal plan](POINT_SCIENCE_CONNECTED_PILOT_PLAN_2026-10-30.md) is aligned with

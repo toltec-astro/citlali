@@ -1,0 +1,108 @@
+[
+  {
+    "role": "OG",
+    "commit": "ffc6b9070f4744f9778f3db71cdc468846d1da89",
+    "path": "src/citlali/core/engine/telescope.cpp",
+    "sha256": "97994aec6a81953fc84c267c2ea0da3269d6120410331eb27bf61e5b5c6a9c6f"
+  },
+  {
+    "role": "OG",
+    "commit": "ffc6b9070f4744f9778f3db71cdc468846d1da89",
+    "path": "include/citlali/core/utils/pointing.h",
+    "sha256": "871bc4c8ab4ff424f6d30567965463fbf35e3e254d3d2670d3efe4cd2831579b"
+  },
+  {
+    "role": "OG",
+    "commit": "ffc6b9070f4744f9778f3db71cdc468846d1da89",
+    "path": "include/citlali/core/engine/pointing.h",
+    "sha256": "83f1619f9248968c15e75aed88d8840d203547e77aa955a31ecb9544e5afebc7"
+  },
+  {
+    "role": "OG",
+    "commit": "ffc6b9070f4744f9778f3db71cdc468846d1da89",
+    "path": "include/citlali/core/utils/fits_io.h",
+    "sha256": "f04264de82c990d4ff873411bcab6fa98c45974f949a6d696917bf8ea71808f5"
+  },
+  {
+    "role": "OG",
+    "commit": "ffc6b9070f4744f9778f3db71cdc468846d1da89",
+    "path": "include/citlali/core/utils/utils.h",
+    "sha256": "54dfa3a5d00aba579c7698a67f008f88c3fbd6f665da0a17680521c719453e90"
+  },
+  {
+    "role": "fork",
+    "commit": "376e002238b1f49aeced8a3f33e8742db141634b",
+    "path": "src/citlali/core/engine/telescope.cpp",
+    "sha256": "97994aec6a81953fc84c267c2ea0da3269d6120410331eb27bf61e5b5c6a9c6f"
+  },
+  {
+    "role": "fork",
+    "commit": "376e002238b1f49aeced8a3f33e8742db141634b",
+    "path": "include/citlali/core/utils/pointing.h",
+    "sha256": "871bc4c8ab4ff424f6d30567965463fbf35e3e254d3d2670d3efe4cd2831579b"
+  },
+  {
+    "role": "fork",
+    "commit": "376e002238b1f49aeced8a3f33e8742db141634b",
+    "path": "include/citlali/core/engine/pointing.h",
+    "sha256": "83f1619f9248968c15e75aed88d8840d203547e77aa955a31ecb9544e5afebc7"
+  },
+  {
+    "role": "fork",
+    "commit": "376e002238b1f49aeced8a3f33e8742db141634b",
+    "path": "include/citlali/core/utils/fits_io.h",
+    "sha256": "f04264de82c990d4ff873411bcab6fa98c45974f949a6d696917bf8ea71808f5"
+  },
+  {
+    "role": "combined",
+    "commit": "b090da0458271c618568802fde1cf5c39f5dd5d2",
+    "path": "tools/timestream_successor/configured_point_config.py",
+    "sha256": "c6809d68d739d60d4e45ee18f0109c7992e2c4cc59a1b5dfc16115ee41ec3fab"
+  },
+  {
+    "role": "combined",
+    "commit": "b090da0458271c618568802fde1cf5c39f5dd5d2",
+    "path": "tools/timestream_successor/configured_point_products.py",
+    "sha256": "2a121873026a867a196c0030d3d229e70a658ba9f4db3e8baaec35b4412639e8"
+  },
+  {
+    "role": "combined",
+    "commit": "b090da0458271c618568802fde1cf5c39f5dd5d2",
+    "path": "src/citlali/cli/cal_pipeline_execution.h",
+    "sha256": "622dc7679308bda382cf8c6d2424c16417a8f4dbddaeb424f6b107c43c11c05a"
+  },
+  {
+    "role": "combined",
+    "commit": "b090da0458271c618568802fde1cf5c39f5dd5d2",
+    "path": "src/citlali/core/pipeline/ast_rtc_coordinates.cpp",
+    "sha256": "2c2d3904f3e96bc29e0dcef71ec3db09fdb29d48b959c9b4ff42195f7ee4c76c"
+  },
+  {
+    "role": "combined",
+    "commit": "b090da0458271c618568802fde1cf5c39f5dd5d2",
+    "path": "src/citlali/cli/point_weighted_execution.h",
+    "sha256": "0924ac9af4a1e74afadd4cefa44d8714b707c34726cf43cf6b5e7a793e581e1f"
+  },
+  {
+    "role": "combined",
+    "commit": "b090da0458271c618568802fde1cf5c39f5dd5d2",
+    "path": "include/citlali/core/pipeline/timestream_native_pointing.h",
+    "sha256": "a8a2eba69c80370273fd16d74f46ed4d172385bf8db1fe0a21e1180883be67cd"
+  },
+  {
+    "role": "combined",
+    "commit": "b090da0458271c618568802fde1cf5c39f5dd5d2",
+    "path": "include/citlali/core/pipeline/pointing_offsets_config_read.h",
+    "sha256": "763046e4b03908b3296342dbb714e6cd041ee98904f8d9bfdc362960b46c8bf5"
+  },
+  {
+    "role": "executed_synthetic_binary",
+    "path": "/Users/gwilson/.codex/worktrees/pointing-engineering-candidate-20261030/citlali-refactor/build/supplemental-native/bin/citlali_forward_map_test",
+    "sha256": "46d38fca547a5b177bb76e2b3174847bf10a5847097cb009582a789aa337d6a5"
+  },
+  {
+    "role": "executed_synthetic_binary",
+    "path": "/Users/gwilson/.codex/worktrees/pointing-engineering-candidate-20261030/citlali-refactor/build/supplemental-native/tests/citlali_sci_align_test",
+    "sha256": "59251eba7a3bc63dc4903874c8247218fddb3f9372f2dce5ca46d827d84fff12"
+  }
+]
