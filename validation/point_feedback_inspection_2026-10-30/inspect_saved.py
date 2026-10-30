@@ -234,8 +234,8 @@ def inspect(output, figures):
         result["arrays"][array] = arr
         for col, (values, title) in enumerate(
             [
-                (relative, "Saved M9, fitted background removed"),
-                (z, "Actual feedback to M10"),
+                (relative, "M9 − fitted background"),
+                (z, "Feedback to M10"),
             ]
         ):
             im = ax[row, col].pcolormesh(
@@ -265,6 +265,7 @@ def inspect(output, figures):
                 im, ax=ax[row, col], shrink=0.75, label="mJy / nominal beam"
             )
             bar.set_ticks([-100, -20, 0, 20, 100, 500])
+            bar.set_ticklabels(["−100", "−20", "0", "20", "100", "500"])
         profiles = cycles[-1]["profiles"]
         rr = [v["radius_mid_arcsec"] for v in profiles]
         for key, label in [
