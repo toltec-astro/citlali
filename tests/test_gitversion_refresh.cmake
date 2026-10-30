@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
-foreach(required_variable TEST_ROOT REFRESH_MODULE)
+foreach(required_variable TEST_ROOT REFRESH_MODULE TEST_GENERATOR)
     if(NOT DEFINED "${required_variable}"
        OR "${${required_variable}}" STREQUAL "")
         message(FATAL_ERROR
@@ -66,7 +66,8 @@ run_checked("${GIT_EXECUTABLE}" -C "${source_dir}"
     -c user.email=citlali-test@example.invalid
     commit -m first)
 run_checked("${GIT_EXECUTABLE}" -C "${source_dir}" tag v4.0.0)
-run_checked("${CMAKE_COMMAND}" -S "${source_dir}" -B "${build_dir}")
+run_checked("${CMAKE_COMMAND}" -G "${TEST_GENERATOR}"
+    -S "${source_dir}" -B "${build_dir}")
 run_checked("${CMAKE_COMMAND}" --build "${build_dir}"
     --target gitversion_probe)
 

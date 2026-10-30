@@ -32,6 +32,7 @@ add_test(
     NAME citlali::build_gitversion_refresh
     COMMAND "${CMAKE_COMMAND}"
         "-DTEST_ROOT=${CMAKE_CURRENT_BINARY_DIR}/gitversion_refresh_test"
+        "-DTEST_GENERATOR=${CMAKE_GENERATOR}"
         "-DREFRESH_MODULE=${CITLALI_TEST_SOURCE_ROOT}/cmake/citlali_gitversion.cmake"
         -P "${CMAKE_CURRENT_LIST_DIR}/test_gitversion_refresh.cmake"
 )

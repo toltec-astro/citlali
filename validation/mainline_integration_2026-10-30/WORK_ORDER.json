@@ -4,7 +4,7 @@
   "owner": "Grant Wilson",
   "owner_directive": "Let's do what needs to be done to bring candidate 44171fd3a into refactor-mainline.  I'm hoping we end today with a seriously cleaned up and professional, clear, and understandable code base.",
   "risk_tier": 2,
-  "purpose": "Integrate the exact reviewed candidate locally and reconcile the documentation entry points without further application changes.",
+  "purpose": "Integrate the exact reviewed application locally, reconcile documentation, and repair the demonstrated Ninja version-header dependency defect without scientific changes.",
   "canonical_base": "e32c4584dec07617d6caa857d39bf13047b6c4b0",
   "accepted_application_source": "44171fd3a6ba5924f8f4dba0324defe0922c597d",
   "accepted_application_tree": "82b89c29ce70b2e05f33e9aea02911590cea2ce1",
@@ -30,7 +30,7 @@
     "validation/spack_qualification_2026-10-30/QUALIFICATION.json"
   ],
   "scope": [
-    "one documentation-only closure above the accepted source on the existing candidate branch",
+    "Integration closure above accepted source on existing candidate: documentation and bounded generated-version-header dependency repair",
     "existing front-door and build/status documentation clarity",
     "record incorporation of the existing owner-approved September30 governance amendment without normative edits",
     "independent exact-closure review",
@@ -40,6 +40,7 @@
   ],
   "gates": [
     "authenticated prior exact44171 source/review/Spack seal",
+    "Red Ninja reproduction then passing one-build revision refresh and no-op checks under both Ninja and Unix Makefiles",
     "documentation links, JSON, source-equivalence and ledger checks",
     "refresh native executable provenance after documentation commit, retaining exact44171 executable",
     "native CTest/baseline/config gate at final closure as executable refresh evidence",
@@ -60,5 +61,6 @@
     "new scientific/calibration/SCIENCE/coadd/production acceptance",
     "branch/worktree/backup deletion or history rewriting"
   ],
-  "external_packet": "/Users/gwilson/.codex/visualizations/2026/10/29/01a188f2-4d30-7e60-88a8-956b50bb08cf/citlali-mainline-integration-20261030"
+  "external_packet": "/Users/gwilson/.codex/visualizations/2026/10/29/01a188f2-4d30-7e60-88a8-956b50bb08cf/citlali-mainline-integration-20261030",
+  "reassessment": "BUILD_REASSESSMENT.json"
 }

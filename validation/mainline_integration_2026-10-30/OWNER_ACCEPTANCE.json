@@ -3,7 +3,7 @@
   "recorded_date": "2026-10-30",
   "owner": "Grant Wilson",
   "owner_directive": "Let's do what needs to be done to bring candidate 44171fd3a into refactor-mainline.  I'm hoping we end today with a seriously cleaned up and professional, clear, and understandable code base.",
-  "authorization": "Local development integration of exact44171fd3 and its documentation-only acceptance closure; no push, science/production promotion or deletion.",
+  "authorization": "Local development integration of exact44171fd3 application with acceptance documentation and a bounded build-provenance repair necessary to satisfy the source-version gate; no scientific/default changes, push, production promotion or deletion.",
   "previous_mainline": "e32c4584dec07617d6caa857d39bf13047b6c4b0",
   "accepted_application_source": "44171fd3a6ba5924f8f4dba0324defe0922c597d",
   "accepted_application_tree": "82b89c29ce70b2e05f33e9aea02911590cea2ce1",
@@ -57,12 +57,13 @@
     "new_owner_disposition": "This directive authorizes local integration now after exact-source local gates, supported Mac Spack and independent review. Owner publication followed by eligible hosted CI remains an explicit obligation before release; no hosted pass or release acceptance is claimed.",
     "pr_base": "codex/refactor-mainline"
   },
-  "operation": "After exact documentation-closure review and live ancestry verification, compare-and-swap refs/heads/codex/refactor-mainline from previous_mainline to reviewed descendant; then switch the reused clean worktree to mainline without changing files.",
+  "operation": "After exact integration-closure review and live ancestry verification, compare-and-swap refs/heads/codex/refactor-mainline from previous_mainline to reviewed descendant; then switch the reused clean worktree to mainline without changing files.",
   "effectiveness_condition": "Integration completion is established by literal local canonical ancestry and the external post-operation receipt, not by the presence of this prepared file on a candidate branch.",
   "final_exact_receipt": "/Users/gwilson/.codex/visualizations/2026/10/29/01a188f2-4d30-7e60-88a8-956b50bb08cf/citlali-mainline-integration-20261030/COMPLETION.json",
   "retained_limits": [
     "Unity and immutable package/release/export qualification remain separate.",
     "Calibration, SCIENCE/coadds, downstream consumers and production still require their named evidence and owner decisions.",
     "No normative scientific router, accepted-run ledger or historical authority is rewritten."
-  ]
+  ],
+  "build_provenance_reassessment": "BUILD_REASSESSMENT.json"
 }

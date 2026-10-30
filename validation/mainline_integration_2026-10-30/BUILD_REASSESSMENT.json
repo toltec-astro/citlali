@@ -1,0 +1,49 @@
+{
+  "trigger": "Single Ninja build after documentation commit changed generated version header but left stale CLI; source-version gate failed.",
+  "source": "2341ea983e1bc92738e53bfa90925a8fb8e69800",
+  "evidence": [
+    "logs/closure-build.log",
+    "review/gitversion-ninja-readiness.json",
+    "logs/ninja-provenance-red.log"
+  ],
+  "reproduction": {
+    "args": [
+      "/Users/gwilson/GitHub/spack/bin/spack",
+      "-e",
+      "/Users/gwilson/.codex/worktrees/pointing-engineering-candidate-20261030/citlali-refactor/build/spack-candidate/environment",
+      "build-env",
+      "citlali",
+      "--",
+      "cmake",
+      "-DTEST_ROOT=/Users/gwilson/.codex/visualizations/2026/10/29/01a188f2-4d30-7e60-88a8-956b50bb08cf/citlali-mainline-integration-20261030/ninja-red-probe",
+      "-DREFRESH_MODULE=/Users/gwilson/.codex/worktrees/pointing-engineering-candidate-20261030/citlali-refactor/cmake/citlali_gitversion.cmake",
+      "-P",
+      "/Users/gwilson/.codex/visualizations/2026/10/29/01a188f2-4d30-7e60-88a8-956b50bb08cf/citlali-mainline-integration-20261030/ninja-red-probe.cmake"
+    ],
+    "exit_code": 1,
+    "expected_failure_observed": true
+  },
+  "disposition": "Bounded build-only repair within engineering/integration scope: declare generated header BYPRODUCTS, exercise current generator in existing regression. No application/numerical/default change. New exact-source review and full native gates required before canonical movement.",
+  "timestamp_utc": "2026-10-30T22:10:54.025348+00:00",
+  "repaired_files": [
+    "cmake/citlali_gitversion.cmake",
+    "tests/CMakeLists.txt",
+    "tests/test_gitversion_refresh.cmake"
+  ],
+  "intended_behavior": "One ordinary Ninja build after HEAD changes recompiles version consumers and reports the current commit, matching existing Make behavior. No-op header remains unchanged.",
+  "required_regression_generators": [
+    "Ninja",
+    "Unix Makefiles"
+  ],
+  "focused_results": {
+    "Ninja": "PASS",
+    "Unix Makefiles": "PASS",
+    "prior_Ninja_source": "expected failure reproduced",
+    "receipt_sha256": "001d671938746eabc72951d1e87c289e541c1b0a2bad0c61648da65f97d3b70b"
+  },
+  "repair_file_sha256": {
+    "cmake/citlali_gitversion.cmake": "5007fef8cc9c0059fb4af98be9be0d377f15aed5d5d37bfea669ca9010088e94",
+    "tests/CMakeLists.txt": "b50dc16cdac11e42893f35106326f21ee69f1f6afc40ab7a9f359287cd404011",
+    "tests/test_gitversion_refresh.cmake": "07cd25d2e0af366ed7b01931bc02d951f31b32e613ba9eb4a3d7f436d375e658"
+  }
+}

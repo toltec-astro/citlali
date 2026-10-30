@@ -8,7 +8,8 @@ Grant directed integration of exact application candidate
 and [work order](../validation/mainline_integration_2026-10-30/WORK_ORDER.json) bind
 the source, prior admission table and exact permitted operation. Local canonical
 advances from `e32c4584dec07617d6caa857d39bf13047b6c4b0` to a separately reviewed
-documentation-only child of that source. The literal ref and external completion
+integration child of that source, with documentation and the bounded build
+repair below. The literal ref and external completion
 receipt establish actual movement; the prepared record alone does not.
 
 The accepted source retains pointing cutoff `797d013f115e403a30663eb92254082e8e742826`
@@ -18,6 +19,14 @@ the admission table remain distinct; integration is not wholesale scientific
 or production acceptance. Mac Spack qualification passes all 44 dependencies,
 1,388 enabled CTests, 207 baseline tests and full configuration preflight, with
 one inherited disabled test and independent review without findings.
+
+The closure source-version gate exposed a Ninja dependency defect: the generated
+Git-version header had no declared producer, so a commit-only change could leave
+the executable stale for one build. The [bounded reassessment](../validation/mainline_integration_2026-10-30/BUILD_REASSESSMENT.json)
+records the reproduced failure, generated-header BYPRODUCTS repair, and existing
+regression extended to the actual build generator. Ninja and Make probes plus
+full final native gates are required; no scientific algorithm/default changes
+are introduced. The exact qualified 44171fd3a executable remains preserved.
 
 The existing September 30 standing development amendment is incorporated with
 its original owner directive, not rewritten. Original governance acceptance

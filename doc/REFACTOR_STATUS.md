@@ -4,8 +4,10 @@ Grant approved bringing exact candidate `44171fd3a6ba5924f8f4dba0324defe0922c597
 into `codex/refactor-mainline`. [Current state](CURRENT_STATE.md) is the concise
 entry point; the [integration ledger](INTEGRATION_LEDGER.md) records exact owner
 authority, prior canonical, governance incorporation and retained limits.
-Only documentation/acceptance records follow the qualified application source;
-application, tests, build logic, defaults and scientific contracts are unchanged.
+Acceptance documentation and a bounded Ninja version-header dependency repair
+follow the qualified application source. The existing regression now uses the
+actual build generator. Application numerics, defaults and scientific contracts
+are unchanged; the reassessment and new native gates are recorded in the ledger.
 An independent exact-SHA review and live compare-and-swap precede local canonical
 movement. The external completion receipt records the actual final tip and gates.
 

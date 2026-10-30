@@ -13,7 +13,10 @@ function(citlali_enable_buildtime_gitversion_refresh
             "Git-version refresh target already exists: ${refresh_target}")
     endif()
 
+    # Ninja must see the header producer before evaluating compiler depfiles;
+    # a target-order dependency alone can leave consumers stale for one build.
     add_custom_target("${refresh_target}"
+        BYPRODUCTS "${output_path}"
         COMMAND "${CMAKE_COMMAND}"
             "-DCITLALI_GIT_SOURCE_DIR=${source_dir}"
             "-DCITLALI_GITVERSION_HEADER=${output_path}"

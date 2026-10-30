@@ -2,7 +2,7 @@
 
 As of 2026-10-30. **The shared development baseline is `codex/refactor-mainline`.**
 Grant approved integration of application candidate
-`44171fd3a6ba5924f8f4dba0324defe0922c597d`, followed only by documentation closure.
+`44171fd3a6ba5924f8f4dba0324defe0922c597d`, followed by documentation closure and a bounded build-provenance repair.
 The [owner acceptance record](../validation/mainline_integration_2026-10-30/OWNER_ACCEPTANCE.json)
 binds the exact source, earlier admission table, governance and checks. This
 record becomes the completed integration receipt when its independently reviewed
@@ -24,7 +24,7 @@ that operation's exact old and new tips. Local integration does not publish GitH
 | Role | Identity and purpose |
 | --- | --- |
 | Accepted application source | `44171fd3a6ba5924f8f4dba0324defe0922c597d`; combined pointing cutoff plus engineering cleanup and Mac Spack qualification |
-| Local integration branch | `codex/refactor-mainline`; contains that application source and its reviewed documentation closure |
+| Local integration branch | `codex/refactor-mainline`; contains that application source and its reviewed integration closure |
 | Previous mainline | `e32c4584dec07617d6caa857d39bf13047b6c4b0`; retained in ancestry and recovery evidence |
 | Pointing input included here | `797d013f115e403a30663eb92254082e8e742826`; approved cutoff with saved five-case assessment |
 | Engineering input included here | `5c46201057d6b6d1048aac2949a64e9a34e9bad3` |
@@ -57,8 +57,12 @@ full configuration preflight, installed synthetic consumers, standalone headers,
 and runtime dependency identity. One inherited lifecycle test remains disabled.
 Independent review passed with recorded limitations. [Qualification evidence](SPACK_QUALIFICATION_2026-10-30.md)
 states the exact LLVM20/SDK26.5/macOS27 realization and preserves initial failures.
-Earlier AppleClang/Homebrew checks remain supplemental. Exact source and final
-closure executable identities remain separately bound in their evidence packets.
+Earlier AppleClang/Homebrew checks remain supplemental. Integration exposed a
+Ninja dependency defect: a commit change could refresh the version header but
+leave the binary stale for one build. The closure declares the header producer
+and runs the existing regression with the actual build generator. This changes
+build provenance, not scientific execution. Exact source and final closure
+executable identities remain separately bound in their evidence packets.
 
 ## Application and release boundaries
 
