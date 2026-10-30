@@ -1,3 +1,26 @@
+## POINT/calibration audit; temporal research paused — 2026-10-30
+
+Grant paused temporal-change development and redirected this thread to saved
+POINT products, a1100 amplitude changes and the existing calibration machinery.
+Keep the 0.10 cut, current runtime and detector selections unchanged. Telescope
+optics, including possible thermal M1 deformation, must remain distinct from
+detector-health claims. The [audit work order](../validation/point_calibration_audit_2026-10-30/WORK_ORDER.md)
+authorizes saved-product measurements and read-only consumer tracing, with no
+new reductions or calibration issuance. Both temporal studies remain preserved
+research evidence, not a prerequisite statistical certificate for POINT release.
+
+The [saved-product audit](../validation/point_calibration_audit_2026-10-30/REPORT.md)
+finds that a1100's −29.3%/−22.6% peak changes are versus recent uniform trials;
+versus archived V2 PPT they are +5.5%/−4.9%. The 152389 comparison also changes
+pixel size, ranks and coverage; 152418 preserves those settings. Aperture behavior
+shows improved background stability in 152389 but remaining ambiguity in 152418.
+Different M1/M2 settings between observations are optical-state evidence, not a
+measured explanation of loss or a detector-health verdict. Historical factors and
+APT multiplication reproduce, but native POINT lacks qualified PPT/error/correction
+compatibility and successor brackets 152391/152393. Existing SCIENCE YAML selects
+reference calibration intentionally; no new SCIENCE execution is claimed. No
+runtime, detector, calibration or release acceptance changes follow from this audit.
+
 ## Direct temporal-change synthetic study — 2026-10-29
 
 Grant authorized a fixed-reference temporal-change study and synthetic map-impact

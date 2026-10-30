@@ -1,0 +1,210 @@
+{
+  "scope": "read-only helper probes and saved calibration arithmetic; no calibration issued",
+  "tolproj_reader": "/Users/gwilson/GitHub/tolproj/tolproj/steps/calibrate_flxscale.py",
+  "reader_sha256": "bf63173a50836dce7350385b3a65e4384c7c9dee583cbad4d517bf91ca2b2f0e",
+  "tolproj_head": "6309a5a852a0412cee867992aff01341a56b0ebf",
+  "probe_results": {
+    "valid": "accepted",
+    "missing_array": "rejected",
+    "nonfinite_amp": "rejected",
+    "wrong_amp_unit": "rejected",
+    "wrong_error_unit": "accepted",
+    "ineligible_metadata": "accepted",
+    "fractional_array": "accepted",
+    "zero_error": "accepted"
+  },
+  "standard_discovery": {
+    "152389": "no standard project POINT table",
+    "152418": "no standard project POINT table"
+  },
+  "legacy_recovered": {
+    "152389": {
+      "a1100": {
+        "flux_mjy": 661.0567016601562,
+        "flux_error_mjy": 4.234604835510254
+      },
+      "a1400": {
+        "flux_mjy": 470.5762939453125,
+        "flux_error_mjy": 2.405160903930664
+      },
+      "a2000": {
+        "flux_mjy": 526.0347290039062,
+        "flux_error_mjy": 2.62813401222229
+      }
+    },
+    "152391": {
+      "a1100": {
+        "flux_mjy": 463.3121032714844,
+        "flux_error_mjy": 4.597883224487305
+      },
+      "a1400": {
+        "flux_mjy": 459.63330078125,
+        "flux_error_mjy": 3.4664740562438965
+      },
+      "a2000": {
+        "flux_mjy": 441.752197265625,
+        "flux_error_mjy": 2.228800058364868
+      }
+    },
+    "152393": {
+      "a1100": {
+        "flux_mjy": 441.877685546875,
+        "flux_error_mjy": 4.00439977645874
+      },
+      "a1400": {
+        "flux_mjy": 433.0528869628906,
+        "flux_error_mjy": 2.328221082687378
+      },
+      "a2000": {
+        "flux_mjy": 464.3537902832031,
+        "flux_error_mjy": 1.9469170570373535
+      }
+    },
+    "152418": {
+      "a1100": {
+        "flux_mjy": 408.8302001953125,
+        "flux_error_mjy": 3.6193220615386963
+      },
+      "a1400": {
+        "flux_mjy": 434.5603942871094,
+        "flux_error_mjy": 5.116861820220947
+      },
+      "a2000": {
+        "flux_mjy": 474.4316101074219,
+        "flux_error_mjy": 2.1444430351257324
+      }
+    }
+  },
+  "historical_report_sha256": "49fbac6847d8eef3d9ff41c66520ff62735648dfc1d212b7f9259001b5adf679",
+  "historical_calibration_bindings": [
+    {
+      "science_obsnum": 152390,
+      "brackets": [
+        152389,
+        152391
+      ],
+      "factors": {
+        "a1100": 0.7661576363184347,
+        "a1400": 1.1210333837360158,
+        "a2000": 1.4300676124369782
+      },
+      "matched": {
+        "manifest": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/apts/v2/apt_152390_matched.apt-v2/manifest.ecsv",
+        "manifest_sha256": "cb83f1e1659454a1334b942b19e0b13b44ab757fc8722e13c3a3f0930a2e973c",
+        "apt": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/apts/v2/apt_152390_matched.apt-v2/sha256-107a9db45665717e0d11190d9ef0313818e4847f587928f0b3b96118f471939f.apt.ecsv",
+        "apt_sha256": "107a9db45665717e0d11190d9ef0313818e4847f587928f0b3b96118f471939f"
+      },
+      "calibrated": {
+        "manifest": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/apts/v2/fluxcal/apt_152390_fluxcal.apt-v2/manifest.ecsv",
+        "manifest_sha256": "553b4d0373c362962f5ab151de4c60b28ac446205c00a9ec8a1d8faf20802e72",
+        "apt": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/apts/v2/fluxcal/apt_152390_fluxcal.apt-v2/sha256-3e0ec58130ae679e4a2cd6357b7dfb98e8ba806c80660c4655270fc4ec862456.apt.ecsv",
+        "apt_sha256": "3e0ec58130ae679e4a2cd6357b7dfb98e8ba806c80660c4655270fc4ec862456"
+      },
+      "selected_reference": {
+        "manifest": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/reference/v2-science/apts/v2/fluxcal/apt_152390_fluxcal.apt-v2/manifest.ecsv",
+        "manifest_sha256": "553b4d0373c362962f5ab151de4c60b28ac446205c00a9ec8a1d8faf20802e72",
+        "apt": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/reference/v2-science/apts/v2/fluxcal/apt_152390_fluxcal.apt-v2/sha256-3e0ec58130ae679e4a2cd6357b7dfb98e8ba806c80660c4655270fc4ec862456.apt.ecsv",
+        "apt_sha256": "3e0ec58130ae679e4a2cd6357b7dfb98e8ba806c80660c4655270fc4ec862456"
+      },
+      "rows_checked": {
+        "a1100": {
+          "total": 3173,
+          "finite_flxscale": 3173
+        },
+        "a1400": {
+          "total": 1368,
+          "finite_flxscale": 1368
+        },
+        "a2000": {
+          "total": 977,
+          "finite_flxscale": 977
+        }
+      }
+    },
+    {
+      "science_obsnum": 152392,
+      "brackets": [
+        152391,
+        152393
+      ],
+      "factors": {
+        "a1100": 0.951671966009629,
+        "a1400": 1.1681551970633939,
+        "a2000": 1.52741595135239
+      },
+      "matched": {
+        "manifest": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/apts/v2/apt_152392_matched.apt-v2/manifest.ecsv",
+        "manifest_sha256": "080a76740695d29e14e8394d1bf328bdb840380429a2b7f19cf7f8172101cd37",
+        "apt": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/apts/v2/apt_152392_matched.apt-v2/sha256-56502a211bca607a39c5392a27529e7a195a5cf354debe3e80061585591b9048.apt.ecsv",
+        "apt_sha256": "56502a211bca607a39c5392a27529e7a195a5cf354debe3e80061585591b9048"
+      },
+      "calibrated": {
+        "manifest": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/apts/v2/fluxcal/apt_152392_fluxcal.apt-v2/manifest.ecsv",
+        "manifest_sha256": "dabe673941f946614695454cf19332ad1473ca0e0a09d8131c5f8f53ac140fdd",
+        "apt": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/apts/v2/fluxcal/apt_152392_fluxcal.apt-v2/sha256-e2920a5bfadb793efaffec0e24f67293eba21ca0215b7ccfdc3c1c4168a88291.apt.ecsv",
+        "apt_sha256": "e2920a5bfadb793efaffec0e24f67293eba21ca0215b7ccfdc3c1c4168a88291"
+      },
+      "selected_reference": {
+        "manifest": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/reference/v2-science/apts/v2/fluxcal/apt_152392_fluxcal.apt-v2/manifest.ecsv",
+        "manifest_sha256": "dabe673941f946614695454cf19332ad1473ca0e0a09d8131c5f8f53ac140fdd",
+        "apt": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/reference/v2-science/apts/v2/fluxcal/apt_152392_fluxcal.apt-v2/sha256-e2920a5bfadb793efaffec0e24f67293eba21ca0215b7ccfdc3c1c4168a88291.apt.ecsv",
+        "apt_sha256": "e2920a5bfadb793efaffec0e24f67293eba21ca0215b7ccfdc3c1c4168a88291"
+      },
+      "rows_checked": {
+        "a1100": {
+          "total": 3173,
+          "finite_flxscale": 3173
+        },
+        "a1400": {
+          "total": 1368,
+          "finite_flxscale": 1368
+        },
+        "a2000": {
+          "total": 977,
+          "finite_flxscale": 977
+        }
+      }
+    }
+  ],
+  "authored_science_yaml": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/refactor/NGC4449/72_science_observation.yaml",
+  "authored_science_yaml_sha256": "81a9e120dd204a0e479d95864d82702adf0a223e8e3880ffb9b4de89f996446a",
+  "selected_APTs": [
+    {
+      "filepath": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/reference/v2-science/apts/v2/fluxcal/apt_152390_fluxcal.apt-v2/manifest.ecsv",
+      "meta": {
+        "interface": "apt"
+      },
+      "type": "array_prop_table",
+      "select": "obsnum == 152390"
+    },
+    {
+      "filepath": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/reference/v2-science/apts/v2/fluxcal/apt_152392_fluxcal.apt-v2/manifest.ecsv",
+      "meta": {
+        "interface": "apt"
+      },
+      "type": "array_prop_table",
+      "select": "obsnum == 152392"
+    }
+  ],
+  "pointing_cal_objs": [
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/reference/v2-science/pointings/reduced/redu00/152389/raw"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/reference/v2-science/pointings/reduced/redu00/152391/raw"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/reference/v2-science/pointings/reduced/redu00/152393/raw"
+    }
+  ],
+  "project_status": {
+    "raw_copied": true,
+    "tunes_done": true,
+    "apts_done": true,
+    "pointings_done": false,
+    "science_done": false,
+    "flxscale_done": false
+  },
+  "project_sha256": "89eea2272646b1e585a4f317ca28f6cead1ce524a9f9b1b2bf153151ce800d9a",
+  "new_science_low_level_configs": []
+}

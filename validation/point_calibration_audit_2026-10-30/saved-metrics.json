@@ -1,0 +1,2255 @@
+{
+  "scope": "saved image arithmetic and metadata; no fits or reductions",
+  "aperture_background_annulus_arcsec": [
+    45,
+    75
+  ],
+  "aperture_center": "fixed final weighted centroid",
+  "aperture_area_integration": "8x8 pixel-footprint quadrature; no support extrapolation",
+  "observations": {
+    "152389": {
+      "inputs": {
+        "networks": [
+          {
+            "network": 0,
+            "recorded_identity_comparison": {
+              "raw": {
+                "equal_sha256": true,
+                "old_sha256": "3c8572ca2e90a4f073840607e07404feff638a8234972f2091974606b7885021",
+                "new_sha256": "3c8572ca2e90a4f073840607e07404feff638a8234972f2091974606b7885021"
+              },
+              "tune": {
+                "equal_sha256": true,
+                "old_sha256": "ff328f46ddeb02683c23b5dd73fd5220274524e7f67d74a8f66249c46a3e517f",
+                "new_sha256": "ff328f46ddeb02683c23b5dd73fd5220274524e7f67d74a8f66249c46a3e517f"
+              },
+              "manifest": {
+                "equal_sha256": true,
+                "old_sha256": "d37688979f62763a42d6ca4f2c26c552f25df8fe49cadcb87adab47e36ce435a",
+                "new_sha256": "d37688979f62763a42d6ca4f2c26c552f25df8fe49cadcb87adab47e36ce435a"
+              },
+              "filter_plan": {
+                "equal_sha256": true,
+                "old_sha256": "f8d5003f1b905e128ffc90a06737f2f73c00f946e4141b9086ab10aa8bbc730f",
+                "new_sha256": "f8d5003f1b905e128ffc90a06737f2f73c00f946e4141b9086ab10aa8bbc730f"
+              },
+              "telescope": {
+                "equal_sha256": true,
+                "old_sha256": "5d21cd3f12d456aab210847c9efabb4e3751bb39bf2a565f80dfa2dc9daf2c18",
+                "new_sha256": "5d21cd3f12d456aab210847c9efabb4e3751bb39bf2a565f80dfa2dc9daf2c18"
+              }
+            },
+            "detector_requests_equal": true
+          },
+          {
+            "network": 1,
+            "recorded_identity_comparison": {
+              "raw": {
+                "equal_sha256": true,
+                "old_sha256": "c720414eb026a0b0469f6d9e35ee42dbd512a433384a1d858fd2ce102ca826a0",
+                "new_sha256": "c720414eb026a0b0469f6d9e35ee42dbd512a433384a1d858fd2ce102ca826a0"
+              },
+              "tune": {
+                "equal_sha256": true,
+                "old_sha256": "a831d8378e5117b0725d635c6720244f2a2e71d28721a2e4c6d648fb7a2751db",
+                "new_sha256": "a831d8378e5117b0725d635c6720244f2a2e71d28721a2e4c6d648fb7a2751db"
+              },
+              "manifest": {
+                "equal_sha256": true,
+                "old_sha256": "d37688979f62763a42d6ca4f2c26c552f25df8fe49cadcb87adab47e36ce435a",
+                "new_sha256": "d37688979f62763a42d6ca4f2c26c552f25df8fe49cadcb87adab47e36ce435a"
+              },
+              "filter_plan": {
+                "equal_sha256": true,
+                "old_sha256": "f8d5003f1b905e128ffc90a06737f2f73c00f946e4141b9086ab10aa8bbc730f",
+                "new_sha256": "f8d5003f1b905e128ffc90a06737f2f73c00f946e4141b9086ab10aa8bbc730f"
+              },
+              "telescope": {
+                "equal_sha256": true,
+                "old_sha256": "5d21cd3f12d456aab210847c9efabb4e3751bb39bf2a565f80dfa2dc9daf2c18",
+                "new_sha256": "5d21cd3f12d456aab210847c9efabb4e3751bb39bf2a565f80dfa2dc9daf2c18"
+              }
+            },
+            "detector_requests_equal": true
+          },
+          {
+            "network": 2,
+            "recorded_identity_comparison": {
+              "raw": {
+                "equal_sha256": true,
+                "old_sha256": "d40b7c781e74c4d011684139da66cb42894c17a1a21768674244031b9c21e135",
+                "new_sha256": "d40b7c781e74c4d011684139da66cb42894c17a1a21768674244031b9c21e135"
+              },
+              "tune": {
+                "equal_sha256": true,
+                "old_sha256": "a5db0a476b4f92e16107ef961c6eefab9b971b65b01595b08a51ad656ce87363",
+                "new_sha256": "a5db0a476b4f92e16107ef961c6eefab9b971b65b01595b08a51ad656ce87363"
+              },
+              "manifest": {
+                "equal_sha256": true,
+                "old_sha256": "d37688979f62763a42d6ca4f2c26c552f25df8fe49cadcb87adab47e36ce435a",
+                "new_sha256": "d37688979f62763a42d6ca4f2c26c552f25df8fe49cadcb87adab47e36ce435a"
+              },
+              "filter_plan": {
+                "equal_sha256": true,
+                "old_sha256": "f8d5003f1b905e128ffc90a06737f2f73c00f946e4141b9086ab10aa8bbc730f",
+                "new_sha256": "f8d5003f1b905e128ffc90a06737f2f73c00f946e4141b9086ab10aa8bbc730f"
+              },
+              "telescope": {
+                "equal_sha256": true,
+                "old_sha256": "5d21cd3f12d456aab210847c9efabb4e3751bb39bf2a565f80dfa2dc9daf2c18",
+                "new_sha256": "5d21cd3f12d456aab210847c9efabb4e3751bb39bf2a565f80dfa2dc9daf2c18"
+              }
+            },
+            "detector_requests_equal": true
+          },
+          {
+            "network": 3,
+            "recorded_identity_comparison": {
+              "raw": {
+                "equal_sha256": true,
+                "old_sha256": "f0ca9f455159aa1fa9cab8710020b8622137efdd097c4e7d613bfb043403de88",
+                "new_sha256": "f0ca9f455159aa1fa9cab8710020b8622137efdd097c4e7d613bfb043403de88"
+              },
+              "tune": {
+                "equal_sha256": true,
+                "old_sha256": "fecb735e572583f55009e99898cb3cb276f991ef315929f17267560331680feb",
+                "new_sha256": "fecb735e572583f55009e99898cb3cb276f991ef315929f17267560331680feb"
+              },
+              "manifest": {
+                "equal_sha256": true,
+                "old_sha256": "d37688979f62763a42d6ca4f2c26c552f25df8fe49cadcb87adab47e36ce435a",
+                "new_sha256": "d37688979f62763a42d6ca4f2c26c552f25df8fe49cadcb87adab47e36ce435a"
+              },
+              "filter_plan": {
+                "equal_sha256": true,
+                "old_sha256": "f8d5003f1b905e128ffc90a06737f2f73c00f946e4141b9086ab10aa8bbc730f",
+                "new_sha256": "f8d5003f1b905e128ffc90a06737f2f73c00f946e4141b9086ab10aa8bbc730f"
+              },
+              "telescope": {
+                "equal_sha256": true,
+                "old_sha256": "5d21cd3f12d456aab210847c9efabb4e3751bb39bf2a565f80dfa2dc9daf2c18",
+                "new_sha256": "5d21cd3f12d456aab210847c9efabb4e3751bb39bf2a565f80dfa2dc9daf2c18"
+              }
+            },
+            "detector_requests_equal": true
+          },
+          {
+            "network": 4,
+            "recorded_identity_comparison": {
+              "raw": {
+                "equal_sha256": true,
+                "old_sha256": "ee2acba63d860ac6cdf7711d1b22eeacee3bb3488d652e569e996439054b6e2c",
+                "new_sha256": "ee2acba63d860ac6cdf7711d1b22eeacee3bb3488d652e569e996439054b6e2c"
+              },
+              "tune": {
+                "equal_sha256": true,
+                "old_sha256": "78a451b071670c99be51e826d6b97d9a502cadaea79155a8df1a0020a8ef3e6a",
+                "new_sha256": "78a451b071670c99be51e826d6b97d9a502cadaea79155a8df1a0020a8ef3e6a"
+              },
+              "manifest": {
+                "equal_sha256": true,
+                "old_sha256": "d37688979f62763a42d6ca4f2c26c552f25df8fe49cadcb87adab47e36ce435a",
+                "new_sha256": "d37688979f62763a42d6ca4f2c26c552f25df8fe49cadcb87adab47e36ce435a"
+              },
+              "filter_plan": {
+                "equal_sha256": true,
+                "old_sha256": "f8d5003f1b905e128ffc90a06737f2f73c00f946e4141b9086ab10aa8bbc730f",
+                "new_sha256": "f8d5003f1b905e128ffc90a06737f2f73c00f946e4141b9086ab10aa8bbc730f"
+              },
+              "telescope": {
+                "equal_sha256": true,
+                "old_sha256": "5d21cd3f12d456aab210847c9efabb4e3751bb39bf2a565f80dfa2dc9daf2c18",
+                "new_sha256": "5d21cd3f12d456aab210847c9efabb4e3751bb39bf2a565f80dfa2dc9daf2c18"
+              }
+            },
+            "detector_requests_equal": true
+          },
+          {
+            "network": 5,
+            "recorded_identity_comparison": {
+              "raw": {
+                "equal_sha256": true,
+                "old_sha256": "cc44075693ab19161eaac390a84b8bc82ab3cf18bdbff7b76ff8d4c02e531edc",
+                "new_sha256": "cc44075693ab19161eaac390a84b8bc82ab3cf18bdbff7b76ff8d4c02e531edc"
+              },
+              "tune": {
+                "equal_sha256": true,
+                "old_sha256": "9d7cb936e04f5e11f78f796be0021241840588a7456b116f9dc890fd4f20f17b",
+                "new_sha256": "9d7cb936e04f5e11f78f796be0021241840588a7456b116f9dc890fd4f20f17b"
+              },
+              "manifest": {
+                "equal_sha256": true,
+                "old_sha256": "d37688979f62763a42d6ca4f2c26c552f25df8fe49cadcb87adab47e36ce435a",
+                "new_sha256": "d37688979f62763a42d6ca4f2c26c552f25df8fe49cadcb87adab47e36ce435a"
+              },
+              "filter_plan": {
+                "equal_sha256": true,
+                "old_sha256": "f8d5003f1b905e128ffc90a06737f2f73c00f946e4141b9086ab10aa8bbc730f",
+                "new_sha256": "f8d5003f1b905e128ffc90a06737f2f73c00f946e4141b9086ab10aa8bbc730f"
+              },
+              "telescope": {
+                "equal_sha256": true,
+                "old_sha256": "5d21cd3f12d456aab210847c9efabb4e3751bb39bf2a565f80dfa2dc9daf2c18",
+                "new_sha256": "5d21cd3f12d456aab210847c9efabb4e3751bb39bf2a565f80dfa2dc9daf2c18"
+              }
+            },
+            "detector_requests_equal": true
+          },
+          {
+            "network": 7,
+            "recorded_identity_comparison": {
+              "raw": {
+                "equal_sha256": true,
+                "old_sha256": "e39101741ea0905ba8cec72ce30c4694e06adb651570f8251e2f720053ff4161",
+                "new_sha256": "e39101741ea0905ba8cec72ce30c4694e06adb651570f8251e2f720053ff4161"
+              },
+              "tune": {
+                "equal_sha256": true,
+                "old_sha256": "5bf2d6236f1dc064982a5ea0ff06244e0da5b833ce79afe16c97a0bd2a1ca2fb",
+                "new_sha256": "5bf2d6236f1dc064982a5ea0ff06244e0da5b833ce79afe16c97a0bd2a1ca2fb"
+              },
+              "manifest": {
+                "equal_sha256": true,
+                "old_sha256": "d37688979f62763a42d6ca4f2c26c552f25df8fe49cadcb87adab47e36ce435a",
+                "new_sha256": "d37688979f62763a42d6ca4f2c26c552f25df8fe49cadcb87adab47e36ce435a"
+              },
+              "filter_plan": {
+                "equal_sha256": true,
+                "old_sha256": "bff74e3656d2cbd95888d1fa0ca621b81e56adb6e7e028fe0d5e1368f807d66b",
+                "new_sha256": "bff74e3656d2cbd95888d1fa0ca621b81e56adb6e7e028fe0d5e1368f807d66b"
+              },
+              "telescope": {
+                "equal_sha256": true,
+                "old_sha256": "5d21cd3f12d456aab210847c9efabb4e3751bb39bf2a565f80dfa2dc9daf2c18",
+                "new_sha256": "5d21cd3f12d456aab210847c9efabb4e3751bb39bf2a565f80dfa2dc9daf2c18"
+              }
+            },
+            "detector_requests_equal": true
+          },
+          {
+            "network": 8,
+            "recorded_identity_comparison": {
+              "raw": {
+                "equal_sha256": true,
+                "old_sha256": "25331d32a681f13f1b569a6b4643af4cf70fa893a001f2887446407e29ecb77a",
+                "new_sha256": "25331d32a681f13f1b569a6b4643af4cf70fa893a001f2887446407e29ecb77a"
+              },
+              "tune": {
+                "equal_sha256": true,
+                "old_sha256": "5d94a05efc29405bf04ba20698ab341c1d0eeee3f969ca4d0813faa373a0e2de",
+                "new_sha256": "5d94a05efc29405bf04ba20698ab341c1d0eeee3f969ca4d0813faa373a0e2de"
+              },
+              "manifest": {
+                "equal_sha256": true,
+                "old_sha256": "d37688979f62763a42d6ca4f2c26c552f25df8fe49cadcb87adab47e36ce435a",
+                "new_sha256": "d37688979f62763a42d6ca4f2c26c552f25df8fe49cadcb87adab47e36ce435a"
+              },
+              "filter_plan": {
+                "equal_sha256": true,
+                "old_sha256": "bff74e3656d2cbd95888d1fa0ca621b81e56adb6e7e028fe0d5e1368f807d66b",
+                "new_sha256": "bff74e3656d2cbd95888d1fa0ca621b81e56adb6e7e028fe0d5e1368f807d66b"
+              },
+              "telescope": {
+                "equal_sha256": true,
+                "old_sha256": "5d21cd3f12d456aab210847c9efabb4e3751bb39bf2a565f80dfa2dc9daf2c18",
+                "new_sha256": "5d21cd3f12d456aab210847c9efabb4e3751bb39bf2a565f80dfa2dc9daf2c18"
+              }
+            },
+            "detector_requests_equal": true
+          },
+          {
+            "network": 9,
+            "recorded_identity_comparison": {
+              "raw": {
+                "equal_sha256": true,
+                "old_sha256": "df246227ea42a622dfede7091b7a451498971921f37f3501b781c2f2dfc32945",
+                "new_sha256": "df246227ea42a622dfede7091b7a451498971921f37f3501b781c2f2dfc32945"
+              },
+              "tune": {
+                "equal_sha256": true,
+                "old_sha256": "405b3fc4ab4672fb3ab0a2c19247c1ceb1298199e71b05127e99ca78b42daebf",
+                "new_sha256": "405b3fc4ab4672fb3ab0a2c19247c1ceb1298199e71b05127e99ca78b42daebf"
+              },
+              "manifest": {
+                "equal_sha256": true,
+                "old_sha256": "d37688979f62763a42d6ca4f2c26c552f25df8fe49cadcb87adab47e36ce435a",
+                "new_sha256": "d37688979f62763a42d6ca4f2c26c552f25df8fe49cadcb87adab47e36ce435a"
+              },
+              "filter_plan": {
+                "equal_sha256": true,
+                "old_sha256": "bff74e3656d2cbd95888d1fa0ca621b81e56adb6e7e028fe0d5e1368f807d66b",
+                "new_sha256": "bff74e3656d2cbd95888d1fa0ca621b81e56adb6e7e028fe0d5e1368f807d66b"
+              },
+              "telescope": {
+                "equal_sha256": true,
+                "old_sha256": "5d21cd3f12d456aab210847c9efabb4e3751bb39bf2a565f80dfa2dc9daf2c18",
+                "new_sha256": "5d21cd3f12d456aab210847c9efabb4e3751bb39bf2a565f80dfa2dc9daf2c18"
+              }
+            },
+            "detector_requests_equal": true
+          },
+          {
+            "network": 11,
+            "recorded_identity_comparison": {
+              "raw": {
+                "equal_sha256": true,
+                "old_sha256": "342357bf1420d688095146ad8e78bb569443def60a9b64ed91de1e886fd9b7ac",
+                "new_sha256": "342357bf1420d688095146ad8e78bb569443def60a9b64ed91de1e886fd9b7ac"
+              },
+              "tune": {
+                "equal_sha256": true,
+                "old_sha256": "68734e6bba86c2d9f08017153f535df90092480a90a381b6fd4b1066cd0ae84c",
+                "new_sha256": "68734e6bba86c2d9f08017153f535df90092480a90a381b6fd4b1066cd0ae84c"
+              },
+              "manifest": {
+                "equal_sha256": true,
+                "old_sha256": "d37688979f62763a42d6ca4f2c26c552f25df8fe49cadcb87adab47e36ce435a",
+                "new_sha256": "d37688979f62763a42d6ca4f2c26c552f25df8fe49cadcb87adab47e36ce435a"
+              },
+              "filter_plan": {
+                "equal_sha256": true,
+                "old_sha256": "d1e9dbefaaaa8832b4876ac34f23a604270b3bf35bc5d79125c37cddd3a32cab",
+                "new_sha256": "d1e9dbefaaaa8832b4876ac34f23a604270b3bf35bc5d79125c37cddd3a32cab"
+              },
+              "telescope": {
+                "equal_sha256": true,
+                "old_sha256": "5d21cd3f12d456aab210847c9efabb4e3751bb39bf2a565f80dfa2dc9daf2c18",
+                "new_sha256": "5d21cd3f12d456aab210847c9efabb4e3751bb39bf2a565f80dfa2dc9daf2c18"
+              }
+            },
+            "detector_requests_equal": true
+          },
+          {
+            "network": 12,
+            "recorded_identity_comparison": {
+              "raw": {
+                "equal_sha256": true,
+                "old_sha256": "05dd2d11e78f8b1d0e539b8d8370298cc8760642286e85adfa12d99e9ab56760",
+                "new_sha256": "05dd2d11e78f8b1d0e539b8d8370298cc8760642286e85adfa12d99e9ab56760"
+              },
+              "tune": {
+                "equal_sha256": true,
+                "old_sha256": "bfdbf7f4440264f67dd2b46c8a33e84864120d721addee64fc01d3cd5d44b912",
+                "new_sha256": "bfdbf7f4440264f67dd2b46c8a33e84864120d721addee64fc01d3cd5d44b912"
+              },
+              "manifest": {
+                "equal_sha256": true,
+                "old_sha256": "d37688979f62763a42d6ca4f2c26c552f25df8fe49cadcb87adab47e36ce435a",
+                "new_sha256": "d37688979f62763a42d6ca4f2c26c552f25df8fe49cadcb87adab47e36ce435a"
+              },
+              "filter_plan": {
+                "equal_sha256": true,
+                "old_sha256": "d1e9dbefaaaa8832b4876ac34f23a604270b3bf35bc5d79125c37cddd3a32cab",
+                "new_sha256": "d1e9dbefaaaa8832b4876ac34f23a604270b3bf35bc5d79125c37cddd3a32cab"
+              },
+              "telescope": {
+                "equal_sha256": true,
+                "old_sha256": "5d21cd3f12d456aab210847c9efabb4e3751bb39bf2a565f80dfa2dc9daf2c18",
+                "new_sha256": "5d21cd3f12d456aab210847c9efabb4e3751bb39bf2a565f80dfa2dc9daf2c18"
+              }
+            },
+            "detector_requests_equal": true
+          }
+        ],
+        "telescope_variable_differences": [],
+        "telescope": {
+          "Header.M1.ZernikeC": {
+            "value": [
+              46,
+              39,
+              -2,
+              -54,
+              5,
+              -22,
+              -60,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "units": "micron"
+          },
+          "Header.M1.ModelEnabled": {
+            "value": 1,
+            "units": ""
+          },
+          "Header.M1.ZernikeEnabled": {
+            "value": 1,
+            "units": ""
+          },
+          "Header.M2.ZReq": {
+            "value": -0.95297993077,
+            "units": "mm"
+          },
+          "Header.Weather.Temperature": {
+            "value": 2.833333333332521,
+            "units": "degC"
+          },
+          "Header.Radiometer.Tau": {
+            "value": 0.021,
+            "units": ""
+          },
+          "Header.TempSens.TempSens": {
+            "value": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              28376.0,
+              28876.0,
+              28940.0,
+              28422.0,
+              28847.0,
+              28878.0,
+              28754.0,
+              29724.0,
+              30177.0,
+              29089.0,
+              29093.0,
+              28825.0,
+              29553.0,
+              0.0,
+              0.0,
+              0.0,
+              28545.0,
+              28433.0,
+              28447.0,
+              28564.0,
+              28444.0,
+              28514.0,
+              0.0,
+              28422.0,
+              8763.0,
+              28208.0,
+              28347.0,
+              28347.0,
+              0.0,
+              28517.0,
+              28370.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "units": "hK"
+          },
+          "Header.M1.ActPos": {
+            "elements": 720,
+            "value_sha256": "55e9e53f29c5809f06f49a4d605727d256655d76c31df512e6cfed6e64a3f6b4",
+            "units": "micron"
+          },
+          "Header.M1.CmdPos": {
+            "elements": 720,
+            "value_sha256": "0f5e3abfbdcf5841e07820f0b6f43120ffcb1016b63a74c950f8d4759c3217cf",
+            "units": "micron"
+          }
+        },
+        "raw_digest_scope": "compared authenticated saved request digests; raw bytes not rehashed"
+      },
+      "arrays": {
+        "a1100": {
+          "uniform": {
+            "map": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-20261028/reduced/redu00/152389/raw/toltec_point_152389_a1100_successor.fits",
+            "sha256": "82b0727542712587c4d3741644dbe0266d21e6c9c7744decc67e534cbc39164a",
+            "pixel_arcsec": [
+              1.0,
+              1.0
+            ],
+            "nominal_beam_fwhm_arcsec": 5.0,
+            "parameters": [
+              985.800877014749,
+              7.6610711465859165,
+              -0.5338363509722258,
+              2.179655653142235,
+              2.3876329002797987,
+              0.12173865508873427,
+              -5.604357744691856
+            ],
+            "fwhm_arcsec": [
+              5.132696823284361,
+              5.6224458137542515
+            ],
+            "gaussian_brightness_area": 32234.765217092285,
+            "gaussian_area_units": "mJy/nominal-beam * arcsec^2; not calibrated total flux",
+            "annulus_median": 2.010387626789312,
+            "apertures": [
+              {
+                "radius_arcsec": 8,
+                "valid_fraction_of_circle": 0.9999251234196374,
+                "annulus_subtracted_brightness_area": 30406.367955482732,
+                "fit_constant_subtracted_brightness_area": 31937.288716339735
+              },
+              {
+                "radius_arcsec": 12,
+                "valid_fraction_of_circle": 0.9999337581279214,
+                "annulus_subtracted_brightness_area": 28532.28127823768,
+                "fit_constant_subtracted_brightness_area": 31976.88273526504
+              },
+              {
+                "radius_arcsec": 20,
+                "valid_fraction_of_circle": 1.0000277037540521,
+                "annulus_subtracted_brightness_area": 19652.8852070162,
+                "fit_constant_subtracted_brightness_area": 29222.12155064301
+              },
+              {
+                "radius_arcsec": 30,
+                "valid_fraction_of_circle": 0.9999738231743596,
+                "annulus_subtracted_brightness_area": 6992.343140872789,
+                "fit_constant_subtracted_brightness_area": 28521.964855167927
+              },
+              {
+                "radius_arcsec": 45,
+                "valid_fraction_of_circle": 1.0000186469044743,
+                "annulus_subtracted_brightness_area": -14373.511388945974,
+                "fit_constant_subtracted_brightness_area": 34070.30886045292
+              }
+            ]
+          },
+          "weighted_M0": {
+            "map": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-weighted-152389-20261029/reduced/redu00/.point-work/weighted-00/products/a1100/map.fits",
+            "sha256": "f953d7dda436c0429c073228ee892f625212ad18e6b2b5bca61cc54f7d919c79",
+            "pixel_arcsec": [
+              2.0,
+              2.0
+            ],
+            "nominal_beam_fwhm_arcsec": 5.0,
+            "parameters": [
+              635.1045552346073,
+              7.562839495257723,
+              -0.1979859752678631,
+              2.4416400587293334,
+              2.2207711898859817,
+              1.4581051094725108,
+              -2.514359836480811
+            ],
+            "fwhm_arcsec": [
+              5.229516513370743,
+              5.749622953046378
+            ],
+            "gaussian_brightness_area": 21637.672955623577,
+            "gaussian_area_units": "mJy/nominal-beam * arcsec^2; not calibrated total flux",
+            "annulus_median": -0.0819248278196287,
+            "apertures": [
+              {
+                "radius_arcsec": 8,
+                "valid_fraction_of_circle": 1.000002835794194,
+                "annulus_subtracted_brightness_area": 20727.87119517379,
+                "fit_constant_subtracted_brightness_area": 21216.94265910273
+              },
+              {
+                "radius_arcsec": 12,
+                "valid_fraction_of_circle": 1.0003827629586928,
+                "annulus_subtracted_brightness_area": 20272.63111327184,
+                "fit_constant_subtracted_brightness_area": 21373.459981879067
+              },
+              {
+                "radius_arcsec": 20,
+                "valid_fraction_of_circle": 0.9997914581354,
+                "annulus_subtracted_brightness_area": 17270.638637554177,
+                "fit_constant_subtracted_brightness_area": 20326.689171560865
+              },
+              {
+                "radius_arcsec": 30,
+                "valid_fraction_of_circle": 1.000045663947283,
+                "annulus_subtracted_brightness_area": 12984.974491697056,
+                "fit_constant_subtracted_brightness_area": 19862.83650587459
+              },
+              {
+                "radius_arcsec": 45,
+                "valid_fraction_of_circle": 1.0000039103356693,
+                "annulus_subtracted_brightness_area": 10465.752955131093,
+                "fit_constant_subtracted_brightness_area": 25940.296371481367
+              }
+            ]
+          },
+          "weighted_M10": {
+            "map": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-weighted-152389-20261029/reduced/redu00/152389/raw/toltec_point_152389_a1100_successor.fits",
+            "sha256": "7e6e518738662ddf8401bee9a7e097ba25dfbe908cf5651738088eb3c61ad685",
+            "pixel_arcsec": [
+              2.0,
+              2.0
+            ],
+            "nominal_beam_fwhm_arcsec": 5.0,
+            "parameters": [
+              697.4341979506797,
+              7.589925960991105,
+              -0.22229344522493377,
+              2.333896261893956,
+              2.527905179073066,
+              -0.019419723948052692,
+              0.5768847020514454
+            ],
+            "fwhm_arcsec": [
+              5.49590570053069,
+              5.952761787618808
+            ],
+            "gaussian_brightness_area": 25853.86252548002,
+            "gaussian_area_units": "mJy/nominal-beam * arcsec^2; not calibrated total flux",
+            "annulus_median": 0.40753336721422845,
+            "apertures": [
+              {
+                "radius_arcsec": 8,
+                "valid_fraction_of_circle": 1.000002835794194,
+                "annulus_subtracted_brightness_area": 26217.575074136705,
+                "fit_constant_subtracted_brightness_area": 26183.524871375997
+              },
+              {
+                "radius_arcsec": 12,
+                "valid_fraction_of_circle": 1.0003827629586928,
+                "annulus_subtracted_brightness_area": 28146.203326815175,
+                "fit_constant_subtracted_brightness_area": 28069.561263342912
+              },
+              {
+                "radius_arcsec": 20,
+                "valid_fraction_of_circle": 0.9997914581354,
+                "annulus_subtracted_brightness_area": 29133.558747531206,
+                "fit_constant_subtracted_brightness_area": 28920.789964225092
+              },
+              {
+                "radius_arcsec": 30,
+                "valid_fraction_of_circle": 1.000045663947283,
+                "annulus_subtracted_brightness_area": 28270.811066293016,
+                "fit_constant_subtracted_brightness_area": 27791.959582582356
+              },
+              {
+                "radius_arcsec": 45,
+                "valid_fraction_of_circle": 1.0000039103356693,
+                "annulus_subtracted_brightness_area": 28383.095414947344,
+                "fit_constant_subtracted_brightness_area": 27305.724560546685
+              }
+            ]
+          },
+          "comparisons": {
+            "peak_ratio_final_uniform": 0.7074797905056491,
+            "gaussian_area_ratio_final_uniform": 0.8020490408836969,
+            "aperture20_ratio_final_uniform": 1.4824061933222075
+          }
+        },
+        "a1400": {
+          "uniform": {
+            "map": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-20261028/reduced/redu00/152389/raw/toltec_point_152389_a1400_successor.fits",
+            "sha256": "d03dfae5b66ba43556ac1256ec7017eb1316a4da6ea3f0dbac339cd6c252df52",
+            "pixel_arcsec": [
+              1.0,
+              1.0
+            ],
+            "nominal_beam_fwhm_arcsec": 7.5,
+            "parameters": [
+              669.5688293345906,
+              7.560233591170506,
+              -0.23203311619759256,
+              2.788606535914469,
+              3.016554815887069,
+              0.08007990171452017,
+              -1.468890881480568
+            ],
+            "fwhm_arcsec": [
+              6.56666656847571,
+              7.103443747385516
+            ],
+            "gaussian_brightness_area": 35389.42924573324,
+            "gaussian_area_units": "mJy/nominal-beam * arcsec^2; not calibrated total flux",
+            "annulus_median": -1.671835534895807,
+            "apertures": [
+              {
+                "radius_arcsec": 8,
+                "valid_fraction_of_circle": 0.9998474110450808,
+                "annulus_subtracted_brightness_area": 34494.16013102679,
+                "fit_constant_subtracted_brightness_area": 34453.3619136699
+              },
+              {
+                "radius_arcsec": 12,
+                "valid_fraction_of_circle": 0.9998992192947852,
+                "annulus_subtracted_brightness_area": 37472.76703391989,
+                "fit_constant_subtracted_brightness_area": 37380.966288351585
+              },
+              {
+                "radius_arcsec": 20,
+                "valid_fraction_of_circle": 1.000002835794194,
+                "annulus_subtracted_brightness_area": 38400.84968709866,
+                "fit_constant_subtracted_brightness_area": 38145.82119099052
+              },
+              {
+                "radius_arcsec": 30,
+                "valid_fraction_of_circle": 0.9999406658945487,
+                "annulus_subtracted_brightness_area": 37224.13190197307,
+                "fit_constant_subtracted_brightness_area": 36650.35345959463
+              },
+              {
+                "radius_arcsec": 45,
+                "valid_fraction_of_circle": 1.0000014542408686,
+                "annulus_subtracted_brightness_area": 34413.4711982421,
+                "fit_constant_subtracted_brightness_area": 33122.391220387915
+              }
+            ]
+          },
+          "weighted_M0": {
+            "map": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-weighted-152389-20261029/reduced/redu00/.point-work/weighted-00/products/a1400/map.fits",
+            "sha256": "5b30f6be02ab287d8d0f318c434abae2f896758410fb2b28cca3cb9bc675f742",
+            "pixel_arcsec": [
+              2.0,
+              2.0
+            ],
+            "nominal_beam_fwhm_arcsec": 7.5,
+            "parameters": [
+              521.87316663252,
+              7.479060067312982,
+              -0.42464682689988087,
+              2.5584698215022144,
+              2.9812442203840805,
+              0.12197727761988975,
+              -2.5133029322071545
+            ],
+            "fwhm_arcsec": [
+              6.024736020280169,
+              7.020293649293098
+            ],
+            "gaussian_brightness_area": 25010.518110048884,
+            "gaussian_area_units": "mJy/nominal-beam * arcsec^2; not calibrated total flux",
+            "annulus_median": 0.23113263629816266,
+            "apertures": [
+              {
+                "radius_arcsec": 8,
+                "valid_fraction_of_circle": 1.000935384288873,
+                "annulus_subtracted_brightness_area": 23482.425290473366,
+                "fit_constant_subtracted_brightness_area": 24034.742948635063
+              },
+              {
+                "radius_arcsec": 12,
+                "valid_fraction_of_circle": 1.000935384288873,
+                "annulus_subtracted_brightness_area": 22778.307448639804,
+                "fit_constant_subtracted_brightness_area": 24021.02217950362
+              },
+              {
+                "radius_arcsec": 20,
+                "valid_fraction_of_circle": 0.9997417222156838,
+                "annulus_subtracted_brightness_area": 18633.729800520763,
+                "fit_constant_subtracted_brightness_area": 22081.598510678596
+              },
+              {
+                "radius_arcsec": 30,
+                "valid_fraction_of_circle": 1.0002888173325621,
+                "annulus_subtracted_brightness_area": 11935.77648001512,
+                "fit_constant_subtracted_brightness_area": 19697.726376640287
+              },
+              {
+                "radius_arcsec": 45,
+                "valid_fraction_of_circle": 1.000082505369295,
+                "annulus_subtracted_brightness_area": 7389.803237643732,
+                "fit_constant_subtracted_brightness_area": 24850.588433366684
+              }
+            ]
+          },
+          "weighted_M10": {
+            "map": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-weighted-152389-20261029/reduced/redu00/152389/raw/toltec_point_152389_a1400_successor.fits",
+            "sha256": "e5899d28712b95160d0e5c7da045c6f5e9bb1a080202bf42646d1bbb29f12590",
+            "pixel_arcsec": [
+              2.0,
+              2.0
+            ],
+            "nominal_beam_fwhm_arcsec": 7.5,
+            "parameters": [
+              596.7411894837562,
+              7.425521420437014,
+              -0.4779178136030798,
+              2.7511332950905025,
+              3.0569850600402315,
+              0.28566315177043755,
+              0.7893060848724028
+            ],
+            "fwhm_arcsec": [
+              6.478423829831161,
+              7.198649696742877
+            ],
+            "gaussian_brightness_area": 31533.40241783417,
+            "gaussian_area_units": "mJy/nominal-beam * arcsec^2; not calibrated total flux",
+            "annulus_median": 0.8712880906182685,
+            "apertures": [
+              {
+                "radius_arcsec": 8,
+                "valid_fraction_of_circle": 1.000935384288873,
+                "annulus_subtracted_brightness_area": 30432.533297603462,
+                "fit_constant_subtracted_brightness_area": 30449.032176259818
+              },
+              {
+                "radius_arcsec": 12,
+                "valid_fraction_of_circle": 1.000935384288873,
+                "annulus_subtracted_brightness_area": 32232.646033199097,
+                "fit_constant_subtracted_brightness_area": 32269.76851017589
+              },
+              {
+                "radius_arcsec": 20,
+                "valid_fraction_of_circle": 0.9997417222156838,
+                "annulus_subtracted_brightness_area": 31976.78656573163,
+                "fit_constant_subtracted_brightness_area": 32079.781584325232
+              },
+              {
+                "radius_arcsec": 30,
+                "valid_fraction_of_circle": 1.0002888173325621,
+                "annulus_subtracted_brightness_area": 29748.962954882853,
+                "fit_constant_subtracted_brightness_area": 29980.828562633593
+              },
+              {
+                "radius_arcsec": 45,
+                "valid_fraction_of_circle": 1.000082505369295,
+                "annulus_subtracted_brightness_area": 28070.77280553628,
+                "fit_constant_subtracted_brightness_area": 28592.362821592913
+              }
+            ]
+          },
+          "comparisons": {
+            "peak_ratio_final_uniform": 0.8912320337205517,
+            "gaussian_area_ratio_final_uniform": 0.8910401520995432,
+            "aperture20_ratio_final_uniform": 0.8327103912097734
+          }
+        },
+        "a2000": {
+          "uniform": {
+            "map": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-20261028/reduced/redu00/152389/raw/toltec_point_152389_a2000_successor.fits",
+            "sha256": "726089afb1caab9f5e76c308006707fa16a0478b38c6b24ccbc1de92e78f57bd",
+            "pixel_arcsec": [
+              1.0,
+              1.0
+            ],
+            "nominal_beam_fwhm_arcsec": 10.0,
+            "parameters": [
+              698.7311681920227,
+              7.610023770274547,
+              -0.5764413076904099,
+              3.680470402903385,
+              3.8618543403163526,
+              -0.18387789225086215,
+              -6.314352287429728
+            ],
+            "fwhm_arcsec": [
+              8.666845479900026,
+              9.09397201156672
+            ],
+            "gaussian_brightness_area": 62400.66291018426,
+            "gaussian_area_units": "mJy/nominal-beam * arcsec^2; not calibrated total flux",
+            "annulus_median": -2.1572252838515915,
+            "apertures": [
+              {
+                "radius_arcsec": 8,
+                "valid_fraction_of_circle": 1.00054682241609,
+                "annulus_subtracted_brightness_area": 55757.068136617905,
+                "fit_constant_subtracted_brightness_area": 56593.36517054085
+              },
+              {
+                "radius_arcsec": 12,
+                "valid_fraction_of_circle": 1.0001064522936027,
+                "annulus_subtracted_brightness_area": 56859.48469233568,
+                "fit_constant_subtracted_brightness_area": 58740.32484101708
+              },
+              {
+                "radius_arcsec": 20,
+                "valid_fraction_of_circle": 1.0000650056938392,
+                "annulus_subtracted_brightness_area": 51550.9335339861,
+                "fit_constant_subtracted_brightness_area": 56775.272985514064
+              },
+              {
+                "radius_arcsec": 30,
+                "valid_fraction_of_circle": 1.0000677688004902,
+                "annulus_subtracted_brightness_area": 43354.248152155546,
+                "fit_constant_subtracted_brightness_area": 55109.044395648176
+              },
+              {
+                "radius_arcsec": 45,
+                "valid_fraction_of_circle": 1.0000112786200719,
+                "annulus_subtracted_brightness_area": 36951.143130364595,
+                "fit_constant_subtracted_brightness_area": 63397.9407107061
+              }
+            ]
+          },
+          "weighted_M0": {
+            "map": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-weighted-152389-20261029/reduced/redu00/.point-work/weighted-00/products/a2000/map.fits",
+            "sha256": "fada29fcfef71a2739079ef7875edd02f14739b52e5a2002eefe82bb80c63726",
+            "pixel_arcsec": [
+              2.0,
+              2.0
+            ],
+            "nominal_beam_fwhm_arcsec": 10.0,
+            "parameters": [
+              337.2195075973325,
+              7.823237328444133,
+              -0.49236736559131467,
+              3.4237969543953017,
+              4.0512338520119835,
+              -0.23059752665042788,
+              -5.299427320585885
+            ],
+            "fwhm_arcsec": [
+              8.062425698325972,
+              9.539926681825765
+            ],
+            "gaussian_brightness_area": 29389.207318894863,
+            "gaussian_area_units": "mJy/nominal-beam * arcsec^2; not calibrated total flux",
+            "annulus_median": -0.6201415388381185,
+            "apertures": [
+              {
+                "radius_arcsec": 8,
+                "valid_fraction_of_circle": 0.9987594378012885,
+                "annulus_subtracted_brightness_area": 26269.62963534418,
+                "fit_constant_subtracted_brightness_area": 27209.288711391408
+              },
+              {
+                "radius_arcsec": 12,
+                "valid_fraction_of_circle": 0.9994156756308775,
+                "annulus_subtracted_brightness_area": 22321.861745160873,
+                "fit_constant_subtracted_brightness_area": 24437.483829233584
+              },
+              {
+                "radius_arcsec": 20,
+                "valid_fraction_of_circle": 1.0001893454931297,
+                "annulus_subtracted_brightness_area": 14597.849805888425,
+                "fit_constant_subtracted_brightness_area": 20479.127122822647
+              },
+              {
+                "radius_arcsec": 30,
+                "valid_fraction_of_circle": 0.9998909299748325,
+                "annulus_subtracted_brightness_area": 8914.543468114953,
+                "fit_constant_subtracted_brightness_area": 22143.469283838607
+              },
+              {
+                "radius_arcsec": 45,
+                "valid_fraction_of_circle": 0.9999154909228406,
+                "annulus_subtracted_brightness_area": 5732.571265661907,
+                "fit_constant_subtracted_brightness_area": 35498.38548944352
+              }
+            ]
+          },
+          "weighted_M10": {
+            "map": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-weighted-152389-20261029/reduced/redu00/152389/raw/toltec_point_152389_a2000_successor.fits",
+            "sha256": "fea3ce37ea5a75992895d7602f92229d24c27da16b66348bd6e5a57e7a8a7b4a",
+            "pixel_arcsec": [
+              2.0,
+              2.0
+            ],
+            "nominal_beam_fwhm_arcsec": 10.0,
+            "parameters": [
+              782.1683095238086,
+              7.533495466020204,
+              -0.6292060789226562,
+              3.9123010947590635,
+              4.169837027454396,
+              0.27633468020275265,
+              -0.6031341516889508
+            ],
+            "fwhm_arcsec": [
+              9.21276504013517,
+              9.819215816761881
+            ],
+            "gaussian_brightness_area": 80173.60960760918,
+            "gaussian_area_units": "mJy/nominal-beam * arcsec^2; not calibrated total flux",
+            "annulus_median": 0.012857607595989636,
+            "apertures": [
+              {
+                "radius_arcsec": 8,
+                "valid_fraction_of_circle": 0.9987594378012885,
+                "annulus_subtracted_brightness_area": 68764.21286736819,
+                "fit_constant_subtracted_brightness_area": 68887.91171252959
+              },
+              {
+                "radius_arcsec": 12,
+                "valid_fraction_of_circle": 0.9994156756308775,
+                "annulus_subtracted_brightness_area": 77212.4977193361,
+                "fit_constant_subtracted_brightness_area": 77491.0029935028
+              },
+              {
+                "radius_arcsec": 20,
+                "valid_fraction_of_circle": 1.0001893454931297,
+                "annulus_subtracted_brightness_area": 79509.7113934171,
+                "fit_constant_subtracted_brightness_area": 80283.93603586836
+              },
+              {
+                "radius_arcsec": 30,
+                "valid_fraction_of_circle": 0.9998909299748325,
+                "annulus_subtracted_brightness_area": 78643.75617271833,
+                "fit_constant_subtracted_brightness_area": 80385.24187518677
+              },
+              {
+                "radius_arcsec": 45,
+                "valid_fraction_of_circle": 0.9999154909228406,
+                "annulus_subtracted_brightness_area": 77538.52873171115,
+                "fit_constant_subtracted_brightness_area": 81456.96781097751
+              }
+            ]
+          },
+          "comparisons": {
+            "peak_ratio_final_uniform": 1.1194123650554773,
+            "gaussian_area_ratio_final_uniform": 1.2848198379399627,
+            "aperture20_ratio_final_uniform": 1.5423525034905248
+          }
+        }
+      },
+      "run_identities": [
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-20261028/reduced/redu00/RUN.json",
+          "sha256": "f473183703ade10817da32e25ec49f12f7fbd51ead46e8da5fceba7b1acf9d82",
+          "executable": {
+            "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/software/configured-point-87e9217fc/bin/citlali-native",
+            "sha256": "028cf480bd50d80bf49f4a744f02649a106e512c1fbe20d8acf50ec896eff735"
+          },
+          "config": {
+            "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-configurable-20261028/reduced/citlali_o152389_0_2_c1.yaml",
+            "sha256": "09ca7eedb3cf912e8c58700b1ae69a3b7fcceed7b599a514ef433bc5969b4f62"
+          },
+          "pixel_size_arcsec": 1.0,
+          "ranks": {
+            "a1100": 5,
+            "a1400": 5,
+            "a2000": 5
+          },
+          "coverage_cut": 0.1,
+          "cleaning_method": "observed-als"
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-weighted-152389-20261029/reduced/redu00/RUN.json",
+          "sha256": "f00b04f2e04451e08c0c2377c03d7f37d32c01a0aa27c468ad60d93d8f10b85e",
+          "executable": {
+            "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/software/configured-point-weighted-331ff29ea/bin/citlali-native",
+            "sha256": "197649397221c6b780605a732c4436ffde334c87faeaaec59e584984448f0852"
+          },
+          "config": {
+            "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-weighted-152389-20261029/reduced/citlali_o152389_0_2_c1.yaml",
+            "sha256": "a13a6630e748e1cee7d79331bf36a1df1500fb90785b97a15066dd06c5af499d"
+          },
+          "pixel_size_arcsec": 2.0,
+          "ranks": {
+            "a1100": 3,
+            "a1400": 4,
+            "a2000": 6
+          },
+          "coverage_cut": 0.15,
+          "cleaning_method": "noise-weighted-observed-als-v1"
+        }
+      ]
+    },
+    "152418": {
+      "inputs": {
+        "networks": [
+          {
+            "network": 0,
+            "recorded_identity_comparison": {
+              "raw": {
+                "equal_sha256": true,
+                "old_sha256": "c711ec506037ceba2e6f63ed2e19fee45ecd58c1966e8dc6420eab540444a901",
+                "new_sha256": "c711ec506037ceba2e6f63ed2e19fee45ecd58c1966e8dc6420eab540444a901"
+              },
+              "tune": {
+                "equal_sha256": true,
+                "old_sha256": "8992702eb677344a16ef1a7cfceb335beced69260cef80a2889ff5f95ec222b4",
+                "new_sha256": "8992702eb677344a16ef1a7cfceb335beced69260cef80a2889ff5f95ec222b4"
+              },
+              "manifest": {
+                "equal_sha256": true,
+                "old_sha256": "5a1be186b2d8052d7701e84becf283b00abf2e7644585a783fdf973ca110e301",
+                "new_sha256": "5a1be186b2d8052d7701e84becf283b00abf2e7644585a783fdf973ca110e301"
+              },
+              "filter_plan": {
+                "equal_sha256": true,
+                "old_sha256": "f8d5003f1b905e128ffc90a06737f2f73c00f946e4141b9086ab10aa8bbc730f",
+                "new_sha256": "f8d5003f1b905e128ffc90a06737f2f73c00f946e4141b9086ab10aa8bbc730f"
+              },
+              "telescope": {
+                "equal_sha256": true,
+                "old_sha256": "8cc30b82cf80e858e5a8354ebf5d46746aca46c82332f37c55cb90c0a3244c11",
+                "new_sha256": "8cc30b82cf80e858e5a8354ebf5d46746aca46c82332f37c55cb90c0a3244c11"
+              }
+            },
+            "detector_requests_equal": true
+          },
+          {
+            "network": 1,
+            "recorded_identity_comparison": {
+              "raw": {
+                "equal_sha256": true,
+                "old_sha256": "2305c3b6256fa405a161d9cfd191b483f60e988e7f8fc81939fcfffcf4f7bef9",
+                "new_sha256": "2305c3b6256fa405a161d9cfd191b483f60e988e7f8fc81939fcfffcf4f7bef9"
+              },
+              "tune": {
+                "equal_sha256": true,
+                "old_sha256": "5272155de49982e41fdcc5bf85fbf5b4c5c5b9b6d57378c095db2f28ce6a813b",
+                "new_sha256": "5272155de49982e41fdcc5bf85fbf5b4c5c5b9b6d57378c095db2f28ce6a813b"
+              },
+              "manifest": {
+                "equal_sha256": true,
+                "old_sha256": "5a1be186b2d8052d7701e84becf283b00abf2e7644585a783fdf973ca110e301",
+                "new_sha256": "5a1be186b2d8052d7701e84becf283b00abf2e7644585a783fdf973ca110e301"
+              },
+              "filter_plan": {
+                "equal_sha256": true,
+                "old_sha256": "f8d5003f1b905e128ffc90a06737f2f73c00f946e4141b9086ab10aa8bbc730f",
+                "new_sha256": "f8d5003f1b905e128ffc90a06737f2f73c00f946e4141b9086ab10aa8bbc730f"
+              },
+              "telescope": {
+                "equal_sha256": true,
+                "old_sha256": "8cc30b82cf80e858e5a8354ebf5d46746aca46c82332f37c55cb90c0a3244c11",
+                "new_sha256": "8cc30b82cf80e858e5a8354ebf5d46746aca46c82332f37c55cb90c0a3244c11"
+              }
+            },
+            "detector_requests_equal": true
+          },
+          {
+            "network": 2,
+            "recorded_identity_comparison": {
+              "raw": {
+                "equal_sha256": true,
+                "old_sha256": "0b6979461b1daea67001355dd054758180f78fa1e3d33a0fb149666727a0c058",
+                "new_sha256": "0b6979461b1daea67001355dd054758180f78fa1e3d33a0fb149666727a0c058"
+              },
+              "tune": {
+                "equal_sha256": true,
+                "old_sha256": "d5e7df81895b1f4d2517df0ca37d87588ba2a3db3699f9d09c995d40b24991f0",
+                "new_sha256": "d5e7df81895b1f4d2517df0ca37d87588ba2a3db3699f9d09c995d40b24991f0"
+              },
+              "manifest": {
+                "equal_sha256": true,
+                "old_sha256": "5a1be186b2d8052d7701e84becf283b00abf2e7644585a783fdf973ca110e301",
+                "new_sha256": "5a1be186b2d8052d7701e84becf283b00abf2e7644585a783fdf973ca110e301"
+              },
+              "filter_plan": {
+                "equal_sha256": true,
+                "old_sha256": "f8d5003f1b905e128ffc90a06737f2f73c00f946e4141b9086ab10aa8bbc730f",
+                "new_sha256": "f8d5003f1b905e128ffc90a06737f2f73c00f946e4141b9086ab10aa8bbc730f"
+              },
+              "telescope": {
+                "equal_sha256": true,
+                "old_sha256": "8cc30b82cf80e858e5a8354ebf5d46746aca46c82332f37c55cb90c0a3244c11",
+                "new_sha256": "8cc30b82cf80e858e5a8354ebf5d46746aca46c82332f37c55cb90c0a3244c11"
+              }
+            },
+            "detector_requests_equal": true
+          },
+          {
+            "network": 3,
+            "recorded_identity_comparison": {
+              "raw": {
+                "equal_sha256": true,
+                "old_sha256": "e7788fc3dd1ec7541f713240fa199689cff4d3662d938a80959c99671304d9c8",
+                "new_sha256": "e7788fc3dd1ec7541f713240fa199689cff4d3662d938a80959c99671304d9c8"
+              },
+              "tune": {
+                "equal_sha256": true,
+                "old_sha256": "de545bec35facfc5a5579cb221f016e7e7388c276b5ea9545ed096996b17a5e8",
+                "new_sha256": "de545bec35facfc5a5579cb221f016e7e7388c276b5ea9545ed096996b17a5e8"
+              },
+              "manifest": {
+                "equal_sha256": true,
+                "old_sha256": "5a1be186b2d8052d7701e84becf283b00abf2e7644585a783fdf973ca110e301",
+                "new_sha256": "5a1be186b2d8052d7701e84becf283b00abf2e7644585a783fdf973ca110e301"
+              },
+              "filter_plan": {
+                "equal_sha256": true,
+                "old_sha256": "f8d5003f1b905e128ffc90a06737f2f73c00f946e4141b9086ab10aa8bbc730f",
+                "new_sha256": "f8d5003f1b905e128ffc90a06737f2f73c00f946e4141b9086ab10aa8bbc730f"
+              },
+              "telescope": {
+                "equal_sha256": true,
+                "old_sha256": "8cc30b82cf80e858e5a8354ebf5d46746aca46c82332f37c55cb90c0a3244c11",
+                "new_sha256": "8cc30b82cf80e858e5a8354ebf5d46746aca46c82332f37c55cb90c0a3244c11"
+              }
+            },
+            "detector_requests_equal": true
+          },
+          {
+            "network": 4,
+            "recorded_identity_comparison": {
+              "raw": {
+                "equal_sha256": true,
+                "old_sha256": "61d813831182dc1f71b8062223701e3eb558d4d0cf33c69ca59bf4573d812a3c",
+                "new_sha256": "61d813831182dc1f71b8062223701e3eb558d4d0cf33c69ca59bf4573d812a3c"
+              },
+              "tune": {
+                "equal_sha256": true,
+                "old_sha256": "04f1f3dafef35625dd51a377e2727661adb0b7ced36fde5e858fe4bc3c462d41",
+                "new_sha256": "04f1f3dafef35625dd51a377e2727661adb0b7ced36fde5e858fe4bc3c462d41"
+              },
+              "manifest": {
+                "equal_sha256": true,
+                "old_sha256": "5a1be186b2d8052d7701e84becf283b00abf2e7644585a783fdf973ca110e301",
+                "new_sha256": "5a1be186b2d8052d7701e84becf283b00abf2e7644585a783fdf973ca110e301"
+              },
+              "filter_plan": {
+                "equal_sha256": true,
+                "old_sha256": "f8d5003f1b905e128ffc90a06737f2f73c00f946e4141b9086ab10aa8bbc730f",
+                "new_sha256": "f8d5003f1b905e128ffc90a06737f2f73c00f946e4141b9086ab10aa8bbc730f"
+              },
+              "telescope": {
+                "equal_sha256": true,
+                "old_sha256": "8cc30b82cf80e858e5a8354ebf5d46746aca46c82332f37c55cb90c0a3244c11",
+                "new_sha256": "8cc30b82cf80e858e5a8354ebf5d46746aca46c82332f37c55cb90c0a3244c11"
+              }
+            },
+            "detector_requests_equal": true
+          },
+          {
+            "network": 5,
+            "recorded_identity_comparison": {
+              "raw": {
+                "equal_sha256": true,
+                "old_sha256": "9585a5cc0836cd0b7531b500e94448bc45c7c90b9af4a0fd7092c3355183bfb2",
+                "new_sha256": "9585a5cc0836cd0b7531b500e94448bc45c7c90b9af4a0fd7092c3355183bfb2"
+              },
+              "tune": {
+                "equal_sha256": true,
+                "old_sha256": "8b9f7c29edaaa8586f0e3baae8e8fbdaa77860d2c1ca73afab8392dbd48d09e0",
+                "new_sha256": "8b9f7c29edaaa8586f0e3baae8e8fbdaa77860d2c1ca73afab8392dbd48d09e0"
+              },
+              "manifest": {
+                "equal_sha256": true,
+                "old_sha256": "5a1be186b2d8052d7701e84becf283b00abf2e7644585a783fdf973ca110e301",
+                "new_sha256": "5a1be186b2d8052d7701e84becf283b00abf2e7644585a783fdf973ca110e301"
+              },
+              "filter_plan": {
+                "equal_sha256": true,
+                "old_sha256": "f8d5003f1b905e128ffc90a06737f2f73c00f946e4141b9086ab10aa8bbc730f",
+                "new_sha256": "f8d5003f1b905e128ffc90a06737f2f73c00f946e4141b9086ab10aa8bbc730f"
+              },
+              "telescope": {
+                "equal_sha256": true,
+                "old_sha256": "8cc30b82cf80e858e5a8354ebf5d46746aca46c82332f37c55cb90c0a3244c11",
+                "new_sha256": "8cc30b82cf80e858e5a8354ebf5d46746aca46c82332f37c55cb90c0a3244c11"
+              }
+            },
+            "detector_requests_equal": true
+          },
+          {
+            "network": 7,
+            "recorded_identity_comparison": {
+              "raw": {
+                "equal_sha256": true,
+                "old_sha256": "13d6217578adc5b0df285cc2acc4d2b9f3d50c7ccdae6e332bbb9cc055c8aeda",
+                "new_sha256": "13d6217578adc5b0df285cc2acc4d2b9f3d50c7ccdae6e332bbb9cc055c8aeda"
+              },
+              "tune": {
+                "equal_sha256": true,
+                "old_sha256": "db3408345d7a1afd776bb1e4bae9a43d0d654f8872b4849e9aa5e8e2a9bcf7d2",
+                "new_sha256": "db3408345d7a1afd776bb1e4bae9a43d0d654f8872b4849e9aa5e8e2a9bcf7d2"
+              },
+              "manifest": {
+                "equal_sha256": true,
+                "old_sha256": "5a1be186b2d8052d7701e84becf283b00abf2e7644585a783fdf973ca110e301",
+                "new_sha256": "5a1be186b2d8052d7701e84becf283b00abf2e7644585a783fdf973ca110e301"
+              },
+              "filter_plan": {
+                "equal_sha256": true,
+                "old_sha256": "bff74e3656d2cbd95888d1fa0ca621b81e56adb6e7e028fe0d5e1368f807d66b",
+                "new_sha256": "bff74e3656d2cbd95888d1fa0ca621b81e56adb6e7e028fe0d5e1368f807d66b"
+              },
+              "telescope": {
+                "equal_sha256": true,
+                "old_sha256": "8cc30b82cf80e858e5a8354ebf5d46746aca46c82332f37c55cb90c0a3244c11",
+                "new_sha256": "8cc30b82cf80e858e5a8354ebf5d46746aca46c82332f37c55cb90c0a3244c11"
+              }
+            },
+            "detector_requests_equal": true
+          },
+          {
+            "network": 8,
+            "recorded_identity_comparison": {
+              "raw": {
+                "equal_sha256": true,
+                "old_sha256": "ec9e8d63a24210a98559eb6d5d4d4333a20880fc8f8f27a83a2e13fdc6074ea7",
+                "new_sha256": "ec9e8d63a24210a98559eb6d5d4d4333a20880fc8f8f27a83a2e13fdc6074ea7"
+              },
+              "tune": {
+                "equal_sha256": true,
+                "old_sha256": "fcc8bf7a9f8a0dc0b950bff47fe86d83df7750d33dac1757aff5b8513ca3b4b2",
+                "new_sha256": "fcc8bf7a9f8a0dc0b950bff47fe86d83df7750d33dac1757aff5b8513ca3b4b2"
+              },
+              "manifest": {
+                "equal_sha256": true,
+                "old_sha256": "5a1be186b2d8052d7701e84becf283b00abf2e7644585a783fdf973ca110e301",
+                "new_sha256": "5a1be186b2d8052d7701e84becf283b00abf2e7644585a783fdf973ca110e301"
+              },
+              "filter_plan": {
+                "equal_sha256": true,
+                "old_sha256": "bff74e3656d2cbd95888d1fa0ca621b81e56adb6e7e028fe0d5e1368f807d66b",
+                "new_sha256": "bff74e3656d2cbd95888d1fa0ca621b81e56adb6e7e028fe0d5e1368f807d66b"
+              },
+              "telescope": {
+                "equal_sha256": true,
+                "old_sha256": "8cc30b82cf80e858e5a8354ebf5d46746aca46c82332f37c55cb90c0a3244c11",
+                "new_sha256": "8cc30b82cf80e858e5a8354ebf5d46746aca46c82332f37c55cb90c0a3244c11"
+              }
+            },
+            "detector_requests_equal": true
+          },
+          {
+            "network": 9,
+            "recorded_identity_comparison": {
+              "raw": {
+                "equal_sha256": true,
+                "old_sha256": "97e802d3efca18c12b0094127bdda3b4c1f1919beac5b2a290b0502c4ebe47fa",
+                "new_sha256": "97e802d3efca18c12b0094127bdda3b4c1f1919beac5b2a290b0502c4ebe47fa"
+              },
+              "tune": {
+                "equal_sha256": true,
+                "old_sha256": "a7bf75a74af08bfc3a862e7fedb7d1bbb0c078a01374d3e2cc83f3f7d18d2b57",
+                "new_sha256": "a7bf75a74af08bfc3a862e7fedb7d1bbb0c078a01374d3e2cc83f3f7d18d2b57"
+              },
+              "manifest": {
+                "equal_sha256": true,
+                "old_sha256": "5a1be186b2d8052d7701e84becf283b00abf2e7644585a783fdf973ca110e301",
+                "new_sha256": "5a1be186b2d8052d7701e84becf283b00abf2e7644585a783fdf973ca110e301"
+              },
+              "filter_plan": {
+                "equal_sha256": true,
+                "old_sha256": "bff74e3656d2cbd95888d1fa0ca621b81e56adb6e7e028fe0d5e1368f807d66b",
+                "new_sha256": "bff74e3656d2cbd95888d1fa0ca621b81e56adb6e7e028fe0d5e1368f807d66b"
+              },
+              "telescope": {
+                "equal_sha256": true,
+                "old_sha256": "8cc30b82cf80e858e5a8354ebf5d46746aca46c82332f37c55cb90c0a3244c11",
+                "new_sha256": "8cc30b82cf80e858e5a8354ebf5d46746aca46c82332f37c55cb90c0a3244c11"
+              }
+            },
+            "detector_requests_equal": true
+          },
+          {
+            "network": 11,
+            "recorded_identity_comparison": {
+              "raw": {
+                "equal_sha256": true,
+                "old_sha256": "8526b92c7e66a8f3e2c6692332ed708c46b6adb24cc316c33c0a42499ab32a43",
+                "new_sha256": "8526b92c7e66a8f3e2c6692332ed708c46b6adb24cc316c33c0a42499ab32a43"
+              },
+              "tune": {
+                "equal_sha256": true,
+                "old_sha256": "c12be7e533433f3f316ec564c0d36d2707af1b7d52245da1adb65cde15b46eea",
+                "new_sha256": "c12be7e533433f3f316ec564c0d36d2707af1b7d52245da1adb65cde15b46eea"
+              },
+              "manifest": {
+                "equal_sha256": true,
+                "old_sha256": "5a1be186b2d8052d7701e84becf283b00abf2e7644585a783fdf973ca110e301",
+                "new_sha256": "5a1be186b2d8052d7701e84becf283b00abf2e7644585a783fdf973ca110e301"
+              },
+              "filter_plan": {
+                "equal_sha256": true,
+                "old_sha256": "d1e9dbefaaaa8832b4876ac34f23a604270b3bf35bc5d79125c37cddd3a32cab",
+                "new_sha256": "d1e9dbefaaaa8832b4876ac34f23a604270b3bf35bc5d79125c37cddd3a32cab"
+              },
+              "telescope": {
+                "equal_sha256": true,
+                "old_sha256": "8cc30b82cf80e858e5a8354ebf5d46746aca46c82332f37c55cb90c0a3244c11",
+                "new_sha256": "8cc30b82cf80e858e5a8354ebf5d46746aca46c82332f37c55cb90c0a3244c11"
+              }
+            },
+            "detector_requests_equal": true
+          },
+          {
+            "network": 12,
+            "recorded_identity_comparison": {
+              "raw": {
+                "equal_sha256": true,
+                "old_sha256": "afb4bd0c895b9ad7bf66e732ccd07f7391b9e85adb37fdf0f5b28f4a3dd5b377",
+                "new_sha256": "afb4bd0c895b9ad7bf66e732ccd07f7391b9e85adb37fdf0f5b28f4a3dd5b377"
+              },
+              "tune": {
+                "equal_sha256": true,
+                "old_sha256": "cdbd13ce30ab110ae288ad67506314f617468b64af94595fa940fe8ec6f26cef",
+                "new_sha256": "cdbd13ce30ab110ae288ad67506314f617468b64af94595fa940fe8ec6f26cef"
+              },
+              "manifest": {
+                "equal_sha256": true,
+                "old_sha256": "5a1be186b2d8052d7701e84becf283b00abf2e7644585a783fdf973ca110e301",
+                "new_sha256": "5a1be186b2d8052d7701e84becf283b00abf2e7644585a783fdf973ca110e301"
+              },
+              "filter_plan": {
+                "equal_sha256": true,
+                "old_sha256": "d1e9dbefaaaa8832b4876ac34f23a604270b3bf35bc5d79125c37cddd3a32cab",
+                "new_sha256": "d1e9dbefaaaa8832b4876ac34f23a604270b3bf35bc5d79125c37cddd3a32cab"
+              },
+              "telescope": {
+                "equal_sha256": true,
+                "old_sha256": "8cc30b82cf80e858e5a8354ebf5d46746aca46c82332f37c55cb90c0a3244c11",
+                "new_sha256": "8cc30b82cf80e858e5a8354ebf5d46746aca46c82332f37c55cb90c0a3244c11"
+              }
+            },
+            "detector_requests_equal": true
+          }
+        ],
+        "telescope_variable_differences": [],
+        "telescope": {
+          "Header.M1.ZernikeC": {
+            "value": [
+              164,
+              60,
+              42,
+              -178,
+              -23,
+              -3,
+              -86,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "units": "micron"
+          },
+          "Header.M1.ModelEnabled": {
+            "value": 1,
+            "units": ""
+          },
+          "Header.M1.ZernikeEnabled": {
+            "value": 1,
+            "units": ""
+          },
+          "Header.M2.ZReq": {
+            "value": 0.6760164545840001,
+            "units": "mm"
+          },
+          "Header.Weather.Temperature": {
+            "value": 2.3999999999991983,
+            "units": "degC"
+          },
+          "Header.Radiometer.Tau": {
+            "value": 0.021,
+            "units": ""
+          },
+          "Header.TempSens.TempSens": {
+            "value": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              28424.0,
+              28519.0,
+              28412.0,
+              28390.0,
+              27950.0,
+              27878.0,
+              27791.0,
+              29933.0,
+              29716.0,
+              28051.0,
+              29214.0,
+              28430.0,
+              28274.0,
+              0.0,
+              0.0,
+              0.0,
+              28756.0,
+              28648.0,
+              28685.0,
+              28727.0,
+              28640.0,
+              28666.0,
+              0.0,
+              28663.0,
+              8807.0,
+              28224.0,
+              28364.0,
+              28330.0,
+              0.0,
+              28490.0,
+              28331.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "units": "hK"
+          },
+          "Header.M1.ActPos": {
+            "elements": 720,
+            "value_sha256": "f857db508f6b76008b299b1a5ab84b0c38ac7c9454716f12511d7b323de3fae0",
+            "units": "micron"
+          },
+          "Header.M1.CmdPos": {
+            "elements": 720,
+            "value_sha256": "9fe03f95a7fca5f0a51aa2157c5380da6acd2ffcc0d12d426a6d2a98a827fd25",
+            "units": "micron"
+          }
+        },
+        "raw_digest_scope": "compared authenticated saved request digests; raw bytes not rehashed"
+      },
+      "arrays": {
+        "a1100": {
+          "uniform": {
+            "map": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-disturbance-152418-20261028/reduced/redu01/152418/raw/toltec_point_152418_a1100_successor.fits",
+            "sha256": "a49cbb735145ff33ce289aed46636abe807954ed5b0cac28a42ec5f8dbf131b8",
+            "pixel_arcsec": [
+              2.0,
+              2.0
+            ],
+            "nominal_beam_fwhm_arcsec": 5.0,
+            "parameters": [
+              502.14657364145324,
+              8.969991702740035,
+              0.3878242297358158,
+              2.589368931087789,
+              3.230036958229838,
+              -0.33384864213238674,
+              6.325129239485996
+            ],
+            "fwhm_arcsec": [
+              6.097497862905889,
+              7.606155775430417
+            ],
+            "gaussian_brightness_area": 26388.323305736674,
+            "gaussian_area_units": "mJy/nominal-beam * arcsec^2; not calibrated total flux",
+            "annulus_median": 7.332187258749167,
+            "apertures": [
+              {
+                "radius_arcsec": 8,
+                "valid_fraction_of_circle": 1.0006245347906466,
+                "annulus_subtracted_brightness_area": 25521.276771240497,
+                "fit_constant_subtracted_brightness_area": 25723.88425649101
+              },
+              {
+                "radius_arcsec": 12,
+                "valid_fraction_of_circle": 1.0003827629586928,
+                "annulus_subtracted_brightness_area": 27728.983550967583,
+                "fit_constant_subtracted_brightness_area": 28184.74024581038
+              },
+              {
+                "radius_arcsec": 20,
+                "valid_fraction_of_circle": 1.0001893454931297,
+                "annulus_subtracted_brightness_area": 31665.12128158674,
+                "fit_constant_subtracted_brightness_area": 32930.86732954814
+              },
+              {
+                "radius_arcsec": 30,
+                "valid_fraction_of_circle": 1.000156188213319,
+                "annulus_subtracted_brightness_area": 35854.126560555604,
+                "fit_constant_subtracted_brightness_area": 38701.96075677945
+              },
+              {
+                "radius_arcsec": 45,
+                "valid_fraction_of_circle": 1.0000432078524821,
+                "annulus_subtracted_brightness_area": 22867.74947487829,
+                "fit_constant_subtracted_brightness_area": 29274.652593430576
+              }
+            ]
+          },
+          "weighted_M0": {
+            "map": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-weighted-152418-20261029/reduced/redu00/.point-work/weighted-00/products/a1100/map.fits",
+            "sha256": "f81ab2e9293004ee36072488017b28c53e2c73c00a6c211414057e2ef4f867d8",
+            "pixel_arcsec": [
+              2.0,
+              2.0
+            ],
+            "nominal_beam_fwhm_arcsec": 5.0,
+            "parameters": [
+              360.8720144593649,
+              8.7882006741526,
+              0.7248489484854435,
+              2.3779810813276177,
+              2.918247529774828,
+              -0.6083019377042702,
+              -2.6661265222408654
+            ],
+            "fwhm_arcsec": [
+              5.599717517014646,
+              6.871947779475817
+            ],
+            "gaussian_brightness_area": 15734.88575494188,
+            "gaussian_area_units": "mJy/nominal-beam * arcsec^2; not calibrated total flux",
+            "annulus_median": 0.42797411675341124,
+            "apertures": [
+              {
+                "radius_arcsec": 8,
+                "valid_fraction_of_circle": 1.0006245347906466,
+                "annulus_subtracted_brightness_area": 14798.221403740943,
+                "fit_constant_subtracted_brightness_area": 15420.715776048602
+              },
+              {
+                "radius_arcsec": 12,
+                "valid_fraction_of_circle": 1.0003827629586928,
+                "annulus_subtracted_brightness_area": 14215.371223647406,
+                "fit_constant_subtracted_brightness_area": 15615.64514408225
+              },
+              {
+                "radius_arcsec": 20,
+                "valid_fraction_of_circle": 1.0001893454931297,
+                "annulus_subtracted_brightness_area": 9841.802923791916,
+                "fit_constant_subtracted_brightness_area": 13730.700664427848
+              },
+              {
+                "radius_arcsec": 30,
+                "valid_fraction_of_circle": 1.000156188213319,
+                "annulus_subtracted_brightness_area": 5487.707113367019,
+                "fit_constant_subtracted_brightness_area": 14237.43695786296
+              },
+              {
+                "radius_arcsec": 45,
+                "valid_fraction_of_circle": 1.0000432078524821,
+                "annulus_subtracted_brightness_area": -2611.021843315624,
+                "fit_constant_subtracted_brightness_area": 17073.646421965965
+              }
+            ]
+          },
+          "weighted_M10": {
+            "map": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-weighted-152418-20261029/reduced/redu00/152418/raw/toltec_point_152418_a1100_successor.fits",
+            "sha256": "b36aef04a110ba8ed8b2e38a6312ce161d54c39a0ac616fecad253b7b3343436",
+            "pixel_arcsec": [
+              2.0,
+              2.0
+            ],
+            "nominal_beam_fwhm_arcsec": 5.0,
+            "parameters": [
+              388.7346813834044,
+              8.79768611851832,
+              0.6904664968323291,
+              2.5035481043573946,
+              3.0808396801886366,
+              -0.6433105754808713,
+              -0.6024437643184297
+            ],
+            "fwhm_arcsec": [
+              5.895405259840028,
+              7.254823034434941
+            ],
+            "gaussian_brightness_area": 18839.015200691614,
+            "gaussian_area_units": "mJy/nominal-beam * arcsec^2; not calibrated total flux",
+            "annulus_median": 0.8538539407448605,
+            "apertures": [
+              {
+                "radius_arcsec": 8,
+                "valid_fraction_of_circle": 1.0006245347906466,
+                "annulus_subtracted_brightness_area": 18263.58534122545,
+                "fit_constant_subtracted_brightness_area": 18556.574235762873
+              },
+              {
+                "radius_arcsec": 12,
+                "valid_fraction_of_circle": 1.0003827629586928,
+                "annulus_subtracted_brightness_area": 19293.56980315978,
+                "fit_constant_subtracted_brightness_area": 19952.635533307483
+              },
+              {
+                "radius_arcsec": 20,
+                "valid_fraction_of_circle": 1.0001893454931297,
+                "annulus_subtracted_brightness_area": 17643.595139364872,
+                "fit_constant_subtracted_brightness_area": 19473.979317416295
+              },
+              {
+                "radius_arcsec": 30,
+                "valid_fraction_of_circle": 1.000156188213319,
+                "annulus_subtracted_brightness_area": 15549.785393287671,
+                "fit_constant_subtracted_brightness_area": 19668.013265993523
+              },
+              {
+                "radius_arcsec": 45,
+                "valid_fraction_of_circle": 1.0000432078524821,
+                "annulus_subtracted_brightness_area": 8965.708049113055,
+                "fit_constant_subtracted_brightness_area": 18230.674048725705
+              }
+            ]
+          },
+          "comparisons": {
+            "peak_ratio_final_uniform": 0.7741458406544298,
+            "gaussian_area_ratio_final_uniform": 0.7139148244631411,
+            "aperture20_ratio_final_uniform": 0.5571933542419311
+          }
+        },
+        "a1400": {
+          "uniform": {
+            "map": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-disturbance-152418-20261028/reduced/redu01/152418/raw/toltec_point_152418_a1400_successor.fits",
+            "sha256": "fe2164ed51a582da92e881f9a92761781948b10b193dc3946d3c3b833e6452cb",
+            "pixel_arcsec": [
+              2.0,
+              2.0
+            ],
+            "nominal_beam_fwhm_arcsec": 7.5,
+            "parameters": [
+              509.91270431312114,
+              8.859424193006543,
+              0.32667916820574217,
+              2.8598775414005777,
+              3.574242881638165,
+              -0.29553030966357485,
+              -3.3050873821065734
+            ],
+            "fwhm_arcsec": [
+              6.734496960823909,
+              8.416698783490734
+            ],
+            "gaussian_brightness_area": 32749.690415059726,
+            "gaussian_area_units": "mJy/nominal-beam * arcsec^2; not calibrated total flux",
+            "annulus_median": 1.8059440231035202,
+            "apertures": [
+              {
+                "radius_arcsec": 8,
+                "valid_fraction_of_circle": 0.9990702872995149,
+                "annulus_subtracted_brightness_area": 29786.64901401614,
+                "fit_constant_subtracted_brightness_area": 30813.327447537722
+              },
+              {
+                "radius_arcsec": 12,
+                "valid_fraction_of_circle": 0.9991393649657875,
+                "annulus_subtracted_brightness_area": 31239.352110841384,
+                "fit_constant_subtracted_brightness_area": 33549.53830599635
+              },
+              {
+                "radius_arcsec": 20,
+                "valid_fraction_of_circle": 0.9996422503762513,
+                "annulus_subtracted_brightness_area": 26322.44818070079,
+                "fit_constant_subtracted_brightness_area": 32742.861944033142
+              },
+              {
+                "radius_arcsec": 30,
+                "valid_fraction_of_circle": 0.9999130348280397,
+                "annulus_subtracted_brightness_area": 19235.32880572076,
+                "fit_constant_subtracted_brightness_area": 33685.17290663817
+              },
+              {
+                "radius_arcsec": 45,
+                "valid_fraction_of_circle": 0.9999547884396534,
+                "annulus_subtracted_brightness_area": 10133.412456324979,
+                "fit_constant_subtracted_brightness_area": 42646.91930110617
+              }
+            ]
+          },
+          "weighted_M0": {
+            "map": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-weighted-152418-20261029/reduced/redu00/.point-work/weighted-00/products/a1400/map.fits",
+            "sha256": "93157851bd7a0060dd0d4ecea4e258c3e9e17a196550b5774ddc204b009bd5d7",
+            "pixel_arcsec": [
+              2.0,
+              2.0
+            ],
+            "nominal_beam_fwhm_arcsec": 7.5,
+            "parameters": [
+              442.1251857489093,
+              8.799294232637434,
+              0.4209341403039073,
+              2.7422137390009986,
+              3.3073241972181604,
+              -0.032771920397238974,
+              -1.731092114149463
+            ],
+            "fwhm_arcsec": [
+              6.457419880358819,
+              7.788153315025217
+            ],
+            "gaussian_brightness_area": 25194.35209150903,
+            "gaussian_area_units": "mJy/nominal-beam * arcsec^2; not calibrated total flux",
+            "annulus_median": -0.20698588464067058,
+            "apertures": [
+              {
+                "radius_arcsec": 8,
+                "valid_fraction_of_circle": 0.9990702872995149,
+                "annulus_subtracted_brightness_area": 23670.698361248753,
+                "fit_constant_subtracted_brightness_area": 23976.853200101337
+              },
+              {
+                "radius_arcsec": 12,
+                "valid_fraction_of_circle": 0.9991393649657875,
+                "annulus_subtracted_brightness_area": 23769.64753503733,
+                "fit_constant_subtracted_brightness_area": 24458.5435507753
+              },
+              {
+                "radius_arcsec": 20,
+                "valid_fraction_of_circle": 0.9996422503762513,
+                "annulus_subtracted_brightness_area": 20139.161105933577,
+                "fit_constant_subtracted_brightness_area": 22053.724300114656
+              },
+              {
+                "radius_arcsec": 30,
+                "valid_fraction_of_circle": 0.9999130348280397,
+                "annulus_subtracted_brightness_area": 18461.1589531187,
+                "fit_constant_subtracted_brightness_area": 22770.093033858087
+              },
+              {
+                "radius_arcsec": 45,
+                "valid_fraction_of_circle": 0.9999547884396534,
+                "annulus_subtracted_brightness_area": 16308.652992292022,
+                "fit_constant_subtracted_brightness_area": 26004.159514672858
+              }
+            ]
+          },
+          "weighted_M10": {
+            "map": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-weighted-152418-20261029/reduced/redu00/152418/raw/toltec_point_152418_a1400_successor.fits",
+            "sha256": "996978c434760bd695b17f9ad830d462867c513883a36a7b89d400047f9b4d8c",
+            "pixel_arcsec": [
+              2.0,
+              2.0
+            ],
+            "nominal_beam_fwhm_arcsec": 7.5,
+            "parameters": [
+              499.81084659068523,
+              8.84676524398678,
+              0.3862437007424445,
+              2.919733645100697,
+              3.4310887315634173,
+              -0.008010650572765066,
+              1.4223246251972002
+            ],
+            "fwhm_arcsec": [
+              6.875447313634401,
+              8.07959652136535
+            ],
+            "gaussian_brightness_area": 31460.145653072414,
+            "gaussian_area_units": "mJy/nominal-beam * arcsec^2; not calibrated total flux",
+            "annulus_median": 0.06173526715628555,
+            "apertures": [
+              {
+                "radius_arcsec": 8,
+                "valid_fraction_of_circle": 0.9990702872995149,
+                "annulus_subtracted_brightness_area": 30039.28779096534,
+                "fit_constant_subtracted_brightness_area": 29765.979403668873
+              },
+              {
+                "radius_arcsec": 12,
+                "valid_fraction_of_circle": 0.9991393649657875,
+                "annulus_subtracted_brightness_area": 32707.50619841352,
+                "fit_constant_subtracted_brightness_area": 32092.519808579025
+              },
+              {
+                "radius_arcsec": 20,
+                "valid_fraction_of_circle": 0.9996422503762513,
+                "annulus_subtracted_brightness_area": 33755.71028547855,
+                "fit_constant_subtracted_brightness_area": 32046.554941274524
+              },
+              {
+                "radius_arcsec": 30,
+                "valid_fraction_of_circle": 0.9999130348280397,
+                "annulus_subtracted_brightness_area": 36401.24625439723,
+                "fit_constant_subtracted_brightness_area": 32554.605028710932
+              },
+              {
+                "radius_arcsec": 45,
+                "valid_fraction_of_circle": 0.9999547884396534,
+                "annulus_subtracted_brightness_area": 38452.86083420934,
+                "fit_constant_subtracted_brightness_area": 29797.556669866935
+              }
+            ]
+          },
+          "comparisons": {
+            "peak_ratio_final_uniform": 0.9801890448365204,
+            "gaussian_area_ratio_final_uniform": 0.9606242152019145,
+            "aperture20_ratio_final_uniform": 1.2823925059610417
+          }
+        },
+        "a2000": {
+          "uniform": {
+            "map": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-disturbance-152418-20261028/reduced/redu01/152418/raw/toltec_point_152418_a2000_successor.fits",
+            "sha256": "18c92b90bb516faf8253f4a8f8452760f2ebc38ea0ab02994a8c0a46fe47aa5f",
+            "pixel_arcsec": [
+              2.0,
+              2.0
+            ],
+            "nominal_beam_fwhm_arcsec": 10.0,
+            "parameters": [
+              566.8982052981087,
+              8.942414035583868,
+              0.10282312253341343,
+              3.7636680507030285,
+              4.125741410338272,
+              0.13280551614685554,
+              -6.392829256493293
+            ],
+            "fwhm_arcsec": [
+              8.862760968638051,
+              9.715378573678823
+            ],
+            "gaussian_brightness_area": 55309.3133676978,
+            "gaussian_area_units": "mJy/nominal-beam * arcsec^2; not calibrated total flux",
+            "annulus_median": -1.7483872100794977,
+            "apertures": [
+              {
+                "radius_arcsec": 8,
+                "valid_fraction_of_circle": 0.9990702872995149,
+                "annulus_subtracted_brightness_area": 47941.85192899828,
+                "fit_constant_subtracted_brightness_area": 48874.80422507164
+              },
+              {
+                "radius_arcsec": 12,
+                "valid_fraction_of_circle": 0.9990012096332423,
+                "annulus_subtracted_brightness_area": 50157.02570069964,
+                "fit_constant_subtracted_brightness_area": 52256.02322805077
+              },
+              {
+                "radius_arcsec": 20,
+                "valid_fraction_of_circle": 0.9993935707776702,
+                "annulus_subtracted_brightness_area": 44373.36136278653,
+                "fit_constant_subtracted_brightness_area": 50206.20001782644
+              },
+              {
+                "radius_arcsec": 30,
+                "valid_fraction_of_circle": 0.9998909299748325,
+                "annulus_subtracted_brightness_area": 37194.92400261824,
+                "fit_constant_subtracted_brightness_area": 50325.34222308585
+              },
+              {
+                "radius_arcsec": 45,
+                "valid_fraction_of_circle": 0.9999449640604502,
+                "annulus_subtracted_brightness_area": 32288.984515877422,
+                "fit_constant_subtracted_brightness_area": 61834.022038882984
+              }
+            ]
+          },
+          "weighted_M0": {
+            "map": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-weighted-152418-20261029/reduced/redu00/.point-work/weighted-00/products/a2000/map.fits",
+            "sha256": "01f79018b91b53e09e0d564c195abe00fafd3953f66f7c1da84ffb8c127fd742",
+            "pixel_arcsec": [
+              2.0,
+              2.0
+            ],
+            "nominal_beam_fwhm_arcsec": 10.0,
+            "parameters": [
+              376.24610432908463,
+              9.125844608617488,
+              -0.00856587616043335,
+              3.2529150796843402,
+              3.8889721357782974,
+              -0.09180315403909556,
+              -5.479017905960907
+            ],
+            "fwhm_arcsec": [
+              7.6600296344241325,
+              9.157829539897557
+            ],
+            "gaussian_brightness_area": 29906.07633573625,
+            "gaussian_area_units": "mJy/nominal-beam * arcsec^2; not calibrated total flux",
+            "annulus_median": -0.8503848989082952,
+            "apertures": [
+              {
+                "radius_arcsec": 8,
+                "valid_fraction_of_circle": 0.9990702872995149,
+                "annulus_subtracted_brightness_area": 26999.056579137054,
+                "fit_constant_subtracted_brightness_area": 27928.833234428745
+              },
+              {
+                "radius_arcsec": 12,
+                "valid_fraction_of_circle": 0.9990012096332423,
+                "annulus_subtracted_brightness_area": 23304.062393987864,
+                "fit_constant_subtracted_brightness_area": 25395.915223612705
+              },
+              {
+                "radius_arcsec": 20,
+                "valid_fraction_of_circle": 0.9993935707776702,
+                "annulus_subtracted_brightness_area": 17091.458152810308,
+                "fit_constant_subtracted_brightness_area": 22904.442630542508
+              },
+              {
+                "radius_arcsec": 30,
+                "valid_fraction_of_circle": 0.9998909299748325,
+                "annulus_subtracted_brightness_area": 10667.387932394831,
+                "fit_constant_subtracted_brightness_area": 23753.112022458452
+              },
+              {
+                "radius_arcsec": 45,
+                "valid_fraction_of_circle": 0.9999449640604502,
+                "annulus_subtracted_brightness_area": 5108.996684335487,
+                "fit_constant_subtracted_brightness_area": 34553.4669795748
+              }
+            ]
+          },
+          "weighted_M10": {
+            "map": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-weighted-152418-20261029/reduced/redu00/152418/raw/toltec_point_152418_a2000_successor.fits",
+            "sha256": "d20ff47e095ff08ab7da4dcccd1e981f8c88c04fd052b0bca00baeb7992b5f65",
+            "pixel_arcsec": [
+              2.0,
+              2.0
+            ],
+            "nominal_beam_fwhm_arcsec": 10.0,
+            "parameters": [
+              680.053633516827,
+              8.870876561889183,
+              0.09442813915947046,
+              3.994001081701038,
+              4.267016211967098,
+              -0.11136078591688969,
+              -0.6427601001375802
+            ],
+            "fwhm_arcsec": [
+              9.405153807064899,
+              10.048055308412152
+            ],
+            "gaussian_brightness_area": 72820.80990601992,
+            "gaussian_area_units": "mJy/nominal-beam * arcsec^2; not calibrated total flux",
+            "annulus_median": -0.11887186143154331,
+            "apertures": [
+              {
+                "radius_arcsec": 8,
+                "valid_fraction_of_circle": 0.9990702872995149,
+                "annulus_subtracted_brightness_area": 61722.738129008816,
+                "fit_constant_subtracted_brightness_area": 61827.97417895889
+              },
+              {
+                "radius_arcsec": 12,
+                "valid_fraction_of_circle": 0.9990012096332423,
+                "annulus_subtracted_brightness_area": 70186.03499813905,
+                "fit_constant_subtracted_brightness_area": 70422.79973901925
+              },
+              {
+                "radius_arcsec": 20,
+                "valid_fraction_of_circle": 0.9993935707776702,
+                "annulus_subtracted_brightness_area": 72703.35678483271,
+                "fit_constant_subtracted_brightness_area": 73361.29492661766
+              },
+              {
+                "radius_arcsec": 30,
+                "valid_fraction_of_circle": 0.9998909299748325,
+                "annulus_subtracted_brightness_area": 71196.52433839555,
+                "fit_constant_subtracted_brightness_area": 72677.62187524737
+              },
+              {
+                "radius_arcsec": 45,
+                "valid_fraction_of_circle": 0.9999449640604502,
+                "annulus_subtracted_brightness_area": 70018.73545457934,
+                "fit_constant_subtracted_brightness_area": 73351.38499907796
+              }
+            ]
+          },
+          "comparisons": {
+            "peak_ratio_final_uniform": 1.1996044918844195,
+            "gaussian_area_ratio_final_uniform": 1.3166102681822356,
+            "aperture20_ratio_final_uniform": 1.6384460079647014
+          }
+        }
+      },
+      "run_identities": [
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-disturbance-152418-20261028/reduced/redu01/RUN.json",
+          "sha256": "327c6bfdfd318acbd5d9cbc3b610cddf7fb812fe08a60732eaf1ead82182566a",
+          "executable": {
+            "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/software/configured-point-drop-4767cc144/bin/citlali-native",
+            "sha256": "76282265e403aff49e9e90ffbc92fa56788bc5d52cba9fa7821e4603bc85556d"
+          },
+          "config": {
+            "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-disturbance-152418-20261028/reduced/citlali_o152418_0_2_c1.yaml",
+            "sha256": "3f0e34a76216fac2560189a3dccd03fabab230059ec403f32d8d75f51c39f43a"
+          },
+          "pixel_size_arcsec": 2.0,
+          "ranks": {
+            "a1100": 3,
+            "a1400": 4,
+            "a2000": 6
+          },
+          "coverage_cut": 0.15,
+          "cleaning_method": "observed-als"
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-weighted-152418-20261029/reduced/redu00/RUN.json",
+          "sha256": "43320eddfe5db3ceff4be3c15dfdddc74fcdc4965c93ff207fc8a901d87d58a3",
+          "executable": {
+            "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/software/configured-point-weighted-331ff29ea/bin/citlali-native",
+            "sha256": "197649397221c6b780605a732c4436ffde334c87faeaaec59e584984448f0852"
+          },
+          "config": {
+            "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-weighted-152418-20261029/reduced/citlali_o152418_0_2_c1.yaml",
+            "sha256": "9887c4df1d0df373e92edcf3beb4d83fc85d4ba5e212638af5d3bdfa5e581ffd"
+          },
+          "pixel_size_arcsec": 2.0,
+          "ranks": {
+            "a1100": 3,
+            "a1400": 4,
+            "a2000": 6
+          },
+          "coverage_cut": 0.15,
+          "cleaning_method": "noise-weighted-observed-als-v1"
+        }
+      ]
+    }
+  },
+  "archived_PPT": {
+    "152389": {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/reference/v2-science/pointings/reduced/redu00/152389/raw/ppt_commissioning_pointing_152389_citlali.ecsv",
+      "sha256": "277a35f7e3f0858b37281ee6b13ef3dde58d67fcf916ab72dfed1e8a74497671",
+      "date": "2026-02-19.06:34:47",
+      "mjd": 61090.27452368787,
+      "elevation_deg": 59.2162074595954,
+      "M2_ZReq_mm": -0.95297993077,
+      "M1_first_Zernike_only": 46,
+      "arrays": {
+        "a1100": {
+          "amp": 661.0567016601562,
+          "amp_err": 4.234604835510254,
+          "a_fwhm": 5.19173002243042,
+          "b_fwhm": 5.52446985244751,
+          "x_t": 7.519118785858154,
+          "y_t": -0.4492188096046448
+        },
+        "a1400": {
+          "amp": 470.5762939453125,
+          "amp_err": 2.405160903930664,
+          "a_fwhm": 6.442101001739502,
+          "b_fwhm": 6.627195835113525,
+          "x_t": 7.3291850090026855,
+          "y_t": -0.46546149253845215
+        },
+        "a2000": {
+          "amp": 526.0347290039062,
+          "amp_err": 2.62813401222229,
+          "a_fwhm": 8.396944046020508,
+          "b_fwhm": 9.063132286071777,
+          "x_t": 7.559576988220215,
+          "y_t": -0.7617204189300537
+        }
+      }
+    },
+    "152391": {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/reference/v2-science/pointings/reduced/redu00/152391/raw/ppt_commissioning_pointing_152391_citlali.ecsv",
+      "sha256": "69d87aa8aa1059e002db8fb9d89c541ed7f4fe57aaf6ccfc349dd072423beeae",
+      "date": "2026-02-19.07:04:30",
+      "mjd": 61090.29516409608,
+      "elevation_deg": 63.562370884918096,
+      "M2_ZReq_mm": -0.95297993077,
+      "M1_first_Zernike_only": 46,
+      "arrays": {
+        "a1100": {
+          "amp": 463.3121032714844,
+          "amp_err": 4.597883224487305,
+          "a_fwhm": 5.394538879394531,
+          "b_fwhm": 5.615065097808838,
+          "x_t": 10.39309024810791,
+          "y_t": 0.4224126935005188
+        },
+        "a1400": {
+          "amp": 459.63330078125,
+          "amp_err": 3.4664740562438965,
+          "a_fwhm": 6.664853096008301,
+          "b_fwhm": 6.454037189483643,
+          "x_t": 10.76082992553711,
+          "y_t": 0.3197951018810272
+        },
+        "a2000": {
+          "amp": 441.752197265625,
+          "amp_err": 2.228800058364868,
+          "a_fwhm": 8.608274459838867,
+          "b_fwhm": 9.387781143188477,
+          "x_t": 10.160920143127441,
+          "y_t": 0.37278059124946594
+        }
+      }
+    },
+    "152393": {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/reference/v2-science/pointings/reduced/redu00/152393/raw/ppt_commissioning_pointing_152393_citlali.ecsv",
+      "sha256": "ad06ccf831a65e4f972305b021188e19ec562b1f1db0a21b07a9c4791472ce8a",
+      "date": "2026-02-19.07:33:44",
+      "mjd": 61090.315462809784,
+      "elevation_deg": 66.89790793067236,
+      "M2_ZReq_mm": -0.95297993077,
+      "M1_first_Zernike_only": 46,
+      "arrays": {
+        "a1100": {
+          "amp": 441.877685546875,
+          "amp_err": 4.00439977645874,
+          "a_fwhm": 5.868238925933838,
+          "b_fwhm": 5.954397201538086,
+          "x_t": 8.945283889770508,
+          "y_t": -0.8174843192100525
+        },
+        "a1400": {
+          "amp": 433.0528869628906,
+          "amp_err": 2.328221082687378,
+          "a_fwhm": 6.517495155334473,
+          "b_fwhm": 7.384568214416504,
+          "x_t": 9.191734313964844,
+          "y_t": -0.6067097187042236
+        },
+        "a2000": {
+          "amp": 464.3537902832031,
+          "amp_err": 1.9469170570373535,
+          "a_fwhm": 8.833372116088867,
+          "b_fwhm": 9.744047164916992,
+          "x_t": 9.139772415161133,
+          "y_t": -0.615138828754425
+        }
+      }
+    },
+    "152418": {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/reference/v2-science/pointings/reduced/redu00/152418/raw/ppt_commissioning_pointing_152418_citlali.ecsv",
+      "sha256": "69504d3b7b5694346476d8a31036470fbc53f5b0d35358865e694f667b95a2fa",
+      "date": "2026-02-19.09:00:45",
+      "mjd": 61090.37590068275,
+      "elevation_deg": 67.36828518037713,
+      "M2_ZReq_mm": 0.6760164545840001,
+      "M1_first_Zernike_only": 164,
+      "arrays": {
+        "a1100": {
+          "amp": 408.8302001953125,
+          "amp_err": 3.6193220615386963,
+          "a_fwhm": 5.595164775848389,
+          "b_fwhm": 6.650113105773926,
+          "x_t": 8.68374252319336,
+          "y_t": 0.7435076236724854
+        },
+        "a1400": {
+          "amp": 434.5603942871094,
+          "amp_err": 5.116861820220947,
+          "a_fwhm": 6.230385780334473,
+          "b_fwhm": 7.349431037902832,
+          "x_t": 8.971484184265137,
+          "y_t": 0.12609229981899261
+        },
+        "a2000": {
+          "amp": 474.4316101074219,
+          "amp_err": 2.1444430351257324,
+          "a_fwhm": 9.077401161193848,
+          "b_fwhm": 9.088296890258789,
+          "x_t": 9.003817558288574,
+          "y_t": 0.16724389791488647
+        }
+      }
+    }
+  }
+}
