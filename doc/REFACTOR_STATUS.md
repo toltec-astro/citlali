@@ -17,9 +17,15 @@ M5 preparation, calibration/SCIENCE/coadd qualification or production is
 activated by candidate assembly. Historical OOF replay instructions are held
 until their separately archived repair is recovered and qualified.
 
-Local combination and gates are in progress. Prior branch test results do not
-establish combined-source success. Supported Spack, exact-source review and
-later owner acceptance remain separate gates. Existing pointing runtimes,
+Assembly is complete at merge `c83375dc030095821999a0e0ff435f13bf82b914` with both
+approved parents intact. The [local validation receipt](../validation/pointing_engineering_candidate_2026-10-30/LOCAL_VALIDATION.json)
+records 1,388 enabled CTests, 207 baseline tests, 300 synthetic Python tests,
+full configuration preflight, six tool-caller builds and supporting gates.
+One inherited CTest remains disabled. Independent source review has no findings;
+final documentation-only closure and executable identity are bound in the external
+packet. Supported Mac Spack graph validation passes, but 44 dependencies remain
+uninstalled for the current OS. Supplemental local checks do not waive supported
+Spack qualification or later exact-candidate owner acceptance. Existing pointing runtimes,
 legacy 4.x/5.x, all recovery evidence, stashes and dependency consumers remain
 protected. Older entries below retain their original dated scope.
 

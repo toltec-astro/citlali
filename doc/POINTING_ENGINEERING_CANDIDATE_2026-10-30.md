@@ -86,10 +86,34 @@ acceptance retain their separate identities.
 ## Validation and completion boundary
 
 The [work order](../validation/pointing_engineering_candidate_2026-10-30/WORK_ORDER.json)
-states focused and broader gates. Local reconciliation/tests are in progress;
-no prior branch pass is a combined-candidate pass. Report the actual source,
-compiler/dependency state, tests, disabled/skipped data, executable identity and
-review verdict. Local fallback evidence remains supplemental. Supported native
+states focused and broader gates. Assembly is complete at implementation merge
+`c83375dc030095821999a0e0ff435f13bf82b914`, whose parents are exactly the approved
+pointing and engineering inputs. The [local validation receipt](../validation/pointing_engineering_candidate_2026-10-30/LOCAL_VALIDATION.json)
+binds the actual source, environment and hashed evidence.
+
+The CLI, ordinary test aggregate and all six historical tool callers compile.
+All 1,388 enabled CTests, 207 native-capable baseline tests, 300 configured POINT
+Python tests, 75 build-tool tests, 130 configuration unit tests and full
+`--require-all` configuration preflight pass. The inherited
+`MapFitterLifecycle.ExactProductSequence` test remains disabled. Python lint,
+formatting/types, 29-module wheel smoke checks, local workflow lint, ledgers and
+exit audits pass. Two initial CTest wrappers used system Python without NumPy;
+setting the isolated build to the required TolTECA venv fixed the setup and the
+complete rerun passed, with original failure evidence preserved.
+
+Fresh independent source review found no actionable issues across scientific/
+behavioral, architecture/ownership and repository/evidence axes. It reproduced
+136 Python and six source-graph tests independently. The external evidence
+packet holds the final exact-commit follow-up and executable refresh after this
+documentation-only closure. No prior branch pass is credited as a combined pass.
+
+The local build uses AppleClang 17/Homebrew with isolated byte-verified copies
+of all 18 dependency source trees, preserving their existing local modifications.
+This is supplemental evidence. The supported `macos-llvm20` Spack configuration
+and graph resolve successfully, but current OS `goldengate` differs from the
+installed store's `tahoe` packages: 44 dependencies need installation before a
+supported build. No dependencies were installed or accepted-store state changed.
+The resolved environment is retained for later qualification. Supported native
 macOS Spack, owner-run Linux/Unity qualification, eligible hosted source CI and
 scientific/production release are distinct claims. GitHub checks cannot run
 through this unit's forbidden publication; no 4.x/5.x or default-branch change

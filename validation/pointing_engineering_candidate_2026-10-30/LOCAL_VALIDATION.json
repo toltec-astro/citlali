@@ -1,0 +1,102 @@
+{
+  "work_order": "CITLALI-COMBINED-CANDIDATE-20261030",
+  "recorded_utc": "2026-10-30T18:36:11.097133+00:00",
+  "disposition": "Isolated candidate assembled and locally regression-tested; supported native qualification and canonical acceptance remain pending.",
+  "tested_implementation_commit": "c83375dc030095821999a0e0ff435f13bf82b914",
+  "tested_implementation_tree": "41558099e4fbcf8cd26d7e696c4c31acba8a1ecd",
+  "parents": [
+    "797d013f115e403a30663eb92254082e8e742826",
+    "5c46201057d6b6d1048aac2949a64e9a34e9bad3"
+  ],
+  "canonical_unchanged": "e32c4584dec07617d6caa857d39bf13047b6c4b0",
+  "environment": {
+    "classification": "Supplemental native regression evidence; not accepted Spack-backed V2 reproduction",
+    "native": "AppleClang 17 C++20 Release, Homebrew libraries, Wiener OpenMP off; 18 source trees copied and hashed before build",
+    "python": "/Users/gwilson/tolteca/bin/python; 3.13.2",
+    "source_provenance": "Isolated copies preserve the exact local dependency state, including existing Ceres, KIDs and Tula modifications; hashes are in the external source manifest."
+  },
+  "checks": {
+    "native_cli_and_ordinary_aggregate": "pass",
+    "ordinary_ctest": {
+      "passed": 1388,
+      "failed": 0,
+      "disabled": [
+        "citlali::MapFitterLifecycle.ExactProductSequence"
+      ]
+    },
+    "baseline_with_fresh_native_cli": {
+      "passed": 207
+    },
+    "configured_point_synthetic_python": {
+      "passed": 300
+    },
+    "build_tool_unit": {
+      "passed": 75
+    },
+    "configuration_unit": {
+      "passed": 130
+    },
+    "source_only_baseline": {
+      "passed": 203,
+      "note": "Overlaps the 207-test native-capable baseline run; do not sum."
+    },
+    "configuration_preflight": "pass with --require-all and four existing fixture files; no missing fixture credit",
+    "six_historical_tool_callers": "compile/link pass only; no observations run",
+    "python_lint_format_types": "pass",
+    "wheel": "29 runtime modules, installed resource and command smoke checks pass; not fresh dependency-lock recreation",
+    "workflows": "all three files pass local actionlint; hosted checks not run",
+    "ledgers_and_exit_audit": "pass"
+  },
+  "resolved_test_setup_failure": {
+    "first_ctest_exit": 8,
+    "cause": "CMake selected system Python without NumPy for two Python wrappers",
+    "resolution": "Set only candidate build cache Python3_EXECUTABLE to /Users/gwilson/tolteca/bin/python and rerun all ordinary CTests",
+    "application_changes_required": false,
+    "original_log_preserved": "logs/native-ctest.log"
+  },
+  "independent_source_review": {
+    "source": "c83375dc030095821999a0e0ff435f13bf82b914",
+    "three_axes": "pass with recorded limitations; no actionable findings",
+    "independently_reproduced": "136 Python and 6 source-graph tests; parent preservation and behavior extraction checks",
+    "closure": "Final documentation-only commit and native evidence require exact-SHA follow-up in external packet."
+  },
+  "supported_spack": {
+    "status": "pending; isolated configuration and dependency graph validated, no supported build performed",
+    "profile": "macos-llvm20",
+    "root_dag_hash": "kqk3pl4f6jgsb5yksobnynlx2gmnqks6",
+    "lock_sha256": "00964e0c57c1df96b0ddc3f6d214bef1c1ab8f59cc4e5c4da653cefbcb915238",
+    "missing_dependency_installations": 44,
+    "cause": "Current OS resolves as goldengate; all 130 entries in existing installed store are tahoe. Four providers are external; the remaining 44 dependencies and candidate root are not installed at resolved hashes.",
+    "scope": "No package installation, OS override, accepted-store mutation, upgrade or graph substitution. Qualify supported environment before mainline, or separately obtain explicit governed owner exception."
+  },
+  "held_claims": [
+    "Canonical integration",
+    "Hosted CI",
+    "Unity/Linux build and observation qualification",
+    "M5 runner adaptation or trial",
+    "OOF replay repair/activation",
+    "Calibration/PPT/SCIENCE/coadd and production acceptance"
+  ],
+  "evidence_packet": "/Users/gwilson/.codex/visualizations/2026/10/29/01a188f2-4d30-7e60-88a8-956b50bb08cf/citlali-combined-candidate-20261030",
+  "evidence_sha256": {
+    "candidate-merge.json": "16786e9f0bc341711e3452079c7d15e373a4ab813c85c96cae5e30ca8597839c",
+    "native-executable.json": "4cf396ce160661a5fbde1e623949abe7a05cbfed65ec728102d8b81af56d90f0",
+    "supplemental-configure.json": "01cbf83dcb94c1428886dcccad992e452f13beeed22bbdfe4d90f4adab7ff697",
+    "supplemental-configure-arguments.json": "1d55c822f2b8eb4ef002b45fd00819c386c1e15cce842f0b630610316b9134b9",
+    "supplemental-source-snapshots.json": "a6e6496ad90bb30d3525bc6674453aa7d83f3543bcfcf605f82427d1eaa53d7d",
+    "supplemental-build.json": "f1a0cfad2a66d03ff178db670001a19a14461677aee5e154465aef2236bb4674",
+    "native-gates.json": "b448b9f6a9da2501869883c7e90dac59ddbf37a183fda919a8801d4be068b488",
+    "full-config-preflight.json": "e1febb12801e48fa62893370686ed4977989e5e01185cb18ec00e478a57fdf99",
+    "precommit-source-gates.json": "ba0baa05dc6b4f398fd3db7195dc14e137619fd183188eaed01e36a2bdc212ec",
+    "actionlint.json": "d5925f714451008ea452415de2fedd5be343334d9c90bad9a87fbe56c8755cdb",
+    "review/python-reconciliation-completion.json": "579211128cd69eabd9c96f2502c2f89bf9113d8b8210432f28e696390b705805",
+    "review/native-reconciliation.json": "e0edadece8b36019019882eef2dc0e020de73b26e1d7f6497b14912e4907cf51",
+    "review/python-ast-reconciliation.json": "9246b9b9fcb4862381fef58583f521d840c25145fd83ce537306f09def731745",
+    "review/independent-review-c83375dc.json": "9b5a8206a558b481e026854344e10193dfbd70b8934d3eb07810ef95ad5b4bbd",
+    "review/build-readiness.json": "9383b9d29d2a2a1a86ba684f64500226703878832a26bd54a6cf50faee068f17",
+    "review/spack-concrete-readiness.json": "1cf0c6797813624f0dad2c70ea8a5198d7871091cedfd62c228a11a7e84d74bf",
+    "review/candidate-spack.yaml": "9a3af3670fa7fa4d6427277a8ee4a2bd59c92e82d5b2cd4409bc0a43a219b071",
+    "review/candidate-spack.lock": "00964e0c57c1df96b0ddc3f6d214bef1c1ab8f59cc4e5c4da653cefbcb915238"
+  },
+  "final_identity_policy": "Documentation/evidence closure may follow this tested implementation. External completion and final independent review bind that exact final commit, executable refresh and unchanged implementation. No self-referential acceptance is implied."
+}

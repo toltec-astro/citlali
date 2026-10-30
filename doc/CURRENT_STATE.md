@@ -10,8 +10,14 @@ Grant approved pointing cutoff `797d013f115e403a30663eb92254082e8e742826`
 and the [acceptance table](../validation/pointing_engineering_candidate_2026-10-30/acceptance-table.json)
 for one candidate combining engineering `5c46201057d6b6d1048aac2949a64e9a34e9bad3`.
 The [current work order](POINTING_ENGINEERING_CANDIDATE_2026-10-30.md)
-records exact scope, preservation, settings and held uses. Candidate assembly and
-local verification are in progress; canonical remains `e32c4584dec07617d6caa857d39bf13047b6c4b0`.
+records exact scope, preservation, settings and held uses. Candidate assembly is
+complete at implementation merge `c83375dc030095821999a0e0ff435f13bf82b914`, followed
+by documentation/evidence closure. [Local validation](../validation/pointing_engineering_candidate_2026-10-30/LOCAL_VALIDATION.json)
+passes: 1,388 enabled CTests, 207 baseline and 300 Python application tests, full
+configuration preflight and supporting checks. One inherited test is disabled.
+Independent source review has no findings. Supported Mac Spack qualification is
+pending 44 dependency installations for the current OS; fallback checks remain
+supplemental. Canonical remains `e32c4584dec07617d6caa857d39bf13047b6c4b0`.
 No push or canonical movement is authorized. The active pointing workspace may
 continue independently; this checkout never replaces its frozen runtime.
 
