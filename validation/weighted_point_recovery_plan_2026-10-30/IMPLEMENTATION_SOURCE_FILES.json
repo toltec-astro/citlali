@@ -1,0 +1,85 @@
+{
+  "source": "d0d3eeb7981975a2f43f1a55878668410aa6c20b",
+  "files": [
+    {
+      "path": "doc/REFACTOR_STATUS.md",
+      "sha256": "540e62e5ee43fc6d06f7e31b0917535d79c451c21ac1ece937f1b48ffa5c4ea8"
+    },
+    {
+      "path": "src/citlali/cli/point_recovery_bindings.h",
+      "sha256": "585739c503d053b40423d72a8560de72fd51c0f18acce866148445f50ed295eb"
+    },
+    {
+      "path": "src/citlali/cli/point_weighted_execution.h",
+      "sha256": "646d707d2b4d5759e27406ee01f36d0d361a27ef5d281e7b4ae17e61d062185d"
+    },
+    {
+      "path": "tests/test_fruit_cycle.cpp",
+      "sha256": "b02dc081136b27ba62292fe171becd7c4ef4c47633c424c40608bd69c53a03b8"
+    },
+    {
+      "path": "tests/test_point_weighted_bindings.cpp",
+      "sha256": "061c340f99b5655d56db9b91f2ed9d8523836c83d62ecb4d13279278de7734ca"
+    },
+    {
+      "path": "tools/timestream_successor/configured_point_cli.py",
+      "sha256": "cb75a8e693e9d4e6fa8c5b40cdab70dfb943862de1bb7d503669de3692f38362"
+    },
+    {
+      "path": "tools/timestream_successor/configured_point_feedback.py",
+      "sha256": "b2a40d3166d89a5449098204a5d292e7414c11022970b7875e4dc45655a77fda"
+    },
+    {
+      "path": "tools/timestream_successor/point_recovery_evidence.py",
+      "sha256": "808ff71780f857f10fa9c5fec61c4ec82a39ae194bf404d852e7535ee07c4ccb"
+    },
+    {
+      "path": "tools/timestream_successor/point_recovery_products.py",
+      "sha256": "8c99cb11beca8b73f79aabb51475edb11f06d03626df70748b71f5962204d0d3"
+    },
+    {
+      "path": "tools/timestream_successor/point_recovery_restore.py",
+      "sha256": "dedb1348149efb4c04c5bc9cb5ac53d296d769be8c8944af88c5e0893a418953"
+    },
+    {
+      "path": "tools/timestream_successor/prepare_point_recovery.py",
+      "sha256": "2c7d9f93334a427650a0b57d44ec17d7884051991a36dd1e8d377dbddb381410"
+    },
+    {
+      "path": "tools/timestream_successor/run_point_recovery.py",
+      "sha256": "35a005281f6d72b26aa5bc62c77b0c5b73c25f7d2fcac22e5cdbefada8c914a6"
+    },
+    {
+      "path": "tools/timestream_successor/test_configured_point_feedback.py",
+      "sha256": "91c00f6728a07d17f2c74a4a73c030032534f6677a91524480f883a91a86df64"
+    },
+    {
+      "path": "tools/timestream_successor/test_point_recovery_evidence.py",
+      "sha256": "375f413ae8c26095122510825cc87e0d7076d9e2f6a7d6e4ae97cb236d62a992"
+    },
+    {
+      "path": "tools/timestream_successor/test_point_recovery_products.py",
+      "sha256": "8cf37bd9464f2fab313c138381771b2e1eb346378ed37237e97e3fc3f3acf587"
+    },
+    {
+      "path": "tools/timestream_successor/test_point_recovery_restore.py",
+      "sha256": "f56460158e9a7d188c8049464b2c36eb4ad3ed93ec5edb61d2c7ba160d3dbccf"
+    },
+    {
+      "path": "tools/timestream_successor/test_run_point_recovery.py",
+      "sha256": "b9aa9b52231a3581dc0527535497fc8915bf64c3921f2011721c921e3e87f94f"
+    },
+    {
+      "path": "validation/weighted_point_recovery_plan_2026-10-30/IMPLEMENTATION_CHECKS.json",
+      "sha256": "4052f4e8d577914b602f00d888d7fa3555640e740434657bac4453d3aa170717"
+    },
+    {
+      "path": "validation/weighted_point_recovery_plan_2026-10-30/IMPLEMENTATION_REVIEW_76c6237a0.md",
+      "sha256": "6d21213bb2605e8d17226d9590c32102a1aee4252219d4629382e17da7250759"
+    },
+    {
+      "path": "validation/weighted_point_recovery_plan_2026-10-30/IMPLEMENTATION_WORK_ORDER.md",
+      "sha256": "6922586bacc7351585ede5261ceaba9c419315992a50921738abe9c5dc852199"
+    }
+  ]
+}

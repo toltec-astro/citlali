@@ -1,0 +1,15 @@
+{
+  "candidate": "d0d3eeb7981975a2f43f1a55878668410aa6c20b",
+  "tree": "66d91bff9b4f5b154fc1ae090ed72977ff99ebc7",
+  "parent": "76c6237a0b7d82b95a59a3e71349eb13e60a79ea",
+  "base": "e42b0368cb3ffe3d8d44488e749a39f3b8ab8d65",
+  "reviewer": "/root/recovery_implementation_review",
+  "verdict": "pass with recorded limitations",
+  "scientific_behavioral": "pass within approved diagnostic scope",
+  "architecture_ownership": "pass",
+  "repository_evidence": "pass with recorded limitations",
+  "independent_checks": "5 synthetic runner, 3 native recovery, 10 FRUIT tests passed; both terminal overshoot regressions passed",
+  "findings_closed": ["terminal resource enforcement", "actual native seed M1/M2 verification"],
+  "launch_gates_remaining_at_review": ["matching clean-version rebuild", "runtime snapshot", "trial preparation", "read-only readiness check"],
+  "limitations": ["Local supplemental tests, not Unity/Spack qualification", "No observation replay or source-recovery adequacy established", "No calibration acceptance or scientific release criteria", "No reductions or saved-observation source fits during review"]
+}

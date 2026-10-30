@@ -1,0 +1,33 @@
+{
+  "status": "prepared; no reductions launched",
+  "reviewed_source": "d0d3eeb7981975a2f43f1a55878668410aa6c20b",
+  "reviewed_tree": "66d91bff9b4f5b154fc1ae090ed72977ff99ebc7",
+  "trial_manifest": {
+    "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-source-recovery-152418-20261030/trial.json",
+    "sha256": "229ec59da325db0a7949e08a4fec75d150a3f834ddd2f30756f40fbc403abead"
+  },
+  "launcher": {
+    "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-source-recovery-152418-20261030/02_redu.sh",
+    "sha256": "d356c700ee3836deb5aa56f254af5ecef96fd0fa609fb4b8e7a3b146dfe25597"
+  },
+  "runtime_manifest": {
+    "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/software/configured-point-recovery-d0d3eeb79/manifest.json",
+    "sha256": "fd619c0d42ecaa613e82f07731d5b859b995235fbde424ef0bba9a38d67d17f9"
+  },
+  "native": {
+    "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/software/configured-point-recovery-d0d3eeb79/bin/citlali-native",
+    "sha256": "47d31683e06ac8af3cd70a7bcfbd50c315577c01218d660cba54aa937ca77229"
+  },
+  "review": {
+    "path": "/Users/gwilson/.codex/worktrees/configurable-point-20261028/citlali-refactor/validation/weighted_point_recovery_plan_2026-10-30/IMPLEMENTATION_REVIEW.json",
+    "sha256": "30382d80b43decaef0e723ed335486b213bfaddef9ad6ae7cab8476673989618"
+  },
+  "bindings": 761,
+  "native_version": "** logging ** Configured with level=trace; available levels: [\"trace\", \"debug\", \"info\", \"warning\", \"error\", \"critical\", \"off\"].\nv2-ngc4449-memory-repair-187df04b-690-gd0d3eeb79 (2026-10-30T12:17:06)\nkids 04088da-dirty (2026-10-29T12:40:28)",
+  "readonly_readiness": "Ready; no reductions launched.",
+  "run_output_exists": false,
+  "no_observation_source_fits": true,
+  "no_reductions": true,
+  "no_unity": true,
+  "no_push": true
+}
