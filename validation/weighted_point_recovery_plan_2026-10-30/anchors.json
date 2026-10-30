@@ -1,0 +1,36 @@
+{
+  "source_revision": "d042083be71f76a406fb698707f7bde94c928d62",
+  "run": {
+    "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-weight-control-152418-20261030/reduced/redu00/RUN.json",
+    "sha256": "7ba4185cace714e94382aedab1c744354a3fe0bf3dbc488aa363222f8ccf36de"
+  },
+  "runtime": {
+    "executable": {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/software/configured-point-control-d042083be/bin/citlali-native",
+      "sha256": "436c8ff369be4d3ea0a190567d8b0890e6680852e15b21f1b4d24ed659ceadb6"
+    },
+    "received_config": {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-weight-control-152418-20261030/reduced/citlali_o152418_0_2_c1.yaml",
+      "sha256": "f2250d7bebc8efbc21f0cb7e15075b485fbe05afd0c53d10ee44cd5a4254ae1c"
+    },
+    "frozen_health": {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-weight-control-152418-20261030/reduced/redu00/.point-work/health/products/health.yaml",
+      "sha256": "55d81af8bded42a88d2ad818bcdbd1a64de1f755974c75c496a1c6372d58b1a9"
+    }
+  },
+  "final_fits": {
+    "a1100": {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-weight-control-152418-20261030/reduced/redu00/152418/raw/point-fit-a1100.json",
+      "sha256": "a5d134d72647f20deaf1a50877e15b9733dd525884b22e463405525b5e04b1fb"
+    },
+    "a1400": {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-weight-control-152418-20261030/reduced/redu00/152418/raw/point-fit-a1400.json",
+      "sha256": "8907d4a1b8fe510829397ee6f90aff61d0a6a96980cd7f6405b6cc751fe47999"
+    },
+    "a2000": {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/pointings-weight-control-152418-20261030/reduced/redu00/152418/raw/point-fit-a2000.json",
+      "sha256": "70358ce5a8a3065d0220d63d6cd305967b069495fbba3376d7de84008041e686"
+    }
+  },
+  "scope": "Existing evidence anchors only; no new inputs, perturbations, executable or trial prepared."
+}

@@ -1,3 +1,20 @@
+## Weighted POINT source-recovery test defined — 2026-10-30
+
+Grant requested a bounded current-route test recovered from September25, retaining
+noise weighting and2″ sampling and forbidding reductions. The proposed
+[plan](../validation/weighted_point_recovery_plan_2026-10-30/PLAN.md) tests the current
+policy first:152418, all three arrays, REF/compact±/data shoulder/one-time feedback
+seed, M0 plus at most10 feedback applications. Five all-array trajectories are the
+ceiling; no candidate policy, Gaussian-tail completion, second observation or
+automatic extra pass is included. Current branch-local M0 selector initialization
+and residual noise relearning are preserved; weighted references and AltAz frames
+require explicit adaptation of historical tools. A1100 injection/source-free
+mask overlap is disclosed as part of full-procedure response. Scientific acceptance
+criteria remain separate from execution completion. No implementation, new fits,
+source rasters, runtime/trial preparation, reductions, Unity or calibration issuance
+occurred. Exact prior-work dispositions and existing-input anchors accompany the
+plan; implementation and owner-run preparation are subsequent decisions.
+
 ## Saved a1100/a1400 feedback inspection — 2026-10-30
 
 Grant retains noise weighting and authorized saved-mask/profile/sampling inspection
