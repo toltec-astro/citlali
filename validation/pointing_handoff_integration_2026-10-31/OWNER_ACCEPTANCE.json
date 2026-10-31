@@ -1,0 +1,50 @@
+{
+  "owner": "Grant Wilson",
+  "directive": "Approve both cutoffs. Prepare the combined candidate and integrate it into local refactor-mainline after Spack checks and independent review pass. Provide the commands for me to do the push.",
+  "base": "bfb2b158a64db9ecfe93ab4b694af56f568a0573",
+  "pointing_cutoff": "6969dcf8168bcffbdfdbf7ebe56a22730545e086",
+  "handoff_cutoff": "1f3bf6db744050102bc78e06917613e5dbe7fe3d",
+  "proposal": "doc/POINTING_HANDOFF_INTEGRATION_2026-10-31.md",
+  "proposal_commit": "bfb2b158a64db9ecfe93ab4b694af56f568a0573",
+  "candidate_branch": "codex/pointing-handoff-integration-20261031",
+  "worktree": "/Users/gwilson/.codex/worktrees/pointing-engineering-candidate-20261030/citlali-refactor",
+  "native_build": "build/spack-pointing-handoff-20261031",
+  "governance_read": [
+    "doc/governance/ENGINEERING_GOVERNANCE.md",
+    "doc/governance/TIMESTREAM_SUCCESSOR_GOVERNANCE.md",
+    "doc/governance/REVIEW_AND_CONFORMANCE.md"
+  ],
+  "risk": "Tier2 integration of approved implementation; no new scientific policy",
+  "authority": "Existing accepted contracts and exact handoff work order; mainline accepted governance unchanged",
+  "gates": [
+    "Spack native/full CTest",
+    "207 baseline and full config",
+    "Python full workflow + added table tests",
+    "static/packaging/consumer gates",
+    "independent exact-SHA review",
+    "protected-state verification"
+  ],
+  "excluded": [
+    "push",
+    "Unity",
+    "reductions",
+    "source-branch or worktree deletion",
+    "flux uncertainty/calibration eligibility",
+    "SCIENCE/coadds implementation",
+    "pointing-source/legacy/frozen-runtime changes"
+  ],
+  "effectiveness": "Local integration only after supported Spack/application checks and fresh exact-source independent review pass; exact execution recorded in external COMPLETION.json.",
+  "evidence_packet": "/Users/gwilson/.codex/visualizations/2026/10/29/01a188f2-4d30-7e60-88a8-956b50bb08cf/citlali-pointing-handoff-integration-20261031",
+  "application_source": "Handoff application files at1f3bf6db744050102bc78e06917613e5dbe7fe3d combined with existing mainline improvements; no additional scientific changes.",
+  "consumer_authority": {
+    "tolteca_operational_origin_main": "2791e6a1e6349ad1d3ac549a648f41cbc51b98c7",
+    "tolteca_local_head_v3_not_used": "8d05ecde7c116d52b7a80a84d21e0ade367f163a",
+    "tolproj_head": "6309a5a852a0412cee867992aff01341a56b0ebf"
+  },
+  "limits": [
+    "No flux-calibration eligibility or uncertainty estimator.",
+    "Nonzero applied POINT corrections withhold tables.",
+    "Old variable-offset saved CAL receipts without declared timing convention are rejected; no regeneration here.",
+    "No SCIENCE/coadd implementation, Unity qualification, reductions, production promotion or push."
+  ]
+}

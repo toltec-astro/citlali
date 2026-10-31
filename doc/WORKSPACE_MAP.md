@@ -29,13 +29,15 @@ branch; ongoing pointing/handoff names were local-only at this snapshot.
 ## Nine retained working folders
 
 Seven are refactor-related; two are protected legacy/performance folders.
+The approved integration reuses the mainline folder on one candidate branch
+during qualification, then switches it back to mainline. No new folder is added.
 Paths below are absolute locators on this Mac, not portable deployment settings.
 
 | Folder | Branch or frozen state | Role / next disposition |
 | --- | --- | --- |
 | `/Users/gwilson/.codex/worktrees/pointing-engineering-candidate-20261030/citlali-refactor` | `codex/refactor-mainline` | Primary accepted development checkout; retain |
-| `/Users/gwilson/.codex/worktrees/configurable-point-20261028/citlali-refactor` | `codex/configurable-point-20261028` at `6969dcf81` | Ongoing pointing assessments and planning; protect; proposed evidence cutoff only |
-| `/Users/gwilson/.codex/worktrees/point-handoff-20261030/citlali-refactor` | `codex/point-handoff-20261030` at `1f3bf6db7` | Correction compatibility and guarded pointing-table implementation; review before integration |
+| `/Users/gwilson/.codex/worktrees/configurable-point-20261028/citlali-refactor` | `codex/configurable-point-20261028` at `6969dcf81` | Pointing assessments/planning; approved evidence cutoff included; protect any later work |
+| `/Users/gwilson/.codex/worktrees/point-handoff-20261030/citlali-refactor` | `codex/point-handoff-20261030` at `1f3bf6db7` | Approved correction/table handoff source; retained separately after integration |
 | `/Users/gwilson/.codex/worktrees/collaborator-pilot-20261027/citlali-refactor` | `codex/collaborator-pilot-20261027` at `16d1b1aae` | Earlier collaborator workflow; compare separate work before retirement |
 | `/Users/gwilson/.codex/worktrees/citlali-engineering-20261029/citlali-refactor` | Frozen `5c4620105`; branch retired | Committed work incorporated; folder-retirement candidate after build/evidence inventory and approval |
 | `/Users/gwilson/.codex/worktrees/884f/citlali-refactor` | Frozen `ae953ed4d` | Scientific-contract program handoff; retain pending scientific-workspace reconciliation |
@@ -47,13 +49,14 @@ The other seven working folders had no staged, unstaged or untracked changes.
 That check excludes ignored builds/products; a clean Git status alone does not
 make a folder disposable.
 
-## Ten local branch names
+## Eleven local branch names after candidate preparation
 
-Seven local branch names are attached to folders in the table. Three have no
-working folder:
+After the gated mainline move, seven local branch names are attached to folders
+in the table. Four have no working folder:
 
 | Branch | Role / disposition |
 | --- | --- |
+| `codex/pointing-handoff-integration-20261031` | Retained exact integration candidate; mainline receives it only after gates and review; later retirement requires its own disposition |
 | `codex/baseline-before-successor-default-2026-09-17` at `0f52e1a42` | Frozen comparison checkpoint; retained despite being an ancestor of mainline |
 | `codex/scientific-contract-library` at `54475956f` | Scientific-specification reference; one local owner-decision commit outside mainline; retain pending disposition |
 | `codex/wp7-rtc-fixed-decimation-authority` at `49fe73e75` | Divergent scientific evidence; preserve, do not resume merely because the branch exists |
@@ -84,7 +87,7 @@ remain protected. This map is not authorization for cleanup.
 
 Aim for 3–5 refactor working folders plus the two protected legacy/performance
 folders: mainline, ongoing pointing, and the scientific workspace(s) still needed.
-First complete the [pointing integration review](POINTING_HANDOFF_INTEGRATION_2026-10-31.md).
+Complete and record the [approved pointing integration](POINTING_HANDOFF_INTEGRATION_2026-10-31.md).
 Then consider engineering and pilot folder retirement in a separate approved
 batch. Sort the older scientific workspace before deciding which scientific
 folders can close. Preserve current work and evidence independently of how many

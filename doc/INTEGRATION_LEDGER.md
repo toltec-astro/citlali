@@ -1,3 +1,31 @@
+## Pointing handoff integration — owner acceptance 2026-10-31
+
+Owner directive: “Approve both cutoffs. Prepare the combined candidate and integrate
+it into local refactor-mainline after Spack checks and independent review pass.
+Provide the commands for me to do the push.”
+
+Base `bfb2b158a64db9ecfe93ab4b694af56f568a0573`; approved pointing evidence cutoff
+`6969dcf8168bcffbdfdbf7ebe56a22730545e086`; approved handoff cutoff
+`1f3bf6db744050102bc78e06917613e5dbe7fe3d`. The
+[acceptance record](../validation/pointing_handoff_integration_2026-10-31/OWNER_ACCEPTANCE.json)
+and [scope](POINTING_HANDOFF_INTEGRATION_2026-10-31.md) bind the conditional operation,
+actual consumer authority, scientific holds and preservation. Existing normative
+governance sources/digests below remain unchanged. This imports no new scientific
+contract authority and does not approve the remainder of the connected-pilot plan.
+
+The exact candidate/tree, supported Spack source/binary identity, test results,
+fresh independent review, guarded reference transaction and post-operation
+preservation are recorded by `COMPLETION.json` in:
+
+`/Users/gwilson/.codex/visualizations/2026/10/29/01a188f2-4d30-7e60-88a8-956b50bb08cf/citlali-pointing-handoff-integration-20261031`
+
+This admission becomes the completed integration record only once the reviewed
+candidate is on local `codex/refactor-mainline`. Until then canonical remains at
+the stated base. The owner publishes afterward; no agent push, source-branch
+retirement, working-folder deletion, Unity operation or reduction is authorized.
+The new table tests enter hosted CI; its previous passing run applies only to
+published `8078ba456`. Calibration, SCIENCE/coadds and production remain separate.
+
 # Citlali Integration Ledger
 
 ## Owner-approved local mainline integration — 2026-10-30

@@ -1,3 +1,32 @@
+## Owner-approved pointing and handoff integration — 2026-10-31
+
+Grant approved pointing cutoff `6969dcf8168bcffbdfdbf7ebe56a22730545e086` and handoff
+cutoff `1f3bf6db744050102bc78e06917613e5dbe7fe3d`, candidate preparation and local
+integration after supported Spack checks and independent exact-source review.
+[Owner acceptance](../validation/pointing_handoff_integration_2026-10-31/OWNER_ACCEPTANCE.json)
+binds the scope; the external completion receipt records the actual final source,
+gates and guarded mainline move. This record is effective as completed integration
+only when that reviewed candidate reaches local mainline.
+
+The candidate combines the seven pointing evidence/planning commits and two
+handoff commits, retaining historical status entries below. It adds the missing
+pointing-table test to hosted CI while preserving full-history checkout and all
+previous checks. Handoff production files remain identical to the approved cutoff;
+no new uncertainty, weighting, FRUIT, grid or coordinate policy is introduced.
+Current-state/status conflicts preserve the modern front page and dated evidence.
+
+Qualification uses the already installed isolated Mac Spack dependencies and
+`build/spack-pointing-handoff-20261031`, preserving the old qualified executable.
+Full native, Python, configuration, package/runtime and pinned-consumer gates and
+independent review are required before the guarded local fast-forward. Exact
+source, executable and results are recorded in the execution packet identified by
+the owner acceptance. Subsequent hosted CI requires owner publication.
+
+Flux eligibility, corrected-POINT table conversion, SCIENCE/coadds, owner-run
+observational qualification and production remain held. Pointing source branches,
+Citlali 4.x/5.x, all existing workspaces, stashes and recovery evidence are protected.
+One candidate branch is retained; no new working folder, push or deletion occurs.
+
 ## Workspace clarification and next pointing integration review — 2026-10-31
 
 Published mainline `8078ba4567b3096b74ee378a99acfca270e27c3f` now passes

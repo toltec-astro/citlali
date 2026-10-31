@@ -1,23 +1,24 @@
 # Citlali refactor — current state
 
 As of 2026-10-31. **The shared development baseline is `codex/refactor-mainline`.**
-Published source `8078ba4567b3096b74ee378a99acfca270e27c3f` matches the verified
-GitHub branch and passed [hosted integration checks](https://github.com/toltec-astro/citlali/actions/runs/41201517670).
-Local documentation updates may follow that published source; their commits do
-not imply another application integration or hosted validation.
+The owner approved incorporating pointing assessments through `6969dcf81` and
+pointing handoff through `1f3bf6db7`, following the previously integrated
+application `44171fd3a` and workflow repair `8078ba456`. The
+[acceptance record](../validation/pointing_handoff_integration_2026-10-31/OWNER_ACCEPTANCE.json)
+binds both full cutoffs, scope, preservation and required gates. It takes effect
+as an integration receipt only after the exact independently reviewed candidate
+is on local mainline; the external packet's `COMPLETION.json` records that move,
+full source identity, Spack executable and passing checks.
 
-Owner-approved application candidate
-`44171fd3a6ba5924f8f4dba0324defe0922c597d` was integrated locally at
-`85cfa6e4064921d1ae7b4df87499f11cfd77665f`, including documentation closure and
-the Ninja version-header repair. The later `8078ba456` workflow fix fetches
-history needed by the science-ledger tests. The
-[owner acceptance record](../validation/mainline_integration_2026-10-30/OWNER_ACCEPTANCE.json)
-and [integration ledger](INTEGRATION_LEDGER.md) retain exact scope and evidence.
+The latest published/hosted-validated source at preparation is
+`8078ba4567b3096b74ee378a99acfca270e27c3f` ([successful run](https://github.com/toltec-astro/citlali/actions/runs/41201517670)).
+The new local integration needs owner publication and its own hosted run.
+No hosted, Unity or observational qualification is inferred from local integration.
 
-The [workspace map](WORKSPACE_MAP.md) identifies where to work, which branch names
-are historical, and what remains protected. The
-[next pointing integration proposal](POINTING_HANDOFF_INTEGRATION_2026-10-31.md)
-reviews later work; its cutoffs are proposed, not integrated.
+Use the [workspace map](WORKSPACE_MAP.md) to find the correct checkout and
+protected work. The [approved pointing integration scope](POINTING_HANDOFF_INTEGRATION_2026-10-31.md)
+explains compatibility limits and remaining release work. The
+[integration ledger](INTEGRATION_LEDGER.md) retains exact acceptance/evidence routes.
 
 ## Start here
 
@@ -34,12 +35,13 @@ reviews later work; its cutoffs are proposed, not integrated.
 
 | Role | Identity and purpose |
 | --- | --- |
-| Accepted application source | `44171fd3a6ba5924f8f4dba0324defe0922c597d`; combined pointing cutoff plus engineering cleanup and Mac Spack qualification |
-| Development mainline | `codex/refactor-mainline`; published at `8078ba4567b3096b74ee378a99acfca270e27c3f`, containing that application and its reviewed integration closure |
+| Previous accepted application foundation | `44171fd3a6ba5924f8f4dba0324defe0922c597d`; retained pointing/engineering and Mac Spack qualification |
+| New accepted input scope | Handoff `1f3bf6db744050102bc78e06917613e5dbe7fe3d` plus pointing evidence `6969dcf8168bcffbdfdbf7ebe56a22730545e086`; final combined source is bound by the integration receipt |
+| Development mainline | `codex/refactor-mainline`; local combined handoff integration follows published `8078ba456` |
 | Previous mainline | `e32c4584dec07617d6caa857d39bf13047b6c4b0`; retained in ancestry and recovery evidence |
-| Pointing input included here | `797d013f115e403a30663eb92254082e8e742826`; approved cutoff with saved five-case assessment |
+| Pointing evidence included here | `6969dcf8168bcffbdfdbf7ebe56a22730545e086`; includes the earlier `797d013f` cutoff and later saved assessment, compatibility audit and proposed pilot plan |
 | Engineering input included here | `5c46201057d6b6d1048aac2949a64e9a34e9bad3` |
-| Ongoing pointing and handoff | `codex/configurable-point-20261028` and `codex/point-handoff-20261030`; later work stays separate until its own review/integration |
+| Protected pointing source workspaces | `codex/configurable-point-20261028` and `codex/point-handoff-20261030`; only the approved cutoffs enter this integration; any subsequent work stays separate |
 | Frozen weighted trial source | `331ff29ea1720b1454e671cbbab93814d8df8321`; runtime, inputs and products stay preserved |
 | Legacy 4.x/5.x and historical evidence | Protected separate lineages; integration grants no cleanup or replacement permission |
 
@@ -52,9 +54,9 @@ shared Git store is `/Users/gwilson/GitHub/citlali/.git`. The folder named
 The owner subsequently retired the local engineering and combined-candidate
 branch names and the GitHub engineering branch. Their committed work remains in
 mainline and recovery references/bundles. The engineering folder is retained at
-its saved commit without an active branch. The verified inventory is 10 local
-branches, 29 GitHub branches, nine working folders and three protected legacy
-stashes. The workspace map records this dated inventory and its recovery packet;
+its saved commit without an active branch. The integration adds one retained candidate name to the previous inventory:
+11 local branches, 29 GitHub branches, nine working folders and three protected
+legacy stashes. The workspace map records this dated inventory and its recovery packet;
 it is not permission for further deletion.
 
 ## What is implemented and checked
@@ -79,6 +81,29 @@ and runs the existing regression with the actual build generator. This changes
 build provenance, not scientific execution. Exact source and final closure
 executable identities remain separately bound in their evidence packets.
 
+## Current handoff behavior and qualification
+
+The handoff preserves established correction signs and User/Paddle metadata,
+accepts constant and bracketed pointing inputs, and publishes one discoverable
+three-array pointing table only when all final fits and metadata qualify. It
+reuses the final fits rather than fitting again. Missing metadata or a failed
+array withholds the whole table while preserving valid maps. Publication/I/O
+failures propagate to the caller.
+
+Uncertainties remain unavailable (`NaN`), and the actual TolProj reader rejects
+these tables for flux calibration. Nonzero already-applied POINT corrections
+also withhold the table to prevent double application. Old constant-offset saved
+CAL receipts remain compatible; old variable-offset receipts without a declared
+timing convention require fresh owner preparation. This integration regenerates
+no saved products and changes no frozen trial runtime.
+
+Supported candidate qualification uses the existing isolated Mac Spack graph and
+a separate `build/spack-pointing-handoff-20261031` directory. Its exact source,
+executable/version, dependency identity, tests and review are bound in the external
+integration packet named by the acceptance record. The old `build/spack-native`
+executable remains preserved at its earlier qualified source. Native Spack and
+synthetic consumer checks do not qualify a scientific observing campaign.
+
 ## Application and release boundaries
 
 Configured POINT uses the explicit Python/TolProj launcher and uniform v1 or
@@ -95,10 +120,11 @@ products. Beammap production and OOF remain outside that release target.
 | --- | --- |
 | Local application integration | Owner-approved reviewed development baseline |
 | Configured POINT engineering | Implemented and synthetically tested; scientific assessment remains in the pointing workstream |
-| Pointing-derived calibration consumed by SCIENCE | Compatibility and owner acceptance still required |
+| Pointing-table handoff | Correction compatibility and guarded astrometry publication included; flux uncertainty/eligibility and corrected-POINT table conversion remain held |
+| Pointing-derived calibration consumed by SCIENCE | Flux policy, downstream connection and owner acceptance still required |
 | All-array SCIENCE and genuine multi-observation coadds | Required release milestone; not established by POINT checks |
 | Downstream products and consumers | Product/units/layout qualification still required |
-| Build and publication | Local Mac developer gate passes; published `8078ba456` passes hosted source checks; Unity and immutable release/export qualification remain separate |
+| Build and publication | New combined source requires its recorded Mac Spack gates before local integration; new hosted CI follows owner publication. Published `8078ba456` passes hosted checks; Unity and release/export qualification remain separate |
 | Production | No new authorization from integration or passing local tests |
 
 General v2 defaults remain 1 arcsec / coverage 0.1 / M10. The frozen trials used

@@ -1,6 +1,14 @@
 # Minimal connected POINT–SCIENCE–POINT implementation plan
 
-30 October 2026. **Proposed implementation scope; no reductions or source changes.**
+30 October 2026. **Historical proposed implementation scope; no reductions authorized.**
+
+Current routing (2026-10-31): the correction/table-handoff portion was implemented
+on `1f3bf6db7` and is included by the [approved integration scope](POINTING_HANDOFF_INTEGRATION_2026-10-31.md).
+Its flux and corrected-POINT limitations remain. The old combined base and pending
+Spack statements below describe the original planning checkpoint; future work
+must use the accepted mainline recorded in [current state](CURRENT_STATE.md).
+Importing this plan does not approve its product-scope/source-policy choices or
+implement SCIENCE/coadds. The original source identities and requirements follow.
 
 Deliver one usable connected pilot through TolProj and operational TolTECA v2,
 then extend it to the already selected two-observation coadd. Keep wing recovery

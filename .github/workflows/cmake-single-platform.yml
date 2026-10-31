@@ -69,6 +69,7 @@ jobs:
             tools/timestream_successor/test_configured_point_v2_config.py \
             tools/timestream_successor/test_configured_point_inputs.py \
             tools/timestream_successor/test_configured_point_products.py \
+            tools/timestream_successor/test_configured_point_table.py \
             tools/timestream_successor/test_configured_point_feedback.py \
             tools/timestream_successor/test_configured_point_cli.py \
             tools/timestream_successor/test_configured_point_drops.py \
