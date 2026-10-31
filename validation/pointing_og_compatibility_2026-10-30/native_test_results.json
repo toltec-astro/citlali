@@ -1,0 +1,21 @@
+{
+  "classification": "Supplemental existing combined-build synthetic tests; no observation execution or build",
+  "candidate": "b090da0458271c618568802fde1cf5c39f5dd5d2",
+  "application_source": "c83375dc030095821999a0e0ff435f13bf82b914",
+  "results": [
+    {
+      "chunk_id": "0910df",
+      "wall_time_seconds": 0.151981916,
+      "exit_code": 0,
+      "original_token_count": 292,
+      "output": "Running main() from /Users/gwilson/.codex/worktrees/pointing-engineering-candidate-20261030/citlali-refactor/build/supplemental-sources/googletest-src/googletest/src/gtest_main.cc\nNote: Google Test filter = ForwardMap.SourceOffsetAltAzUsesCorrectedElevationAndTelescopeCorrections:ForwardMap.SourceOffsetZeroAndDetectorRotationSign:ForwardMap.AstCenteredTanGridPreservesOrientationAndMargin\n[==========] Running 3 tests from 1 test suite.\n[----------] Global test environment set-up.\n[----------] 3 tests from ForwardMap\n[ RUN      ] ForwardMap.AstCenteredTanGridPreservesOrientationAndMargin\n[       OK ] ForwardMap.AstCenteredTanGridPreservesOrientationAndMargin (2 ms)\n[ RUN      ] ForwardMap.SourceOffsetAltAzUsesCorrectedElevationAndTelescopeCorrections\n[       OK ] ForwardMap.SourceOffsetAltAzUsesCorrectedElevationAndTelescopeCorrections (0 ms)\n[ RUN      ] ForwardMap.SourceOffsetZeroAndDetectorRotationSign\n[       OK ] ForwardMap.SourceOffsetZeroAndDetectorRotationSign (0 ms)\n[----------] 3 tests from ForwardMap (2 ms total)\n\n[----------] Global test environment tear-down\n[==========] 3 tests from 1 test suite ran. (2 ms total)\n[  PASSED  ] 3 tests.\n"
+    },
+    {
+      "chunk_id": "dec3b9",
+      "wall_time_seconds": 0.163901041,
+      "exit_code": 0,
+      "original_token_count": 357,
+      "output": "Running main() from /Users/gwilson/.codex/worktrees/pointing-engineering-candidate-20261030/citlali-refactor/build/supplemental-sources/googletest-src/googletest/src/gtest_main.cc\nNote: Google Test filter = sci_align_native_carriers.constant_offsets_cover_native_times_outside_legacy_common_support:sci_align_native_carriers.explicit_mjd_offsets_use_calibration_support_not_common_grid:sci_align_native_carriers.offsets_without_explicit_mjd_retain_common_grid_support\n[==========] Running 3 tests from 1 test suite.\n[----------] Global test environment set-up.\n[----------] 3 tests from sci_align_native_carriers\n[ RUN      ] sci_align_native_carriers.constant_offsets_cover_native_times_outside_legacy_common_support\n[       OK ] sci_align_native_carriers.constant_offsets_cover_native_times_outside_legacy_common_support (4 ms)\n[ RUN      ] sci_align_native_carriers.explicit_mjd_offsets_use_calibration_support_not_common_grid\n[       OK ] sci_align_native_carriers.explicit_mjd_offsets_use_calibration_support_not_common_grid (0 ms)\n[ RUN      ] sci_align_native_carriers.offsets_without_explicit_mjd_retain_common_grid_support\n[       OK ] sci_align_native_carriers.offsets_without_explicit_mjd_retain_common_grid_support (0 ms)\n[----------] 3 tests from sci_align_native_carriers (4 ms total)\n\n[----------] Global test environment tear-down\n[==========] 3 tests from 1 test suite ran. (4 ms total)\n[  PASSED  ] 3 tests.\n"
+    }
+  ]
+}

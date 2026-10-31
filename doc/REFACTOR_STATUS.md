@@ -11888,3 +11888,126 @@ Retained compact evidence:236.8 MB/1,863 files. Guarded cleanup removed126,500
 enumerated native files/8.597 GB; all31 originals and1,608 prior compact objects
 verified unchanged. Remaining campaign metadata/FITS/logs are explicitly counted
 in `validation/rtc_fixed11_2026-09-27/CLOSEOUT.json`. No follow-on or push.
+
+## Retained incoming pointing history — cutoff 6969dcf81
+
+The following dated entries preserve their original scope and base identities;
+current integration authority is stated at the top of this document.
+
+## OG pointing convention preservation verified; ingress gaps retained — 2026-10-30
+
+The [OG compatibility audit](../validation/pointing_og_compatibility_2026-10-30/REPORT.md)
+compares original fork376e002, preserved OGffc6b907, frozen V2 references and
+combined successor b090da/c83375dc. Physical tangent-az/elevation axes, units,
+correction signs, detector rotation and persisted FITS orientation agree. The
+actual pinned TolTECA resolver reproduces saved152390/152392 correction endpoints
+and MJDs exactly; five signed synthetic resolver cases and six existing native
+coordinate/interpolation tests pass. No new reduction, fit or build occurred.
+
+Configured POINT currently rejects TolTECA's one-PPT positive-MJD constant input
+and legacy two-value observation-span inputs. New CAL preserves fractional seconds
+where OG truncated epoch seconds; same-time differences are below0.001″ in these
+saved brackets, not a universal bound or scientific acceptance threshold. Native
+sampling also differs from the old common grid. Conventional successor PPT output
+is still absent, so complete end-to-end correction compatibility is not claimed.
+
+The connected plan now requires preservation of recovered OG behavior and closure
+of these concrete compatibility cases, rather than redesigning the correction.
+No application or scientific policy was changed. Wing/temporal studies remain paused;
+originals, OG and combined checkouts remain untouched. Independent review is recorded
+with this audit at closure.
+
+## Connected pilot implementation plan prepared — 2026-10-30
+
+The [minimal plan](POINT_SCIENCE_CONNECTED_PILOT_PLAN_2026-10-30.md) is aligned with
+combined closure b090da0458271c618568802fde1cf5c39f5dd5d2 and unchanged application
+merge c83375dc030095821999a0e0ff435f13bf82b914. Proposed batches: truthful POINT
+publication and consumer protection; explicit celestial SCIENCE and equal-observation
+coadd; selected product/calibration binding; owner-run A/B/C preparation. First
+sequence is152389→152390→152391, then held-out SCIENCE152392 with POINT152393 and
+coadd. Existing detector noise weighting and2″ pilot grid are retained.
+
+Recommend an explicitly scoped raw-map/coadd pilot and optional diagnostic calibration
+transfer with honestly unavailable errors to avoid unrelated noise/error research
+becoming an automatic prerequisite. These are proposals requiring owner selection,
+not changed product policy or calibration permission. Full requested noise/filter
+products and production photometric qualification remain separate unresolved goals.
+SCIENCE source/training/feedback policy must be bound explicitly; the POINT bright
+source guard is not a generic SCIENCE policy. Historical coadd arithmetic is not
+substituted for the accepted ordinary equal-observation rule.
+
+Read-only prior-work recovery, exact input/source bindings and independent plan
+review are stored in validation/point_science_connection_plan_2026-10-30. Only plan,
+evidence and status changed; no implementation, sibling edits, other-thread messages,
+source fits, calibrations, builds, reductions, Unity or pushes. Wing and temporal
+studies stay paused. Combined supported-environment/mainline gates are not waived.
+
+## Return to connected POINT–SCIENCE–POINT delivery — owner direction, 2026-10-30
+
+Grant redirects this lane from further broad-source feedback optimization to
+sound connected POINT–SCIENCE–POINT products. Pause further wing-protection
+experiments and retain the completed audit as a known limitation. Temporal
+research remains paused. This records a delivery priority, not acceptance of
+calibration, extended-source recovery, or new scientific thresholds.
+
+The existing local pilot is POINT 152389 → SCIENCE 152390 → POINT 152391, extended
+through SCIENCE 152392 → POINT 152393 for the NGC4449 multi-observation coadd, on
+all three arrays. POINT 152418 remains the independent check. Resume from the
+[existing calibration audit](../validation/point_calibration_audit_2026-10-30/REPORT.md):
+usable and discoverable POINT products, truthful amplitude/error and pointing
+frame/sign, protected calibration consumption, and exact calibrated APT selection
+for SCIENCE. Do not silently mix reference and successor POINT brackets.
+All selected local input links resolve; missing inputs do not currently require
+Unity access. The current configured adapter requires POINT, delta-source AltAz,
+and disabled coadd; it is not yet the ordinary celestial SCIENCE/coadd route.
+The local SCIENCE runtime remains deliberately unavailable. Address that concrete
+connection alongside POINT publication, reusing existing science/map owners.
+The established A/reference, B/successor with compatible reference calibration,
+and C/successor with successor-derived calibration comparison remains the target.
+
+Read-only comparison with the other active chat, “Review Citlali cleanup scope,”
+finds its isolated combined candidate at c83375dc030095821999a0e0ff435f13bf82b914,
+combining approved pointing cutoff 797d013f and engineering 5c462010. Combined
+verification is ongoing; mainline remains unchanged. That lane owns engineering
+consolidation. This lane prioritizes the connected scientific/product interface.
+The later shoulder audit changes no application paths and need not reopen that
+candidate's selected runtime. No message or change was sent to the other chat.
+
+No reduction or new experiment is authorized by this status entry. Retain noise
+weighting, the tunable 10% optical-response cut, selected-trial 2″ grid and prospective
+M5 diagnostic budget. The general configured overlay has different historical
+defaults; pilot settings must be explicit. Grant alone launches observations.
+Revisit wing research if connected-pilot evidence shows it blocks usable pointing,
+calibration or the intended SCIENCE products; do not make optimization a prerequisite
+without that link. Missing scientific meaning remains a real blocker, not something
+to paper over with a file-format adapter.
+
+Tier 1 documentation-only recording. Preflight: TolTEC skill, engineering/successor/
+review governance, living status, calibration audit and combined-candidate scope.
+Base 50c6321bad52de9a2e2a9f131309d37b9b4f234a; initially clean existing owned branch
+codex/configurable-point-20261028. Scientific/behavioral: owner priority recorded,
+no algorithm or eligibility change. Architecture: unchanged. Repository/evidence:
+only this status entry; existing results, original project and other worktree
+preserved. Verification: exact candidate/source comparison and whitespace check;
+build/config/CTest are not applicable. No Unity, native execution, push or integration.
+
+## Saved shoulder feedback and residuals audited — 2026-10-30
+
+The [saved-product audit](../validation/point_shoulder_feedback_audit_2026-10-30/REPORT.md)
+verifies the REF/SHOULDER feedback chain at fixed inverse-noise weighting and 2″
+grid. At m9, 50.05%, 39.71%, 42.16% of known shoulder brightness lies outside
+feedback for a1100/a1400/a2000; 91.58%, 91.40%, 83.27% of M10 squared recovery
+error lies there. These are geometric fractions, not missing flux fractions.
+a2000 local response gains are 90.57% inside and 63.01% outside its mask.
+All candidate domains are valid, with no boundary or unsupported contact.
+Saved counts bound below-threshold omitted shoulder brightness despite absent
+pixel-level ratio/scale rasters. Feedback omission is a leading hypothesis to
+test, not a proven sole cause; residual detector-time arrays are unavailable.
+
+a2000 m4→m9 feedback growth is mainly brightness evolution on common pixels,
+not the five newly selected pixels. More iterations alone are not demonstrated
+to repair the remaining broad-response deficit. Preserve the prospective M5 cap.
+A spatially bounded source-protection comparison with a matching seed control is
+recommended for a separately defined owner decision. No policy, threshold,
+calibration, runtime, weighting or grid change; no reductions, fits, restoration,
+Unity or push. Verification and independent review are recorded with the audit.

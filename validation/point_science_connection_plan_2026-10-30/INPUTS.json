@@ -1,0 +1,173 @@
+{
+  "purpose": "Planning source bindings, not a reduction/input replay manifest",
+  "combined_closure": "b090da0458271c618568802fde1cf5c39f5dd5d2",
+  "application_source": "c83375dc030095821999a0e0ff435f13bf82b914",
+  "sources": [
+    {
+      "repository": "/Users/gwilson/.codex/worktrees/pointing-engineering-candidate-20261030/citlali-refactor",
+      "commit": "b090da0458271c618568802fde1cf5c39f5dd5d2",
+      "path": "doc/CURRENT_STATE.md",
+      "sha256": "93da4b4cbdb3dade7e8d07cfe2ea4f7d6a6d95d37fcf85beceee1ca49453fcc9"
+    },
+    {
+      "repository": "/Users/gwilson/.codex/worktrees/pointing-engineering-candidate-20261030/citlali-refactor",
+      "commit": "b090da0458271c618568802fde1cf5c39f5dd5d2",
+      "path": "doc/POINTING_ENGINEERING_CANDIDATE_2026-10-30.md",
+      "sha256": "252727a22c38bf58df3abacd26fc80d5e19ebc1b10c3d87cfb6db190d92a4c4d"
+    },
+    {
+      "repository": "/Users/gwilson/.codex/worktrees/pointing-engineering-candidate-20261030/citlali-refactor",
+      "commit": "b090da0458271c618568802fde1cf5c39f5dd5d2",
+      "path": "validation/pointing_engineering_candidate_2026-10-30/LOCAL_VALIDATION.json",
+      "sha256": "52c3781ba45e96d573ae3c47588e3562eb3dec9cf9395f16054169d3058aeffb"
+    },
+    {
+      "repository": "/Users/gwilson/.codex/worktrees/pointing-engineering-candidate-20261030/citlali-refactor",
+      "commit": "b090da0458271c618568802fde1cf5c39f5dd5d2",
+      "path": "tools/timestream_successor/configured_point_products.py",
+      "sha256": "2a121873026a867a196c0030d3d229e70a658ba9f4db3e8baaec35b4412639e8"
+    },
+    {
+      "repository": "/Users/gwilson/.codex/worktrees/pointing-engineering-candidate-20261030/citlali-refactor",
+      "commit": "b090da0458271c618568802fde1cf5c39f5dd5d2",
+      "path": "tools/timestream_successor/configured_point_inputs.py",
+      "sha256": "5292acdb48c5f93584ef416d3eea034d8ab323afaf1c2b077073ddf8dcddc5dc"
+    },
+    {
+      "repository": "/Users/gwilson/.codex/worktrees/pointing-engineering-candidate-20261030/citlali-refactor",
+      "commit": "b090da0458271c618568802fde1cf5c39f5dd5d2",
+      "path": "tools/timestream_successor/configured_point_config.py",
+      "sha256": "c6809d68d739d60d4e45ee18f0109c7992e2c4cc59a1b5dfc16115ee41ec3fab"
+    },
+    {
+      "repository": "/Users/gwilson/.codex/worktrees/pointing-engineering-candidate-20261030/citlali-refactor",
+      "commit": "b090da0458271c618568802fde1cf5c39f5dd5d2",
+      "path": "src/citlali/cli/point_weighted_execution.h",
+      "sha256": "0924ac9af4a1e74afadd4cefa44d8714b707c34726cf43cf6b5e7a793e581e1f"
+    },
+    {
+      "repository": "/Users/gwilson/.codex/worktrees/pointing-engineering-candidate-20261030/citlali-refactor",
+      "commit": "b090da0458271c618568802fde1cf5c39f5dd5d2",
+      "path": "include/citlali/core/pipeline/ast_rtc_coordinates.h",
+      "sha256": "357d94f54fc91e3058a75606ff6c0aadaf98f2426007d7000c42662f16d8452c"
+    },
+    {
+      "repository": "/Users/gwilson/.codex/worktrees/pointing-engineering-candidate-20261030/citlali-refactor",
+      "commit": "b090da0458271c618568802fde1cf5c39f5dd5d2",
+      "path": "include/citlali/core/mapmaking/forward_map.h",
+      "sha256": "6cd83f3663b3efe9a40468544452dcf18dd11ca250743594aa2c03c047fac4b2"
+    },
+    {
+      "repository": "/Users/gwilson/.codex/worktrees/pointing-engineering-candidate-20261030/citlali-refactor",
+      "commit": "b090da0458271c618568802fde1cf5c39f5dd5d2",
+      "path": "include/citlali/core/pipeline/observation_coadd_accumulation.h",
+      "sha256": "c4f351b72800e25ca543dd6a15ddbe6b9679cec5a362b5e696e8d0e1d5a0cb29"
+    },
+    {
+      "repository": "/Users/gwilson/.codex/worktrees/pointing-engineering-candidate-20261030/citlali-refactor",
+      "commit": "b090da0458271c618568802fde1cf5c39f5dd5d2",
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.2/SCIENTIFIC_OWNER_FREEZE_R0.4.md",
+      "sha256": "39b1be29431083c8f1fcc4b56c4dbfc51a44b6b00c1d27ebba10d62eb7768bf1"
+    },
+    {
+      "repository": "/Users/gwilson/.codex/worktrees/pointing-engineering-candidate-20261030/citlali-refactor",
+      "commit": "b090da0458271c618568802fde1cf5c39f5dd5d2",
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.2/SCIENTIFIC_OWNER_ACCEPTANCE_R0.4_2026-09-08.md",
+      "sha256": "68ac69cee03139633c53226d555f548ecb420e1a9bcde86a5c8c6577f38eb686"
+    },
+    {
+      "repository": "/Users/gwilson/.codex/worktrees/pointing-engineering-candidate-20261030/citlali-refactor",
+      "commit": "b090da0458271c618568802fde1cf5c39f5dd5d2",
+      "path": "doc/scientific_contracts/acceptance/SCI_MAP_PROFILE_ACTIVATION_2026-09-09/ACTIVATION_RECORD.md",
+      "sha256": "3cd06e52abd21bb42364206d767081ab308fecbd56f333ae15a86729b2489107"
+    },
+    {
+      "repository": "/Users/gwilson/.codex/worktrees/pointing-engineering-candidate-20261030/citlali-refactor",
+      "commit": "b090da0458271c618568802fde1cf5c39f5dd5d2",
+      "path": "doc/scientific_contracts/packages/SCI-POINT/v0.1/README.md",
+      "sha256": "91e1cc42270dde91b7254fb3ff79f595a4537eedea1b2c717d727490021c3e44"
+    },
+    {
+      "repository": "/Users/gwilson/.codex/worktrees/pointing-engineering-candidate-20261030/citlali-refactor",
+      "commit": "b090da0458271c618568802fde1cf5c39f5dd5d2",
+      "path": "validation/point_152389_expected_source_guard_2026-09-25/OWNER_DIRECTIVE.md",
+      "sha256": "03e3275992732d45e6cd428c0a801ab1b01891ffe9b47a6bfe54cb4652497259"
+    },
+    {
+      "repository": "/Users/gwilson/.codex/worktrees/pointing-engineering-candidate-20261030/citlali-refactor",
+      "commit": "b090da0458271c618568802fde1cf5c39f5dd5d2",
+      "path": "validation/profiles/science_scientific_equivalence_v2.json",
+      "sha256": "084133faf28581ec053d02633169bd476f02a68bcb7b6893b31434c968713e13"
+    },
+    {
+      "repository": "/Users/gwilson/.codex/worktrees/pointing-engineering-candidate-20261030/citlali-refactor",
+      "commit": "b090da0458271c618568802fde1cf5c39f5dd5d2",
+      "path": "validation/point_calibration_audit_2026-10-30/REPORT.md",
+      "sha256": "5e6045b72e35c75d4f0c9e34f14d4608fa959fbbc877d49d69499694039902f9"
+    },
+    {
+      "repository": "/Users/gwilson/GitHub/tolproj",
+      "commit": "6309a5a852a0412cee867992aff01341a56b0ebf",
+      "path": "tolproj/steps/calibrate_flxscale.py",
+      "sha256": "bf63173a50836dce7350385b3a65e4384c7c9dee583cbad4d517bf91ca2b2f0e"
+    },
+    {
+      "repository": "/Users/gwilson/GitHub/tolproj",
+      "commit": "6309a5a852a0412cee867992aff01341a56b0ebf",
+      "path": "tolproj/steps/setup_science_reductions.py",
+      "sha256": "084f7ce17e79e1a331b233797182541ee2d2d2dc180c30bf9bf0871994b50355"
+    },
+    {
+      "repository": "/Users/gwilson/GitHub/tolproj",
+      "commit": "6309a5a852a0412cee867992aff01341a56b0ebf",
+      "path": "tolproj/fluxcal_apt_v2.py",
+      "sha256": "c87050754ed0ef5b69149ecc98712d198b7adc4d76852be52c3fc27791da4187"
+    },
+    {
+      "repository": "/Users/gwilson/GitHub/tolproj",
+      "commit": "6309a5a852a0412cee867992aff01341a56b0ebf",
+      "path": "AGENTS.md",
+      "sha256": "ff0f661a8047deaf1489f14b9a33b43140c9ced736492e5d21d1bafd33ab0947"
+    },
+    {
+      "repository": "/Users/gwilson/GitHub/tolteca",
+      "commit": "2791e6a1e6349ad1d3ac549a648f41cbc51b98c7",
+      "path": "tolteca/reduce/engines/citlali.py",
+      "sha256": "1e1b311aacdec2874a48858cf3911abf7ff1ae97dfda935f35994aebcf49f4f3"
+    },
+    {
+      "repository": "/Users/gwilson/GitHub/tolteca",
+      "commit": "2791e6a1e6349ad1d3ac549a648f41cbc51b98c7",
+      "path": "tolteca/datamodels/toltec/data_prod.py",
+      "sha256": "f639621c7d1a0937405cdb6cf8492b426807b89521b7032f5a62bfb087a9cc86"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/project.yaml",
+      "sha256": "89eea2272646b1e585a4f317ca28f6cead1ce524a9f9b1b2bf153151ce800d9a"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/evidence/assembly-summary.json",
+      "sha256": "fc2249b536d8f4fab98c1b7825fb976e8745ac18d247155556e32f110bfcda4b"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/evidence/verification.json",
+      "sha256": "b9280c70b4b82642172525f43cf4243350f182c4a3d118c3756d2234e1f6f23c"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/refactor/NGC4449/71_science_runtime.yaml",
+      "sha256": "b8a1942794c733b2747d58d216bf00503e99320dd1b8a7d49e4957c363c2f1c2"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/refactor/NGC4449/72_science_observation.yaml",
+      "sha256": "81a9e120dd204a0e479d95864d82702adf0a223e8e3880ffb9b4de89f996446a"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/refactor/NGC4449/81_science_defaults.yaml",
+      "sha256": "803d5b0203725b40d8abafbb4b21f32a79f54804df696dab0e0fe3c9b41f080f"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/projects/COM01-local-trial-20261027/refactor/NGC4449/82_science_products.yaml",
+      "sha256": "8735be73713e72f2a64034f8dbde152659f2b9ea5487fb0bd25de9e8d09fd0e7"
+    }
+  ]
+}

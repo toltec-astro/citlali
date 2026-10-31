@@ -1,0 +1,1526 @@
+{
+  "a1100": [
+    {
+      "candidate": 0,
+      "output": 1,
+      "ref_pixels": 32,
+      "shoulder_pixels": 35,
+      "added_pixels": 3,
+      "removed_pixels": 0,
+      "mask_change_previous": null,
+      "feedback_gain": 0.5896946464251829,
+      "output_gain": 0.8759282816238694,
+      "eta": 0.18264727275839998,
+      "terms": {
+        "common": {
+          "gain": 0.44520865692606915,
+          "brightness_area": 1155.7506017483392
+        },
+        "added": {
+          "gain": 0.14448598949911373,
+          "brightness_area": 380.81485916197846
+        },
+        "removed": {
+          "gain": 0.0,
+          "brightness_area": 0.0
+        }
+      },
+      "inside": {
+        "pixels": 35,
+        "truth_brightness_fraction": 0.4428872123031814,
+        "truth_power_fraction": 0.6298671578328223,
+        "error_power_fraction": 0.14397247777778283,
+        "signed_error_brightness_area": -153.3846804991664,
+        "negative_error_area": -153.3846804991664,
+        "positive_error_area": 0.0,
+        "local_projection_gain": 0.9187743021516959
+      },
+      "outside": {
+        "pixels": 1222,
+        "truth_brightness_fraction": 0.5571127876968184,
+        "truth_power_fraction": 0.37013284216717746,
+        "error_power_fraction": 0.8560275222222172,
+        "signed_error_brightness_area": -1613.8108746711464,
+        "negative_error_area": -1615.1547592431602,
+        "positive_error_area": 1.3438845720137516,
+        "local_projection_gain": 0.8030158077771976
+      },
+      "disconnected_above_threshold_pixels": 2,
+      "below_threshold_omitted_brightness_fraction_lower_bound": 0.5244740912890634,
+      "omitted_map_delta_projection": 0.6798516539424788,
+      "background_constant_difference": -0.17688551411710973
+    },
+    {
+      "candidate": 1,
+      "output": 2,
+      "ref_pixels": 34,
+      "shoulder_pixels": 39,
+      "added_pixels": 5,
+      "removed_pixels": 0,
+      "mask_change_previous": 4,
+      "feedback_gain": 0.7741769419176595,
+      "output_gain": 0.919837591084181,
+      "eta": 0.13455826941318666,
+      "terms": {
+        "common": {
+          "gain": 0.5547748676612714,
+          "brightness_area": 1457.6053636425404
+        },
+        "added": {
+          "gain": 0.21940207425638822,
+          "brightness_area": 661.0758439405995
+        },
+        "removed": {
+          "gain": 0.0,
+          "brightness_area": 0.0
+        }
+      },
+      "inside": {
+        "pixels": 39,
+        "truth_brightness_fraction": 0.488367687427009,
+        "truth_power_fraction": 0.6915522196277678,
+        "error_power_fraction": 0.09597681578916657,
+        "signed_error_brightness_area": -91.1032339436337,
+        "negative_error_area": -93.00595550890993,
+        "positive_error_area": 1.9027215652762361,
+        "local_projection_gain": 0.9568061427717574
+      },
+      "outside": {
+        "pixels": 1218,
+        "truth_brightness_fraction": 0.5116323125729909,
+        "truth_power_fraction": 0.3084477803722321,
+        "error_power_fraction": 0.9040231842108333,
+        "signed_error_brightness_area": -1210.8814962858978,
+        "negative_error_area": -1212.6917328843192,
+        "positive_error_area": 1.8102365984213469,
+        "local_projection_gain": 0.8369526244777921
+      },
+      "disconnected_above_threshold_pixels": 1,
+      "below_threshold_omitted_brightness_fraction_lower_bound": 0.4959180361212667,
+      "omitted_map_delta_projection": 0.7892906488546632,
+      "background_constant_difference": -0.0075968744080476824
+    },
+    {
+      "candidate": 2,
+      "output": 3,
+      "ref_pixels": 36,
+      "shoulder_pixels": 41,
+      "added_pixels": 5,
+      "removed_pixels": 0,
+      "mask_change_previous": 2,
+      "feedback_gain": 0.7870787799940866,
+      "output_gain": 0.9275385554844016,
+      "eta": 0.12623208266308414,
+      "terms": {
+        "common": {
+          "gain": 0.5986296280237176,
+          "brightness_area": 1579.927080909667
+        },
+        "added": {
+          "gain": 0.18844915197036904,
+          "brightness_area": 638.5099957553064
+        },
+        "removed": {
+          "gain": 0.0,
+          "brightness_area": 0.0
+        }
+      },
+      "inside": {
+        "pixels": 41,
+        "truth_brightness_fraction": 0.4995147911791723,
+        "truth_power_fraction": 0.6975747165650703,
+        "error_power_fraction": 0.08489325950411096,
+        "signed_error_brightness_area": -71.4045699036949,
+        "negative_error_area": -77.8350818702331,
+        "positive_error_area": 6.430511966538187,
+        "local_projection_gain": 0.964032263038048
+      },
+      "outside": {
+        "pixels": 1216,
+        "truth_brightness_fraction": 0.5004852088208276,
+        "truth_power_fraction": 0.3024252834349297,
+        "error_power_fraction": 0.9151067404958889,
+        "signed_error_brightness_area": -1130.084639103797,
+        "negative_error_area": -1131.5295254677944,
+        "positive_error_area": 1.4448863639976839,
+        "local_projection_gain": 0.8433621023320614
+      },
+      "disconnected_above_threshold_pixels": 1,
+      "below_threshold_omitted_brightness_fraction_lower_bound": 0.4847709323691034,
+      "omitted_map_delta_projection": 0.8371702630551339,
+      "background_constant_difference": 0.05955549020451212
+    },
+    {
+      "candidate": 3,
+      "output": 4,
+      "ref_pixels": 36,
+      "shoulder_pixels": 41,
+      "added_pixels": 5,
+      "removed_pixels": 0,
+      "mask_change_previous": 0,
+      "feedback_gain": 0.7940738961950286,
+      "output_gain": 0.9296732530864967,
+      "eta": 0.12458519033238179,
+      "terms": {
+        "common": {
+          "gain": 0.6016646390011002,
+          "brightness_area": 1591.4353007144914
+        },
+        "added": {
+          "gain": 0.1924092571939283,
+          "brightness_area": 658.1427969904871
+        },
+        "removed": {
+          "gain": 0.0,
+          "brightness_area": 0.0
+        }
+      },
+      "inside": {
+        "pixels": 41,
+        "truth_brightness_fraction": 0.4995147911791723,
+        "truth_power_fraction": 0.6975747165650703,
+        "error_power_fraction": 0.08468684428542331,
+        "signed_error_brightness_area": -65.72065508142185,
+        "negative_error_area": -73.66994429700111,
+        "positive_error_area": 7.94928921557926,
+        "local_projection_gain": 0.9662155677576902
+      },
+      "outside": {
+        "pixels": 1216,
+        "truth_brightness_fraction": 0.5004852088208276,
+        "truth_power_fraction": 0.3024252834349297,
+        "error_power_fraction": 0.9153131557145765,
+        "signed_error_brightness_area": -1110.7942757573194,
+        "negative_error_area": -1112.5019929620662,
+        "positive_error_area": 1.7077172047467641,
+        "local_projection_gain": 0.8453846826671717
+      },
+      "disconnected_above_threshold_pixels": 1,
+      "below_threshold_omitted_brightness_fraction_lower_bound": 0.4847709323691034,
+      "omitted_map_delta_projection": 0.8433621023320614,
+      "background_constant_difference": 0.0701774496869314
+    },
+    {
+      "candidate": 4,
+      "output": 5,
+      "ref_pixels": 36,
+      "shoulder_pixels": 41,
+      "added_pixels": 5,
+      "removed_pixels": 0,
+      "mask_change_previous": 0,
+      "feedback_gain": 0.7956491444440948,
+      "output_gain": 0.9300936113136515,
+      "eta": 0.12423622152546422,
+      "terms": {
+        "common": {
+          "gain": 0.6027410767094173,
+          "brightness_area": 1595.1645676047274
+        },
+        "added": {
+          "gain": 0.19290806773467759,
+          "brightness_area": 660.32829172051
+        },
+        "removed": {
+          "gain": 0.0,
+          "brightness_area": 0.0
+        }
+      },
+      "inside": {
+        "pixels": 41,
+        "truth_brightness_fraction": 0.4995147911791723,
+        "truth_power_fraction": 0.6975747165650703,
+        "error_power_fraction": 0.08431938534006246,
+        "signed_error_brightness_area": -64.69762530025878,
+        "negative_error_area": -72.85300998158915,
+        "positive_error_area": 8.155384681330371,
+        "local_projection_gain": 0.9666442938976412
+      },
+      "outside": {
+        "pixels": 1216,
+        "truth_brightness_fraction": 0.5004852088208276,
+        "truth_power_fraction": 0.3024252834349297,
+        "error_power_fraction": 0.9156806146599376,
+        "signed_error_brightness_area": -1107.1681199922305,
+        "negative_error_area": -1108.962030655112,
+        "positive_error_area": 1.793910662881565,
+        "local_projection_gain": 0.8457857394512379
+      },
+      "disconnected_above_threshold_pixels": 1,
+      "below_threshold_omitted_brightness_fraction_lower_bound": 0.4847709323691034,
+      "omitted_map_delta_projection": 0.8453846826671717,
+      "background_constant_difference": 0.07355470721792257
+    },
+    {
+      "candidate": 5,
+      "output": 6,
+      "ref_pixels": 36,
+      "shoulder_pixels": 41,
+      "added_pixels": 5,
+      "removed_pixels": 0,
+      "mask_change_previous": 0,
+      "feedback_gain": 0.7959457953899917,
+      "output_gain": 0.9301689163802536,
+      "eta": 0.12417195875570672,
+      "terms": {
+        "common": {
+          "gain": 0.6029665949322328,
+          "brightness_area": 1595.9002829729525
+        },
+        "added": {
+          "gain": 0.1929792004577588,
+          "brightness_area": 660.6181024715155
+        },
+        "removed": {
+          "gain": 0.0,
+          "brightness_area": 0.0
+        }
+      },
+      "inside": {
+        "pixels": 41,
+        "truth_brightness_fraction": 0.4995147911791723,
+        "truth_power_fraction": 0.6975747165650703,
+        "error_power_fraction": 0.0842220896535282,
+        "signed_error_brightness_area": -64.52129288752198,
+        "negative_error_area": -72.70857720842189,
+        "positive_error_area": 8.187284320899902,
+        "local_projection_gain": 0.9667213641306628
+      },
+      "outside": {
+        "pixels": 1216,
+        "truth_brightness_fraction": 0.5004852088208276,
+        "truth_power_fraction": 0.3024252834349297,
+        "error_power_fraction": 0.9157779103464718,
+        "signed_error_brightness_area": -1106.538637940108,
+        "negative_error_area": -1108.3448671974352,
+        "positive_error_area": 1.806229257327265,
+        "local_projection_gain": 0.8458569729817201
+      },
+      "disconnected_above_threshold_pixels": 1,
+      "below_threshold_omitted_brightness_fraction_lower_bound": 0.4847709323691034,
+      "omitted_map_delta_projection": 0.8457857394512379,
+      "background_constant_difference": 0.07421050465864709
+    },
+    {
+      "candidate": 6,
+      "output": 7,
+      "ref_pixels": 36,
+      "shoulder_pixels": 41,
+      "added_pixels": 5,
+      "removed_pixels": 0,
+      "mask_change_previous": 0,
+      "feedback_gain": 0.7959981161498606,
+      "output_gain": 0.9301819213628919,
+      "eta": 0.12416073975033316,
+      "terms": {
+        "common": {
+          "gain": 0.6030082649542007,
+          "brightness_area": 1596.0318728168613
+        },
+        "added": {
+          "gain": 0.1929898511956599,
+          "brightness_area": 660.6598582668612
+        },
+        "removed": {
+          "gain": 0.0,
+          "brightness_area": 0.0
+        }
+      },
+      "inside": {
+        "pixels": 41,
+        "truth_brightness_fraction": 0.4995147911791723,
+        "truth_power_fraction": 0.6975747165650703,
+        "error_power_fraction": 0.08420232201702939,
+        "signed_error_brightness_area": -64.49134351029709,
+        "negative_error_area": -72.68345151076946,
+        "positive_error_area": 8.19210800047237,
+        "local_projection_gain": 0.9667347273241557
+      },
+      "outside": {
+        "pixels": 1216,
+        "truth_brightness_fraction": 0.5004852088208276,
+        "truth_power_fraction": 0.3024252834349297,
+        "error_power_fraction": 0.9157976779829706,
+        "signed_error_brightness_area": -1106.4320239518493,
+        "negative_error_area": -1108.2401308414928,
+        "positive_error_area": 1.808106889643484,
+        "local_projection_gain": 0.8458691517145402
+      },
+      "disconnected_above_threshold_pixels": 1,
+      "below_threshold_omitted_brightness_fraction_lower_bound": 0.4847709323691034,
+      "omitted_map_delta_projection": 0.8458569729817201,
+      "background_constant_difference": 0.07432559267191008
+    },
+    {
+      "candidate": 7,
+      "output": 8,
+      "ref_pixels": 36,
+      "shoulder_pixels": 41,
+      "added_pixels": 5,
+      "removed_pixels": 0,
+      "mask_change_previous": 0,
+      "feedback_gain": 0.7960070821993628,
+      "output_gain": 0.9301841304178476,
+      "eta": 0.12415882370524546,
+      "terms": {
+        "common": {
+          "gain": 0.6030155978717718,
+          "brightness_area": 1596.054662755082
+        },
+        "added": {
+          "gain": 0.1929914843275909,
+          "brightness_area": 660.6661362154706
+        },
+        "removed": {
+          "gain": 0.0,
+          "brightness_area": 0.0
+        }
+      },
+      "inside": {
+        "pixels": 41,
+        "truth_brightness_fraction": 0.4995147911791723,
+        "truth_power_fraction": 0.6975747165650703,
+        "error_power_fraction": 0.08419865437429488,
+        "signed_error_brightness_area": -64.48628666959857,
+        "negative_error_area": -72.67914902251685,
+        "positive_error_area": 8.19286235291828,
+        "local_projection_gain": 0.9667370053329407
+      },
+      "outside": {
+        "pixels": 1216,
+        "truth_brightness_fraction": 0.5004852088208276,
+        "truth_power_fraction": 0.3024252834349297,
+        "error_power_fraction": 0.915801345625705,
+        "signed_error_brightness_area": -1106.414118996036,
+        "negative_error_area": -1108.2225229116916,
+        "positive_error_area": 1.808403915655799,
+        "local_projection_gain": 0.845871201720466
+      },
+      "disconnected_above_threshold_pixels": 1,
+      "below_threshold_omitted_brightness_fraction_lower_bound": 0.4847709323691034,
+      "omitted_map_delta_projection": 0.8458691517145402,
+      "background_constant_difference": 0.07434525692090155
+    },
+    {
+      "candidate": 8,
+      "output": 9,
+      "ref_pixels": 36,
+      "shoulder_pixels": 41,
+      "added_pixels": 5,
+      "removed_pixels": 0,
+      "mask_change_previous": 0,
+      "feedback_gain": 0.7960086032597463,
+      "output_gain": 0.9301845039737094,
+      "eta": 0.12415849849486628,
+      "terms": {
+        "common": {
+          "gain": 0.6030168641586031,
+          "brightness_area": 1596.058572765392
+        },
+        "added": {
+          "gain": 0.1929917391011432,
+          "brightness_area": 660.6671059283434
+        },
+        "removed": {
+          "gain": 0.0,
+          "brightness_area": 0.0
+        }
+      },
+      "inside": {
+        "pixels": 41,
+        "truth_brightness_fraction": 0.4995147911791723,
+        "truth_power_fraction": 0.6975747165650703,
+        "error_power_fraction": 0.08419799804045755,
+        "signed_error_brightness_area": -64.485432196165,
+        "negative_error_area": -72.67841518123909,
+        "positive_error_area": 8.192982985074092,
+        "local_projection_gain": 0.9667373917000901
+      },
+      "outside": {
+        "pixels": 1216,
+        "truth_brightness_fraction": 0.5004852088208276,
+        "truth_power_fraction": 0.3024252834349297,
+        "error_power_fraction": 0.9158020019595424,
+        "signed_error_brightness_area": -1106.411110143229,
+        "negative_error_area": -1108.219562187414,
+        "positive_error_area": 1.8084520441849357,
+        "local_projection_gain": 0.8458715457257887
+      },
+      "disconnected_above_threshold_pixels": 1,
+      "below_threshold_omitted_brightness_fraction_lower_bound": 0.4847709323691034,
+      "omitted_map_delta_projection": 0.845871201720466,
+      "background_constant_difference": 0.07434848189062815
+    },
+    {
+      "candidate": 9,
+      "output": 10,
+      "ref_pixels": 36,
+      "shoulder_pixels": 41,
+      "added_pixels": 5,
+      "removed_pixels": 0,
+      "mask_change_previous": 0,
+      "feedback_gain": 0.796008859049085,
+      "output_gain": 0.9301845667677323,
+      "eta": 0.12415844367073268,
+      "terms": {
+        "common": {
+          "gain": 0.6030170798202076,
+          "brightness_area": 1596.059237698555
+        },
+        "added": {
+          "gain": 0.19299177922887745,
+          "brightness_area": 660.6672579540126
+        },
+        "removed": {
+          "gain": 0.0,
+          "brightness_area": 0.0
+        }
+      },
+      "inside": {
+        "pixels": 41,
+        "truth_brightness_fraction": 0.4995147911791723,
+        "truth_power_fraction": 0.6975747165650703,
+        "error_power_fraction": 0.08419788321930012,
+        "signed_error_brightness_area": -64.48528829314763,
+        "negative_error_area": -72.67829077156618,
+        "positive_error_area": 8.193002478418546,
+        "local_projection_gain": 0.966737456811512
+      },
+      "outside": {
+        "pixels": 1216,
+        "truth_brightness_fraction": 0.5004852088208276,
+        "truth_power_fraction": 0.3024252834349297,
+        "error_power_fraction": 0.9158021167806999,
+        "signed_error_brightness_area": -1106.4106060385868,
+        "negative_error_area": -1108.219065962324,
+        "positive_error_area": 1.808459923737309,
+        "local_projection_gain": 0.8458716031744948
+      },
+      "disconnected_above_threshold_pixels": 1,
+      "below_threshold_omitted_brightness_fraction_lower_bound": 0.4847709323691034,
+      "omitted_map_delta_projection": 0.8458715457257887,
+      "background_constant_difference": 0.07434903741091181,
+      "late_feedback_gain_change_terms": {
+        "common": 0.0003597146049901516,
+        "added": 0.0,
+        "removed": 0.0
+      },
+      "late_added_pixels": 0
+    }
+  ],
+  "a1400": [
+    {
+      "candidate": 0,
+      "output": 1,
+      "ref_pixels": 44,
+      "shoulder_pixels": 51,
+      "added_pixels": 7,
+      "removed_pixels": 0,
+      "mask_change_previous": null,
+      "feedback_gain": 0.5677023390109297,
+      "output_gain": 0.8586750401224998,
+      "eta": 0.1957578532067894,
+      "terms": {
+        "common": {
+          "gain": 0.41560082587526836,
+          "brightness_area": 1843.487754469214
+        },
+        "added": {
+          "gain": 0.15210151313566136,
+          "brightness_area": 742.1095649502731
+        },
+        "removed": {
+          "gain": 0.0,
+          "brightness_area": 0.0
+        }
+      },
+      "inside": {
+        "pixels": 51,
+        "truth_brightness_fraction": 0.4780005361650423,
+        "truth_power_fraction": 0.6576217969607528,
+        "error_power_fraction": 0.19728568032788057,
+        "signed_error_brightness_area": -322.4886849252776,
+        "negative_error_area": -327.42113115943874,
+        "positive_error_area": 4.932446234161233,
+        "local_projection_gain": 0.9033995042276521
+      },
+      "outside": {
+        "pixels": 1206,
+        "truth_brightness_fraction": 0.5219994638349579,
+        "truth_power_fraction": 0.3423782030392472,
+        "error_power_fraction": 0.8027143196721194,
+        "signed_error_brightness_area": -2406.5775953377142,
+        "negative_error_area": -2420.6795767738313,
+        "positive_error_area": 14.101981436116919,
+        "local_projection_gain": 0.7727706741557047
+      },
+      "disconnected_above_threshold_pixels": 16,
+      "below_threshold_omitted_brightness_fraction_lower_bound": 0.3686418405203513,
+      "omitted_map_delta_projection": 0.6454493988973986,
+      "background_constant_difference": -0.14687855793331162
+    },
+    {
+      "candidate": 1,
+      "output": 2,
+      "ref_pixels": 49,
+      "shoulder_pixels": 60,
+      "added_pixels": 11,
+      "removed_pixels": 0,
+      "mask_change_previous": 9,
+      "feedback_gain": 0.7686161549599607,
+      "output_gain": 0.9049322585316603,
+      "eta": 0.14305706293409381,
+      "terms": {
+        "common": {
+          "gain": 0.5555429645704354,
+          "brightness_area": 2491.8205902676027
+        },
+        "added": {
+          "gain": 0.21307319038952524,
+          "brightness_area": 1158.2235243881164
+        },
+        "removed": {
+          "gain": 0.0,
+          "brightness_area": 0.0
+        }
+      },
+      "inside": {
+        "pixels": 60,
+        "truth_brightness_fraction": 0.5496357032950037,
+        "truth_power_fraction": 0.7434519895321109,
+        "error_power_fraction": 0.15944688109421895,
+        "signed_error_brightness_area": -236.54715908169612,
+        "negative_error_area": -236.54715908169612,
+        "positive_error_area": 0.0,
+        "local_projection_gain": 0.9389219762877129
+      },
+      "outside": {
+        "pixels": 1197,
+        "truth_brightness_fraction": 0.45036429670499645,
+        "truth_power_fraction": 0.2565480104678891,
+        "error_power_fraction": 0.8405531189057812,
+        "signed_error_brightness_area": -1812.5609988640285,
+        "negative_error_area": -1814.0103280817432,
+        "positive_error_area": 1.4493292177144104,
+        "local_projection_gain": 0.8064332553887962
+      },
+      "disconnected_above_threshold_pixels": 11,
+      "below_threshold_omitted_brightness_fraction_lower_bound": 0.3494218275816853,
+      "omitted_map_delta_projection": 0.7529295682117734,
+      "background_constant_difference": 0.0937469522323583
+    },
+    {
+      "candidate": 2,
+      "output": 3,
+      "ref_pixels": 50,
+      "shoulder_pixels": 66,
+      "added_pixels": 16,
+      "removed_pixels": 0,
+      "mask_change_previous": 6,
+      "feedback_gain": 0.8888291024647543,
+      "output_gain": 0.9393641247650046,
+      "eta": 0.10816547409004937,
+      "terms": {
+        "common": {
+          "gain": 0.5831513614609063,
+          "brightness_area": 2635.521651083828
+        },
+        "added": {
+          "gain": 0.3056777410038482,
+          "brightness_area": 1693.9899290738701
+        },
+        "removed": {
+          "gain": 0.0,
+          "brightness_area": 0.0
+        }
+      },
+      "inside": {
+        "pixels": 66,
+        "truth_brightness_fraction": 0.6001086510895985,
+        "truth_power_fraction": 0.8069906839970058,
+        "error_power_fraction": 0.11185610713130123,
+        "signed_error_brightness_area": -142.32579837041519,
+        "negative_error_area": -147.89740208486225,
+        "positive_error_area": 5.571603714447061,
+        "local_projection_gain": 0.9659015701713249
+      },
+      "outside": {
+        "pixels": 1191,
+        "truth_brightness_fraction": 0.3998913489104015,
+        "truth_power_fraction": 0.19300931600299412,
+        "error_power_fraction": 0.8881438928686988,
+        "signed_error_brightness_area": -1407.6860657036805,
+        "negative_error_area": -1409.2752595659133,
+        "positive_error_area": 1.5891938622329782,
+        "local_projection_gain": 0.8284084897548915
+      },
+      "disconnected_above_threshold_pixels": 9,
+      "below_threshold_omitted_brightness_fraction_lower_bound": 0.32718189316212337,
+      "omitted_map_delta_projection": 0.7846505717605022,
+      "background_constant_difference": 0.18942481427913416
+    },
+    {
+      "candidate": 3,
+      "output": 4,
+      "ref_pixels": 50,
+      "shoulder_pixels": 67,
+      "added_pixels": 17,
+      "removed_pixels": 0,
+      "mask_change_previous": 1,
+      "feedback_gain": 0.9204052219387675,
+      "output_gain": 0.9492657650905552,
+      "eta": 0.10041868242207878,
+      "terms": {
+        "common": {
+          "gain": 0.5953169434165225,
+          "brightness_area": 2696.615652065691
+        },
+        "added": {
+          "gain": 0.3250882785222451,
+          "brightness_area": 1870.6327018629004
+        },
+        "removed": {
+          "gain": 0.0,
+          "brightness_area": 0.0
+        }
+      },
+      "inside": {
+        "pixels": 67,
+        "truth_brightness_fraction": 0.6028993593793963,
+        "truth_power_fraction": 0.8079695361180959,
+        "error_power_fraction": 0.09119448050337287,
+        "signed_error_brightness_area": -99.15844941770669,
+        "negative_error_area": -113.36343966447998,
+        "positive_error_area": 14.204990246773281,
+        "local_projection_gain": 0.9755152145168077
+      },
+      "outside": {
+        "pixels": 1190,
+        "truth_brightness_fraction": 0.39710064062060385,
+        "truth_power_fraction": 0.19203046388190417,
+        "error_power_fraction": 0.9088055194966272,
+        "signed_error_brightness_area": -1296.0935824583707,
+        "negative_error_area": -1299.5988564763034,
+        "positive_error_area": 3.5052740179327944,
+        "local_projection_gain": 0.8388210208163978
+      },
+      "disconnected_above_threshold_pixels": 7,
+      "below_threshold_omitted_brightness_fraction_lower_bound": 0.3379755926657082,
+      "omitted_map_delta_projection": 0.8280524153659813,
+      "background_constant_difference": 0.2656442451872214
+    },
+    {
+      "candidate": 4,
+      "output": 5,
+      "ref_pixels": 50,
+      "shoulder_pixels": 67,
+      "added_pixels": 17,
+      "removed_pixels": 0,
+      "mask_change_previous": 0,
+      "feedback_gain": 0.9278999633636518,
+      "output_gain": 0.951369189599543,
+      "eta": 0.09890730707245135,
+      "terms": {
+        "common": {
+          "gain": 0.5999469761704577,
+          "brightness_area": 2720.716596596212
+        },
+        "added": {
+          "gain": 0.32795298719319405,
+          "brightness_area": 1889.8880262363305
+        },
+        "removed": {
+          "gain": 0.0,
+          "brightness_area": 0.0
+        }
+      },
+      "inside": {
+        "pixels": 67,
+        "truth_brightness_fraction": 0.6028993593793963,
+        "truth_power_fraction": 0.8079695361180959,
+        "error_power_fraction": 0.08716029935356999,
+        "signed_error_brightness_area": -90.0718198266143,
+        "negative_error_area": -105.70626145669425,
+        "positive_error_area": 15.634441630079937,
+        "local_projection_gain": 0.9775986100037023
+      },
+      "outside": {
+        "pixels": 1190,
+        "truth_brightness_fraction": 0.39710064062060385,
+        "truth_power_fraction": 0.19203046388190417,
+        "error_power_fraction": 0.91283970064643,
+        "signed_error_brightness_area": -1273.8613270434114,
+        "negative_error_area": -1277.8200390765069,
+        "positive_error_area": 3.9587120330953898,
+        "local_projection_gain": 0.8410087175776224
+      },
+      "disconnected_above_threshold_pixels": 7,
+      "below_threshold_omitted_brightness_fraction_lower_bound": 0.3379755926657082,
+      "omitted_map_delta_projection": 0.8388210208163978,
+      "background_constant_difference": 0.28864158632729464
+    },
+    {
+      "candidate": 5,
+      "output": 6,
+      "ref_pixels": 50,
+      "shoulder_pixels": 67,
+      "added_pixels": 17,
+      "removed_pixels": 0,
+      "mask_change_previous": 0,
+      "feedback_gain": 0.9295136495562659,
+      "output_gain": 0.9518182294429832,
+      "eta": 0.09859083342967973,
+      "terms": {
+        "common": {
+          "gain": 0.6010611085299202,
+          "brightness_area": 2726.4126985855855
+        },
+        "added": {
+          "gain": 0.3284525410263457,
+          "brightness_area": 1892.9400209872056
+        },
+        "removed": {
+          "gain": 0.0,
+          "brightness_area": 0.0
+        }
+      },
+      "inside": {
+        "pixels": 67,
+        "truth_brightness_fraction": 0.6028993593793963,
+        "truth_power_fraction": 0.8079695361180959,
+        "error_power_fraction": 0.08625099747107616,
+        "signed_error_brightness_area": -88.15854220794239,
+        "negative_error_area": -104.0491577118222,
+        "positive_error_area": 15.890615503879811,
+        "local_projection_gain": 0.978047336107327
+      },
+      "outside": {
+        "pixels": 1190,
+        "truth_brightness_fraction": 0.39710064062060385,
+        "truth_power_fraction": 0.19203046388190417,
+        "error_power_fraction": 0.9137490025289237,
+        "signed_error_brightness_area": -1269.236426393205,
+        "negative_error_area": -1273.283426540279,
+        "positive_error_area": 4.047000147074037,
+        "local_projection_gain": 0.841459077483559
+      },
+      "disconnected_above_threshold_pixels": 7,
+      "below_threshold_omitted_brightness_fraction_lower_bound": 0.3379755926657082,
+      "omitted_map_delta_projection": 0.8410087175776224,
+      "background_constant_difference": 0.2931854694136198
+    },
+    {
+      "candidate": 6,
+      "output": 7,
+      "ref_pixels": 50,
+      "shoulder_pixels": 67,
+      "added_pixels": 17,
+      "removed_pixels": 0,
+      "mask_change_previous": 0,
+      "feedback_gain": 0.9298603850934417,
+      "output_gain": 0.9519152610016032,
+      "eta": 0.09852332769808675,
+      "terms": {
+        "common": {
+          "gain": 0.601311737844424,
+          "brightness_area": 2727.6744902965315
+        },
+        "added": {
+          "gain": 0.3285486472490176,
+          "brightness_area": 1893.511887600253
+        },
+        "removed": {
+          "gain": 0.0,
+          "brightness_area": 0.0
+        }
+      },
+      "inside": {
+        "pixels": 67,
+        "truth_brightness_fraction": 0.6028993593793963,
+        "truth_power_fraction": 0.8079695361180959,
+        "error_power_fraction": 0.08604805962526432,
+        "signed_error_brightness_area": -87.74766971391011,
+        "negative_error_area": -103.68963938553571,
+        "positive_error_area": 15.941969671625596,
+        "local_projection_gain": 0.9781448901340738
+      },
+      "outside": {
+        "pixels": 1190,
+        "truth_brightness_fraction": 0.39710064062060385,
+        "truth_power_fraction": 0.19203046388190417,
+        "error_power_fraction": 0.9139519403747356,
+        "signed_error_brightness_area": -1268.2540939852465,
+        "negative_error_area": -1272.3193982747543,
+        "positive_error_area": 4.065304289507665,
+        "local_projection_gain": 0.8415539107538369
+      },
+      "disconnected_above_threshold_pixels": 7,
+      "below_threshold_omitted_brightness_fraction_lower_bound": 0.3379755926657082,
+      "omitted_map_delta_projection": 0.841459077483559,
+      "background_constant_difference": 0.2941248253333544
+    },
+    {
+      "candidate": 7,
+      "output": 8,
+      "ref_pixels": 50,
+      "shoulder_pixels": 67,
+      "added_pixels": 17,
+      "removed_pixels": 0,
+      "mask_change_previous": 0,
+      "feedback_gain": 0.9299355074088292,
+      "output_gain": 0.9519364316562853,
+      "eta": 0.09850874985328924,
+      "terms": {
+        "common": {
+          "gain": 0.6013673624079321,
+          "brightness_area": 2727.951344409945
+        },
+        "added": {
+          "gain": 0.3285681450008973,
+          "brightness_area": 1893.6267819205364
+        },
+        "removed": {
+          "gain": 0.0,
+          "brightness_area": 0.0
+        }
+      },
+      "inside": {
+        "pixels": 67,
+        "truth_brightness_fraction": 0.6028993593793963,
+        "truth_power_fraction": 0.8079695361180959,
+        "error_power_fraction": 0.08600293557056163,
+        "signed_error_brightness_area": -87.65841023182425,
+        "negative_error_area": -103.61112077200036,
+        "positive_error_area": 15.95271054017611,
+        "local_projection_gain": 0.9781662651354788
+      },
+      "outside": {
+        "pixels": 1190,
+        "truth_brightness_fraction": 0.39710064062060385,
+        "truth_power_fraction": 0.19203046388190417,
+        "error_power_fraction": 0.9139970644294383,
+        "signed_error_brightness_area": -1268.0425048892905,
+        "negative_error_area": -1272.1116880038176,
+        "positive_error_area": 4.0691831145269255,
+        "local_projection_gain": 0.841574221618237
+      },
+      "disconnected_above_threshold_pixels": 7,
+      "below_threshold_omitted_brightness_fraction_lower_bound": 0.3379755926657082,
+      "omitted_map_delta_projection": 0.8415539107538369,
+      "background_constant_difference": 0.2943239374439244
+    },
+    {
+      "candidate": 8,
+      "output": 9,
+      "ref_pixels": 50,
+      "shoulder_pixels": 67,
+      "added_pixels": 17,
+      "removed_pixels": 0,
+      "mask_change_previous": 0,
+      "feedback_gain": 0.929951909296512,
+      "output_gain": 0.9519410838729271,
+      "eta": 0.09850557389299794,
+      "terms": {
+        "common": {
+          "gain": 0.6013796905069771,
+          "brightness_area": 2728.0121649318385
+        },
+        "added": {
+          "gain": 0.3285722187895348,
+          "brightness_area": 1893.650639679135
+        },
+        "removed": {
+          "gain": 0.0,
+          "brightness_area": 0.0
+        }
+      },
+      "inside": {
+        "pixels": 67,
+        "truth_brightness_fraction": 0.6028993593793963,
+        "truth_power_fraction": 0.8079695361180959,
+        "error_power_fraction": 0.08599289458622567,
+        "signed_error_brightness_area": -87.63886789619836,
+        "negative_error_area": -103.59386788934594,
+        "positive_error_area": 15.954999993147556,
+        "local_projection_gain": 0.9781709770606611
+      },
+      "outside": {
+        "pixels": 1190,
+        "truth_brightness_fraction": 0.39710064062060385,
+        "truth_power_fraction": 0.19203046388190417,
+        "error_power_fraction": 0.9140071054137743,
+        "signed_error_brightness_area": -1267.9964916318343,
+        "negative_error_area": -1272.0665076509317,
+        "positive_error_area": 4.07001601909764,
+        "local_projection_gain": 0.8415786226107704
+      },
+      "disconnected_above_threshold_pixels": 7,
+      "below_threshold_omitted_brightness_fraction_lower_bound": 0.3379755926657082,
+      "omitted_map_delta_projection": 0.841574221618237,
+      "background_constant_difference": 0.2943668055623043
+    },
+    {
+      "candidate": 9,
+      "output": 10,
+      "ref_pixels": 50,
+      "shoulder_pixels": 67,
+      "added_pixels": 17,
+      "removed_pixels": 0,
+      "mask_change_previous": 0,
+      "feedback_gain": 0.929955513248546,
+      "output_gain": 0.9519421119479146,
+      "eta": 0.09850487730100395,
+      "terms": {
+        "common": {
+          "gain": 0.6013824278834363,
+          "brightness_area": 2728.025572516902
+        },
+        "added": {
+          "gain": 0.3285730853651097,
+          "brightness_area": 1893.6556872734877
+        },
+        "removed": {
+          "gain": 0.0,
+          "brightness_area": 0.0
+        }
+      },
+      "inside": {
+        "pixels": 67,
+        "truth_brightness_fraction": 0.6028993593793963,
+        "truth_power_fraction": 0.8079695361180959,
+        "error_power_fraction": 0.08599065514200782,
+        "signed_error_brightness_area": -87.63456394168986,
+        "negative_error_area": -103.59005726158804,
+        "positive_error_area": 15.955493319898192,
+        "local_projection_gain": 0.9781720209281949
+      },
+      "outside": {
+        "pixels": 1190,
+        "truth_brightness_fraction": 0.39710064062060385,
+        "truth_power_fraction": 0.19203046388190417,
+        "error_power_fraction": 0.9140093448579921,
+        "signed_error_brightness_area": -1267.9864141541034,
+        "negative_error_area": -1272.0566105087714,
+        "positive_error_area": 4.070196354667971,
+        "local_projection_gain": 0.8415795842385071
+      },
+      "disconnected_above_threshold_pixels": 7,
+      "below_threshold_omitted_brightness_fraction_lower_bound": 0.3379755926657082,
+      "omitted_map_delta_projection": 0.8415786226107704,
+      "background_constant_difference": 0.2943761278444972,
+      "late_feedback_gain_change_terms": {
+        "common": 0.002055549884894377,
+        "added": 0.0,
+        "removed": 0.0
+      },
+      "late_added_pixels": 0
+    }
+  ],
+  "a2000": [
+    {
+      "candidate": 0,
+      "output": 1,
+      "ref_pixels": 48,
+      "shoulder_pixels": 51,
+      "added_pixels": 3,
+      "removed_pixels": 0,
+      "mask_change_previous": null,
+      "feedback_gain": 0.07614356971476609,
+      "output_gain": 0.3484106547929373,
+      "eta": 0.6878384364680958,
+      "terms": {
+        "common": {
+          "gain": 0.04083479085734918,
+          "brightness_area": 371.01882483553425
+        },
+        "added": {
+          "gain": 0.035308778857416914,
+          "brightness_area": 319.8984189294423
+        },
+        "removed": {
+          "gain": 0.0,
+          "brightness_area": 0.0
+        }
+      },
+      "inside": {
+        "pixels": 51,
+        "truth_brightness_fraction": 0.3361995222152877,
+        "truth_power_fraction": 0.4983680992702278,
+        "error_power_fraction": 0.4666363994369285,
+        "signed_error_brightness_area": -3196.86314446775,
+        "negative_error_area": -3196.86314446775,
+        "positive_error_area": 0.0,
+        "local_projection_gain": 0.3514089688518186
+      },
+      "outside": {
+        "pixels": 1206,
+        "truth_brightness_fraction": 0.6638004777847122,
+        "truth_power_fraction": 0.5016319007297723,
+        "error_power_fraction": 0.5333636005630716,
+        "signed_error_brightness_area": -9987.81435062064,
+        "negative_error_area": -10199.29793258988,
+        "positive_error_area": 211.48358196923897,
+        "local_projection_gain": 0.34543184886698636
+      },
+      "disconnected_above_threshold_pixels": 3,
+      "below_threshold_omitted_brightness_fraction_lower_bound": 0.6386141004255632,
+      "omitted_map_delta_projection": 0.1771349987722156,
+      "background_constant_difference": -0.12048217760211521
+    },
+    {
+      "candidate": 1,
+      "output": 2,
+      "ref_pixels": 65,
+      "shoulder_pixels": 69,
+      "added_pixels": 4,
+      "removed_pixels": 0,
+      "mask_change_previous": 18,
+      "feedback_gain": 0.2478938992613933,
+      "output_gain": 0.5513664972181467,
+      "eta": 0.4878893949260303,
+      "terms": {
+        "common": {
+          "gain": 0.20966924471521828,
+          "brightness_area": 1996.7340306936392
+        },
+        "added": {
+          "gain": 0.038224654546175026,
+          "brightness_area": 405.65646460224707
+        },
+        "removed": {
+          "gain": 0.0,
+          "brightness_area": 0.0
+        }
+      },
+      "inside": {
+        "pixels": 69,
+        "truth_brightness_fraction": 0.43691157502654226,
+        "truth_power_fraction": 0.6302373272441121,
+        "error_power_fraction": 0.41158958648708943,
+        "signed_error_brightness_area": -2489.0419456938407,
+        "negative_error_area": -2489.0419456938407,
+        "positive_error_area": 0.0,
+        "local_projection_gain": 0.6160006422842768
+      },
+      "outside": {
+        "pixels": 1188,
+        "truth_brightness_fraction": 0.5630884249734579,
+        "truth_power_fraction": 0.36976267275588776,
+        "error_power_fraction": 0.5884104135129107,
+        "signed_error_brightness_area": -8308.55210392336,
+        "negative_error_area": -8338.298987264367,
+        "positive_error_area": 29.74688334100597,
+        "local_projection_gain": 0.44120164328201505
+      },
+      "disconnected_above_threshold_pixels": 1,
+      "below_threshold_omitted_brightness_fraction_lower_bound": 0.5550315927481178,
+      "omitted_map_delta_projection": 0.3422650331639988,
+      "background_constant_difference": -0.25483713828290533
+    },
+    {
+      "candidate": 2,
+      "output": 3,
+      "ref_pixels": 75,
+      "shoulder_pixels": 86,
+      "added_pixels": 11,
+      "removed_pixels": 0,
+      "mask_change_previous": 17,
+      "feedback_gain": 0.4794729622021322,
+      "output_gain": 0.6959104502767082,
+      "eta": 0.35087659743287275,
+      "terms": {
+        "common": {
+          "gain": 0.398993773601042,
+          "brightness_area": 3924.4415605563254
+        },
+        "added": {
+          "gain": 0.08047918860109023,
+          "brightness_area": 1047.5353596883288
+        },
+        "removed": {
+          "gain": 0.0,
+          "brightness_area": 0.0
+        }
+      },
+      "inside": {
+        "pixels": 86,
+        "truth_brightness_fraction": 0.5103129798318554,
+        "truth_power_fraction": 0.7096498605059695,
+        "error_power_fraction": 0.32983432232134235,
+        "signed_error_brightness_area": -1794.8166868493568,
+        "negative_error_area": -1794.8166868493568,
+        "positive_error_area": 0.0,
+        "local_projection_gain": 0.7671484923130253
+      },
+      "outside": {
+        "pixels": 1171,
+        "truth_brightness_fraction": 0.48968702016814447,
+        "truth_power_fraction": 0.2903501394940304,
+        "error_power_fraction": 0.6701656776786575,
+        "signed_error_brightness_area": -6472.365392949055,
+        "negative_error_area": -6488.386879270596,
+        "positive_error_area": 16.02148632154202,
+        "local_projection_gain": 0.5217963042257123
+      },
+      "disconnected_above_threshold_pixels": 2,
+      "below_threshold_omitted_brightness_fraction_lower_bound": 0.4757631720708859,
+      "omitted_map_delta_projection": 0.4130328225607036,
+      "background_constant_difference": -0.21433004959516477
+    },
+    {
+      "candidate": 3,
+      "output": 4,
+      "ref_pixels": 84,
+      "shoulder_pixels": 93,
+      "added_pixels": 9,
+      "removed_pixels": 0,
+      "mask_change_previous": 7,
+      "feedback_gain": 0.594209063534795,
+      "output_gain": 0.7587087922748104,
+      "eta": 0.29402547509836297,
+      "terms": {
+        "common": {
+          "gain": 0.5172213092208418,
+          "brightness_area": 5240.1697300673295
+        },
+        "added": {
+          "gain": 0.07698775431395335,
+          "brightness_area": 971.6045398580238
+        },
+        "removed": {
+          "gain": 0.0,
+          "brightness_area": 0.0
+        }
+      },
+      "inside": {
+        "pixels": 93,
+        "truth_brightness_fraction": 0.5352633297145569,
+        "truth_power_fraction": 0.732353460661815,
+        "error_power_fraction": 0.2680879747767893,
+        "signed_error_brightness_area": -1427.8223044545387,
+        "negative_error_area": -1427.8223044545387,
+        "positive_error_area": 0.0,
+        "local_projection_gain": 0.8283528433907068
+      },
+      "outside": {
+        "pixels": 1164,
+        "truth_brightness_fraction": 0.46473667028544313,
+        "truth_power_fraction": 0.26764653933818494,
+        "error_power_fraction": 0.7319120252232106,
+        "signed_error_brightness_area": -5698.272435110726,
+        "negative_error_area": -5712.438893035736,
+        "positive_error_area": 14.166457925010269,
+        "local_projection_gain": 0.5681437957112305
+      },
+      "disconnected_above_threshold_pixels": 3,
+      "below_threshold_omitted_brightness_fraction_lower_bound": 0.444188965270515,
+      "omitted_map_delta_projection": 0.5169672974581797,
+      "background_constant_difference": 0.0054259651024874955
+    },
+    {
+      "candidate": 4,
+      "output": 5,
+      "ref_pixels": 85,
+      "shoulder_pixels": 99,
+      "added_pixels": 14,
+      "removed_pixels": 0,
+      "mask_change_previous": 6,
+      "feedback_gain": 0.6724534248038679,
+      "output_gain": 0.7996151494976058,
+      "eta": 0.2552406190243281,
+      "terms": {
+        "common": {
+          "gain": 0.5631976448519931,
+          "brightness_area": 5721.970434508135
+        },
+        "added": {
+          "gain": 0.10925577995187491,
+          "brightness_area": 1472.0300816406057
+        },
+        "removed": {
+          "gain": 0.0,
+          "brightness_area": 0.0
+        }
+      },
+      "inside": {
+        "pixels": 99,
+        "truth_brightness_fraction": 0.5629803872991155,
+        "truth_power_fraction": 0.7633506984071664,
+        "error_power_fraction": 0.23871790775897567,
+        "signed_error_brightness_area": -1201.1790905225434,
+        "negative_error_area": -1201.1790905225434,
+        "positive_error_area": 0.0,
+        "local_projection_gain": 0.8627226840259735
+      },
+      "outside": {
+        "pixels": 1158,
+        "truth_brightness_fraction": 0.43701961270088463,
+        "truth_power_fraction": 0.23664930159283354,
+        "error_power_fraction": 0.7612820922410243,
+        "signed_error_brightness_area": -5037.518150961336,
+        "negative_error_area": -5052.169163729044,
+        "positive_error_area": 14.65101276770763,
+        "local_projection_gain": 0.5960515630735554
+      },
+      "disconnected_above_threshold_pixels": 4,
+      "below_threshold_omitted_brightness_fraction_lower_bound": 0.411287047535938,
+      "omitted_map_delta_projection": 0.5551591726962084,
+      "background_constant_difference": 0.10721755389096621
+    },
+    {
+      "candidate": 5,
+      "output": 6,
+      "ref_pixels": 85,
+      "shoulder_pixels": 102,
+      "added_pixels": 17,
+      "removed_pixels": 0,
+      "mask_change_previous": 3,
+      "feedback_gain": 0.7158759815000421,
+      "output_gain": 0.8235176266514529,
+      "eta": 0.23429739756610227,
+      "terms": {
+        "common": {
+          "gain": 0.5840355960732085,
+          "brightness_area": 5951.244947574198
+        },
+        "added": {
+          "gain": 0.13184038542683332,
+          "brightness_area": 1858.9993492513115
+        },
+        "removed": {
+          "gain": 0.0,
+          "brightness_area": 0.0
+        }
+      },
+      "inside": {
+        "pixels": 102,
+        "truth_brightness_fraction": 0.5732157024471769,
+        "truth_power_fraction": 0.7723950203767629,
+        "error_power_fraction": 0.20244867251112705,
+        "signed_error_brightness_area": -1010.1259856358311,
+        "negative_error_area": -1016.9041191111452,
+        "positive_error_area": 6.7781334753140925,
+        "local_projection_gain": 0.8858017382551359
+      },
+      "outside": {
+        "pixels": 1155,
+        "truth_brightness_fraction": 0.426784297552823,
+        "truth_power_fraction": 0.22760497962323697,
+        "error_power_fraction": 0.797551327488873,
+        "signed_error_brightness_area": -4658.490086630889,
+        "negative_error_area": -4673.816643548293,
+        "positive_error_area": 15.326556917403174,
+        "local_projection_gain": 0.6121516990214423
+      },
+      "disconnected_above_threshold_pixels": 4,
+      "below_threshold_omitted_brightness_fraction_lower_bound": 0.40105173238787634,
+      "omitted_map_delta_projection": 0.5898022920480811,
+      "background_constant_difference": 0.2109562381250133
+    },
+    {
+      "candidate": 6,
+      "output": 7,
+      "ref_pixels": 85,
+      "shoulder_pixels": 104,
+      "added_pixels": 19,
+      "removed_pixels": 0,
+      "mask_change_previous": 2,
+      "feedback_gain": 0.7403629159660404,
+      "output_gain": 0.8360468897743129,
+      "eta": 0.22305852465870216,
+      "terms": {
+        "common": {
+          "gain": 0.5967407895226784,
+          "brightness_area": 6092.99919165196
+        },
+        "added": {
+          "gain": 0.14362212644336206,
+          "brightness_area": 2115.6546548604074
+        },
+        "removed": {
+          "gain": 0.0,
+          "brightness_area": 0.0
+        }
+      },
+      "inside": {
+        "pixels": 104,
+        "truth_brightness_fraction": 0.5783528958478272,
+        "truth_power_fraction": 0.7751623798243529,
+        "error_power_fraction": 0.18350616875658093,
+        "signed_error_brightness_area": -907.6231368640998,
+        "negative_error_area": -919.1137914233557,
+        "positive_error_area": 11.490654559255908,
+        "local_projection_gain": 0.897588811698057
+      },
+      "outside": {
+        "pixels": 1153,
+        "truth_brightness_fraction": 0.4216471041521727,
+        "truth_power_fraction": 0.22483762017564707,
+        "error_power_fraction": 0.816493831243419,
+        "signed_error_brightness_area": -4423.283432152698,
+        "negative_error_area": -4440.4407302190675,
+        "positive_error_area": 17.157298066369826,
+        "local_projection_gain": 0.6238716202615592
+      },
+      "disconnected_above_threshold_pixels": 5,
+      "below_threshold_omitted_brightness_fraction_lower_bound": 0.3905413773942275,
+      "omitted_map_delta_projection": 0.6112207542752435,
+      "background_constant_difference": 0.28172770874634084
+    },
+    {
+      "candidate": 7,
+      "output": 8,
+      "ref_pixels": 85,
+      "shoulder_pixels": 104,
+      "added_pixels": 19,
+      "removed_pixels": 0,
+      "mask_change_previous": 0,
+      "feedback_gain": 0.7492057874591276,
+      "output_gain": 0.8408241422168828,
+      "eta": 0.21936799255226433,
+      "terms": {
+        "common": {
+          "gain": 0.6031980144802852,
+          "brightness_area": 6168.511563830291
+        },
+        "added": {
+          "gain": 0.14600777297884218,
+          "brightness_area": 2157.26829180599
+        },
+        "removed": {
+          "gain": 0.0,
+          "brightness_area": 0.0
+        }
+      },
+      "inside": {
+        "pixels": 104,
+        "truth_brightness_fraction": 0.5783528958478272,
+        "truth_power_fraction": 0.7751623798243529,
+        "error_power_fraction": 0.17355084430964346,
+        "signed_error_brightness_area": -859.7483659597134,
+        "negative_error_area": -873.0646009558752,
+        "positive_error_area": 13.316234996161903,
+        "local_projection_gain": 0.9026079420055675
+      },
+      "outside": {
+        "pixels": 1153,
+        "truth_brightness_fraction": 0.4216471041521727,
+        "truth_power_fraction": 0.22483762017564707,
+        "error_power_fraction": 0.8264491556903566,
+        "signed_error_brightness_area": -4361.139086577108,
+        "negative_error_area": -4378.569117254477,
+        "positive_error_area": 17.430030677368094,
+        "local_projection_gain": 0.6278149614517878
+      },
+      "disconnected_above_threshold_pixels": 5,
+      "below_threshold_omitted_brightness_fraction_lower_bound": 0.3905413773942275,
+      "omitted_map_delta_projection": 0.6238716202615592,
+      "background_constant_difference": 0.3266381433217286
+    },
+    {
+      "candidate": 8,
+      "output": 9,
+      "ref_pixels": 85,
+      "shoulder_pixels": 104,
+      "added_pixels": 19,
+      "removed_pixels": 0,
+      "mask_change_previous": 0,
+      "feedback_gain": 0.7529448205852205,
+      "output_gain": 0.8428570106300215,
+      "eta": 0.21785772987259674,
+      "terms": {
+        "common": {
+          "gain": 0.6061385714361548,
+          "brightness_area": 6202.862648334196
+        },
+        "added": {
+          "gain": 0.1468062491490656,
+          "brightness_area": 2169.7310820378943
+        },
+        "removed": {
+          "gain": 0.0,
+          "brightness_area": 0.0
+        }
+      },
+      "inside": {
+        "pixels": 104,
+        "truth_brightness_fraction": 0.5783528958478272,
+        "truth_power_fraction": 0.7751623798243529,
+        "error_power_fraction": 0.16918984864814118,
+        "signed_error_brightness_area": -839.3706389946419,
+        "negative_error_area": -853.4136101291881,
+        "positive_error_area": 14.042971134546214,
+        "local_projection_gain": 0.9047721773696639
+      },
+      "outside": {
+        "pixels": 1153,
+        "truth_brightness_fraction": 0.4216471041521727,
+        "truth_power_fraction": 0.22483762017564707,
+        "error_power_fraction": 0.8308101513518589,
+        "signed_error_brightness_area": -4336.503317223496,
+        "negative_error_area": -4354.001280334977,
+        "positive_error_area": 17.497963111481354,
+        "local_projection_gain": 0.6293949220363559
+      },
+      "disconnected_above_threshold_pixels": 5,
+      "below_threshold_omitted_brightness_fraction_lower_bound": 0.3905413773942275,
+      "omitted_map_delta_projection": 0.6278149614517878,
+      "background_constant_difference": 0.3390948818759898
+    },
+    {
+      "candidate": 9,
+      "output": 10,
+      "ref_pixels": 85,
+      "shoulder_pixels": 104,
+      "added_pixels": 19,
+      "removed_pixels": 0,
+      "mask_change_previous": 0,
+      "feedback_gain": 0.7545671012025927,
+      "output_gain": 0.8437399575343184,
+      "eta": 0.21720964322495945,
+      "terms": {
+        "common": {
+          "gain": 0.6074463157457148,
+          "brightness_area": 6218.12031257114
+        },
+        "added": {
+          "gain": 0.14712078545687796,
+          "brightness_area": 2174.4976556934603
+        },
+        "removed": {
+          "gain": 0.0,
+          "brightness_area": 0.0
+        }
+      },
+      "inside": {
+        "pixels": 104,
+        "truth_brightness_fraction": 0.5783528958478272,
+        "truth_power_fraction": 0.7751623798243529,
+        "error_power_fraction": 0.1672738716472157,
+        "signed_error_brightness_area": -830.5121199754483,
+        "negative_error_area": -844.8520107711342,
+        "positive_error_area": 14.339890795685967,
+        "local_projection_gain": 0.9057162111498974
+      },
+      "outside": {
+        "pixels": 1153,
+        "truth_brightness_fraction": 0.4216471041521727,
+        "truth_power_fraction": 0.22483762017564707,
+        "error_power_fraction": 0.8327261283527841,
+        "signed_error_brightness_area": -4325.993445397951,
+        "negative_error_area": -4343.516215393368,
+        "positive_error_area": 17.522769995415842,
+        "local_projection_gain": 0.6300672625123785
+      },
+      "disconnected_above_threshold_pixels": 5,
+      "below_threshold_omitted_brightness_fraction_lower_bound": 0.3905413773942275,
+      "omitted_map_delta_projection": 0.6293949220363559,
+      "background_constant_difference": 0.34393938043877925,
+      "late_feedback_gain_change_terms": {
+        "common": 0.061451355292229524,
+        "added": 0.020662321106495296,
+        "removed": 0.0
+      },
+      "late_added_pixels": 5
+    }
+  ]
+}
