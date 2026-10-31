@@ -228,8 +228,8 @@ def _calibration(config):
     if len(epoch_entries) > 1:
         raise ValueError(f"{path}.modified_julian_date is duplicated")
     if not epoch_entries:
-        if len(axes["az"]) != 1:
-            raise ValueError(f"{path} requires actual epochs for two-value offsets")
+        # OG: two values without actual epochs span the realized common
+        # observation grid. The native boundary must supply those exact bounds.
         return tuple(dispositions)
 
     index, epochs = epoch_entries[0]
@@ -242,21 +242,28 @@ def _calibration(config):
             f"{path}.modified_julian_date requires finite numeric epochs or the nonpositive sentinel"
         )
     if all(v <= 0 for v in epochs):
-        if len(axes["az"]) != 1:
-            raise ValueError(
-                f"{path} nonpositive epoch sentinel requires one constant value per axis"
-            )
-        # Existing pointing_offsets_config_read.h normalizes this sentinel
-        # to a constant observation model. The native CAL boundary expresses
-        # that same model by absent epochs and binds its support to TEL bounds.
-        # Never turn a real observation epoch into an invented endpoint.
+        # Existing pointing_offsets_config_read.h treats this as absent
+        # epochs: one value is constant, two span the common observation grid.
+        # Preserve the original sentinel in the disposition; invent no dates.
         item["pointing_offsets"] = offsets[:index] + offsets[index + 1 :]
         dispositions.append(
             dict(
                 path=f"{path}[{index}].modified_julian_date",
                 disposition="normalized",
                 original=list(epochs),
-                replacement="nonpositive epoch sentinel omitted for explicit constant az/alt; native CAL binds telescope time support",
+                replacement="nonpositive epoch sentinel omitted; one-value axes are constant, two-value axes use realized common observation support",
+                authority="include/citlali/core/pipeline/pointing_offsets_config_read.h",
+            )
+        )
+    elif len(epochs) == 1 and len(axes["az"]) == 1:
+        # TolTECA emits this for a single PPT. Keep its date as provenance;
+        # OG applies the offset as a constant, not a one-point interpolation.
+        dispositions.append(
+            dict(
+                path=f"{path}[{index}].modified_julian_date",
+                disposition="metadata-only",
+                original=list(epochs),
+                replacement="single actual epoch retained; one-value az/alt is constant across the observation",
                 authority="include/citlali/core/pipeline/pointing_offsets_config_read.h",
             )
         )

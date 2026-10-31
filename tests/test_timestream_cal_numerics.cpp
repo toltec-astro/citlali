@@ -8,6 +8,7 @@
 #include <chrono>
 #include <tuple>
 #include "../src/citlali/cli/cal_opacity_header.h"
+#include "../src/citlali/cli/cal_pointing_offsets.h"
 
 using namespace citlali::pipeline;
 namespace {
@@ -183,4 +184,133 @@ TEST(cal_wvr, opacity_classes_have_inclusive_boundaries_and_do_not_grant_sample_
     auto invalid=wvr({record("bad",0,-.1),record("good",10,.1)});
     EXPECT_EQ(invalid->quality(0,11).classification,CalOpacityQuality::invalid_opacity_input);
     EXPECT_TRUE(invalid->at(10).tau225);
+}
+
+
+namespace {
+YAML::Node pointing_input(const std::vector<double> &az,
+                          const std::vector<double> &alt,
+                          std::optional<std::vector<double>> mjd = {}) {
+    YAML::Node entries;
+    YAML::Node x; x["axes_name"]="az"; x["value_arcsec"]=az; entries.push_back(x);
+    YAML::Node y; y["axes_name"]="alt"; y["value_arcsec"]=alt; entries.push_back(y);
+    if(mjd) { YAML::Node t; t["modified_julian_date"]=*mjd; entries.push_back(t); }
+    return entries;
+}
+Eigen::VectorXd offset_times(std::initializer_list<double> values) {
+    Eigen::VectorXd times(values.size());
+    std::copy(values.begin(),values.end(),times.data());
+    return times;
+}
+}
+
+TEST(cal_pointing_ingress, single_ppt_epoch_keeps_constant_offset_over_the_observation) {
+    const auto input=pointing_input({-7.25},{3.125},std::vector<double>{61090.123456789});
+    const auto before=YAML::Dump(input);
+    const auto model=citlali::cli::detail::read_cal_pointing_offsets(input,offset_times({10.,20.}));
+    EXPECT_EQ(model.source_value_count(),1);
+    EXPECT_EQ(YAML::Dump(input),before);
+    // Actual source date does not constrain an observation-wide constant.
+    const auto values=model.evaluate_at(offset_times({0.,15.,30.}));
+    EXPECT_TRUE((values.at("az").array()==-7.25).all());
+    EXPECT_TRUE((values.at("alt").array()==3.125).all());
+}
+
+TEST(cal_pointing_ingress, undated_pair_uses_realized_common_grid_not_raw_telescope_bounds) {
+    const auto tel=offset_times({0.,1000.}),common=offset_times({100.,150.,300.});
+    for(const auto &epochs:std::vector<std::optional<std::vector<double>>>{
+            std::nullopt,std::vector<double>{0.},std::vector<double>{-1.,0.}}) {
+        const auto input=pointing_input({-2.,6.},{10.,-10.},epochs);
+        const auto model=citlali::cli::detail::read_cal_pointing_offsets(input,tel,&common);
+        EXPECT_DOUBLE_EQ(model.support_times_unix_sec()[0],100.);
+        EXPECT_DOUBLE_EQ(model.support_times_unix_sec()[1],300.);
+        const auto evaluated=model.evaluate_at(offset_times({100.,200.,300.}));
+        EXPECT_DOUBLE_EQ(evaluated.at("az")[0],-2.);
+        EXPECT_DOUBLE_EQ(evaluated.at("az")[1],2.);
+        EXPECT_DOUBLE_EQ(evaluated.at("az")[2],6.);
+        EXPECT_DOUBLE_EQ(evaluated.at("alt")[1],0.);
+        EXPECT_THROW(model.evaluate_at(offset_times({99.,200.})),std::out_of_range);
+        EXPECT_THROW(citlali::cli::detail::read_cal_pointing_offsets(input,tel),std::invalid_argument);
+        // Saved CAL support is sufficient to reconstruct the same exact model.
+        const auto saved=model.support_times_unix_sec();
+        const auto restored=citlali::cli::detail::read_cal_pointing_offsets(input,tel,&saved);
+        EXPECT_TRUE((restored.evaluate_at(offset_times({100.,200.,300.})).at("az").array()==
+                     evaluated.at("az").array()).all());
+    }
+}
+
+TEST(cal_pointing_ingress, fractional_actual_epochs_match_og_whole_second_interpolation) {
+    const double first=61090.123456789,last=61090.124567891;
+    const auto model=citlali::cli::detail::read_cal_pointing_offsets(
+        pointing_input({-8.4,-10.4},{1.25,-.375},std::vector<double>{first,last}),
+        offset_times({1771469870.,1771469950.}));
+    // Independently frozen OG endpoints; fractional conversion would differ.
+    EXPECT_DOUBLE_EQ(model.support_times_unix_sec()[0],1771469866.);
+    EXPECT_DOUBLE_EQ(model.support_times_unix_sec()[1],1771469962.);
+    EXPECT_DOUBLE_EQ(model.support_times_unix_sec()[0],
+                     static_cast<double>(engine_utils::modified_julian_date_to_unix(first)));
+    EXPECT_DOUBLE_EQ(model.support_times_unix_sec()[1],
+                     static_cast<double>(engine_utils::modified_julian_date_to_unix(last)));
+    const auto values=model.evaluate_at(offset_times({1771469878.,1771469914.,1771469950.}));
+    for(int i=0;i<3;++i) {
+        const double fraction=std::array{.125,.5,.875}[i];
+        EXPECT_NEAR(values.at("az")[i],-8.4+fraction*(-10.4+8.4),1e-14);
+        EXPECT_NEAR(values.at("alt")[i],1.25+fraction*(-.375-1.25),1e-14);
+    }
+}
+
+TEST(cal_pointing_ingress, epochs_cannot_collapse_reverse_or_overflow) {
+    const auto tel=offset_times({1.,2.});
+    for(const auto &mjd:std::vector<std::vector<double>>{
+            {61090.},{61090.1,61090.1+1e-8},{61091.,61090.},
+            {0.,61090.},{61090.,std::numeric_limits<double>::infinity()},
+            {1e200,2e200},{}}) {
+        EXPECT_THROW(citlali::cli::detail::read_cal_pointing_offsets(
+            pointing_input({1.,2.},{3.,4.},mjd),tel),std::invalid_argument);
+    }
+}
+
+TEST(cal_pointing_ingress, malformed_axes_and_duplicate_epochs_fail_before_application) {
+    const auto tel=offset_times({1.,2.});
+    EXPECT_THROW(citlali::cli::detail::read_cal_pointing_offsets(
+        pointing_input({1.},{3.,4.}),tel),std::invalid_argument);
+    EXPECT_THROW(citlali::cli::detail::read_cal_pointing_offsets(
+        pointing_input({NAN},{3.}),tel),std::invalid_argument);
+    auto duplicate=pointing_input({1.},{3.},std::vector<double>{61090.});
+    duplicate.push_back(YAML::Clone(duplicate[2]));
+    EXPECT_THROW(citlali::cli::detail::read_cal_pointing_offsets(duplicate,tel),std::invalid_argument);
+    auto unknown=pointing_input({1.},{3.});unknown[1]["axes_name"]="ra";
+    EXPECT_THROW(citlali::cli::detail::read_cal_pointing_offsets(unknown,tel),std::invalid_argument);
+}
+
+
+TEST(cal_pointing_ingress, saved_support_is_validated_and_old_variable_convention_is_not_guessed) {
+    const auto tel=offset_times({100.,1000.});
+    auto read=[&](const YAML::Node &input,const YAML::Node &receipt) {
+        return citlali::cli::detail::read_saved_cal_pointing_offsets(input,tel,receipt);
+    };
+    const auto constant=pointing_input({-2.},{3.},std::vector<double>{61090.12345});
+    EXPECT_NO_THROW(read(constant,YAML::Node(YAML::NodeType::Map)));
+    const auto undated=pointing_input({-2.,6.},{10.,-10.});
+    const auto dated=pointing_input({-2.,6.},{10.,-10.},
+                                  std::vector<double>{61090.123456789,61090.124567891});
+    EXPECT_THROW(read(undated,YAML::Node(YAML::NodeType::Map)),std::invalid_argument);
+    EXPECT_THROW(read(dated,YAML::Node(YAML::NodeType::Map)),std::invalid_argument);
+    YAML::Node receipt;
+    receipt["AST_pointing_offset_support_unix_sec"]=std::vector<double>{200.,400.};
+    receipt["AST_pointing_offset_epoch_conversion"]="OG-whole-Unix-seconds-v1";
+    EXPECT_DOUBLE_EQ(read(undated,receipt).evaluate_at(offset_times({250.,350.})).at("az")[0],0.);
+    EXPECT_THROW(read(constant,receipt),std::invalid_argument);
+    EXPECT_THROW(read(dated,receipt),std::invalid_argument);
+    receipt["AST_pointing_offset_support_unix_sec"]=std::vector<double>{1771469866.,1771469962.};
+    EXPECT_NO_THROW(read(dated,receipt));
+    receipt["AST_pointing_offset_epoch_conversion"]="fractional-seconds";
+    EXPECT_THROW(read(dated,receipt),std::invalid_argument);
+    receipt.remove("AST_pointing_offset_epoch_conversion");
+    EXPECT_THROW(read(dated,receipt),std::invalid_argument);
+    receipt["AST_pointing_offset_epoch_conversion"]="OG-whole-Unix-seconds-v1";
+    for(const auto &bounds:std::vector<std::vector<double>>{{200.},{400.,200.},{200.,200.},{NAN,400.}}) {
+        receipt["AST_pointing_offset_support_unix_sec"]=bounds;
+        EXPECT_THROW(read(undated,receipt),std::invalid_argument);
+    }
 }

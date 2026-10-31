@@ -1,0 +1,126 @@
+{
+  "disposition": "locally verified implementation candidate; independent review passed with limitations",
+  "base": "b090da0458271c618568802fde1cf5c39f5dd5d2",
+  "candidate": "8fa064d1169cb7d37ccfea4a046c66a78fe675e1",
+  "tree": "154fbd0d6e9322891c4d2bc1d3a322de602eb971",
+  "branch": "codex/point-handoff-20261030",
+  "worktree": "/Users/gwilson/.codex/worktrees/point-handoff-20261030/citlali-refactor",
+  "canonical_unchanged": "e32c4584dec07617d6caa857d39bf13047b6c4b0",
+  "environment": {
+    "native": "supplemental AppleClang/Homebrew Release; not supported Spack qualification",
+    "compiler": "/Library/Developer/CommandLineTools/usr/bin/clang++",
+    "python_executable": "/Users/gwilson/tolteca/bin/python",
+    "python": "3.13.2",
+    "platform": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+    "dependencies": "existing combined-candidate supplemental-sources; no new package installation",
+    "configure_arguments": "/Users/gwilson/.codex/worktrees/point-handoff-20261030/citlali-refactor/build/point-handoff-checks/configure-arguments.json",
+    "configure_arguments_sha256": "34515f16a86f9efd2fd2f0e77e4031553c0df603f2f34168d91aa0bffd2632cd"
+  },
+  "gates": {
+    "native_pointing": {
+      "passed": 6,
+      "log": "pointing-native-tests.log"
+    },
+    "python_application": {
+      "passed": 320,
+      "log": "python-tests.log",
+      "note": "before one final CLI propagation test was added; final CLI suite separately passes all 14"
+    },
+    "final_cli": {
+      "passed": 14,
+      "log": "cli-tests.log"
+    },
+    "ctest": {
+      "passed": 1394,
+      "failed": 0,
+      "disabled": 1,
+      "inherited_disabled": "citlali::MapFitterLifecycle.ExactProductSequence",
+      "log": "ctest.log"
+    },
+    "baseline": {
+      "passed": 207,
+      "log": "baseline-tests.log"
+    },
+    "configuration": {
+      "result": "passed --require-all",
+      "log": "config-preflight.log"
+    },
+    "ruff": "lint and format checks passed",
+    "pyright": {
+      "errors": 0,
+      "warnings": 0,
+      "log": "pyright.log",
+      "node": "/Users/gwilson/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node"
+    },
+    "consumer": "actual pinned discovery, resolver and flux-reader rejection reproduced"
+  },
+  "executable_identity_at_implementation_check": {
+    "path": "/Users/gwilson/.codex/worktrees/point-handoff-20261030/citlali-refactor/build/supplemental-native/bin/citlali",
+    "version": "** logging ** Configured with level=trace; available levels: [\"trace\", \"debug\", \"info\", \"warning\", \"error\", \"critical\", \"off\"].\nv2-ngc4449-memory-repair-187df04b-709-g8fa064d11 (2026-10-30T15:18:44)\nkids 04088da-dirty (2026-10-30T15:11:43)\n",
+    "sha256": "2c5128594c3c7a1ea847cd6d624f7d85672c8c7ef61d7842b5a028dbc5a3fe10",
+    "source": "8fa064d1169cb7d37ccfea4a046c66a78fe675e1",
+    "note": "checked before documentation closure; current closure version is recorded separately in build/point-handoff-checks/closure-runtime.json"
+  },
+  "source_sha256": {
+    "doc/CURRENT_STATE.md": "364094460ce5227f264c61ef11308365711e74d1e0af16cf9e7f5ea829e78585",
+    "doc/REFACTOR_STATUS.md": "6810c5ab4e7bb5d32c62cf55a052769f06d4544bc0f560a086d5fe5867d05ed6",
+    "pyproject.toml": "ac49a98bb36a3fe94af2aaad9f848eaa2db6c76310f299f0f5480806aab5d1e5",
+    "requirements/README.md": "a86a7c2b0fea0694913a6343432e65d55c41edecf01c2b88e5285146830b5c3b",
+    "src/citlali/cli/cal_pipeline_execution.h": "66083443b714b01893825d9a6c3cb4322a8c2fbcf9f325a224b52929f97b6503",
+    "src/citlali/cli/cal_pointing_offsets.h": "5b442b0f0178dedbf69acdcf97f37e2484543476c714bebddd829ba4ead9c3e5",
+    "src/citlali/cli/map_saved_execution.h": "00edcce225ca8ba2b8223c59a5c79d45b432ae0e7ff99f43b637952898c5e5c1",
+    "src/citlali/cli/rtc_pipeline_execution.cpp": "5bb248d431fd965381b79411b41ea6a2f0bc5ded9f44b25b0f2e44e814890fba",
+    "tests/test_timestream_cal_numerics.cpp": "a7eba63a01dc271bd10fb750ca26ae94c5e9884116fc9fc4df12a58a12748607",
+    "tools/timestream_successor/configured_point_cli.py": "847115cd1058e732ba7f9c83ddeb4058aa7887b76e6b36b4795ee54e90db4471",
+    "tools/timestream_successor/configured_point_config.py": "7c0ad6eb1aa51d0f9250be9028055b513afdcf233a9b58a92111fabfc23e88fb",
+    "tools/timestream_successor/configured_point_inputs.py": "0487dd172e6c86aa0080934f8580deef9b207c9ac18c05f0a2bb113c225c0494",
+    "tools/timestream_successor/configured_point_products.py": "afe1cc8c8b492df492e89fd4f0b3bbb73046810ec068c62d2ba7493683490783",
+    "tools/timestream_successor/configured_point_runtime.py": "ef196eb73b0fb45d21484ab1f6f7b4b9ecb5c8123ed9819fddf622f8d2c4a3ad",
+    "tools/timestream_successor/configured_point_table.py": "55d652347ed14da5b5eb74708b9be62857ef6fba0385fccae92b1be23e068dd6",
+    "tools/timestream_successor/configured_point_types.py": "4a5dbc0fa2816f469c769cc9d57b0cc583f81914ace4aaeae5b30fedeb17a43c",
+    "tools/timestream_successor/test_configured_point_cli.py": "b0a407cfa7c8df6a2b36c0f5901ec576572ad41abdd2c732370bb2f6f2f58322",
+    "tools/timestream_successor/test_configured_point_config.py": "59dd0146e98d982d57e57d56a7b2e5b8ea1e4323cedcf3bf8732775b57a8ef15",
+    "tools/timestream_successor/test_configured_point_inputs.py": "d9e9de8e639a80fc0898c000efe6e3661a582ac78df1188a42d24d6a5870e597",
+    "tools/timestream_successor/test_configured_point_table.py": "8e5c143647cbe22ccd1015d01469f37117fcb2c0a1f04d2d6b7913320169bd5d",
+    "validation/point_handoff_2026-10-30/REPORT.md": "a1f062ed2aeb86f8c11081812d211dc33744b2f885087d28ef7564e75622293e",
+    "validation/point_handoff_2026-10-30/WORK_ORDER.md": "df6e7cf9f5f8f1a430fbb5055eedd10ffc8eb7935a4bd963a1db5fc9465dbdea",
+    "validation/point_handoff_2026-10-30/check_consumers.py": "b8b4d316b786fcb6c5bc13bd2e8f903904f377ec2b2311d86d10549262f3d695",
+    "validation/point_handoff_2026-10-30/consumer_results.json": "6ff6109a37ec46d8e93bc8d86ea2caf88b9a4d2c0d5e83f2d6a8973185ed3f4f"
+  },
+  "logs": {
+    "directory": "/Users/gwilson/.codex/worktrees/point-handoff-20261030/citlali-refactor/build/point-handoff-checks",
+    "sha256": {
+      "configure.log": "7adecfd4addfc60140264f0fd52bca6166b4e2f58354271fdf1e19eca5f974c0",
+      "final-build.log": "6d08488bd5e4353ce7e499734a727120246bba2ca6c7f3815968164270981231",
+      "consumer-check.log": "6ff6109a37ec46d8e93bc8d86ea2caf88b9a4d2c0d5e83f2d6a8973185ed3f4f",
+      "cli-tests.log": "11a58cd1112912a5123e751a4b4b8de1e782e3040be3701d4b1cae457c2093c1",
+      "input-tests.log": "6fc41b8c6980a1b8361cb072de58835b9715461913abdab5e081fd096b0365ac",
+      "python-tests.log": "b07ca525a273a6cc8b37a1b39f2d6e5e45b6d48834493cd381376a2901a1124a",
+      "pyright.log": "50624ea2f4e0fa767bd977c72eb0f6026afef41899d13bd4fb71ad474c0e28df",
+      "baseline-tests.log": "69408098292dbb55e5b388ee9a2a2a5e0b7e9bf09f1280055fa79016de6fe5f4",
+      "ctest.log": "e1c3fc5521b0c77b6809e233febba1fe939e92cc847cd4c3bfac2c9510655607",
+      "reconfigure.log": "4cbddfe04b571ec36dea8a4310778016fd5f0abad21ce4b7b4ea1557d6e18322",
+      "pointing-native-tests.log": "68f5a8be02f865cb9a8edf935104711a711f11d0d61ca495c07ec5d1e902bfc3",
+      "config-preflight.log": "b20be5fb662e636a394516508bfaad5077c1a11eda367f672cf40bcec46974fb",
+      "build.log": "b56f87522e844a54fd6b5beae9e1ddb7605e15d1d47e530403c15124f33e200c"
+    }
+  },
+  "independent_review": {
+    "candidate": "8fa064d1169cb7d37ccfea4a046c66a78fe675e1",
+    "verdict": "pass with recorded limitations; no actionable findings",
+    "record": "REVIEW.md"
+  },
+  "limits": [
+    "No reductions, saved-map fits, Unity operations or supported Spack qualification.",
+    "Photometric and centroid uncertainties unavailable; flux calibration remains held.",
+    "Nonzero applied POINT correction withholds the table.",
+    "Older variable-offset CAL receipts without explicit timing convention are refused.",
+    "No integration, push, activation or production acceptance."
+  ],
+  "unexpected_error_level_output": "none in successful application/native gates; expected negative fixtures assert failure propagation",
+  "build_warnings": [
+    "existing dependency syscall deprecation warnings",
+    "duplicate libcitlali.a linker warning"
+  ],
+  "tooling_note": "Initial Pyright invocation lacked Node on PATH and failed its bootstrap; rerun with existing bundled Node passed, no tooling installed."
+}

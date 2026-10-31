@@ -2,6 +2,7 @@
 // Private application adapter. YAML/NetCDF/APT parsing stays outside CAL/AST.
 #include <citlali/core/pipeline/timestream_cal_pipeline.h>
 #include "cal_opacity_header.h"
+#include "cal_pointing_offsets.h"
 #include <citlali/core/pipeline/timestream_ptc_cal_source.h>
 
 namespace {
@@ -12,7 +13,8 @@ struct CalObservationInput {
     std::string offset_identity;
     citlali::cli::detail::CalOpacityHeader opacity;
 };
-CalObservationInput prepare_cal_observation(const YAML::Node &cfg,const NativeObservationScope &scope,bool source_offset_altaz=false) {
+CalObservationInput prepare_cal_observation(const YAML::Node &cfg,const NativeObservationScope &scope,bool source_offset_altaz=false,
+    const Eigen::VectorXd *common_offset_support=nullptr,const YAML::Node *saved_cal=nullptr) {
     const auto telescope_path=checked_file(cfg["telescope"]);
     netCDF::NcFile tel(telescope_path.string(),netCDF::NcFile::read);
     require(read_netcdf_scalar<int>(tel,"Header.Dcs.ObsNum")==scope.observation &&
@@ -52,28 +54,11 @@ CalObservationInput prepare_cal_observation(const YAML::Node &cfg,const NativeOb
         for(const auto &cal:input["cal_items"])if(cal["type"].as<std::string>()=="astrometry") {selected=YAML::Clone(cal);++matches;}
     }
     require(matches==1,"AST pointing requires one exact observation's astrometry item");
-    NativePointingOffsetsArcsec offset_values;Eigen::VectorXd offset_times;unsigned time_records=0;
-    for(const auto &entry:selected["pointing_offsets"]) {
-        if(entry["modified_julian_date"]) {
-            const auto v=entry["modified_julian_date"].as<std::vector<double>>();require(v.size()==2,"AST offset time support must have two endpoints");
-            offset_times.resize(2);for(int i=0;i<2;++i)offset_times[i]=(v[i]-40587.)*86400.;++time_records;
-        }else {
-            const auto axis=entry["axes_name"].as<std::string>();const auto values=entry["value_arcsec"].as<std::vector<double>>();
-            require((axis=="az" || axis=="alt") && !offset_values.contains(axis),"AST offset axis duplicate or unknown");
-            offset_values[axis]=Eigen::Map<const Eigen::VectorXd>(values.data(),values.size());
-        }
-    }
-    if(time_records==0 && (citlali::cli::detail::configured_point_scope(cfg,scope.observation,scope.subobservation,scope.scan) || citlali::cli::detail::oof_scope(cfg,scope.observation,scope.subobservation,scope.scan) || (((cfg["development_reference"] && cfg["development_reference"].as<std::string>()=="bright-point-base-v1") || scope.observation==152389 || scope.observation==152430) && scope.subobservation==0 && scope.scan==2))) {
-        require(offset_values.contains("az") && offset_values.contains("alt") &&
-            offset_values.at("az").size()==1 && offset_values.at("alt").size()==1,
-            "POINT without offset epochs requires explicit constant axes");
-        // Existing AST owner treats one configured value as an observation-wide
-        // constant. TEL bounds identify the observation; no epoch is invented.
-        const auto &times=data.at("TelTime");
-        require(times.size()>1,"POINT constant offset needs telescope time support");
-        offset_times.resize(2);offset_times<<times[0],times[times.size()-1];
-    } else require(time_records==1,"AST pointing offset time support absent or duplicated");
-    auto offsets=std::make_shared<const NativePointingOffsetModel>(std::move(offset_values),std::move(offset_times));
+    auto offsets=std::make_shared<const NativePointingOffsetModel>(
+        saved_cal ? citlali::cli::detail::read_saved_cal_pointing_offsets(
+            selected["pointing_offsets"],data.at("TelTime"),*saved_cal) :
+        citlali::cli::detail::read_cal_pointing_offsets(
+            selected["pointing_offsets"],data.at("TelTime"),common_offset_support));
     return {std::make_shared<const RawTelescopeTrajectory>(std::move(data)),offsets,ra0,dec0,
         "sha256:"+citlali::utils::sha256_file(effective_path)+":inputs:"+input_name+":astrometry",
         citlali::cli::detail::read_cal_opacity_header(tel)};
@@ -82,7 +67,8 @@ struct ConnectedCal { YAML::Node receipt; PtcCalSource source; };
 ConnectedCal execute_connected_cal(const CalRtcSource &source,const YAML::Node &cfg,
     const apt::VerifiedBundle &verified,const pipeline::CanonicalAptDetectorRelationV2 &relation,
     const std::vector<int> &channels,const fs::path &output,RtcPerformanceTrace &performance,
-    const CalObservationInput *common=nullptr) {
+    const CalObservationInput *common=nullptr,
+    const Eigen::VectorXd *common_offset_support=nullptr) {
     performance.mark("CAL_start");
     const auto started=std::chrono::steady_clock::now();
     const auto grid=source.rtc_terminal_handle()->grid_handle();const auto scope=grid->align_handle()->scope();
@@ -117,7 +103,7 @@ ConnectedCal execute_connected_cal(const CalRtcSource &source,const YAML::Node &
         geometry.push_back({binding,row_identity,field(*row,"x_t"),field(*row,"y_t"),static_cast<int>(row->array)});
     }
     std::optional<CalObservationInput> local;
-    if(!common)local=prepare_cal_observation(cfg,scope);
+    if(!common)local=prepare_cal_observation(cfg,scope,false,common_offset_support);
     const auto &observation=common?*common:*local;
     const auto ra0=observation.ra0,dec0=observation.dec0;
     const auto &offsets=observation.offsets;
@@ -199,6 +185,9 @@ ConnectedCal execute_connected_cal(const CalRtcSource &source,const YAML::Node &
     }
     record["AST_role"]=std::string(ast->role);record["AST_method"]=std::string(ast->method);
     record["AST_telescope"]=ast->telescope_identity();record["AST_pointing_offset"]=ast->offset_identity();
+    for(const auto time:offsets->support_times_unix_sec())
+        record["AST_pointing_offset_support_unix_sec"].push_back(time);
+    record["AST_pointing_offset_epoch_conversion"]="OG-whole-Unix-seconds-v1";
     record["AST_coordinate_unit"]="degree";record["AST_frame"]="J2000-radec-gnomonic-tangent";
     record["AST_center_ra_rad"]=ra0;record["AST_center_dec_rad"]=dec0;
     record["AST_angle_filtering_applied"]=false;record["r_calibrated"]=false;

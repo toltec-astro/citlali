@@ -19,6 +19,20 @@ class InputBinding(FileBinding):
     roles: list[str]
 
 
+class PointingMetadata(TypedDict):
+    """Small observed metadata for the one-way OG pointing-table adapter.
+
+    Header angular values are radians; MJD is the mean telescope Unix time.
+    Missing metadata withholds the table, never invents zero corrections.
+    """
+
+    status: str
+    cause: str | None
+    meta: dict
+    applied_pointing_offsets: dict[str, list[float]]
+    telescope: FileBinding
+
+
 class PreparedPoint(TypedDict):
     observation: int
     subobservation: int
@@ -29,3 +43,4 @@ class PreparedPoint(TypedDict):
     effective_config: Path
     bindings: list[InputBinding]
     native_cells: int
+    pointing_metadata: PointingMetadata

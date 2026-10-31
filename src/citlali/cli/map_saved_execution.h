@@ -132,7 +132,8 @@ SavedMapNetwork load_saved_map_network(const YAML::Node &request,MapFileLedger &
     for(const auto &entry:effective_cfg["interface_sync_offset"]){const auto offset=entry["toltec"+std::to_string(out.network)];
         if(offset){require(offset.as<double>()==0,"saved MAP adapter only supports verified zero interface offset");++offset_count;}}
     require(offset_count==1,"saved MAP interface offset absent or duplicated");
-    out.observation=prepare_cal_observation(out.input,NativeObservationScope{out.obsnum,0,oof?1:2},source_offset_altaz);
+    out.observation=prepare_cal_observation(out.input,NativeObservationScope{out.obsnum,0,oof?1:2},
+        source_offset_altaz,nullptr,&out.cal);
     require(out.cal["AST_center_ra_rad"].as<double>()==out.observation.ra0 && out.cal["AST_center_dec_rad"].as<double>()==out.observation.dec0 &&
         out.cal["AST_pointing_offset"].as<std::string>()==out.observation.offset_identity,"MAP AST center/offset generation differs");
     const auto verified=apt::verify_bundle_filesystem(manifest,true);

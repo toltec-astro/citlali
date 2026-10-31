@@ -12011,3 +12011,25 @@ A spatially bounded source-protection comparison with a matching seed control is
 recommended for a separately defined owner decision. No policy, threshold,
 calibration, runtime, weighting or grid change; no reductions, fits, restoration,
 Unity or push. Verification and independent review are recorded with the audit.
+
+## Retained incoming handoff history — cutoff 1f3bf6db7
+
+The following dated entry preserves its original scope and base identities;
+current integration authority is stated at the top of this document.
+
+## POINT correction compatibility and table handoff — 2026-10-30
+
+Grant authorized a bounded continuation of combined candidate
+`b090da0458271c618568802fde1cf5c39f5dd5d2` in
+`codex/point-handoff-20261030`. The [work order](../validation/point_handoff_2026-10-30/WORK_ORDER.md)
+and [report](../validation/point_handoff_2026-10-30/REPORT.md) record single-dated
+constant support, OG observation-span and whole-second epoch behavior, validated
+saved-CAL support, and all-array POINT ECSV publication for existing TolTECA.
+The real pinned consumers pass synthetic discovery/correction checks; TolProj
+rejects unavailable flux errors. No flux uncertainty or scientific eligibility
+is invented. Nonzero applied POINT corrections withhold the table pending a
+qualified residual adapter; old variable-offset CAL receipts cannot silently
+change timing convention. Noise weighting, optical cut, FRUIT and grid remain
+unchanged. Wing study paused; no reductions, Unity, pushes, activation or canonical
+movement. Local verification and independent review are recorded in the linked
+packet; supported Spack and owner-run connected pilot qualification remain held.

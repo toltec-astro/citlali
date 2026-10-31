@@ -1282,7 +1282,14 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
         performance.mark("RTC_finalized");
         const auto cal_source=CalRtcSource::bind(terminal.product);
         if(development && endpoint!=DevelopmentTerminal::rtc_only) {
-          const auto cal=execute_connected_cal(cal_source,cfg,verified,relation,channels,output,performance,common?&common->cal:nullptr);
+          Eigen::VectorXd offset_support;
+          if(recovered_scans) {
+            offset_support.resize(2);
+            offset_support << recovered_scans->receipt["grid_first_unix_seconds"].as<double>(),
+                recovered_scans->receipt["grid_last_unix_seconds"].as<double>();
+          }
+          const auto cal=execute_connected_cal(cal_source,cfg,verified,relation,channels,output,performance,
+              common?&common->cal:nullptr,offset_support.size()==2?&offset_support:nullptr);
           receipt["CAL"]=cal.receipt;
           if(endpoint==DevelopmentTerminal::ptc) {
             require(bool(recovered_scans),"successor.PTC_scan_binding_unavailable");
@@ -1411,7 +1418,7 @@ int execute_successor_observation(const YAML::Node &request,const fs::path &outp
   auto motion=build_ast_scan_motion_product(telescope.source,(reference || configured || oof) ? AstScanMotionIdentityBinding{std::uint64_t(scope.observation)*10000+1,std::uint64_t(scope.observation)*10000+2,std::uint64_t(scope.observation)*10000+3,std::uint64_t(scope.observation)*10000+4} : scope.observation==152430
       ? AstScanMotionIdentityBinding{1524300001,1524300002,1524300003,1524300004} : scope.observation==152389
       ? AstScanMotionIdentityBinding{1523890001,1523890002,1523890003,1523890004} : ast_identity_binding);
-  auto cal=prepare_cal_observation(cfg,scope);
+  auto cal=prepare_cal_observation(cfg,scope,false,&processing.grid);
   if(terminal==citlali::cli::DevelopmentTerminal::prepare) {
     require(oof,"metadata-only preparation requires explicit OOF cold-M0 scope");
     YAML::Node record;record["schema"]="citlali-oof-native-preparation-v1";

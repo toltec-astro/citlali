@@ -290,3 +290,19 @@ def test_native_subprocess_exit_and_error_level_output(tmp_path, return_code, li
     assert record['return_code'] == return_code
     assert bool(record['unexpected_error_lines']) == ('[ERROR]' in line or '[critical]' in line)
     assert line in (destination / 'native.log').read_text()
+
+
+def test_cli_carries_observed_pointing_metadata_into_staged_handoff(application, monkeypatch):
+    original = cli.prepare
+    def prepare(*args, **kwargs):
+        result = original(*args, **kwargs)
+        result['pointing_metadata'] = dict(status='unavailable', cause='fixture missing User header')
+        return result
+    monkeypatch.setattr(cli, 'prepare', prepare)
+    output = application.execute()
+    raw = output / '152389/raw'
+    handoff = json.loads((raw / 'point-table.json').read_text())
+    assert handoff['status'] == 'withheld'
+    assert handoff['cause'] == 'POINT observation metadata unavailable: fixture missing User header'
+    assert not list(raw.glob('ppt_*.ecsv'))
+    assert len(list(raw.glob('toltec_*.fits'))) == 3

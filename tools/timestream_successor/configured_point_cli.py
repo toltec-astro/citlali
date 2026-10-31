@@ -322,6 +322,7 @@ def execute(config_path, native, *, launch_dir=None):
             request.arrays,
             fit_diagnostics=request.fit_diagnostics,
             verbose=request.verbose,
+            pointing_metadata=prepared.get("pointing_metadata"),
         )
         if not request.retain_intermediates:
             record["transport_retention"] = release_transport(work)
@@ -341,7 +342,7 @@ def execute(config_path, native, *, launch_dir=None):
                 if request.weighted
                 else "forward POINT maps"
             )
-            + " and qualified diagnostics; no flux-calibration table",
+            + " and qualified diagnostics; astrometry table when eligible, flux calibration held",
         )
         write_json(reduction / "RUN.json", record)
         print(f"POINT complete: {published}", flush=True)

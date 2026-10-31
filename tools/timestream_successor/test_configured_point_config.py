@@ -264,8 +264,8 @@ def test_actual_epochs_and_offset_values_are_preserved_exactly(config, tmp_path,
     assert not any(row["disposition"] == "normalized" for row in request.migration_dispositions)
 
 
-@pytest.mark.parametrize("axis_lengths", [(2, 2), (1, 2), (2, 1)])
-def test_sentinel_never_invents_epochs_for_two_value_or_mixed_axes(config, tmp_path, axis_lengths):
+@pytest.mark.parametrize("axis_lengths", [(1, 2), (2, 1)])
+def test_sentinel_rejects_mixed_axes(config, tmp_path, axis_lengths):
     offsets = astrometry(config)["pointing_offsets"]
     for entry, length in zip(offsets, axis_lengths):
         entry["value_arcsec"] = [0.0] * length
@@ -275,7 +275,7 @@ def test_sentinel_never_invents_epochs_for_two_value_or_mixed_axes(config, tmp_p
 
 
 @pytest.mark.parametrize("epochs", [[False], [float("nan")], [float("inf")], ["0"], [],
-                                    [0, 0, 0], [61090.5], [-1, 61091], [0, 61091], [61091, 61090]])
+                                    [0, 0, 0], [-1, 61091], [0, 61091], [61091, 61090]])
 def test_only_recognized_zero_sentinel_or_real_epoch_pair_is_admitted(config, tmp_path, epochs):
     astrometry(config)["pointing_offsets"].append({"modified_julian_date": epochs})
     with pytest.raises(ValueError, match="modified_julian_date"):
@@ -332,4 +332,40 @@ def test_fluxscale_correction_requires_value(config, tmp_path):
 def test_unknown_calibration_type_is_not_silently_ignored(config, tmp_path):
     config["inputs"][0]["cal_items"].append({"type": "new_correction", "value": 1.2})
     with pytest.raises(ValueError, match="unsupported.*cal_items type"):
+        load_request(config, tmp_path)
+
+
+@pytest.mark.parametrize("epochs", [None, [0], [-1, 0]])
+def test_undated_two_values_preserve_observation_span_meaning(config, tmp_path, epochs):
+    offsets = astrometry(config)["pointing_offsets"]
+    offsets[0]["value_arcsec"] = [-3.5, 7.25]
+    offsets[1]["value_arcsec"] = [4.0, -2.75]
+    expected = deepcopy(offsets)
+    if epochs is not None:
+        offsets.append({"modified_julian_date": epochs})
+    before = deepcopy(config)
+    request = load_request(config, tmp_path)
+    assert astrometry(request.effective_config)["pointing_offsets"] == expected
+    assert config == before
+
+
+def test_single_ppt_actual_epoch_is_constant_with_date_provenance(config, tmp_path):
+    offsets = astrometry(config)["pointing_offsets"]
+    offsets[0]["value_arcsec"] = [-7.25]
+    offsets[1]["value_arcsec"] = [3.125]
+    offsets.append({"modified_julian_date": [61090.123456789]})
+    before = deepcopy(config)
+    request = load_request(config, tmp_path)
+    assert astrometry(request.effective_config)["pointing_offsets"] == offsets
+    assert any(row["disposition"] == "metadata-only" and row.get("original") == [61090.123456789]
+               for row in request.migration_dispositions)
+    assert config == before
+
+
+def test_single_actual_epoch_cannot_define_two_value_interpolation(config, tmp_path):
+    offsets = astrometry(config)["pointing_offsets"]
+    for entry in offsets:
+        entry["value_arcsec"] = [1.0, 2.0]
+    offsets.append({"modified_julian_date": [61090.5]})
+    with pytest.raises(ValueError, match="modified_julian_date"):
         load_request(config, tmp_path)
