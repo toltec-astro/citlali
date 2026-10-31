@@ -29,6 +29,8 @@ jobs:
           printf 'XDG_CACHE_HOME=%s/citlali-cache\n' "$RUNNER_TEMP" >> "$GITHUB_ENV"
       - uses: actions/checkout@v7
         with:
+          # Science-ledger tests verify historical source and integration commits.
+          fetch-depth: 0
           persist-credentials: false
       - uses: actions/setup-python@v7
         with:

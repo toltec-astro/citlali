@@ -1,3 +1,36 @@
+## GitHub checkout-history repair and cleanup verification — 2026-10-31
+
+The owner published mainline `85cfa6e4064921d1ae7b4df87499f11cfd77665f`.
+[Hosted run 41199043504](https://github.com/toltec-astro/citlali/actions/runs/41199043504)
+failed because checkout fetched only one commit. The science-change ledger
+requires historical source/integration commits for object, ancestry and patch
+identity checks. Both Python matrix jobs encountered the same seven ledger-test
+failures. The workflow now requests full branch/tag history (`fetch-depth: 0`);
+test selection, scientific ledgers and application behavior are unchanged.
+
+A fresh isolated public GitHub clone reproduced the seven failures with depth 1.
+Fetching full published history made the same seven tests pass without source
+changes. On this Mac with Python 3.13.2, all 203 source baseline tests, 75 build-tool
+tests, 130 configuration tests, 300 configured POINT tests, checked-in configuration
+contracts and full require-all configuration preflight passed. These are local
+checks; a new hosted result requires owner publication. No native build, Unity
+operation, scientific qualification or production change is implied.
+
+The owner's branch-retirement commands were verified: 10 local branches, 29 GitHub
+branches, nine retained working folders and three stashes. Engineering is retained
+as a detached checkout at `5c4620105`; its branch names and the duplicate local
+combined-candidate name were retired. Protected refs, including pointing and
+Citlali 4.x/5.x, match the retirement snapshots. Recovery-bundle hashing, restored
+object verification and all captured reflog roots passed. This checks the stated
+recovery packet and ref/worktree status, not every byte of all historical products.
+
+Work order, downloaded-log digests, red/green reproduction, cleanup verification,
+local test logs and independent exact-commit review are recorded under
+`/Users/gwilson/.codex/visualizations/2026/10/29/01a188f2-4d30-7e60-88a8-956b50bb08cf/citlali-ci-history-repair-20261031`.
+This bounded local maintenance repair creates no branch or working folder and
+performs no push or further deletion. The earlier dated records retain their
+original scope.
+
 ## Local mainline integration and documentation consolidation — 2026-10-30
 
 Grant approved bringing exact candidate `44171fd3a6ba5924f8f4dba0324defe0922c597d`
