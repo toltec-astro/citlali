@@ -1,18 +1,29 @@
 # Citlali refactor — current state
 
-As of 2026-10-30. **The shared development baseline is `codex/refactor-mainline`.**
-Grant approved integration of application candidate
-`44171fd3a6ba5924f8f4dba0324defe0922c597d`, followed by documentation closure and a bounded build-provenance repair.
-The [owner acceptance record](../validation/mainline_integration_2026-10-30/OWNER_ACCEPTANCE.json)
-binds the exact source, earlier admission table, governance and checks. This
-record becomes the completed integration receipt when its independently reviewed
-closure is on the literal local mainline; the external `COMPLETION.json` records
-that operation's exact old and new tips. Local integration does not publish GitHub.
+As of 2026-10-31. **The shared development baseline is `codex/refactor-mainline`.**
+Published source `8078ba4567b3096b74ee378a99acfca270e27c3f` matches the verified
+GitHub branch and passed [hosted integration checks](https://github.com/toltec-astro/citlali/actions/runs/41201517670).
+Local documentation updates may follow that published source; their commits do
+not imply another application integration or hosted validation.
+
+Owner-approved application candidate
+`44171fd3a6ba5924f8f4dba0324defe0922c597d` was integrated locally at
+`85cfa6e4064921d1ae7b4df87499f11cfd77665f`, including documentation closure and
+the Ninja version-header repair. The later `8078ba456` workflow fix fetches
+history needed by the science-ledger tests. The
+[owner acceptance record](../validation/mainline_integration_2026-10-30/OWNER_ACCEPTANCE.json)
+and [integration ledger](INTEGRATION_LEDGER.md) retain exact scope and evidence.
+
+The [workspace map](WORKSPACE_MAP.md) identifies where to work, which branch names
+are historical, and what remains protected. The
+[next pointing integration proposal](POINTING_HANDOFF_INTEGRATION_2026-10-31.md)
+reviews later work; its cutoffs are proposed, not integrated.
 
 ## Start here
 
 | What you need | Read |
 | --- | --- |
+| Find the current working folder or retained branch | [Workspace map](WORKSPACE_MAP.md) |
 | Prepare the configured POINT application | [Python deployment and launcher](../requirements/README.md) |
 | Build or test native Citlali | [Supported Spack workflow](../spack/README.md), then [this Mac's qualification](SPACK_QUALIFICATION_2026-10-30.md) |
 | Find the code owner or execution route | [Architecture and source map](ARCHITECTURE.md) |
@@ -24,7 +35,7 @@ that operation's exact old and new tips. Local integration does not publish GitH
 | Role | Identity and purpose |
 | --- | --- |
 | Accepted application source | `44171fd3a6ba5924f8f4dba0324defe0922c597d`; combined pointing cutoff plus engineering cleanup and Mac Spack qualification |
-| Local integration branch | `codex/refactor-mainline`; contains that application source and its reviewed integration closure |
+| Development mainline | `codex/refactor-mainline`; published at `8078ba4567b3096b74ee378a99acfca270e27c3f`, containing that application and its reviewed integration closure |
 | Previous mainline | `e32c4584dec07617d6caa857d39bf13047b6c4b0`; retained in ancestry and recovery evidence |
 | Pointing input included here | `797d013f115e403a30663eb92254082e8e742826`; approved cutoff with saved five-case assessment |
 | Engineering input included here | `5c46201057d6b6d1048aac2949a64e9a34e9bad3` |
@@ -38,9 +49,13 @@ Its older folder name is a locator, not a separate integration authority. The
 shared Git store is `/Users/gwilson/GitHub/citlali/.git`. The folder named
 `/Users/gwilson/GitHub/citlali-refactor` is an older protected checkout.
 
-The engineering and combined-candidate branch names remain as retained evidence
-of work now included in mainline. They are not additional application mainlines.
-No branch, working folder, stash, bundle or backup is retired by this integration.
+The owner subsequently retired the local engineering and combined-candidate
+branch names and the GitHub engineering branch. Their committed work remains in
+mainline and recovery references/bundles. The engineering folder is retained at
+its saved commit without an active branch. The verified inventory is 10 local
+branches, 29 GitHub branches, nine working folders and three protected legacy
+stashes. The workspace map records this dated inventory and its recovery packet;
+it is not permission for further deletion.
 
 ## What is implemented and checked
 
@@ -83,7 +98,7 @@ products. Beammap production and OOF remain outside that release target.
 | Pointing-derived calibration consumed by SCIENCE | Compatibility and owner acceptance still required |
 | All-array SCIENCE and genuine multi-observation coadds | Required release milestone; not established by POINT checks |
 | Downstream products and consumers | Product/units/layout qualification still required |
-| Build and publication | Local Mac developer gate passes; eligible hosted CI follows owner publication; Unity and immutable release/export qualification remain separate |
+| Build and publication | Local Mac developer gate passes; published `8078ba456` passes hosted source checks; Unity and immutable release/export qualification remain separate |
 | Production | No new authorization from integration or passing local tests |
 
 General v2 defaults remain 1 arcsec / coverage 0.1 / M10. The frozen trials used

@@ -15,7 +15,9 @@ with other telescope/detectors that shares similar architectural properties.
 
 The shared development baseline is ``codex/refactor-mainline``. The
 `current state <doc/CURRENT_STATE.md>`_ identifies the integrated application,
-separate ongoing pointing work, frozen trials and remaining release gates. The release target is POINT and SCIENCE on all
+separate ongoing pointing work, frozen trials and remaining release gates.
+The `workspace map <doc/WORKSPACE_MAP.md>`_ identifies the correct working folder
+and explains retained branches. The release target is POINT and SCIENCE on all
 three TolTEC arrays through TolProj configuration, validation and guarded
 submission, with TolTECA preparing and launching the selected runtime. Grant
 supplies beammap/APT products; beammap production and OOF are outside this target.

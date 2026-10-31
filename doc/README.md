@@ -7,7 +7,10 @@ repeating it.
 ## Start here
 
 Begin with [CURRENT_STATE.md](CURRENT_STATE.md) for the integrated baseline,
-ongoing pointing work and release boundaries. For usable application instructions,
+ongoing pointing work and release boundaries. Use the [workspace map](WORKSPACE_MAP.md)
+to identify the correct checkout, active work and retained evidence. The
+[pointing integration proposal](POINTING_HANDOFF_INTEGRATION_2026-10-31.md) records
+the next proposed cutoffs and acceptance gates. For usable application instructions,
 read [configured POINT deployment](../requirements/README.md); for native
 development, read [Spack](../spack/README.md). The
 [architecture/source map](ARCHITECTURE.md) explains where code belongs. The

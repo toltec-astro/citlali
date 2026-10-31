@@ -1,3 +1,29 @@
+## Workspace clarification and next pointing integration review — 2026-10-31
+
+Published mainline `8078ba4567b3096b74ee378a99acfca270e27c3f` now passes
+[hosted checks](https://github.com/toltec-astro/citlali/actions/runs/41201517670).
+[Current state](CURRENT_STATE.md) and the [workspace map](WORKSPACE_MAP.md) distinguish
+that accepted development baseline, active pointing work, frozen references,
+retired branch names, retained working folders and recovery locations.
+The verified inventory remains 10 local branches, 29 GitHub branches, nine
+working folders and three legacy/performance stashes. These documentation changes
+create no branch or working folder and do not rename or delete anything.
+
+The [next integration proposal](POINTING_HANDOFF_INTEGRATION_2026-10-31.md) recommends
+pointing evidence cutoff `6969dcf8168bcffbdfdbf7ebe56a22730545e086` and handoff cutoff
+`1f3bf6db744050102bc78e06917613e5dbe7fe3d`. Independent scope review found only
+documentation merge conflicts and a missing hosted table-test entry that must be
+included with the implementation. The seven pointing commits are evidence/plans;
+the two handoff commits introduce correction compatibility and guarded astrometry
+table publication. Flux eligibility, corrected-POINT residual conversion,
+SCIENCE/coadds, observational qualification and production remain held.
+
+This is documentation maintenance and integration preparation only. The exact
+cutoffs/scope and conditional local integration operation await owner approval;
+no application merge, source-worktree change, push or cleanup occurred. Prior
+source reviews do not replace combined-candidate Spack gates and exact-SHA review.
+The earlier dated records below retain their original scope.
+
 ## GitHub checkout-history repair and cleanup verification — 2026-10-31
 
 The owner published mainline `85cfa6e4064921d1ae7b4df87499f11cfd77665f`.
