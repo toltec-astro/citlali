@@ -10,10 +10,12 @@ as an integration receipt only after the exact independently reviewed candidate
 is on local mainline; the external packet's `COMPLETION.json` records that move,
 full source identity, Spack executable and passing checks.
 
-The latest published/hosted-validated source at preparation is
-`8078ba4567b3096b74ee378a99acfca270e27c3f` ([successful run](https://github.com/toltec-astro/citlali/actions/runs/41201517670)).
-The new local integration needs owner publication and its own hosted run.
-No hosted, Unity or observational qualification is inferred from local integration.
+Integrated application `f2ad2913acf5fee2d7ca8c40545a385ae07aab31` has been verified
+on GitHub. The latest hosted result assessed in these records remains
+`8078ba4567b3096b74ee378a99acfca270e27c3f` ([successful run](https://github.com/toltec-astro/citlali/actions/runs/41201517670));
+the newer application's hosted result was not assessed by this folder cleanup.
+The documentation closeout for that cleanup is local until the owner publishes it.
+No Unity or observational qualification is inferred from publication or cleanup.
 
 Use the [workspace map](WORKSPACE_MAP.md) to find the correct checkout and
 protected work. The [approved pointing integration scope](POINTING_HANDOFF_INTEGRATION_2026-10-31.md)
@@ -37,7 +39,7 @@ explains compatibility limits and remaining release work. The
 | --- | --- |
 | Previous accepted application foundation | `44171fd3a6ba5924f8f4dba0324defe0922c597d`; retained pointing/engineering and Mac Spack qualification |
 | New accepted input scope | Handoff `1f3bf6db744050102bc78e06917613e5dbe7fe3d` plus pointing evidence `6969dcf8168bcffbdfdbf7ebe56a22730545e086`; final combined source is bound by the integration receipt |
-| Development mainline | `codex/refactor-mainline`; local combined handoff integration follows published `8078ba456` |
+| Development mainline | `codex/refactor-mainline`; integrated application `f2ad2913a` is published; folder-cleanup documentation follows locally |
 | Previous mainline | `e32c4584dec07617d6caa857d39bf13047b6c4b0`; retained in ancestry and recovery evidence |
 | Pointing evidence included here | `6969dcf8168bcffbdfdbf7ebe56a22730545e086`; includes the earlier `797d013f` cutoff and later saved assessment, compatibility audit and proposed pilot plan |
 | Engineering input included here | `5c46201057d6b6d1048aac2949a64e9a34e9bad3` |
@@ -51,13 +53,22 @@ Its older folder name is a locator, not a separate integration authority. The
 shared Git store is `/Users/gwilson/GitHub/citlali/.git`. The folder named
 `/Users/gwilson/GitHub/citlali-refactor` is an older protected checkout.
 
-The owner subsequently retired the local engineering and combined-candidate
-branch names and the GitHub engineering branch. Their committed work remains in
-mainline and recovery references/bundles. The engineering folder is retained at
-its saved commit without an active branch. The integration adds one retained candidate name to the previous inventory:
-11 local branches, 29 GitHub branches, nine working folders and three protected
-legacy stashes. The workspace map records this dated inventory and its recovery packet;
-it is not permission for further deletion.
+The owner subsequently approved [folder retirement A+B](WORKSPACE_RETIREMENT_2026-10-31.md):
+the completed engineering folder and parked `884f` scientific-contract handoff
+folder are now closed after verified recovery checks. **Seven working folders
+remain: five refactor folders plus two protected legacy/performance folders.**
+The two pointing/handoff folders, pilot fallback and older scientific workspace
+remain in place. All 11 local branches, three protected stashes and recovery
+packets remain; the 29 GitHub branches were not changed by this cleanup.
+
+The older scientific workspace's 465 paths have an organized recovery catalog:
+one local instructions edit, 41 recovery bundles, two audit comparisons,
+213 scientific draft/document-check files and 208 analysis/result/render files.
+All originals and ignored build dependencies remain untouched. Accepted science
+is routed to canonical packages and owner freeze records, not promoted from
+historical drafts. The owner accepted restoration of the parked contract chat's
+old folder before resuming there. The workspace map and retirement record provide
+continuity; this completed cleanup grants no further deletion authority.
 
 ## What is implemented and checked
 
@@ -68,7 +79,7 @@ Python application. [The engineering record](ENGINEERING_CLEANUP_2026-10-29.md)
 and [combined-candidate record](POINTING_ENGINEERING_CANDIDATE_2026-10-30.md)
 retain exact implementation and reconciliation details.
 
-The accepted application source passes the supported local Mac Spack developer
+The previous accepted application foundation `44171fd3a` passed the supported local Mac Spack developer
 gate: all 44 dependencies installed, 1,388 enabled CTests, 207 baseline tests,
 full configuration preflight, installed synthetic consumers, standalone headers,
 and runtime dependency identity. One inherited lifecycle test remains disabled.
@@ -124,7 +135,7 @@ products. Beammap production and OOF remain outside that release target.
 | Pointing-derived calibration consumed by SCIENCE | Flux policy, downstream connection and owner acceptance still required |
 | All-array SCIENCE and genuine multi-observation coadds | Required release milestone; not established by POINT checks |
 | Downstream products and consumers | Product/units/layout qualification still required |
-| Build and publication | New combined source requires its recorded Mac Spack gates before local integration; new hosted CI follows owner publication. Published `8078ba456` passes hosted checks; Unity and release/export qualification remain separate |
+| Build and publication | Integrated `f2ad2913a` passed local Mac Spack gates and is published. Its hosted result is not assessed here; the earlier `8078ba456` hosted pass remains dated evidence. Unity and release/export qualification remain separate |
 | Production | No new authorization from integration or passing local tests |
 
 General v2 defaults remain 1 arcsec / coverage 0.1 / M10. The frozen trials used

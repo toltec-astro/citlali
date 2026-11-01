@@ -1,3 +1,28 @@
+## Owner-approved A+B folder retirement completed — 2026-10-31
+
+Grant approved removal of the completed engineering and parked scientific-contract
+handoff folders, explicitly accepting restoration of the parked chat's working
+folder before resuming there. The [retirement record](WORKSPACE_RETIREMENT_2026-10-31.md)
+and [workspace map](WORKSPACE_MAP.md) record seven remaining folders: **five
+refactor folders plus two protected legacy/performance folders**.
+
+Both retired commits remain in mainline ancestry and verified history backups.
+Full physical archives, scratch Git-state restoration, independent review, fresh
+pre-execution checks and post-operation preservation checks passed. The removals
+changed no branch, tag or stash. Both pointing workspaces, the pilot executable
+fallback, older science workspace, Citlali 4.x/5.x, all recovery evidence and the
+shared Git store remain protected. The following documentation-only closeout
+updates mainline's records; no application code, native runtime, science policy,
+Unity operation or remote write is part of this cleanup.
+
+The older scientific workspace's 465 paths are individually classified and copied
+into an organized external catalog; originals and ignored dependencies remain
+unchanged. Scientific authority is routed separately from drafts and evidence.
+MacOS-managed metadata restoration limits remain explicit in recovery receipts.
+The exact operation, independent checks and final documentation commit are bound
+by the execution packet's `COMPLETION.json`. Earlier dated entries below retain
+their historical counts and scope.
+
 ## Owner-approved pointing and handoff integration — 2026-10-31
 
 Grant approved pointing cutoff `6969dcf8168bcffbdfdbf7ebe56a22730545e086` and handoff
