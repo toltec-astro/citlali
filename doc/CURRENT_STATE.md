@@ -13,14 +13,15 @@ full source identity, Spack executable and passing checks.
 Published mainline `f089a5d665877dde4e32f006cb81717d28f647aa` includes integrated
 application `f2ad2913a` and the completed documentation/scientific-file cleanup.
 Its [GitHub checks passed on Python 3.11 and 3.13](https://github.com/toltec-astro/citlali/actions/runs/41311399974).
-The subsequent pilot-retirement documentation is local until owner publication.
+Later retirement documentation follows locally; no GitHub write is part of cleanup.
 No Unity or observational qualification is inferred from publication or cleanup.
 
 For documentation navigation, use the [documentation guide](README.md).
 The [older scientific workspace cleanup](SCIENTIFIC_WORKSPACE_CLEANUP_2026-11-01.md)
 is complete: owner-approved batch C removed 238 historical document working
-copies after archive verification. The remaining 227 changed/untracked paths,
-tracked source and ignored build dependencies stay in place.
+copies after archive verification. The subsequent owner-approved SCI-ALIGN
+retirement preserved all 227 remaining changed/untracked files, verified existing
+source/history archives, and closed that obsolete checkout and local branch.
 
 Use the [workspace map](WORKSPACE_MAP.md) to find the correct checkout and
 protected work. The [approved pointing integration scope](POINTING_HANDOFF_INTEGRATION_2026-10-31.md)
@@ -53,7 +54,7 @@ project, retains its existing inputs, products and runtime bindings.
 | --- | --- |
 | Previous accepted application foundation | `44171fd3a6ba5924f8f4dba0324defe0922c597d`; retained pointing/engineering and Mac Spack qualification |
 | New accepted input scope | Handoff `1f3bf6db744050102bc78e06917613e5dbe7fe3d` plus pointing evidence `6969dcf8168bcffbdfdbf7ebe56a22730545e086`; final combined source is bound by the integration receipt |
-| Development mainline | `codex/refactor-mainline`; published through documentation `f089a5d66`; pilot-retirement closeout follows locally |
+| Development mainline | `codex/refactor-mainline`; published through documentation `f089a5d66`; retirement closeouts follow locally |
 | Previous mainline | `e32c4584dec07617d6caa857d39bf13047b6c4b0`; retained in ancestry and recovery evidence |
 | Pointing evidence included here | `6969dcf8168bcffbdfdbf7ebe56a22730545e086`; includes the earlier `797d013f` cutoff and later saved assessment, compatibility audit and proposed pilot plan |
 | Engineering input included here | `5c46201057d6b6d1048aac2949a64e9a34e9bad3` |
@@ -65,24 +66,31 @@ The existing working folder is reused for mainline:
 `/Users/gwilson/.codex/worktrees/pointing-engineering-candidate-20261030/citlali-refactor`.
 Its older folder name is a locator, not a separate integration authority. The
 shared Git store is `/Users/gwilson/GitHub/citlali/.git`. The folder named
-`/Users/gwilson/GitHub/citlali-refactor` is an older protected checkout.
+`/Users/gwilson/GitHub/citlali-refactor` was the older SCI-ALIGN checkout and is
+now retired. The Codex project now directs new work to mainline.
 
-[Folder retirement A+B](WORKSPACE_RETIREMENT_2026-10-31.md) closed the engineering
-and parked `884f` handoff folders. The later owner-approved pilot retirement
-leaves **six working folders: four refactor folders plus two protected
-legacy/performance folders**. Mainline, both pointing/handoff folders and the
-older scientific workspace remain. Ten local branches, three protected stashes
-and all existing backups remain; this cleanup changed no GitHub branch.
+[Folder retirement A+B](WORKSPACE_RETIREMENT_2026-10-31.md), the collaborator
+pilot closure and SCI-ALIGN retirement leave **five working folders: three
+refactor folders plus two protected legacy/performance folders**. The refactor
+folders are mainline and the two pointing/handoff workspaces. Nine local
+branches, three protected stashes and all existing backups remain. GitHub is
+unchanged by these local operations.
 
-The older scientific workspace's original 465 paths have an organized recovery
-catalog. After approved batch C, 227 original paths remain: one local instructions
-edit, 41 recovery bundles, two audit comparisons and 183 pointing-analysis files.
-The 238 removed document artifacts remain in verified archives; tracked source,
-ignored build dependencies and all existing backups are unchanged. Accepted science
-is routed to canonical packages and owner freeze records, not promoted from
-historical drafts. The owner accepted restoration of the parked contract chat's
-old folder before resuming there. The workspace map and retirement record provide
-continuity; this completed cleanup grants no further deletion authority.
+The SCI-ALIGN checkout's 226 untracked originals, including 41 recovery bundles,
+were moved to the recorded preservation folder; its modified `AGENTS.md` was
+copied and verified before restoring that one tracked file. Existing archives
+and an independently restored repository preserve the source and all 78 separate
+commits. No bulk history merge was made. Pointing now uses its own verified
+dependency-source copies, with passing isolated AppleClang/Homebrew build and
+test checks; its existing executable and frozen project runtimes remain intact.
+This is supplemental relocation evidence, not a new Spack or science campaign.
+
+The [workspace map](WORKSPACE_MAP.md) gives the preservation location and chat
+continuity rule. Older chats remain parked: continuing a chat bound to a retired
+folder requires an explicit continuation from mainline or authenticated
+restoration first. Accepted scientific authority remains in canonical packages
+and owner freeze records. Two recovered output-metadata repair proposals remain
+separate future work; no old experimental implementation was adopted.
 
 ## What is implemented and checked
 
@@ -149,7 +157,7 @@ products. Beammap production and OOF remain outside that release target.
 | Pointing-derived calibration consumed by SCIENCE | Flux policy, downstream connection and owner acceptance still required |
 | All-array SCIENCE and genuine multi-observation coadds | Required release milestone; not established by POINT checks |
 | Downstream products and consumers | Product/units/layout qualification still required |
-| Build and publication | Integrated `f2ad2913a` passed local Mac Spack gates; publication through `f089a5d66` passed hosted Python 3.11/3.13 checks. Pilot-retirement documentation follows locally. Unity and release/export qualification remain separate |
+| Build and publication | Integrated `f2ad2913a` passed local Mac Spack gates; publication through `f089a5d66` passed hosted Python 3.11/3.13 checks. Retirement documentation follows locally. Unity and release/export qualification remain separate |
 | Production | No new authorization from integration or passing local tests |
 
 General v2 defaults remain 1 arcsec / coverage 0.1 / M10. The frozen trials used

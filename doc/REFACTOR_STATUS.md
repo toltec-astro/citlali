@@ -1,3 +1,24 @@
+## Owner-approved SCI-ALIGN retirement completed — 2026-11-01
+
+The obsolete SCI-ALIGN checkout and local branch at `dd4a35992` are retired after
+owner approval, independent operation review and fresh preservation checks.
+All 227 remaining changed/untracked originals are preserved separately; the
+existing physical archive and restored repository cover the source and all 78
+separate commits. No bulk merge or additional full archive was created.
+
+Pointing's build now uses 18 verified local dependency-source copies. A separate
+AppleClang/Homebrew CLI/native-test build, version check, CTest and configuration
+preflight passed. This is supplemental relocation qualification, not Spack V2
+or observational acceptance. The existing pointing executable remains byte-identical.
+The owner moved the Codex project's primary folder to mainline; old chats remain
+parked with an explicit continuation/restoration requirement.
+
+The [workspace map](WORKSPACE_MAP.md) records **three refactor folders plus two
+protected folders, nine local branches and three stashes**, preservation paths
+and the exact execution receipt. Pointing work, Citlali 4.x/5.x and all backups
+remain intact. GitHub is unchanged. Two recovered output-metadata repair proposals
+remain separate future work. Earlier entries below retain their dated counts.
+
 ## Obsolete collaborator pilot retired — 2026-11-01
 
 The owner directed a clean start from current mainline and approved retiring the
