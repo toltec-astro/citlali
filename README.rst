@@ -50,8 +50,9 @@ or an old command example alone does not establish current support.
 
 The `older scientific workspace guide
 <doc/SCIENTIFIC_WORKSPACE_CLEANUP_2026-11-01.md>`_ records retained work and a
-proposed archive cleanup. Its file-removal batch awaits owner approval; no
-original scientific-workspace files have been removed by that preparation.
+completed archive cleanup. The owner-approved batch removed 238 historical
+document working copies after recovery verification; 227 changed/untracked paths
+remain protected in that older workspace.
 
 Historical build reference
 --------------------------

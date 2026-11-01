@@ -1,3 +1,18 @@
+## Owner-approved scientific workspace batch C completed — 2026-11-01
+
+Grant approved the exact 238-file batch C manifest. Fresh preservation and live-use
+checks and independent execution-script review passed. Only the listed historical
+document working copies were removed; the older scientific workspace now has
+227 changed/untracked paths. The [cleanup record](SCIENTIFIC_WORKSPACE_CLEANUP_2026-11-01.md)
+routes the verified archives, restoration instructions and execution receipt.
+
+All remaining source files, tracked science, ignored dependencies, original bundles,
+pointing evidence, Citlali 4.x/5.x, branches, stashes, seven working folders and all
+backups remain preserved. The subsequent documentation closeout records actual
+completion; it changes no application/runtime/scientific behavior and is not pushed.
+No additional deletion is authorized. Earlier preparation entries below describe
+the state before this approval and execution.
+
 ## Documentation clarity and scientific-file cleanup preparation — 2026-11-01
 
 The documentation entry points now distinguish current instructions, accepted

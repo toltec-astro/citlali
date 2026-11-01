@@ -18,7 +18,7 @@ entry below rather than reading every dated report.
 | Where does a code change belong? | [Architecture and source map](ARCHITECTURE.md) |
 | Which scientific specification governs? | [Scientific-contract index](scientific_contracts/README.md), its named acceptance records, and [scientific conventions](SCIENTIFIC_CONVENTIONS.md) |
 | What was integrated, with what limits? | [Integration ledger](INTEGRATION_LEDGER.md) and [accepted pointing/handoff scope](POINTING_HANDOFF_INTEGRATION_2026-10-31.md) |
-| What are the older scientific files, and can they be cleaned up? | [Scientific workspace inventory and proposed batch C](SCIENTIFIC_WORKSPACE_CLEANUP_2026-11-01.md) |
+| What are the older scientific files, and can they be cleaned up? | [Scientific workspace inventory and completed batch C](SCIENTIFIC_WORKSPACE_CLEANUP_2026-11-01.md) |
 
 The pointing/handoff cutoffs were integrated as application `f2ad2913a`; their
 scope document preserves the proposal and acceptance conditions. It is no longer
@@ -59,7 +59,7 @@ entry points for new work. The old Conan examples in the root README are
 historical reproduction material; the supported development route is Spack.
 
 Existing dated reports and plans do not need to be moved merely to match this
-organization. The proposed scientific-file cleanup removes no tracked report,
+organization. The completed scientific-file cleanup removed no tracked report,
 accepted specification or backup.
 
 Every new scientific-contract package begins with the governing

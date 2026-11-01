@@ -1,6 +1,6 @@
 # Citlali refactor — current state
 
-As of 2026-10-31. **The shared development baseline is `codex/refactor-mainline`.**
+As of 2026-11-01. **The shared development baseline is `codex/refactor-mainline`.**
 The owner approved incorporating pointing assessments through `6969dcf81` and
 pointing handoff through `1f3bf6db7`, following the previously integrated
 application `44171fd3a` and workflow repair `8078ba456`. The
@@ -18,10 +18,10 @@ The documentation closeout for that cleanup is local until the owner publishes i
 No Unity or observational qualification is inferred from publication or cleanup.
 
 For documentation navigation, use the [documentation guide](README.md).
-The [older scientific workspace proposal](SCIENTIFIC_WORKSPACE_CLEANUP_2026-11-01.md)
-separates 238 historical document artifacts proposed for removal from 227 paths
-to retain. Preparation is complete; deletion still requires owner approval.
-All 465 originals remain in place.
+The [older scientific workspace cleanup](SCIENTIFIC_WORKSPACE_CLEANUP_2026-11-01.md)
+is complete: owner-approved batch C removed 238 historical document working
+copies after archive verification. The remaining 227 changed/untracked paths,
+tracked source and ignored build dependencies stay in place.
 
 Use the [workspace map](WORKSPACE_MAP.md) to find the correct checkout and
 protected work. The [approved pointing integration scope](POINTING_HANDOFF_INTEGRATION_2026-10-31.md)
@@ -67,10 +67,11 @@ The two pointing/handoff folders, pilot fallback and older scientific workspace
 remain in place. All 11 local branches, three protected stashes and recovery
 packets remain; the 29 GitHub branches were not changed by this cleanup.
 
-The older scientific workspace's 465 paths have an organized recovery catalog:
-one local instructions edit, 41 recovery bundles, two audit comparisons,
-213 scientific draft/document-check files and 208 analysis/result/render files.
-All originals and ignored build dependencies remain untouched. Accepted science
+The older scientific workspace's original 465 paths have an organized recovery
+catalog. After approved batch C, 227 original paths remain: one local instructions
+edit, 41 recovery bundles, two audit comparisons and 183 pointing-analysis files.
+The 238 removed document artifacts remain in verified archives; tracked source,
+ignored build dependencies and all existing backups are unchanged. Accepted science
 is routed to canonical packages and owner freeze records, not promoted from
 historical drafts. The owner accepted restoration of the parked contract chat's
 old folder before resuming there. The workspace map and retirement record provide

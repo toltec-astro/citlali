@@ -1,6 +1,6 @@
 # Refactor workspace map
 
-Verified on 2026-10-31. A **branch** names a line of commits; a **working folder**
+Verified on 2026-11-01. A **branch** names a line of commits; a **working folder**
 is a checkout that may also contain builds, results or files not recorded in Git.
 A saved checkout without a branch name is frozen at its recorded commit; it is
 not missing work. Counts are inventories, not counts of active projects.
@@ -43,7 +43,7 @@ Paths below are absolute locators on this Mac, not portable deployment settings.
 | `/Users/gwilson/.codex/worktrees/configurable-point-20261028/citlali-refactor` | `codex/configurable-point-20261028` at `6969dcf81` | Pointing assessments/planning; approved evidence cutoff included; protect any later work |
 | `/Users/gwilson/.codex/worktrees/point-handoff-20261030/citlali-refactor` | `codex/point-handoff-20261030` at `1f3bf6db7` | Approved correction/table handoff source; retained separately after integration |
 | `/Users/gwilson/.codex/worktrees/collaborator-pilot-20261027/citlali-refactor` | `codex/collaborator-pilot-20261027` at `16d1b1aae` | Retain: 11 separate commits and a saved POINT launcher still uses its executable |
-| `/Users/gwilson/GitHub/citlali-refactor` | `codex/sci-align-001-lissajous-timestream-fit` at `dd4a35992` | Retain: 465 paths inventoried, copied into an organized catalog and backed up; original files and live build dependencies protected |
+| `/Users/gwilson/GitHub/citlali-refactor` | `codex/sci-align-001-lissajous-timestream-fit` at `dd4a35992` | Retain: 227 changed/untracked paths remain after batch C; all 465 original paths are cataloged and backed up; retained files and live build dependencies protected |
 | `/Users/gwilson/GitHub/citlali` | `gw_dev` at `ffc6b9070` | Protected legacy checkout and shared Git store |
 | `/Users/gwilson/GitHub/citlali-perf` | `codex/perf-map-accumulation-noise-lifecycle` at `d01ffa598` | Protected legacy/performance checkout; one untracked command note |
 
@@ -85,15 +85,15 @@ It includes a verified bundle, independently restored repository, branch logs,
 and before/after inventories. Older recovery packets and frozen pointing runtimes
 remain protected. This map is not authorization for cleanup.
 
-## Scientific workspace: next proposed batch
+## Scientific workspace: batch C completed
 
-The [2026-11-01 inventory and batch C](SCIENTIFIC_WORKSPACE_CLEANUP_2026-11-01.md)
-proposes removing 238 archived historical document artifacts, reducing that
-workspace's changed/untracked count from 465 to 227. All originals remain until
-owner approval and fresh execution checks. The 41 original bundles, local
-instructions edit, two audit comparisons, 183 pointing-analysis artifacts,
-tracked source and ignored build dependencies stay in place. No folder or branch
-retirement is part of batch C.
+The owner approved [batch C](SCIENTIFIC_WORKSPACE_CLEANUP_2026-11-01.md).
+Exactly 238 archived historical document working copies were removed after fresh
+checks and independent script review, reducing the changed/untracked count from
+465 to 227. All 41 original bundles, the local instructions edit, two audit
+comparisons, 183 pointing-analysis artifacts, tracked source and ignored build
+dependencies remain unchanged. No folder or branch was retired. Recovery
+instructions and exact execution evidence are linked from the cleanup record.
 
 ## Consolidation reached
 
@@ -107,5 +107,7 @@ verified archives described in [the retirement record](WORKSPACE_RETIREMENT_2026
 The owner accepted that the parked contract chat's old working folder must be
 restored before resuming there. Its scientific program is not declared complete;
 no chat was archived or altered. The scientific catalog separates local work,
-accepted-authority routes, historical evidence and recovery archives while leaving
-all original 465 paths unchanged. Further cleanup requires a new exact disposition.
+accepted-authority routes, historical evidence and recovery archives. Batch C
+subsequently removed only its 238 approved working copies; all 465 original paths
+remain recoverable and the other 227 remain in place. Further cleanup requires a
+new exact disposition.
