@@ -3563,29 +3563,21 @@ void TCProc::append_base_to_netcdf(netCDF::NcFile &fo, TCData<tcdata_t, Eigen::M
     Eigen::VectorXi raw_scan_indices(4);
     const Eigen::Index scan_row = (scan_row_index >= 0) ? scan_row_index : in.index.data;
 
-    // if not on first scan, grab last scan and add size of current scan
-    if (scan_row > 0) {
-        if (output_outer_scan) {
-            Eigen::VectorXi previous_raw_scan_indices(4);
-            std::vector<std::size_t> raw_scan_indices_start_index = {TULA_SIZET(scan_row-1), 0};
-            std::vector<std::size_t> raw_scan_indices_size = {1, 4};
-            fo.getVar("raw_scan_indices").getVar(
-                raw_scan_indices_start_index, raw_scan_indices_size, previous_raw_scan_indices.data());
-            scan_indices(0) = previous_raw_scan_indices(3) + 1;
-            scan_indices(1) = scan_indices(0) + in.scans.data.rows() - 1;
-        }
-        else {
-            // start indices for data
-            std::vector<std::size_t> scan_indices_start_index = {TULA_SIZET(scan_row-1), 0};
-            // size for data
-            std::vector<std::size_t> scan_indices_size = {1, 2};
-            fo.getVar("scan_indices").getVar(scan_indices_start_index, scan_indices_size, scan_indices.data());
-
-            scan_indices = scan_indices.array() + in.scans.data.rows();
-        }
+    if (!output_outer_scan) {
+        // Use the same persisted offset as the samples appended above. Adding
+        // the current length to both prior bounds fails for unequal scans.
+        scan_indices(0) = n_pts_exists;
+        scan_indices(1) = scan_indices(0) + in.scans.data.rows() - 1;
     }
-
-    // otherwise, use size of this scan
+    else if (scan_row > 0) {
+        Eigen::VectorXi previous_raw_scan_indices(4);
+        std::vector<std::size_t> raw_scan_indices_start_index = {TULA_SIZET(scan_row-1), 0};
+        std::vector<std::size_t> raw_scan_indices_size = {1, 4};
+        fo.getVar("raw_scan_indices").getVar(
+            raw_scan_indices_start_index, raw_scan_indices_size, previous_raw_scan_indices.data());
+        scan_indices(0) = previous_raw_scan_indices(3) + 1;
+        scan_indices(1) = scan_indices(0) + in.scans.data.rows() - 1;
+    }
     else {
         scan_indices(0) = 0;
         scan_indices(1) = in.scans.data.rows() - 1;

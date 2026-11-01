@@ -1,3 +1,34 @@
+## Bounded output-metadata repair candidate — 2026-11-01
+
+On `codex/ptc-metadata-20261101`, both recovered metadata defects were reproduced
+against unchanged mainline `7a8e2cd828a648330aa944220e1a49cf6f9c2a19` using the
+real NetCDF writers. The PTC initial schema lacked `FRUITLOOPS_ITER` before the
+Beammap updater needed it; ordinary scan bounds were wrong for unequal lengths.
+The bounded fixes initialize the existing field earlier and derive ordinary
+bounds from the actual sample append offset. Sample values, flags, selected scan
+identities and outer-context semantics are preserved by regression assertions.
+The five initial focused Spack tests pass after the repairs; additional raw
+outer-context coverage is included in the full gate.
+
+This is a local candidate, not an accepted integration or observing qualification.
+The owner requested supported Mac Spack checks and independent exact-SHA review;
+the external completion receipt records their final results without a self-referential
+source commit. No mainline move, push, Unity run, runtime replacement or cleanup
+is authorized. The one temporary repair folder brings the inventory to four
+refactor folders plus two protected folders, ten local branches and three stashes.
+The earlier workspace-map counts describe the completed retirement snapshot.
+
+The bounded work order, tests-only failing patch, red/green logs, exact source and
+environment identities, final review and completion are in:
+
+`/Users/gwilson/.codex/visualizations/2026/10/29/01a188f2-4d30-7e60-88a8-956b50bb08cf/citlali-ptc-metadata-20261101`
+
+Old repair patches are reference evidence only; no old scientific diagnostics or
+application changes were adopted. Existing integer field shape and inclusive
+zero-based bounds are retained. Synthetic writer tests do not assess old products
+or qualify a Unity observing campaign. Pointing work, Citlali 4.x/5.x and backups
+remain outside the repair scope.
+
 ## Owner-approved SCI-ALIGN retirement completed — 2026-11-01
 
 The obsolete SCI-ALIGN checkout and local branch at `dd4a35992` are retired after

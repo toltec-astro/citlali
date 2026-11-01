@@ -166,6 +166,8 @@ void Engine::create_tod_files() {
     citlali::pipeline::add_tod_stream_output_type_label(fo, output_stream);
     if constexpr (prod_t == engine_utils::toltecIO::ptc_timestream) {
         citlali::pipeline::add_ptc_eigenvalue_dim(fo, ptcproc.cleaner.n_calc);
+        // Beammap updates this field before the final auxiliary header pass.
+        add_netcdf_var(fo, "FRUITLOOPS_ITER", iteration.fruit_iter);
     }
 
     citlali::pipeline::add_observation_identity_vars(
