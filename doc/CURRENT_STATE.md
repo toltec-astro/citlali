@@ -17,6 +17,12 @@ the newer application's hosted result was not assessed by this folder cleanup.
 The documentation closeout for that cleanup is local until the owner publishes it.
 No Unity or observational qualification is inferred from publication or cleanup.
 
+For documentation navigation, use the [documentation guide](README.md).
+The [older scientific workspace proposal](SCIENTIFIC_WORKSPACE_CLEANUP_2026-11-01.md)
+separates 238 historical document artifacts proposed for removal from 227 paths
+to retain. Preparation is complete; deletion still requires owner approval.
+All 465 originals remain in place.
+
 Use the [workspace map](WORKSPACE_MAP.md) to find the correct checkout and
 protected work. The [approved pointing integration scope](POINTING_HANDOFF_INTEGRATION_2026-10-31.md)
 explains compatibility limits and remaining release work. The

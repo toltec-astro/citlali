@@ -40,6 +40,19 @@ See the `staged engineering record <doc/ENGINEERING_CLEANUP_2026-10-29.md>`_
 for changes, checks and integration disposition, and the `CI guide
 <.github/README.md>`_ for source and native gates.
 
+Finding current instructions and older evidence
+-----------------------------------------------
+
+Start with the `documentation guide <doc/README.md>`_ when choosing a document.
+It explains which pages describe current operation, which define accepted
+scientific behavior, and which preserve a dated investigation. A recent filename
+or an old command example alone does not establish current support.
+
+The `older scientific workspace guide
+<doc/SCIENTIFIC_WORKSPACE_CLEANUP_2026-11-01.md>`_ records retained work and a
+proposed archive cleanup. Its file-removal batch awaits owner approval; no
+original scientific-workspace files have been removed by that preparation.
+
 Historical build reference
 --------------------------
 
@@ -48,8 +61,8 @@ snapshots. They are retained for historical reproduction, not the current
 supported deployment or qualification matrix. Follow the current-state and
 Spack links above for the current development baseline.
 
-System requirements
--------------------
+Historical system requirements
+------------------------------
 
 Citlali requires a C++20 compiler and CMake 3.20+ to build.
 
@@ -122,8 +135,8 @@ For additional performance with Intel CPUs, the `Intel OneAPI toolkit (MKL) <htt
 may be installed. The instruction can be found in the official website.
 
 
-Build
------
+Historical build
+----------------
 
 First, clone the repo or download the source code from the github page:
 
@@ -194,8 +207,8 @@ By default, most of the dependencies above are set to use the
 otherwise :code:`FETCH_*` is used.
 
 
-Usage
------
+Historical usage
+----------------
 
 Once successfully built, the created executables will be available in
 :code:`build/bin`.

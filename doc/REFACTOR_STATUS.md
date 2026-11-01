@@ -1,3 +1,19 @@
+## Documentation clarity and scientific-file cleanup preparation — 2026-11-01
+
+The documentation entry points now distinguish current instructions, accepted
+scientific specifications and dated evidence. The pointing/handoff integration
+is described as completed, and the September contract handoff is labeled as a
+dated transition. Historical records and scientific authority are unchanged.
+
+[Batch C](SCIENTIFIC_WORKSPACE_CLEANUP_2026-11-01.md) is prepared for owner review:
+238 untracked historical document/check/render files (about 64 MB), with a fresh
+verified archive and scratch restoration, are proposed for removal from the older
+scientific workspace. Its 465 original status paths remain unchanged. Approval
+would leave 227 paths, including all original bundles and pointing-analysis files.
+The full folder, branch, tracked source, build dependencies, pointing work,
+Citlali 4.x/5.x and all backups remain protected. No deletion or push is authorized
+by preparation; the packet binds the exact plan and independent review.
+
 ## Owner-approved A+B folder retirement completed — 2026-10-31
 
 Grant approved removal of the completed engineering and parked scientific-contract

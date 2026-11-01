@@ -85,6 +85,16 @@ It includes a verified bundle, independently restored repository, branch logs,
 and before/after inventories. Older recovery packets and frozen pointing runtimes
 remain protected. This map is not authorization for cleanup.
 
+## Scientific workspace: next proposed batch
+
+The [2026-11-01 inventory and batch C](SCIENTIFIC_WORKSPACE_CLEANUP_2026-11-01.md)
+proposes removing 238 archived historical document artifacts, reducing that
+workspace's changed/untracked count from 465 to 227. All originals remain until
+owner approval and fresh execution checks. The 41 original bundles, local
+instructions edit, two audit comparisons, 183 pointing-analysis artifacts,
+tracked source and ignored build dependencies stay in place. No folder or branch
+retirement is part of batch C.
+
 ## Consolidation reached
 
 The target of 3–5 refactor working folders is met at five, plus the two protected

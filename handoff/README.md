@@ -22,7 +22,11 @@ Each entry should start with the local timestamp and include, as relevant:
 - next steps,
 - open questions.
 
-The current scientific-contract program manager transition is
+For the current accepted baseline, start with [current state](../doc/CURRENT_STATE.md)
+and the [workspace map](../doc/WORKSPACE_MAP.md). Handoffs below preserve dated
+continuity; they do not override those entry points or later owner acceptance.
+
+The scientific-contract program manager transition recorded on 2026-09-04 is
 [`HANDOFF_2026-09-04_SCIENTIFIC_CONTRACT_PROGRAM.md`](HANDOFF_2026-09-04_SCIENTIFIC_CONTRACT_PROGRAM.md).
 Its companion JSON manifest and verifier bind the exact repository snapshot,
 the pending conformance-review candidate, and the protected independent FRUIT
