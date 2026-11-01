@@ -19,22 +19,21 @@ The similarly named `/Users/gwilson/GitHub/citlali-refactor` is an older protect
 scientific workspace, **not** the current mainline. All these checkouts share Git
 storage at `/Users/gwilson/GitHub/citlali/.git`; do not move or remove that store.
 
-GitHub mainline was verified at integrated application
-`f2ad2913acf5fee2d7ca8c40545a385ae07aab31` before this folder cleanup. The previously
-verified [passing hosted run](https://github.com/toltec-astro/citlali/actions/runs/41201517670)
-applies to `8078ba4567b3096b74ee378a99acfca270e27c3f`; this cleanup does not assess
-the newer hosted run.
+GitHub mainline was last verified at
+`f089a5d665877dde4e32f006cb81717d28f647aa`, with
+[passing Python 3.11/3.13 checks](https://github.com/toltec-astro/citlali/actions/runs/41311399974).
+The subsequent pilot-retirement documentation is local until owner publication.
 A cached `origin/...` label can lag the live GitHub branch: the old “ahead 683”
 message at this audit was a stale local comparison, not 683 unpublished commits.
 Local and GitHub branch inventories are different sets, not two copies of every
 branch; ongoing pointing/handoff names were local-only at this snapshot.
 
-## Seven retained working folders
+## Six current working folders
 
-Five are refactor-related; two are protected legacy/performance folders.
-The owner-approved [A+B retirement](WORKSPACE_RETIREMENT_2026-10-31.md) removed
-only the completed engineering and parked scientific-contract handoff folders
-after recovery verification. No new working folder was added.
+Four are refactor-related; two are protected legacy/performance folders.
+After [A+B retirement](WORKSPACE_RETIREMENT_2026-10-31.md), the owner approved
+closing the obsolete collaborator pilot. No replacement working folder was added.
+Start new development from mainline; keep ongoing pointing work in its named folders.
 Paths below are absolute locators on this Mac, not portable deployment settings.
 
 | Folder | Branch or frozen state | Role / next disposition |
@@ -42,18 +41,17 @@ Paths below are absolute locators on this Mac, not portable deployment settings.
 | `/Users/gwilson/.codex/worktrees/pointing-engineering-candidate-20261030/citlali-refactor` | `codex/refactor-mainline` | Primary accepted development checkout; retain |
 | `/Users/gwilson/.codex/worktrees/configurable-point-20261028/citlali-refactor` | `codex/configurable-point-20261028` at `6969dcf81` | Pointing assessments/planning; approved evidence cutoff included; protect any later work |
 | `/Users/gwilson/.codex/worktrees/point-handoff-20261030/citlali-refactor` | `codex/point-handoff-20261030` at `1f3bf6db7` | Approved correction/table handoff source; retained separately after integration |
-| `/Users/gwilson/.codex/worktrees/collaborator-pilot-20261027/citlali-refactor` | `codex/collaborator-pilot-20261027` at `16d1b1aae` | Retain: 11 separate commits and a saved POINT launcher still uses its executable |
 | `/Users/gwilson/GitHub/citlali-refactor` | `codex/sci-align-001-lissajous-timestream-fit` at `dd4a35992` | Retain: 227 changed/untracked paths remain after batch C; all 465 original paths are cataloged and backed up; retained files and live build dependencies protected |
 | `/Users/gwilson/GitHub/citlali` | `gw_dev` at `ffc6b9070` | Protected legacy checkout and shared Git store |
 | `/Users/gwilson/GitHub/citlali-perf` | `codex/perf-map-accumulation-noise-lifecycle` at `d01ffa598` | Protected legacy/performance checkout; one untracked command note |
 
-The other five working folders had no staged, unstaged or untracked changes.
+The other four working folders had no staged, unstaged or untracked changes.
 That check excludes ignored builds/products; a clean Git status alone does not
 make a folder disposable.
 
-## Eleven retained local branch names
+## Ten local branch names
 
-Seven local branch names are attached to folders
+Six local branch names are attached to folders
 in the table. Four have no working folder:
 
 | Branch | Role / disposition |
@@ -73,7 +71,7 @@ authorizes retirement of an owner-retained comparison or scientific reference.
 All three stashes belong to legacy/performance work: a performance `naive_mm`
 change, legacy RTC work, and legacy JINC/pointing edits. Keep them untouched.
 
-The latest branch retirement removed only local
+An earlier branch retirement removed only local
 `codex/citlali-engineering-20261029`, local
 `codex/pointing-engineering-candidate-20261030`, and GitHub
 `codex/citlali-engineering-20261029`. Their history remains in mainline and archive
@@ -84,6 +82,31 @@ refs; no working folder was deleted in that earlier branch-retirement operation.
 It includes a verified bundle, independently restored repository, branch logs,
 and before/after inventories. Older recovery packets and frozen pointing runtimes
 remain protected. This map is not authorization for cleanup.
+
+## Collaborator pilot closed — 2026-11-01
+
+The owner approved retiring the pilot folder and local
+`codex/collaborator-pilot-20261027` branch at `16d1b1aaeaed3526cb6383672d47f1fc770e78c4`.
+All 11 separate commits remain in the previously verified `pilot-science-history.bundle`
+and its independent restored repository under `citlali-workspace-consolidation-20261031`.
+The disposable build tree and generated test-discovery file were discarded with
+the clean worktree; no new bulk build archive or runtime migration was made.
+
+Five legacy pilot entry points in `COM01-local-trial-20261027` now exit 64:
+`pointings/02_redu.sh`, `pointings-152389/02_redu.sh`,
+`refactor/NGC4449/02_redu.sh`, `software/preparation-20261028/bin/prepare-point-152389`
+and `pointings-152389/.tolproj/citlali-launcher`. Other pointing directories in
+that shared project remain active and unchanged. Input links, APTs, products,
+frozen executables and existing backups remain. Original scripts total less than
+6 KB and are recorded with the operation; old source locators remain provenance.
+
+Approval, bounded process-check reassessment, independent reviews, exact script
+changes, worktree removal, branch deletion and before/after checks:
+
+`/Users/gwilson/.codex/visualizations/2026/10/29/01a188f2-4d30-7e60-88a8-956b50bb08cf/citlali-pilot-retirement-20261101`
+
+This closes the experiment without adopting its old proposals or claiming that
+the collaborator release is complete. Future work starts from current mainline.
 
 ## Scientific workspace: batch C completed
 
@@ -97,10 +120,10 @@ instructions and exact execution evidence are linked from the cleanup record.
 
 ## Consolidation reached
 
-The target of 3–5 refactor working folders is met at five, plus the two protected
-legacy/performance folders. Retain mainline, both ongoing pointing/handoff folders,
-the pilot fallback and the older scientific workspace. All eleven local branches,
-three stashes and prior recovery packets remain.
+The target of 3–5 refactor working folders is met at four, plus the two protected
+legacy/performance folders. Mainline, both ongoing pointing/handoff folders and
+the older scientific workspace remain. Ten local branches, three stashes and all
+prior recovery packets remain.
 
 Engineering and the parked `884f` contract handoff can be restored from the
 verified archives described in [the retirement record](WORKSPACE_RETIREMENT_2026-10-31.md).

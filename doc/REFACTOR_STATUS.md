@@ -1,3 +1,20 @@
+## Obsolete collaborator pilot retired — 2026-11-01
+
+The owner directed a clean start from current mainline and approved retiring the
+old pilot working folder/local branch, disabling its obsolete entry points and
+discarding disposable builds without another bulk archive. Execution leaves four
+refactor folders plus the two protected folders, ten local branches and three
+stashes. The [workspace map](WORKSPACE_MAP.md) records the exact scope and recovery
+route. Existing history backup covers all 11 separate pilot commits; the shared
+project's ongoing pointing work, inputs, products and all existing backups remain.
+
+Five legacy entry points now exit 64 with a clear retirement message. An idle
+shell in a separate pointing folder was identified and left alone; the guard was
+bounded to the actual removal/modification targets. No application/scientific
+behavior, frozen executable, Unity operation or GitHub reference changed. The
+following documentation closeout is local. Earlier pilot-hold entries below are
+historical and do not reinstate that discontinued workflow.
+
 ## Owner-approved scientific workspace batch C completed — 2026-11-01
 
 Grant approved the exact 238-file batch C manifest. Fresh preservation and live-use
