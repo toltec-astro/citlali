@@ -1,0 +1,34 @@
+{
+  "owner": "Grant Wilson",
+  "date": "2026-11-02",
+  "directive": "Approve local integration of candidate 012cc7adc into refactor-mainline. give me the SSH push command afterward.",
+  "approved_application": "012cc7adc5b50bd3491c47021744310735de3a8a",
+  "application_tree": "17394289a6e9b5a34e7b75c1a34d64d93847145e",
+  "base_mainline": "7a8e2cd828a648330aa944220e1a49cf6f9c2a19",
+  "target_branch": "codex/refactor-mainline",
+  "operation": "Fast-forward exact approved application, then documentation-only integration receipt",
+  "qualification": "Bounded owner-run Mac Spack and representative point/Beammap validation; independent pass with recorded limitations",
+  "qualification_packet": "/Users/gwilson/.codex/visualizations/2026/10/29/01a188f2-4d30-7e60-88a8-956b50bb08cf/citlali-beammap-iteration-20261101",
+  "qualification_manifest_sha256": "2a6c8ea81d87d5e1bbe8de753a07cc051fa5da6f87f4ff5fe9037083663b9396",
+  "qualification_review_sha256": "bc527652225d19e4c81790b46a635d2aeb79f721e1e9b611dce0487095dd5c98",
+  "governance_read": [
+    "doc/governance/ENGINEERING_GOVERNANCE.md",
+    "doc/governance/REVIEW_AND_CONFORMANCE.md"
+  ],
+  "execution_owner": "Grant for all builds/tests/probes/reductions/validation runners",
+  "preserve": [
+    "pointing work and frozen runtimes",
+    "Citlali4.x/5.x",
+    "all backups and prior evidence",
+    "candidate branch/worktree and stashes"
+  ],
+  "excluded": [
+    "push",
+    "runtime rebuild or replacement",
+    "Unity access",
+    "cleanup",
+    "production or historical-profile promotion"
+  ],
+  "integration_packet": "/Users/gwilson/.codex/visualizations/2026/10/29/01a188f2-4d30-7e60-88a8-956b50bb08cf/citlali-metadata-integration-20261102",
+  "runtime_source_identity": "012cc7adc5b50bd3491c47021744310735de3a8a; documentation receipt is not a new application qualification"
+}

@@ -1,6 +1,20 @@
 # Citlali refactor — current state
 
-As of 2026-11-01. **The shared development baseline is `codex/refactor-mainline`.**
+As of 2026-11-02. **The shared development baseline is `codex/refactor-mainline`.**
+Local mainline now includes qualified metadata application
+`012cc7adc5b50bd3491c47021744310735de3a8a`, followed by a documentation-only
+integration receipt. [Owner acceptance](../validation/metadata_integration_2026-11-02/OWNER_ACCEPTANCE.json)
+and the [integration ledger](INTEGRATION_LEDGER.md) bind the operation and evidence.
+Grant's Mac Spack tests and representative pointing/Beammap runs passed independent
+assessment with recorded limitations; existing runtime binaries were not replaced.
+GitHub publication of this integration remains the owner's next action.
+
+The current inventory is **six working folders: four refactor plus two protected**,
+ten local branches and three stashes. The metadata candidate folder is retained;
+no retirement is authorized by integration. The shared and repository instructions
+reserve all builds, tests, probes, reductions and validation runners to Grant.
+Older counts and publication statements below describe their named checkpoints.
+
 The owner approved incorporating pointing assessments through `6969dcf81` and
 pointing handoff through `1f3bf6db7`, following the previously integrated
 application `44171fd3a` and workflow repair `8078ba456`. The
@@ -54,7 +68,7 @@ project, retains its existing inputs, products and runtime bindings.
 | --- | --- |
 | Previous accepted application foundation | `44171fd3a6ba5924f8f4dba0324defe0922c597d`; retained pointing/engineering and Mac Spack qualification |
 | New accepted input scope | Handoff `1f3bf6db744050102bc78e06917613e5dbe7fe3d` plus pointing evidence `6969dcf8168bcffbdfdbf7ebe56a22730545e086`; final combined source is bound by the integration receipt |
-| Development mainline | `codex/refactor-mainline`; published through documentation `f089a5d66`; retirement closeouts follow locally |
+| Development mainline | `codex/refactor-mainline`; metadata application `012cc7adc` integrated locally with documentation receipt; owner publication pending |
 | Previous mainline | `e32c4584dec07617d6caa857d39bf13047b6c4b0`; retained in ancestry and recovery evidence |
 | Pointing evidence included here | `6969dcf8168bcffbdfdbf7ebe56a22730545e086`; includes the earlier `797d013f` cutoff and later saved assessment, compatibility audit and proposed pilot plan |
 | Engineering input included here | `5c46201057d6b6d1048aac2949a64e9a34e9bad3` |
@@ -70,10 +84,10 @@ shared Git store is `/Users/gwilson/GitHub/citlali/.git`. The folder named
 now retired. The Codex project now directs new work to mainline.
 
 [Folder retirement A+B](WORKSPACE_RETIREMENT_2026-10-31.md), the collaborator
-pilot closure and SCI-ALIGN retirement leave **five working folders: three
+pilot closure and SCI-ALIGN retirement left **five working folders: three
 refactor folders plus two protected legacy/performance folders**. The refactor
-folders are mainline and the two pointing/handoff workspaces. Nine local
-branches, three protected stashes and all existing backups remain. GitHub is
+folders are mainline and the two pointing/handoff workspaces. That checkpoint had nine local
+branches and three protected stashes; all existing backups remain. GitHub was
 unchanged by these local operations.
 
 The SCI-ALIGN checkout's 226 untracked originals, including 41 recovery bundles,
@@ -89,8 +103,9 @@ The [workspace map](WORKSPACE_MAP.md) gives the preservation location and chat
 continuity rule. Older chats remain parked: continuing a chat bound to a retired
 folder requires an explicit continuation from mainline or authenticated
 restoration first. Accepted scientific authority remains in canonical packages
-and owner freeze records. Two recovered output-metadata repair proposals remain
-separate future work; no old experimental implementation was adopted.
+and owner freeze records. The recovered output-metadata proposals and the subsequently confirmed Beammap
+final-header defect are now resolved by the integrated metadata application above;
+no old experimental implementation was adopted.
 
 ## What is implemented and checked
 

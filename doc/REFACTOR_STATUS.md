@@ -1,3 +1,37 @@
+## Output-metadata repairs integrated locally — 2026-11-02
+
+Grant approved and local `codex/refactor-mainline` fast-forwarded from
+`7a8e2cd828a648330aa944220e1a49cf6f9c2a19` to qualified application
+`012cc7adc5b50bd3491c47021744310735de3a8a` (including `949d38da4`).
+The [owner acceptance](../validation/metadata_integration_2026-11-02/OWNER_ACCEPTANCE.json)
+and [integration ledger](INTEGRATION_LEDGER.md) bind this exact operation.
+This following documentation closeout changes no application source; executable
+qualification remains bound to `012cc7adc`, not to a later documentation revision.
+
+The fixes initialize PTC iteration metadata before use, preserve Beammap's completed
+fitting iteration through finalization, and correct ordinary scan bounds for unequal
+lengths. Grant ran all new builds, tests and reductions: eight focused metadata tests,
+1,402 enabled CTests (one inherited disabled), 207 baseline tests and full config
+preflight passed. Three pointing iterations preserve compared scientific products.
+Complete candidate/control Beammap runs preserve common numerical products and APT
+payloads; saved iteration 2 and all 198 scan bounds are correct. The original strict
+comparison exit 2 is retained and reconciled by the reviewed role-paired APT supplement.
+Independent exact-SHA assessment passed with recorded limitations.
+
+Qualification is bounded to this Mac Spack realization and these fixtures. The
+PTC-disabled control has no full PTC payload for direct equality comparison. No
+Unity, historical-profile, production or managed-deployment acceptance is inferred.
+Existing binaries, pointing work, Citlali 4.x/5.x and backups remain untouched.
+No rebuild, push or cleanup accompanies integration. Grant retains execution and
+push ownership. Six folders (four refactor plus two protected), ten local branches
+and three stashes remain; the metadata candidate is retained pending separate cleanup.
+
+Integration operation and final preservation/review receipts:
+
+`/Users/gwilson/.codex/visualizations/2026/10/29/01a188f2-4d30-7e60-88a8-956b50bb08cf/citlali-metadata-integration-20261102`
+
+Earlier pending-candidate entries below are historical preparation records.
+
 ## Beammap final-header repair prepared; owner execution pending — 2026-11-01
 
 Representative pointing validation of `949d38da4` passed the bounded same-environment

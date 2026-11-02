@@ -1,3 +1,36 @@
+## Output-metadata integration — owner acceptance 2026-11-02
+
+Owner directive: “Approve local integration of candidate 012cc7adc into
+refactor-mainline. give me the SSH push command afterward.”
+
+[Owner acceptance](../validation/metadata_integration_2026-11-02/OWNER_ACCEPTANCE.json)
+records the approved application `012cc7adc5b50bd3491c47021744310735de3a8a`, tree
+`17394289a6e9b5a34e7b75c1a34d64d93847145e`, and previous mainline
+`7a8e2cd828a648330aa944220e1a49cf6f9c2a19`. The application was fast-forwarded
+locally without conflict. The following receipt commit changes only documentation
+and this acceptance record; it is not a new application build or qualification.
+
+The owner-run bounded Mac Spack and representative qualification passed independent
+review with recorded limitations. Qualification packet:
+
+`/Users/gwilson/.codex/visualizations/2026/10/29/01a188f2-4d30-7e60-88a8-956b50bb08cf/citlali-beammap-iteration-20261101`
+
+- Final evidence manifest SHA-256: `2a6c8ea81d87d5e1bbe8de753a07cc051fa5da6f87f4ff5fe9037083663b9396`.
+- Final independent review SHA-256: `bc527652225d19e4c81790b46a635d2aeb79f721e1e9b611dce0487095dd5c98`.
+- The original Beammap filename-set exit 2 is preserved. A separate reviewed
+  supplement proves exact payload/schema equality for the three APT roles.
+- Full Beammap PTC metadata passes; direct payload equality against the intentionally
+  absent control file is not claimed. One inherited CTest remains disabled.
+- No Unity campaign, historical-profile promotion, production acceptance or runtime
+  replacement follows. All builds, tests, probes, reductions and validation runners
+  remain Grant's responsibility, as does the requested GitHub push.
+
+The integration packet `citlali-metadata-integration-20261102` alongside the above
+packet records the guarded fast-forward, documentation-only closeout identity,
+independent static review and preservation. Existing normative governance digests
+remain unchanged. Pointing, Citlali 4.x/5.x, backups, stashes and candidate worktree
+remain preserved; no cleanup or push was performed.
+
 ## Pointing handoff integration — owner acceptance 2026-10-31
 
 Owner directive: “Approve both cutoffs. Prepare the combined candidate and integrate
