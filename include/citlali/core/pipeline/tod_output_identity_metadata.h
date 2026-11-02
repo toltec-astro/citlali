@@ -93,11 +93,26 @@ inline void add_tod_signal_unit_var(netCDF::NcFile &fo,
     add_netcdf_var(fo, "BUNIT", signal_unit);
 }
 
+// Beammap's PTC writer owns the completed fitting iteration. Other streams
+// receive the outer FRUIT-loop counter from the final-header caller.
+enum class TodIterationOwner { outer_fruit_loop, beammap_ptc };
+
 inline void add_tod_auxiliary_metadata_vars(netCDF::NcFile &fo,
                                             double sample_rate_hz,
                                             const std::string &apt_name,
-                                            int fruit_loop_iter) {
+                                            int fruit_loop_iter,
+                                            TodIterationOwner iteration_owner =
+                                                TodIterationOwner::outer_fruit_loop) {
+    if (iteration_owner == TodIterationOwner::beammap_ptc) {
+        const auto iteration = fo.getVar("FRUITLOOPS_ITER");
+        if (iteration.isNull() || iteration.getType().getId() != NC_INT ||
+            iteration.getDimCount() != 1 || iteration.getDim(0).getSize() != 1) {
+            throw std::runtime_error(
+                "Beammap PTC final header requires existing int32[1] FRUITLOOPS_ITER");
+        }
+    } else {
+        add_netcdf_var(fo, "FRUITLOOPS_ITER", fruit_loop_iter);
+    }
     add_netcdf_var(fo, "SAMPRATE", sample_rate_hz);
     add_netcdf_var<std::string>(fo, "APT", apt_name);
-    add_netcdf_var(fo, "FRUITLOOPS_ITER", fruit_loop_iter);
 }

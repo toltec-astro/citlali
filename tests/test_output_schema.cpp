@@ -34,7 +34,28 @@ void ensure_metadata_logger() {
     }
 }
 
-TEST(ptc_metadata, production_schema_allows_iteration_update_before_final_header) {
+// Supply the observation fields consumed by the actual final-header entry point.
+// The empty array list intentionally avoids unrelated beam geometry/calibration.
+void prepare_metadata_header(Engine &engine) {
+    engine.typed_config.timestream.raw_time_chunk.flux_calibration_enabled = false;
+    engine.typed_config.timestream.raw_time_chunk.extinction_correction_enabled = false;
+    engine.typed_config.timestream.processed_time_chunk.clean.enabled = false;
+    engine.typed_config.beammap.reference.subtract_reference_detector = false;
+    engine.telescope.source_name = "fixture";
+    engine.telescope.project_id = "metadata-regression";
+    engine.telescope.obs_goal = "metadata";
+    engine.telescope.fsmp = 122.0;
+    for (const auto key : {"Header.M2.XReq", "Header.M2.YReq", "Header.M2.ZReq"}) {
+        engine.telescope.tel_header[key] = Eigen::VectorXd::Zero(1);
+    }
+    for (const auto key : {"TelElAct", "TelAzAct", "ActParAng"}) {
+        engine.telescope.tel_data[key] = Eigen::VectorXd::Zero(1);
+    }
+    engine.calib.arrays.resize(0);
+    engine.observation_dates.date_obs.push_back("2026-01-13");
+}
+
+TEST(ptc_metadata, production_beammap_header_preserves_completed_iteration) {
     ensure_metadata_logger();
     for (const auto mode : {citlali::config::TodStreamOutputMode::full,
                             citlali::config::TodStreamOutputMode::mini}) {
@@ -62,6 +83,7 @@ TEST(ptc_metadata, production_schema_allows_iteration_update_before_final_header
         engine.tod_outputs.n_ptc_output_scans = 1;
         engine.iteration.fruit_iter = 2;
         engine.omb.sig_unit = "mJy/beam";
+        prepare_metadata_header(engine);
 
         // Invoke the production initial-schema entry point, not a test-created
         // iteration variable. Beammap updates it before the final header pass.
@@ -81,16 +103,100 @@ TEST(ptc_metadata, production_schema_allows_iteration_update_before_final_header
         }
         ASSERT_NO_THROW(beammap_ptc_product_output_helpers::update_ptc_tod_fruitloops_iter(
             engine.output_paths.tod_filename, 4, nullptr));
+        // The outer counter must stay distinct; finalization must not copy it
+        // over the Beammap writer's completed fitting iteration.
+        auto *buffer = &engine.omb;
+        ASSERT_NO_THROW(engine.add_tod_header(buffer));
+        EXPECT_EQ(engine.iteration.fruit_iter, 2);
         {
-            netCDF::NcFile file(filename, netCDF::NcFile::write);
+            netCDF::NcFile file(filename, netCDF::NcFile::read);
+            const auto iteration = file.getVar("FRUITLOOPS_ITER");
+            EXPECT_EQ(iteration.getType().getId(), NC_INT);
+            ASSERT_EQ(iteration.getDimCount(), 1);
+            EXPECT_EQ(iteration.getDim(0).getSize(), 1U);
             int value = -1;
-            file.getVar("FRUITLOOPS_ITER").getVar(&value);
+            iteration.getVar(&value);
             EXPECT_EQ(value, 4);
-            citlali::pipeline::add_tod_auxiliary_metadata_vars(file, 122.0, "fixture.ecsv", 5);
-            file.getVar("FRUITLOOPS_ITER").getVar(&value);
-            EXPECT_EQ(value, 5);
             EXPECT_EQ(file.getVars("FRUITLOOPS_ITER").size(), 1U);
+            double sample_rate = 0;
+            file.getVar("SAMPRATE").getVar(&sample_rate);
+            EXPECT_EQ(sample_rate, 122.0);
         }
+    }
+}
+
+TEST(ptc_metadata, production_other_stream_headers_use_outer_iteration) {
+    ensure_metadata_logger();
+    for (const auto reduction : {citlali::config::ReductionType::pointing,
+                                 citlali::config::ReductionType::beammap}) {
+        for (const auto mode : {citlali::config::TodStreamOutputMode::full,
+                                citlali::config::TodStreamOutputMode::mini}) {
+            MetadataDirectory directory;
+            Engine engine;
+            engine.logger = spdlog::get("citlali_logger");
+            engine.typed_config.runtime.reduction_type = reduction;
+            engine.runtime_config_provenance = citlali::config::make_runtime_config_provenance(
+                engine.typed_config.runtime, false);
+            engine.typed_config.timestream.output.processed_time_chunk.mode = mode;
+            engine.typed_config.timestream.output.raw_time_chunk.mode = mode;
+            engine.output_paths.obsnum_dir_name = directory.path.string() + "/";
+            engine.observation_identity.obsnum = "123456";
+            engine.telescope.sim_obs = false;
+            engine.telescope.pixel_axes = "altaz";
+            engine.telescope.tel_header["Header.Source.Ra"] = Eigen::VectorXd::Zero(1);
+            engine.telescope.tel_header["Header.Source.Dec"] = Eigen::VectorXd::Zero(1);
+            engine.telescope.scan_indices.resize(4, 1);
+            engine.telescope.scan_indices.col(0) << 0, 2, 0, 2;
+            engine.calib.n_dets = 2;
+            engine.calib.n_nws = 1;
+            engine.calib.nws = Eigen::VectorXI::Zero(1);
+            engine.calib.run_hwpr = false;
+            engine.rtcproc.run_polarization = false;
+            engine.ptcproc.cleaner.n_calc = 1;
+            engine.tod_outputs.n_rtc_output_scans = 1;
+            engine.tod_outputs.n_ptc_output_scans = 1;
+            engine.iteration.fruit_iter = 2;
+            engine.omb.sig_unit = "mJy/beam";
+            prepare_metadata_header(engine);
+            ASSERT_NO_THROW(engine.create_tod_files<engine_utils::toltecIO::rtc_timestream>());
+            if (reduction == citlali::config::ReductionType::pointing) {
+                ASSERT_NO_THROW(engine.create_tod_files<engine_utils::toltecIO::ptc_timestream>());
+            }
+            engine.iteration.fruit_iter = 7;
+            auto *buffer = &engine.omb;
+            ASSERT_NO_THROW(engine.add_tod_header(buffer));
+            for (const auto &[stream, filename] : engine.output_paths.tod_filename) {
+                SCOPED_TRACE(stream);
+                netCDF::NcFile file(filename, netCDF::NcFile::read);
+                int value = -1;
+                file.getVar("FRUITLOOPS_ITER").getVar(&value);
+                EXPECT_EQ(value, 7);
+            }
+        }
+    }
+}
+
+TEST(ptc_metadata, beammap_header_rejects_missing_or_malformed_iteration) {
+    for (int shape = 0; shape < 5; ++shape) {
+        SCOPED_TRACE(shape);
+        MetadataDirectory directory;
+        netCDF::NcFile file((directory.path / "bad-header.nc").string(), netCDF::NcFile::replace);
+        if (shape == 1) {
+            file.addVar("FRUITLOOPS_ITER", netCDF::ncDouble, file.addDim("iter", 1));
+        } else if (shape == 2) {
+            file.addVar("FRUITLOOPS_ITER", netCDF::ncInt, file.addDim("iter", 2));
+        } else if (shape == 3) {
+            file.addVar("FRUITLOOPS_ITER", netCDF::ncInt); // Scalar is not int32[1].
+        } else if (shape == 4) {
+            const auto dim = file.addDim("iter", 1);
+            file.addVar("FRUITLOOPS_ITER", netCDF::ncInt,
+                        std::vector<netCDF::NcDim>{dim, dim});
+        }
+        EXPECT_THROW(citlali::pipeline::add_tod_auxiliary_metadata_vars(
+            file, 122.0, "fixture.ecsv", 7,
+            citlali::pipeline::TodIterationOwner::beammap_ptc), std::runtime_error);
+        EXPECT_TRUE(file.getVar("SAMPRATE").isNull());
+        if (shape == 0) EXPECT_TRUE(file.getVar("FRUITLOOPS_ITER").isNull());
     }
 }
 

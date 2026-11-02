@@ -86,7 +86,11 @@ void Engine::add_tod_header(map_buffer_t &mb) {
             fo, telescope.fsmp,
             citlali::pipeline::apt_table_header_name(
                 calib.apt_filepath, logger),
-            iteration.fruit_iter);
+            iteration.fruit_iter,
+            runtime_settings.reduction_type == citlali::config::ReductionType::beammap &&
+                    fkey == "ptc"
+                ? citlali::pipeline::TodIterationOwner::beammap_ptc
+                : citlali::pipeline::TodIterationOwner::outer_fruit_loop);
 
         // add control/runtime parameters
         citlali::pipeline::add_tod_initial_runtime_config_vars(

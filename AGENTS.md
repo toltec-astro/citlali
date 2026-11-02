@@ -1,5 +1,21 @@
 # Citlali Refactor Agent Guide
 
+## Citlali execution ownership — owner directive 2026-11-01
+
+For Citlali/citlali-refactor work in any checkout or worktree, Grant executes
+all builds, tests, executable probes, benchmarks, scientific reductions and
+validation runners, on this Mac as well as Unity. Codex prepares code, tests,
+exact run commands and reviews owner-produced logs; it must not launch those
+commands itself, through a background process, a wrapper or a subagent.
+A request to “validate”, “run the checks” or “complete qualification” means
+prepare the owner-run steps and assess their results, unless Grant explicitly
+changes this execution boundary for the named command in the current task.
+File inspection/editing, Git inspection and authorized commits, and static
+review remain permitted. Do not disguise execution as an inspection or probe.
+State the execution owner in preflight and every delegated review. Report
+unexecuted gates as pending; never infer a pass or integrate from preparation.
+No direct Unity access or GitHub push is authorized by this rule.
+
 ## Governance Preflight
 
 Before planning or editing governed work, read
@@ -147,7 +163,7 @@ package index, but contract work does not silently edit the application tree.
 ## Working Protocol
 
 - Use `$HOME/tolteca/bin/python` for Python.
-- Build locally with:
+- Owner-run local build command (Codex must not execute):
 
   `cmake --build build --target citlali_cli -j 8`
 
@@ -157,24 +173,25 @@ package index, but contract work does not silently edit the application tree.
   `git rev-parse --short HEAD`; treat a mismatch as a failed build and do not
   use that executable for validation or reduction provenance.
 
-- Run the config gate with:
+- Owner-run config gate (Codex must not execute):
 
   `$HOME/tolteca/bin/python tools/config/run_config_preflight.py --require-all`
 
-- Run focused tests for the behavior touched. CTest, baseline-tool tests, and
+- Prepare focused tests for the owner to run. CTest, baseline-tool tests, and
   the full config preflight are active gates; skipped required data is not a
   successful validation.
 - Classify a test from the local fallback/ad hoc dependency realization as
   supplemental compilation or regression evidence. It does not reproduce the
   accepted Spack-backed V2 campaign unless an authoritative record explicitly
   binds it to that environment and evidence.
-- The user performs Unity builds and reductions. Do not attempt to use Unity.
+- The user performs all local and Unity builds, tests and reductions. Do not attempt to use Unity.
 - Do not push. The user performs all GitHub pushes. When a push is needed,
   provide the exact non-force command with the repository supplied as a full
   absolute argument path using `git -C /absolute/repository/path push ...`, so
   the user can run it from any directory; do not execute it.
 - Leave unrelated dirty files unchanged.
-- Commit coherent changes after local verification; do not create commits only
+- Commit coherent prepared candidates after static review, clearly marking runtime
+  gates pending owner execution; do not create commits only
   to satisfy a numerical cadence.
 - Update `doc/REFACTOR_STATUS.md` when a phase gate, governing decision, or
   validated snapshot changes. Use dated handoff notes when needed to preserve

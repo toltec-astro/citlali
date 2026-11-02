@@ -1,3 +1,31 @@
+## Beammap final-header repair prepared; owner execution pending — 2026-11-01
+
+Representative pointing validation of `949d38da4` passed the bounded same-environment
+comparison, but a completed production-header probe found that Beammap's saved
+fitting iteration was overwritten by the outer FRUIT counter. The two long
+Beammap runs were stopped and preserved; no complete Beammap qualification or
+integration was claimed. The sealed `citlali-metadata-representative-20261101`
+packet records the failure and independent review.
+
+The follow-on in the existing `codex/ptc-metadata-20261101` folder gives final-header
+metadata an explicit iteration owner. Beammap PTC preserves its required existing
+int32[1] field; other streams retain outer-counter behavior. Full/mini regression
+tests now invoke the actual final header, with pointing/RTC and malformed-schema
+guards. No numerical algorithm or cross-cutting Engine state changes.
+
+**All new runtime gates are pending Grant's execution.** The owner's November 1
+instruction reserves builds, tests, probes and reductions on both Mac and Unity
+to Grant. Codex prepares commands and reviews returned logs. This boundary is
+recorded in shared Codex instructions and this branch's `AGENTS.md`; it supersedes
+older imperative build/test instructions. Static review is not runtime validation.
+No mainline integration or push is authorized by prepared code or commands.
+
+The work order, owner-run commands, exact source binding and review are in:
+
+`/Users/gwilson/.codex/visualizations/2026/10/29/01a188f2-4d30-7e60-88a8-956b50bb08cf/citlali-beammap-iteration-20261101`
+
+Pointing work, Citlali 4.x/5.x, prior evidence and all backups remain protected.
+
 ## Bounded output-metadata repair candidate — 2026-11-01
 
 On `codex/ptc-metadata-20261101`, both recovered metadata defects were reproduced
