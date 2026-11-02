@@ -1,0 +1,65 @@
+{
+  "owner_directive": "Please proceed with all of these.",
+  "approved_items": [
+    "Update stale entry-point documentation",
+    "Refresh cached GitHub branch list with obsolete cached references pruned after preservation",
+    "Retire two fully integrated local candidate branches and metadata worktree after preservation",
+    "Prepare separate owner-run GitHub SCI-ALIGN branch retirement"
+  ],
+  "base": "bb92e062bd05fb517a81bca8da8206b06797cb6e",
+  "governance_read": [
+    "doc/governance/ENGINEERING_GOVERNANCE.md",
+    "doc/governance/REVIEW_AND_CONFORMANCE.md"
+  ],
+  "risk_tier": 2,
+  "execution_owner": "Grant for all builds/tests/probes/benchmarks/reductions/validation runners and all GitHub pushes",
+  "local_branch_retirements": {
+    "refs/heads/codex/pointing-handoff-integration-20261031": "f2ad2913acf5fee2d7ca8c40545a385ae07aab31",
+    "refs/heads/codex/ptc-metadata-20261101": "012cc7adc5b50bd3491c47021744310735de3a8a"
+  },
+  "worktree_retirement": "/Users/gwilson/.codex/worktrees/ptc-metadata-20261101/citlali-refactor",
+  "preservation": [
+    "Both local tips remain in accepted mainline ancestry",
+    "Entire ignored build archived, per-file SHA256/modes/symlinks verified",
+    "Candidate Git administration copied; restore source at exact012 from retained mainline",
+    "31 explicit archive refs protect otherwise-unanchored cached history and SCI remote tip",
+    "All prior backups/sealed evidence retained"
+  ],
+  "cached_removals": 92,
+  "cached_updates": {
+    "refs/remotes/origin/codex/refactor-mainline": {
+      "old": "4d14d0dce8c80b6bc9d0d39c9a90a8f4b2504538",
+      "new": "bb92e062bd05fb517a81bca8da8206b06797cb6e"
+    }
+  },
+  "remote_deletion": "Owner-run only; exact SCI tip353b11887ff04dfd7bca12915917495f81a587fa; mainline push separate",
+  "expected_local_inventory": {
+    "worktrees": 5,
+    "refactor_worktrees": 3,
+    "protected_worktrees": 2,
+    "local_branches": 8,
+    "stashes": 3
+  },
+  "runtime_gates": "Not triggered: no application or executable changes; preservation and static review only",
+  "stop_conditions": [
+    "Changed branch/source identity",
+    "Dirty candidate outside archived ignored build",
+    "Active process/open file using candidate",
+    "Archive content mismatch",
+    "Protected state changed unexpectedly"
+  ],
+  "out_of_scope": [
+    "pointing work",
+    "Citlali4.x/5.x",
+    "stashes",
+    "old backups",
+    "runtime replacement/rebuild",
+    "Unity",
+    "automatic remote deletion",
+    "other Git garbage cleanup"
+  ],
+  "operation_packet": "/Users/gwilson/.codex/visualizations/2026/10/29/01a188f2-4d30-7e60-88a8-956b50bb08cf/citlali-final-cleanup-20261102",
+  "build_archive_sha256": "f7188d25acdc9c0dda7762c61263bc743d3034ec874957c43ae20dea687d889b",
+  "remote_status": "Prepared for owner execution; not deleted",
+  "application_source_changed": false
+}

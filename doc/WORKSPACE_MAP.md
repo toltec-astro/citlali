@@ -1,6 +1,6 @@
 # Refactor workspace map
 
-Verified on 2026-11-01. A **branch** names a line of commits; a **working folder**
+Verified on 2026-11-02 after owner-approved final local cleanup. A **branch** names a line of commits; a **working folder**
 is a checkout that may also contain builds, results or files not recorded in Git.
 A saved checkout without a branch name is frozen at its recorded commit; it is
 not missing work. Counts are inventories, not counts of active projects.
@@ -20,21 +20,27 @@ SCI-ALIGN workspace and is now retired. The Codex project points to mainline.
 Retained checkouts share Git storage at `/Users/gwilson/GitHub/citlali/.git`;
 do not move or remove that store.
 
-GitHub mainline was last verified at
-`f089a5d665877dde4e32f006cb81717d28f647aa`, with
-[passing Python 3.11/3.13 checks](https://github.com/toltec-astro/citlali/actions/runs/41311399974).
-Later retirement documentation follows locally; this cleanup performs no GitHub write.
-A cached `origin/...` label can lag the live GitHub branch: the old “ahead 683”
-message at this audit was a stale local comparison, not 683 unpublished commits.
-Local and GitHub branch inventories are different sets, not two copies of every
-branch; ongoing pointing/handoff names were local-only at this snapshot.
+GitHub mainline was verified at
+`bb92e062bd05fb517a81bca8da8206b06797cb6e`, with
+[passing Python 3.11/3.13 checks](https://github.com/toltec-astro/citlali/actions/runs/41532733119).
+This documentation cleanup follows locally; Grant performs its push.
+The local GitHub cache was refreshed: 92 obsolete branch labels were removed,
+one existing tip was updated and one missing branch label was added. It now
+represents 29 live branches plus Git's default-branch pointer. Thirty historical
+tips needing an explicit retained anchor were saved under
+`refs/archive/final-cleanup-20261102/origin/`; an additional archive reference
+preserves the SCI-ALIGN remote tip. Archive references are recovery locators,
+not working branches or new projects.
+Local and GitHub branch inventories are different sets. Ongoing pointing/handoff
+names remain local-only in this snapshot.
 
 ## Five current working folders
 
 Three are refactor-related; two are protected legacy/performance folders.
 After [A+B retirement](WORKSPACE_RETIREMENT_2026-10-31.md), the owner approved
-closing the obsolete collaborator pilot and SCI-ALIGN checkout. No replacement
-working folder was added.
+closing the obsolete collaborator pilot and SCI-ALIGN checkout. The temporary
+metadata repair folder was subsequently created, qualified and retired after its
+application was integrated; the five folders below are the current inventory.
 Start new development from mainline; keep ongoing pointing work in its named folders.
 Paths below are absolute locators on this Mac, not portable deployment settings.
 
@@ -50,20 +56,24 @@ The other four working folders have no staged, unstaged or untracked changes.
 That check excludes ignored builds/products; a clean Git status alone does not
 make a folder disposable.
 
-## Nine local branch names
+## Eight local branch names
 
 Five local branch names are attached to folders
-in the table. Four have no working folder:
+in the table. Three have no working folder:
 
 | Branch | Role / disposition |
 | --- | --- |
-| `codex/pointing-handoff-integration-20261031` | Retained exact integrated candidate at `f2ad2913a`; later branch retirement requires its own disposition |
 | `codex/baseline-before-successor-default-2026-09-17` at `0f52e1a42` | Frozen comparison checkpoint; retained despite being an ancestor of mainline |
 | `codex/scientific-contract-library` at `54475956f` | Scientific-specification reference; one local owner-decision commit outside mainline; retain pending disposition |
 | `codex/wp7-rtc-fixed-decimation-authority` at `49fe73e75` | Divergent scientific evidence; preserve, do not resume merely because the branch exists |
 
-The last GitHub inventory had 29 branches, mostly legacy releases and historical
-development. This operation leaves GitHub unchanged, including the SCI-ALIGN branch.
+The live GitHub inventory has 29 branches, mostly legacy releases and historical
+development. Separate owner-run retirement is prepared for only
+`codex/sci-align-001-lissajous-timestream-fit` at
+`353b11887ff04dfd7bca12915917495f81a587fa`; this would leave 28 branches.
+No remote deletion has been executed by Codex. The exact tip is preserved under
+`refs/archive/final-cleanup-20261102/github-sci-align` and in the prior independent
+SCI-ALIGN history restoration. The command must reject a changed tip.
 `codex/structural-refactor` remains a protected GitHub reference. All Citlali
 4.x/5.x branches stay protected. Neither an old name nor complete ancestry alone
 authorizes retirement of an owner-retained comparison or scientific reference.
@@ -130,7 +140,8 @@ The exact manifests, hashes, checks, reviews and original files are in:
 Original files are under `preserved-workspace-files`, retaining relative paths.
 The separate sealed assessment packet, `citlali-sci-align-retirement-assessment-20261101`,
 records commit dispositions, canonical contract matches and two output-metadata
-repair proposals for a future work order. No old experiment was merged or rerun.
+repair proposals. Those proposals and the later Beammap final-header defect were
+resolved in integrated application `012cc7adc`; no old experiment was adopted.
 
 Pointing's 18 dependency-source trees were verified and its build configuration
 changed to its own copies. A separate AppleClang/Homebrew build, native tests and
@@ -145,13 +156,40 @@ confirmed through the app. Existing chats were not redirected, archived or
 unpinned. Before resuming a chat bound to SCI-ALIGN or another retired folder,
 continue explicitly from mainline or restore its authenticated old checkout.
 
+## Completed candidates retired — 2026-11-02
+
+The owner approved retiring local `codex/pointing-handoff-integration-20261031`
+at `f2ad2913acf5fee2d7ca8c40545a385ae07aab31` and local
+`codex/ptc-metadata-20261101` at `012cc7adc5b50bd3491c47021744310735de3a8a`.
+Both exact tips are ancestors of accepted mainline with no unique commits.
+The metadata folder
+`/Users/gwilson/.codex/worktrees/ptc-metadata-20261101/citlali-refactor`
+was removed only after its complete ignored build was archived and its 396
+regular-file/symlink entries matched by content, mode and link target. Its
+qualified executable is preserved, not installed into another runtime.
+The other candidate branch had no working folder.
+
+The operation, archive, build manifest, Git administration copy, preservation
+receipts and independent review are under:
+
+`/Users/gwilson/.codex/visualizations/2026/10/29/01a188f2-4d30-7e60-88a8-956b50bb08cf/citlali-final-cleanup-20261102`
+
+`RESTORE.txt` describes restoration. Continue old candidate chats from mainline
+for new work. Historical run scripts remain sealed and also bind old mainline
+`7a8e2cd8`; restoring candidate `012cc7adc` alone does not make them reusable.
+Prepare a fresh owner-reviewed run packet or separately restore the exact old
+environment. Never reset current mainline to satisfy an old runner. Restored
+builds require the original source path, retained mainline `build/spack-sources`
+and the separate `build/spack-candidate` Spack store/environment. Grant alone
+executes builds, tests, probes and reductions. No runtime was launched here.
+
 ## Consolidation reached
 
 There are now **three refactor working folders plus two protected folders**,
-**nine local branches**, and **three preserved stashes**. New development starts
+**eight local branches**, and **three preserved stashes**. New development starts
 from mainline. Both ongoing pointing/handoff folders, Citlali 4.x/5.x and all prior
 recovery packets remain protected. The corresponding GitHub SCI-ALIGN branch is
-unchanged; retiring it requires a separate owner-approved remote operation.
+unchanged on GitHub pending the separately prepared owner-run deletion.
 
 Engineering and the parked `884f` contract handoff can be restored from the
 verified archives described in [the retirement record](WORKSPACE_RETIREMENT_2026-10-31.md).

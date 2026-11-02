@@ -7,11 +7,16 @@ integration receipt. [Owner acceptance](../validation/metadata_integration_2026-
 and the [integration ledger](INTEGRATION_LEDGER.md) bind the operation and evidence.
 Grant's Mac Spack tests and representative pointing/Beammap runs passed independent
 assessment with recorded limitations; existing runtime binaries were not replaced.
-GitHub publication of this integration remains the owner's next action.
+Grant published integration receipt `bb92e062bd05fb517a81bca8da8206b06797cb6e`;
+[GitHub checks passed on Python 3.11 and 3.13](https://github.com/toltec-astro/citlali/actions/runs/41532733119).
+The subsequent cleanup changes documentation and local inventory only.
 
-The current inventory is **six working folders: four refactor plus two protected**,
-ten local branches and three stashes. The metadata candidate folder is retained;
-no retirement is authorized by integration. The shared and repository instructions
+The current inventory is **five working folders: three refactor plus two protected**,
+eight local branches and three stashes. Separate owner-approved cleanup retired
+the completed metadata folder and two candidate branch names after preservation.
+The [cleanup acceptance](../validation/final_cleanup_2026-11-02/OWNER_ACCEPTANCE.json)
+and [workspace map](WORKSPACE_MAP.md) record recovery and remote-operation boundaries.
+The shared and repository instructions
 reserve all builds, tests, probes, reductions and validation runners to Grant.
 Older counts and publication statements below describe their named checkpoints.
 
@@ -24,10 +29,10 @@ as an integration receipt only after the exact independently reviewed candidate
 is on local mainline; the external packet's `COMPLETION.json` records that move,
 full source identity, Spack executable and passing checks.
 
-Published mainline `f089a5d665877dde4e32f006cb81717d28f647aa` includes integrated
+The earlier published checkpoint `f089a5d665877dde4e32f006cb81717d28f647aa` included integrated
 application `f2ad2913a` and the completed documentation/scientific-file cleanup.
 Its [GitHub checks passed on Python 3.11 and 3.13](https://github.com/toltec-astro/citlali/actions/runs/41311399974).
-Later retirement documentation follows locally; no GitHub write is part of cleanup.
+Later metadata publication is recorded above; cleanup performs no GitHub write.
 No Unity or observational qualification is inferred from publication or cleanup.
 
 For documentation navigation, use the [documentation guide](README.md).
@@ -68,7 +73,7 @@ project, retains its existing inputs, products and runtime bindings.
 | --- | --- |
 | Previous accepted application foundation | `44171fd3a6ba5924f8f4dba0324defe0922c597d`; retained pointing/engineering and Mac Spack qualification |
 | New accepted input scope | Handoff `1f3bf6db744050102bc78e06917613e5dbe7fe3d` plus pointing evidence `6969dcf8168bcffbdfdbf7ebe56a22730545e086`; final combined source is bound by the integration receipt |
-| Development mainline | `codex/refactor-mainline`; metadata application `012cc7adc` integrated locally with documentation receipt; owner publication pending |
+| Development mainline | `codex/refactor-mainline`; metadata application `012cc7adc` published in receipt `bb92e062b` with passing hosted checks; later cleanup is documentation-only |
 | Previous mainline | `e32c4584dec07617d6caa857d39bf13047b6c4b0`; retained in ancestry and recovery evidence |
 | Pointing evidence included here | `6969dcf8168bcffbdfdbf7ebe56a22730545e086`; includes the earlier `797d013f` cutoff and later saved assessment, compatibility audit and proposed pilot plan |
 | Engineering input included here | `5c46201057d6b6d1048aac2949a64e9a34e9bad3` |
@@ -172,7 +177,7 @@ products. Beammap production and OOF remain outside that release target.
 | Pointing-derived calibration consumed by SCIENCE | Flux policy, downstream connection and owner acceptance still required |
 | All-array SCIENCE and genuine multi-observation coadds | Required release milestone; not established by POINT checks |
 | Downstream products and consumers | Product/units/layout qualification still required |
-| Build and publication | Integrated `f2ad2913a` passed local Mac Spack gates; publication through `f089a5d66` passed hosted Python 3.11/3.13 checks. Retirement documentation follows locally. Unity and release/export qualification remain separate |
+| Build and publication | Metadata application `012cc7adc` passed bounded owner-run Mac Spack and representative gates; receipt `bb92e062b` passed hosted Python 3.11/3.13 checks. Later cleanup is documentation-only. Unity and release/export qualification remain separate |
 | Production | No new authorization from integration or passing local tests |
 
 General v2 defaults remain 1 arcsec / coverage 0.1 / M10. The frozen trials used

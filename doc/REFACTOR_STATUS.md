@@ -1,3 +1,35 @@
+## Final local housekeeping completed — 2026-11-02
+
+Grant approved the four-item cleanup proposal with “Please proceed with all of these.”
+Base mainline was `bb92e062bd05fb517a81bca8da8206b06797cb6e`, already published
+with passing [Python 3.11/3.13 checks](https://github.com/toltec-astro/citlali/actions/runs/41532733119).
+The [cleanup acceptance](../validation/final_cleanup_2026-11-02/OWNER_ACCEPTANCE.json)
+binds the exact local candidates, preservation and owner-run remote boundary.
+
+Local candidate names `codex/pointing-handoff-integration-20261031` (`f2ad2913a`)
+and `codex/ptc-metadata-20261101` (`012cc7adc`) were deleted after confirming
+both histories are fully included in mainline. The metadata working folder was
+retired after a verified archive of its ignored build and Git-administration copy;
+its qualified executable and old run evidence remain preserved. The live GitHub
+cache now contains 29 branch labels plus the default-branch pointer, following
+92 obsolete-label removals, one tip refresh and one added label. Thirty-one new
+archive references retain necessary historical cached tips and the remote SCI tip.
+
+There are five working folders (three refactor plus two protected), eight local
+branches and three untouched legacy stashes. Pointing work, Citlali 4.x/5.x,
+retained runtimes and prior recovery artifacts remain protected. Only current
+orientation/acceptance documentation changes; no application or runtime gate is
+triggered. Grant owns execution and pushes; no builds/tests/probes/reductions,
+Unity access or remote writes were performed for cleanup.
+
+Remote SCI-ALIGN deletion is prepared for Grant at exact `353b11887ff04dfd7bca12915917495f81a587fa`;
+it is not yet executed. No other GitHub retirement is included. The local cleanup
+documentation push is separate. Recovery, restoration conditions and final review:
+
+`/Users/gwilson/.codex/visualizations/2026/10/29/01a188f2-4d30-7e60-88a8-956b50bb08cf/citlali-final-cleanup-20261102`
+
+Earlier inventories and pending-candidate statements below are dated checkpoints.
+
 ## Output-metadata repairs integrated locally — 2026-11-02
 
 Grant approved and local `codex/refactor-mainline` fast-forwarded from

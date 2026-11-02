@@ -51,8 +51,9 @@ or an old command example alone does not establish current support.
 The `older scientific workspace guide
 <doc/SCIENTIFIC_WORKSPACE_CLEANUP_2026-11-01.md>`_ records retained work and a
 completed archive cleanup. The owner-approved batch removed 238 historical
-document working copies after recovery verification; 227 changed/untracked paths
-remain protected in that older workspace.
+document working copies after recovery verification. The remaining 227 changed/
+untracked files were preserved before the older SCI-ALIGN workspace was retired;
+the workspace map records their recovery location.
 
 Historical build reference
 --------------------------

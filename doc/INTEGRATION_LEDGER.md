@@ -1,3 +1,23 @@
+## Final local cleanup acceptance — 2026-11-02
+
+Owner directive: “Please proceed with all of these.” This accepts the immediately
+preceding four-item proposal: current-documentation repair, cached GitHub branch
+reconciliation, retirement of two fully integrated local candidates and the
+metadata folder after preservation, and preparation of remote SCI-ALIGN retirement.
+The [durable scope record](../validation/final_cleanup_2026-11-02/OWNER_ACCEPTANCE.json)
+binds exact identities and execution ownership. Base is
+`bb92e062bd05fb517a81bca8da8206b06797cb6e`; application `012cc7adc` remains unchanged.
+
+Local cleanup completed with five folders, eight local branches and three stashes.
+The candidate build is archived with verified file identities; required historical
+tips remain reachable under archive references. All prior backups remain retained.
+Remote SCI-ALIGN deletion and publication of this documentation remain owner-run
+operations, neither performed by Codex. No application qualification or production
+status changes. Detailed operation, preservation and independent review receipts:
+
+`/Users/gwilson/.codex/visualizations/2026/10/29/01a188f2-4d30-7e60-88a8-956b50bb08cf/citlali-final-cleanup-20261102`
+
+
 ## Output-metadata integration — owner acceptance 2026-11-02
 
 Owner directive: “Approve local integration of candidate 012cc7adc into
