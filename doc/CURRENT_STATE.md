@@ -1,5 +1,16 @@
 # Citlali refactor — current state
 
+2026-11-03 workflow clarification: Grant runs POINT on individual observations
+in delta-source Alt/Az; observations to be coadded are reduced as SCIENCE in
+RA/Dec. The [qualification plan](POINT_SCIENCE_QUALIFICATION_PLAN_2026-11-03.md)
+orders individual configured POINT, celestial SCIENCE/coadds and a known-offset
+astrometry check. Observation/reference/offset bindings and SCIENCE route
+selection remain pending. Configured successor POINT exists; retained-standard
+SCIENCE is a separate executable route and cannot qualify the unfinished
+connected successor SCIENCE path. No qualification has run under this plan.
+The stage-1 invalid-coadd-fit repair remains defensive; it does not require or
+endorse a POINT-coadd workflow. All execution stays with Grant; no push.
+
 2026-11-03 stage-3 update: Grant accepted exact application
 `19b6fc462930af6f0a7bf2ca5b5350dd3c72af6e` as a bounded software repair.
 Local mainline fast-forwarded from `fba31ae90`; the following acceptance

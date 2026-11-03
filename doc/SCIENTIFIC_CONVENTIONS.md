@@ -744,6 +744,16 @@ retroactively relabeled as carrying this successor bundle. See
 | Beammap detector maps | AltAz tangent-plane azimuth/elevation offsets around the Beammap source | arcsec |
 | Science maps | Equatorial J2000 TAN projection centered on the configured field | deg |
 
+Owner workflow clarification, 2026-11-03: run POINT on individual observations
+in delta-source Alt/Az. Reduce observations intended for coadding as SCIENCE in
+RA/Dec, and use that celestial frame to check applied pointing corrections
+against the source's known coordinates. This does not authorize POINT coadds
+as an observing workflow. Defensive invalid-fit handling for unfitted
+POINT/OOF coadds remains in place. The [qualification plan](POINT_SCIENCE_QUALIFICATION_PLAN_2026-11-03.md)
+separates configured successor POINT from retained-standard SCIENCE evidence
+and records the pending connected successor SCIENCE route. No new offset sign,
+calibration policy or numerical tolerance follows from this clarification.
+
 Owner direction 2026-10-02 makes delta-source AltAz mandatory for new POINT
 and OOF maps. At exact assigned sample times, source-relative offsets are
 `az = cos(TelElAct - TelElCor) * (TelAzAct - SourceAz) - TelAzCor` and

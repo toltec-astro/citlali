@@ -1,3 +1,15 @@
+## POINT / SCIENCE workflow and qualification preparation — 2026-11-03
+
+Owner clarification: individual POINT uses delta-source Alt/Az; coadding is a
+SCIENCE workflow in RA/Dec. A known-offset SCIENCE check should demonstrate the
+source's expected celestial position. The [bounded qualification plan](POINT_SCIENCE_QUALIFICATION_PLAN_2026-11-03.md)
+records the sequence and existing coordinate authority without introducing
+thresholds or changing algorithms. Route/input/reference/offset bindings remain
+pending; configured POINT and retained SCIENCE must have separate acceptance
+claims, and connected successor SCIENCE remains a prerequisite if selected.
+No reductions or new validation gates have run. Grant retains all execution.
+No push, deployment, runtime replacement, new application repair or cleanup.
+
 ## Stage 3 accepted and integrated locally — 2026-11-03
 
 Grant accepted exact application `19b6fc462930af6f0a7bf2ca5b5350dd3c72af6e`
