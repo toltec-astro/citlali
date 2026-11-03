@@ -7,8 +7,13 @@ config/NetCDF/Tune/APT/raw binding and product loading. Production execution
 and acceptance tooling link it; production no longer includes the acceptance
 program. Historical telescope/mapping and masked-covariance domains remain
 explicit in `successor_experiment_profiles.h`, without broader admission.
-Native direct output uses an exclusive staged-directory owner and no-replace
-publication; required FITS closes and FFTW creation have explicit resource
+Native saved MAP/FRUIT output uses an exclusive staged-directory owner and
+no-replace publication. Native RTC/CAL/PTC uses `NativeRtcOutputLayout` to
+exclusively claim the final run directory and prepare selected network,
+treatment, CAL and PTC directories at setup, before shared preparation or
+workers. Directory existence is not completion; failed attempts are preserved
+and existing paths cannot be reused. Performance logging and downstream
+publishers consume prepared paths. Required FITS closes and FFTW creation have explicit resource
 owners. Configured POINT's separate atomic `reduNN` creation is unchanged.
 
 ## Current application entry points

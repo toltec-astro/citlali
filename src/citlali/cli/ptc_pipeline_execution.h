@@ -3,7 +3,8 @@
 #include <sys/resource.h>
 namespace {
 YAML::Node execute_connected_ptc(const PtcCalSource &source,const ProcessingScanNativeProjection &scans,
-    const YAML::Node &cfg,const citlali::cli::DevelopmentPtcRequest &requested,const fs::path &output) {
+    const YAML::Node &cfg,const citlali::cli::DevelopmentPtcRequest &requested,
+    const citlali::cli::NativeRtcOutputLayout::TreatmentPaths &output) {
     const auto began=std::chrono::steady_clock::now();
     const auto effective=YAML::LoadFile(checked_file(cfg["effective_config"]).string());
     const auto cleaning=effective["timestream"]["processed_time_chunk"]["clean"];
@@ -41,12 +42,12 @@ YAML::Node execute_connected_ptc(const PtcCalSource &source,const ProcessingScan
     const auto plan=PtcPlan::consider(evidence,source.val_snapshot_handle(),1);
     const auto signal=PtcAppliedSignal::apply(plan,source,source.val_snapshot_handle());
     const auto val=ValSnapshot::commit_ptc_output(source.val_snapshot_handle(),ValPtcOutputFacts::preserve(signal));
-    const auto destination=output/"ptc";fs::create_directory(destination);
+    const auto &destination=output.ptc;
     YAML::Node record;record["schema"]="citlali-ptc-output-v2";record["unit"]=std::string(PtcCalSource::unit);
     record["method"]=requested.method;record["rank"]=request.rank;
-    record["use_policy"]=std::string(PtcEvidence::use_policy);record["source_CAL_receipt_sha256"]=citlali::utils::sha256_file(output/"cal"/"receipt.yaml");
+    record["use_policy"]=std::string(PtcEvidence::use_policy);record["source_CAL_receipt_sha256"]=citlali::utils::sha256_file(output.cal/"receipt.yaml");
     record["input_VAL_generation"]=source.val_snapshot_handle()->generation().value;record["output_VAL_generation"]=val->generation().value;
-    record["processing_generation"]=scans.binding->processing_generation();record["CAL_classification"]=(output/"cal"/"receipt.yaml").string();
+    record["processing_generation"]=scans.binding->processing_generation();record["CAL_classification"]=(output.cal/"receipt.yaml").string();
     record["centering"]="per-detector-eligible-arithmetic-mean-not-restored";record["scaling"]="identity";
     record["metric"]="binary-eligible-Euclidean";record["relative_rank_tolerance"]=request.relative_rank_tolerance;
     record["relative_objective_tolerance"]=request.relative_objective_tolerance;record["iteration_limit"]=request.iteration_limit;

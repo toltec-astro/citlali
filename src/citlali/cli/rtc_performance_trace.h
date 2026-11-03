@@ -9,7 +9,7 @@ namespace {
 class RtcPerformanceTrace {
 public:
     explicit RtcPerformanceTrace(const fs::path &directory) {
-        fs::create_directories(directory);out_.open(directory/"performance.jsonl");
+        out_.open(directory/"performance.jsonl");
         require(bool(out_),"performance evidence output failed");mark("start");
     }
     void mark(const char *stage) {

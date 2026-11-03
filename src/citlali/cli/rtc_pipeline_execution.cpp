@@ -1,6 +1,7 @@
 #include "rtc_binary_output.h"
 #include "oof_development_scope.h"
 #include "configured_point_scope.h"
+#include "native_rtc_output_layout.h"
 // Shared application-boundary RTC execution. Scientific owners remain the
 // existing typed components; YAML and file checks stop at this boundary.
 #include <citlali/core/cli/successor_development_execution.h>
@@ -138,7 +139,8 @@ struct SharedObservationPreparation {
 }
 static int execute_successor_network(const fs::path &input_path, const fs::path &output_path,
     citlali::cli::RtcInvocation invocation, std::optional<fs::path> reviewed_selection, citlali::cli::DevelopmentTerminal endpoint, citlali::cli::DevelopmentPtcRequest ptc_request,
-    const SharedObservationPreparation *common=nullptr) {
+    const SharedObservationPreparation *common=nullptr,
+    const citlali::cli::NativeRtcOutputLayout::NetworkPaths *prepared_output=nullptr) {
   using citlali::cli::RtcInvocation;using citlali::cli::DevelopmentTerminal;
   const bool development = invocation == RtcInvocation::development_default;
   std::array<std::string,4> arguments{"citlali",input_path.string(),output_path.string(),
@@ -168,7 +170,13 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
           cfg["reassessment_selection"]["intent"].as<std::string>()=="retain-development-candidate",
           "successor.selection_unavailable: explicit frozen-plan development selection is required");
     }
-    const fs::path output=argv[2];require(!fs::exists(output),"preserve previous output");
+    std::optional<citlali::cli::NativeRtcOutputLayout> local_output;
+    if (!prepared_output) {
+      local_output.emplace(output_path,std::vector<int>{},bool(cfg["decision_apply"]),
+                           !development,endpoint);
+      prepared_output=&local_output->network(0);
+    }
+    const fs::path &output=prepared_output->root;
     RtcPerformanceTrace performance(output);
     auto checked=[&](const std::string &key){return checked_file(cfg[key]);};
     const auto raw_path = checked("raw"), tune_path = checked("tune"),
@@ -669,7 +677,6 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
     // scientific input. A changed code/config/VAL requires a new selection.
     const auto binding=citlali::utils::sha256(std::string(CITLALI_GIT_REVISION)+"\n"+
         citlali::utils::sha256_file(argv[1])+"\nVAL-generation=0\n"+mapping->paired_xr_record_id);
-    fs::create_directories(output);
     if(recovered_scans) write_yaml(output/"processing-scans.yaml",recovered_scans->receipt);
     std::ofstream native_times(output/"native-time.f64",std::ios::binary);
     for(auto row=axis->first_native_row();row<axis->past_last_native_row();++row){
@@ -939,10 +946,10 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
       receipt["transient_excluded_pair_cells"]=transient->counts().union_pair_cells;
       receipt["Consider_connection_seconds"]=std::chrono::duration<double>(std::chrono::steady_clock::now()-considered_at).count();
       performance.mark("transient_support_decisions_complete");
-      const auto root_output=output;
+      const auto &root_output=prepared_output->root;
       for(bool continuity : (decision && !development ? std::vector<bool>{false,true} : std::vector<bool>{true})){
-      const auto output=decision ? root_output/(continuity ? "donor-continuity" : "exclusion-control") : root_output;
-      fs::create_directories(output);
+      const auto &treatment_output=prepared_output->treatment(continuity);
+      const auto &output=treatment_output.root;
       YAML::Node arm;
       const auto planning_at=std::chrono::steady_clock::now();
       std::vector<std::shared_ptr<const RtcNotchRecoveryPlan>> plans;
@@ -1288,13 +1295,13 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
             offset_support << recovered_scans->receipt["grid_first_unix_seconds"].as<double>(),
                 recovered_scans->receipt["grid_last_unix_seconds"].as<double>();
           }
-          const auto cal=execute_connected_cal(cal_source,cfg,verified,relation,channels,output,performance,
+          const auto cal=execute_connected_cal(cal_source,cfg,verified,relation,channels,treatment_output.cal,performance,
               common?&common->cal:nullptr,offset_support.size()==2?&offset_support:nullptr);
           receipt["CAL"]=cal.receipt;
           if(endpoint==DevelopmentTerminal::ptc) {
             require(bool(recovered_scans),"successor.PTC_scan_binding_unavailable");
             performance.mark("PTC_start");
-            receipt["PTC"]=execute_connected_ptc(cal.source,recovered_scans->projection,cfg,ptc_request,output);
+            receipt["PTC"]=execute_connected_ptc(cal.source,recovered_scans->projection,cfg,ptc_request,treatment_output);
           }
         }
         performance.mark("downstream_complete");
@@ -1380,7 +1387,6 @@ int execute_successor_observation(const YAML::Node &request,const fs::path &outp
           (oof || ((reference || configured || request["observation"].as<int>()==152390 || request["observation"].as<int>()==152389 || request["observation"].as<int>()==152430) && request["subobservation"].as<int>()==0 &&
           request["scan"].as<int>()==2)),"successor.observation_scope_unsupported");
   require(request["networks"].IsSequence() && request["networks"].size()>0,"successor.empty_network_request");
-  require(!fs::exists(output),"preserve previous output");
   std::vector<fs::path> inputs;std::vector<int> ids;std::vector<YAML::Node> configs;
   for(const auto &entry:request["networks"]) {
     const int nw=entry["network"].as<int>();
@@ -1398,13 +1404,14 @@ int execute_successor_observation(const YAML::Node &request,const fs::path &outp
     }
     ids.push_back(nw);inputs.push_back(path);configs.push_back(cfg);
   }
+  const citlali::cli::NativeRtcOutputLayout output_layout(output,ids,true,false,terminal);
   // Set once before concurrent work. No worker mutates library-wide controls.
   Eigen::setNbThreads(1);
 #ifdef _OPENMP
   omp_set_dynamic(0);omp_set_num_threads(1);
 #endif
   const auto began=std::chrono::steady_clock::now();
-  RtcPerformanceTrace trace(output);
+  RtcPerformanceTrace trace(output_layout.root());
   const auto &cfg=configs.front();const NativeObservationScope scope{request["observation"].as<int>(),request["subobservation"].as<int>(),request["scan"].as<int>()};
   auto verified=apt::verify_bundle_filesystem(checked_file(cfg["manifest"]),true);
   auto relation=pipeline::admit_canonical_apt_detector_relation_v2(verified);
@@ -1472,7 +1479,7 @@ int execute_successor_observation(const YAML::Node &request,const fs::path &outp
       (void)citlali::cli::detail::read_rtc_array_filter(YAML::LoadFile(checked_file(n["filter_plan"]).string()),citlali::cli::detail::oof_array(n));
       record["networks"].push_back(row);
     }
-    fs::create_directories(output);write_yaml(output/"PREPARED.yaml",record);return 0;
+    write_yaml(output_layout.root()/"PREPARED.yaml",record);return 0;
   }
   SharedObservationPreparation common{std::move(verified),std::move(relation),std::move(processing),
       std::move(cal),std::move(telescope),std::move(motion)};
@@ -1487,8 +1494,9 @@ int execute_successor_observation(const YAML::Node &request,const fs::path &outp
 #endif
     for(std::size_t i=w;i<ids.size();i+=workers) {
       const auto start=std::chrono::steady_clock::now();
-      codes[i]=execute_successor_network(inputs[i],output/("network"+std::to_string(ids[i])),
-          citlali::cli::RtcInvocation::development_default,{},terminal,ptc,&common);
+      codes[i]=execute_successor_network(inputs[i],output_layout.network(i).root,
+          citlali::cli::RtcInvocation::development_default,{},terminal,ptc,&common,
+          &output_layout.network(i));
       seconds[i]=std::chrono::duration<double>(std::chrono::steady_clock::now()-start).count();
     }
   });
@@ -1509,7 +1517,7 @@ int execute_successor_observation(const YAML::Node &request,const fs::path &outp
   int exit=0;
   for(std::size_t i=0;i<ids.size();++i) {
     YAML::Node n;n["network"]=ids[i];n["worker_index"]=i%workers;n["exit_code"]=codes[i];
-    n["wall_seconds"]=seconds[i];n["output"]=(output/("network"+std::to_string(ids[i]))).string();
+    n["wall_seconds"]=seconds[i];n["output"]=output_layout.network(i).root.string();
     n["input"]=request["networks"][i]["input"];
     n["state"]=codes[i]==0?"completed":codes[i]==2?"partial-or-unavailable-preserved":"failed-preserved";
     record["networks"].push_back(n);
@@ -1517,7 +1525,7 @@ int execute_successor_observation(const YAML::Node &request,const fs::path &outp
   }
   record["wall_seconds"]=std::chrono::duration<double>(std::chrono::steady_clock::now()-began).count();
   record["exit_code"]=exit;
-  write_yaml(output/"observation-receipt.yaml",record);trace.mark("observation_receipt_written");
+  write_yaml(output_layout.root()/"observation-receipt.yaml",record);trace.mark("observation_receipt_written");
   return exit;
 }
 }

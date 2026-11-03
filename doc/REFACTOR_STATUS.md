@@ -1,3 +1,14 @@
+## Stage 2 output setup candidate prepared; owner gates pending — 2026-11-03
+
+The isolated `codex/review-stage2-20261103` candidate starts at canonical
+`6760ee2100bae091a66de8a1247f64919ecee61f`. Native RTC/CAL/PTC claims its
+run root and creates selected structural directories at setup, before shared
+preparation and worker execution. [Work order](REVIEW_STAGE2_OUTPUT_SETUP_2026-11-03.md)
+records the exact scope, unchanged scientific behavior and exclusions. Five
+filesystem regressions and three actual-CLI cases are prepared but unexecuted.
+All build/test/probe execution remains Grant-owned; independent exact-SHA review
+and owner acceptance remain pending. No stage-2 integration or push is authorized.
+
 ## Stage 1 accepted and integrated locally; stage 2 authorized — 2026-11-03
 
 Grant accepted exact application `11937f2e7ba0a9ad0fca64910ecab1ee633572b8`

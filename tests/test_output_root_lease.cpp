@@ -1,3 +1,4 @@
+#include "../src/citlali/cli/native_rtc_output_layout.h"
 #include <citlali/core/error/error.h>
 #include <citlali/core/pipeline/output_root_lease.h>
 
@@ -44,6 +45,97 @@ private:
 TEST(output_root_lease, public_header_links_across_translation_units) {
     EXPECT_STREQ(output_root_lease_header_lock_name(),
                  citlali::pipeline::output_root_lock_filename);
+}
+
+TEST(native_rtc_output_layout, prepares_all_network_and_terminal_paths_at_setup) {
+    TemporaryOutputRoots roots;
+    using namespace citlali::cli;
+    NativeRtcOutputLayout layout(roots.root("observation") / "", {0, 7, 12}, true, false,
+                                 DevelopmentTerminal::ptc);
+    for (std::size_t i = 0; i < 3; ++i) {
+        const auto &network = layout.network(i);
+        ASSERT_EQ(network.treatments.size(), 1);
+        const auto &arm = network.treatment(true);
+        EXPECT_EQ(arm.root, network.root / "donor-continuity");
+        EXPECT_TRUE(std::filesystem::is_directory(arm.cal));
+        EXPECT_TRUE(std::filesystem::is_directory(arm.ptc));
+        EXPECT_FALSE(std::filesystem::exists(network.root / "performance.jsonl"));
+    }
+}
+
+TEST(native_rtc_output_layout, respects_terminal_and_comparison_layout) {
+    TemporaryOutputRoots roots;
+    using namespace citlali::cli;
+    for (auto terminal : {DevelopmentTerminal::rtc_only, DevelopmentTerminal::cal,
+                          DevelopmentTerminal::prepare}) {
+        NativeRtcOutputLayout layout(roots.root(std::to_string(int(terminal))), {}, true,
+                                     false, terminal);
+        const auto &arm = layout.network(0).treatment(true);
+        EXPECT_EQ(std::filesystem::exists(arm.root), terminal != DevelopmentTerminal::prepare);
+        EXPECT_EQ(std::filesystem::exists(arm.cal), terminal == DevelopmentTerminal::cal);
+        EXPECT_FALSE(std::filesystem::exists(arm.ptc));
+    }
+    NativeRtcOutputLayout comparison(roots.root("comparison"), {}, true, true,
+                                     DevelopmentTerminal::rtc_only);
+    EXPECT_TRUE(std::filesystem::is_directory(comparison.network(0).treatment(false).root));
+    EXPECT_TRUE(std::filesystem::is_directory(comparison.network(0).treatment(true).root));
+    NativeRtcOutputLayout manual(roots.root("manual"), {}, false, true,
+                                 DevelopmentTerminal::rtc_only);
+    EXPECT_EQ(manual.network(0).treatment(true).root, manual.root());
+}
+
+TEST(native_rtc_output_layout, rejects_existing_entries_and_preserves_failed_attempt) {
+    TemporaryOutputRoots roots;
+    using namespace citlali::cli;
+    const auto path = roots.root("failed");
+    {
+        NativeRtcOutputLayout layout(path, {}, true, false, DevelopmentTerminal::ptc);
+        std::ofstream(path / "performance.jsonl") << "original";
+    }
+    EXPECT_THROW((NativeRtcOutputLayout(path, {}, true, false, DevelopmentTerminal::ptc)),
+                 std::exception);
+    std::string original;
+    std::ifstream(path / "performance.jsonl") >> original;
+    EXPECT_EQ(original, "original");
+    const auto file = roots.root("file");
+    std::ofstream(file) << "original";
+    const auto alias = roots.root("alias");
+    std::filesystem::create_directory_symlink(roots.root("missing"), alias);
+    for (const auto &entry : {file, alias})
+        EXPECT_THROW((NativeRtcOutputLayout(entry, {}, true, false, DevelopmentTerminal::rtc_only)),
+                     std::exception);
+    EXPECT_TRUE(std::filesystem::is_symlink(alias));
+}
+
+TEST(native_rtc_output_layout, simultaneous_contenders_cannot_share_output) {
+    TemporaryOutputRoots roots;
+    const auto path = roots.root("contested");
+    std::promise<void> start;
+    const auto ready = start.get_future().share();
+    std::atomic<int> won{0}, rejected{0};
+    std::array<std::thread, 2> contenders;
+    for (int i = 0; i < 2; ++i) contenders[i] = std::thread([&, i] {
+        ready.wait();
+        try {
+            citlali::cli::NativeRtcOutputLayout layout(path, {0, 7}, true, false,
+                                                      citlali::cli::DevelopmentTerminal::ptc);
+            std::ofstream(layout.root() / "owner") << i;
+            ++won;
+        } catch (const std::exception &) { ++rejected; }
+    });
+    start.set_value();
+    for (auto &thread : contenders) thread.join();
+    EXPECT_EQ(won.load(), 1);
+    EXPECT_EQ(rejected.load(), 1);
+    EXPECT_TRUE(std::filesystem::is_regular_file(path / "owner"));
+}
+
+TEST(native_rtc_output_layout, invalid_inventory_fails_before_claim) {
+    TemporaryOutputRoots roots;
+    const auto path = roots.root("invalid");
+    EXPECT_THROW((citlali::cli::NativeRtcOutputLayout(path, {7, 7}, true, false,
+                  citlali::cli::DevelopmentTerminal::ptc)), std::invalid_argument);
+    EXPECT_FALSE(std::filesystem::exists(path));
 }
 
 TEST(output_root_lease, rejects_a_concurrent_owner) {

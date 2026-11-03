@@ -43,6 +43,55 @@ class SuccessorDefaultCli(unittest.TestCase):
         self.assertIn("terminal: ptc", result.stdout)
         self.assertNotIn("mapmaking:", result.stdout)
 
+    def native_request_with_bad_raw_digest(self):
+        raw = self.root / "raw-placeholder"
+        raw.write_text("deliberately not detector data")
+        return dict(schema="rtc-multidetector-experiment-v1",
+                    terminal_request="rtc-only", decision_apply={},
+                    reassessment_selection=dict(intent="retain-development-candidate"),
+                    raw=dict(path=str(raw), sha256="0" * 64))
+
+    def test_existing_output_is_rejected_before_native_ingress(self):
+        config = self.request(self.native_request_with_bad_raw_digest())
+        self.output.mkdir()
+        sentinel = self.output / "performance.jsonl"
+        sentinel.write_text("preserve existing attempt")
+        result = self.invoke(config)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("native output already claimed", result.stdout + result.stderr)
+        self.assertNotIn("input digest mismatch", result.stdout + result.stderr)
+        self.assertEqual(sentinel.read_text(), "preserve existing attempt")
+
+    def test_native_terminal_directories_exist_before_raw_ingress(self):
+        config = self.request(self.native_request_with_bad_raw_digest())
+        config["terminal"] = "ptc"
+        result = self.invoke(config)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("input digest mismatch", result.stdout + result.stderr)
+        for name in ("cal", "ptc"):
+            self.assertTrue((self.output / "donor-continuity" / name).is_dir())
+        self.assertTrue((self.output / "performance.jsonl").is_file())
+        self.assertFalse((self.output / "receipt.yaml").exists())
+
+    def test_all_network_directories_exist_before_shared_preparation(self):
+        entries = []
+        for nw in (0, 7):
+            network = self.root / f"network{nw}.json"
+            network.write_text(json.dumps(dict(network=nw, observation=152389,
+                                               decision_apply={}, filter_plan={})))
+            entries.append(dict(network=nw, input=dict(path=str(network),
+                sha256=hashlib.sha256(network.read_bytes()).hexdigest())))
+        config = self.request(dict(schema="citlali-observation-networks-v1", observation=152389,
+                                   subobservation=0, scan=2, networks=entries))
+        config["terminal"] = "ptc"
+        result = self.invoke(config)  # Deliberately missing shared scientific inputs.
+        self.assertNotEqual(result.returncode, 0)
+        for nw in (0, 7):
+            network_output = self.output / f"network{nw}"
+            for name in ("cal", "ptc"):
+                self.assertTrue((network_output / "donor-continuity" / name).is_dir())
+            self.assertFalse((network_output / "performance.jsonl").exists())
+
     def test_legacy_config_cannot_silently_reach_old_processing(self):
         self.rejected(self.invoke(dict(runtime=dict(reduction_type="science"), data_items=[])),
                       "successor.input_binding_unavailable")

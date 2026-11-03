@@ -66,7 +66,7 @@ CalObservationInput prepare_cal_observation(const YAML::Node &cfg,const NativeOb
 struct ConnectedCal { YAML::Node receipt; PtcCalSource source; };
 ConnectedCal execute_connected_cal(const CalRtcSource &source,const YAML::Node &cfg,
     const apt::VerifiedBundle &verified,const pipeline::CanonicalAptDetectorRelationV2 &relation,
-    const std::vector<int> &channels,const fs::path &output,RtcPerformanceTrace &performance,
+    const std::vector<int> &channels,const fs::path &destination,RtcPerformanceTrace &performance,
     const CalObservationInput *common=nullptr,
     const Eigen::VectorXd *common_offset_support=nullptr) {
     performance.mark("CAL_start");
@@ -140,7 +140,6 @@ ConnectedCal execute_connected_cal(const CalRtcSource &source,const YAML::Node &
     performance.mark("CAL_apply_complete");
     performance.array("CAL_output_cells",signal->logical_owned_cell_bytes(),1,grid->detectors().size());
     const auto applied=std::chrono::steady_clock::now();
-    const auto destination=output/"cal";fs::create_directory(destination);
     YAML::Node record;record["schema"]="citlali-cal-output-v1";
     record["state"]=signal->available_count()?"calibrated-development-signal":"no-calibrated-output";
     record["available"]=signal->available_count();record["scheduled"]=source.rtc_terminal_handle()->finalization().scheduled_slots;
