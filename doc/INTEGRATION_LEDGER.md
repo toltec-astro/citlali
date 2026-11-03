@@ -1,3 +1,27 @@
+## Publication completion and next focus — 2026-11-02
+
+Grant reported running both owner commands: publication of cleanup commit
+`8ed25efb416af40d5f9987b41578041638527b34` and deletion of GitHub
+`codex/sci-align-001-lissajous-timestream-fit` at former tip
+`353b11887ff04dfd7bca12915917495f81a587fa`. Live verification confirmed exact
+mainline, [successful Python 3.11/3.13 checks](https://github.com/toltec-astro/citlali/actions/runs/41551997054),
+SCI-ALIGN absence and 28 branches, with all other remote tips unchanged.
+The subsequent authorized local cache refresh preserves the retired tip at
+`refs/archive/final-cleanup-20261102/github-sci-align`; no remote write by Codex.
+Earlier acceptance receipts remain unchanged as records of their original stage.
+
+Owner direction: “Let's do the housekeeping items. After that I'm not ready to
+work on the launch and deployment. I'd like to focus on #3 in your list instead.”
+Item 3 was separation of passed software checks from scientific acceptance still
+outstanding. The existing CURRENT_STATE authority is clarified accordingly.
+Launch/deployment is deferred. No scientific policy, threshold, runtime or
+production acceptance is changed or inferred. Grant remains execution owner.
+This documentation-only work creates no new application qualification.
+
+Inspection, exact-source review and preservation records:
+
+`/Users/gwilson/.codex/visualizations/2026/10/29/01a188f2-4d30-7e60-88a8-956b50bb08cf/citlali-acceptance-clarity-20261102`
+
 ## Final local cleanup acceptance — 2026-11-02
 
 Owner directive: “Please proceed with all of these.” This accepts the immediately

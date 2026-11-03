@@ -1,6 +1,6 @@
 # Refactor workspace map
 
-Verified on 2026-11-02 after owner-approved final local cleanup. A **branch** names a line of commits; a **working folder**
+Verified on 2026-11-02 after owner publication, remote retirement and cache refresh. A **branch** names a line of commits; a **working folder**
 is a checkout that may also contain builds, results or files not recorded in Git.
 A saved checkout without a branch name is frozen at its recorded commit; it is
 not missing work. Counts are inventories, not counts of active projects.
@@ -21,12 +21,14 @@ Retained checkouts share Git storage at `/Users/gwilson/GitHub/citlali/.git`;
 do not move or remove that store.
 
 GitHub mainline was verified at
-`bb92e062bd05fb517a81bca8da8206b06797cb6e`, with
-[passing Python 3.11/3.13 checks](https://github.com/toltec-astro/citlali/actions/runs/41532733119).
-This documentation cleanup follows locally; Grant performs its push.
+`8ed25efb416af40d5f9987b41578041638527b34`, with
+[passing Python 3.11/3.13 checks](https://github.com/toltec-astro/citlali/actions/runs/41551997054).
+Grant performed publication and the separately approved SCI-ALIGN remote deletion.
 The local GitHub cache was refreshed: 92 obsolete branch labels were removed,
-one existing tip was updated and one missing branch label was added. It now
-represents 29 live branches plus Git's default-branch pointer. Thirty historical
+one existing tip was updated and one missing branch label was added. A follow-up
+refresh removed the now-deleted SCI-ALIGN label and advanced the cached mainline
+to `8ed25efb4`. The cache represents **28 live branches** plus Git's default-branch
+pointer. Thirty historical
 tips needing an explicit retained anchor were saved under
 `refs/archive/final-cleanup-20261102/origin/`; an additional archive reference
 preserves the SCI-ALIGN remote tip. Archive references are recovery locators,
@@ -67,13 +69,14 @@ in the table. Three have no working folder:
 | `codex/scientific-contract-library` at `54475956f` | Scientific-specification reference; one local owner-decision commit outside mainline; retain pending disposition |
 | `codex/wp7-rtc-fixed-decimation-authority` at `49fe73e75` | Divergent scientific evidence; preserve, do not resume merely because the branch exists |
 
-The live GitHub inventory has 29 branches, mostly legacy releases and historical
-development. Separate owner-run retirement is prepared for only
-`codex/sci-align-001-lissajous-timestream-fit` at
-`353b11887ff04dfd7bca12915917495f81a587fa`; this would leave 28 branches.
-No remote deletion has been executed by Codex. The exact tip is preserved under
-`refs/archive/final-cleanup-20261102/github-sci-align` and in the prior independent
-SCI-ALIGN history restoration. The command must reject a changed tip.
+The live GitHub inventory has **28 branches**, mostly legacy releases and
+historical development. Grant deleted only
+`codex/sci-align-001-lissajous-timestream-fit`, formerly at
+`353b11887ff04dfd7bca12915917495f81a587fa`. Live verification confirmed its absence
+and that all other branch tips were unchanged except the published mainline.
+The retired tip remains under `refs/archive/final-cleanup-20261102/github-sci-align`
+and in the prior independent SCI-ALIGN history restoration. Codex performed no
+remote write; old pending-deletion receipts retain their historical scope.
 `codex/structural-refactor` remains a protected GitHub reference. All Citlali
 4.x/5.x branches stay protected. Neither an old name nor complete ancestry alone
 authorizes retirement of an owner-retained comparison or scientific reference.
@@ -188,8 +191,8 @@ executes builds, tests, probes and reductions. No runtime was launched here.
 There are now **three refactor working folders plus two protected folders**,
 **eight local branches**, and **three preserved stashes**. New development starts
 from mainline. Both ongoing pointing/handoff folders, Citlali 4.x/5.x and all prior
-recovery packets remain protected. The corresponding GitHub SCI-ALIGN branch is
-unchanged on GitHub pending the separately prepared owner-run deletion.
+recovery packets remain protected. The GitHub SCI-ALIGN branch is retired,
+leaving 28 live GitHub branches. The repository-consolidation batch is complete.
 
 Engineering and the parked `884f` contract handoff can be restored from the
 verified archives described in [the retirement record](WORKSPACE_RETIREMENT_2026-10-31.md).

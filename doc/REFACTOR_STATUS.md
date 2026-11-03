@@ -1,3 +1,34 @@
+## Publication housekeeping and scientific acceptance clarity — 2026-11-02
+
+Grant requested the remaining housekeeping, deferred launch/deployment work, and
+selected clarification of software checks versus open scientific acceptance as
+the next focus. Base was clean published mainline
+`8ed25efb416af40d5f9987b41578041638527b34`. GitHub's Python 3.11/3.13 checks passed
+in [run 41551997054](https://github.com/toltec-astro/citlali/actions/runs/41551997054).
+Grant completed the separate SCI-ALIGN remote deletion; live verification shows
+28 branches with only the approved deletion/mainline update. The local cache was
+refreshed, removing only the stale SCI label and updating cached mainline; the
+SCI tip remains protected by its archive ref and earlier backups.
+
+[Current state](CURRENT_STATE.md#what-existing-checks-establish) now separates
+hosted software checks, owner-run native checks, retained-driver representative
+product comparisons, frozen configured-POINT assessments and historical V2
+acceptance. Its [open scientific questions](CURRENT_STATE.md#scientific-questions-still-open)
+retain the calibration/corrected-POINT/SCIENCE/coadd/consumer holds and explain
+why broad-source recovery remains a scientific question despite passing software
+checks. This is a report of existing evidence, not new scientific authority.
+
+Only four orientation/status/ledger documents change. No application, scientific
+contract, threshold, runtime, accepted-run ledger or historical receipt changes.
+No build/test/probe/reduction/validation runner or Unity command is executed;
+Grant retains execution and push ownership. No further branch/worktree retirement
+or remote write is included. Five folders, eight local branches and three stashes
+remain. Independent static review and preservation receipts:
+
+`/Users/gwilson/.codex/visualizations/2026/10/29/01a188f2-4d30-7e60-88a8-956b50bb08cf/citlali-acceptance-clarity-20261102`
+
+Older pending-publication/deletion statements below are historical checkpoints.
+
 ## Final local housekeeping completed — 2026-11-02
 
 Grant approved the four-item cleanup proposal with “Please proceed with all of these.”

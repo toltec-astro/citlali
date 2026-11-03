@@ -7,9 +7,10 @@ integration receipt. [Owner acceptance](../validation/metadata_integration_2026-
 and the [integration ledger](INTEGRATION_LEDGER.md) bind the operation and evidence.
 Grant's Mac Spack tests and representative pointing/Beammap runs passed independent
 assessment with recorded limitations; existing runtime binaries were not replaced.
-Grant published integration receipt `bb92e062bd05fb517a81bca8da8206b06797cb6e`;
-[GitHub checks passed on Python 3.11 and 3.13](https://github.com/toltec-astro/citlali/actions/runs/41532733119).
-The subsequent cleanup changes documentation and local inventory only.
+Grant published cleanup receipt `8ed25efb416af40d5f9987b41578041638527b34`;
+[GitHub checks passed on Python 3.11 and 3.13](https://github.com/toltec-astro/citlali/actions/runs/41551997054).
+It changes documentation only after application `012cc7adc`. Grant also completed
+the approved SCI-ALIGN GitHub deletion; 28 remote branches remain.
 
 The current inventory is **five working folders: three refactor plus two protected**,
 eight local branches and three stashes. Separate owner-approved cleanup retired
@@ -19,6 +20,9 @@ and [workspace map](WORKSPACE_MAP.md) record recovery and remote-operation bound
 The shared and repository instructions
 reserve all builds, tests, probes, reductions and validation runners to Grant.
 Older counts and publication statements below describe their named checkpoints.
+The current focus is clarifying scientific acceptance from existing evidence.
+Launch and deployment work are deferred at Grant's request; this is not permission
+to change scientific policy or run new reductions.
 
 The owner approved incorporating pointing assessments through `6969dcf81` and
 pointing handoff through `1f3bf6db7`, following the previously integrated
@@ -73,7 +77,7 @@ project, retains its existing inputs, products and runtime bindings.
 | --- | --- |
 | Previous accepted application foundation | `44171fd3a6ba5924f8f4dba0324defe0922c597d`; retained pointing/engineering and Mac Spack qualification |
 | New accepted input scope | Handoff `1f3bf6db744050102bc78e06917613e5dbe7fe3d` plus pointing evidence `6969dcf8168bcffbdfdbf7ebe56a22730545e086`; final combined source is bound by the integration receipt |
-| Development mainline | `codex/refactor-mainline`; metadata application `012cc7adc` published in receipt `bb92e062b` with passing hosted checks; later cleanup is documentation-only |
+| Development mainline | `codex/refactor-mainline`; metadata application `012cc7adc`; published documentation receipt `8ed25efb4` has passing hosted checks |
 | Previous mainline | `e32c4584dec07617d6caa857d39bf13047b6c4b0`; retained in ancestry and recovery evidence |
 | Pointing evidence included here | `6969dcf8168bcffbdfdbf7ebe56a22730545e086`; includes the earlier `797d013f` cutoff and later saved assessment, compatibility audit and proposed pilot plan |
 | Engineering input included here | `5c46201057d6b6d1048aac2949a64e9a34e9bad3` |
@@ -112,7 +116,35 @@ and owner freeze records. The recovered output-metadata proposals and the subseq
 final-header defect are now resolved by the integrated metadata application above;
 no old experimental implementation was adopted.
 
-## What is implemented and checked
+## What existing checks establish
+
+A software check asks whether the implementation behaves as specified. A product
+comparison asks whether particular recorded outputs changed. Scientific acceptance
+asks whether those outputs are adequate for a stated scientific use. Passing the
+first two does not decide the third. These are separate dispositions, following
+the [application-baseline axes](APPLICATION_BASELINES.md#five-independent-status-axes).
+
+| Evidence | What is established | Boundary |
+| --- | --- | --- |
+| Hosted checks at `8ed25efb4` | Python 3.11/3.13 lint/types, installation, synthetic application/configuration and baseline-tool checks passed | Not a native Spack build, telescope-data campaign or scientific acceptance decision |
+| Owner-run Mac Spack qualification of `012cc7adc` | Eight focused metadata tests, 1,402 enabled CTests, 207 baseline-tool tests and full configuration preflight passed | One inherited test remains disabled; bounded Mac dependency realization, not a new Unity or production qualification |
+| Recorded pointing observation 152389 | Three iterations preserve the compared scientific products against saved `949d38da4` outputs; 27 common NetCDF files differ only in recorded software versions | Uses the retained-standard-pipeline driver; does not establish configured successor POINT scientific acceptance or direct comparison to the older `7a8e2cd8` baseline |
+| Recorded Beammap observation 148670 | Common numerical products and three APT payloads match control `7a8e2cd8`; saved fitting iteration 2 and bounds for 198 scans are correct | Control omits full PTC output, so no direct numerical comparison of that candidate-only payload; fixture warnings and comparison limits remain recorded |
+| Integrated configured-POINT saved assessments | Existing source-recovery and feedback findings remain available with their exact trial identities | These assess a separate frozen trial, not the metadata driver above; importing their reports does not accept every scientific use |
+| Historical `citlali-validation/v2` | The owner accepted a completed end-to-end operational/application campaign under its recorded Unity Spack environment | Mixed source revisions: this remains valid historical evidence, not a same-revision scientific baseline for current mainline |
+
+The original strict Beammap filename comparison returned **exit 2**. It remains a
+failed original command. A separately reviewed comparison paired the three
+content-addressed APT roles and established exact payload/schema equality; no
+numerical tolerance was relaxed. The full qualification limitations and source,
+environment and executable identities are bound by the
+[metadata acceptance record](../validation/metadata_integration_2026-11-02/OWNER_ACCEPTANCE.json)
+and its named `FINAL_INDEPENDENT_REVIEW.md`. Current native qualification remains
+attached to application `012cc7adc`, not to later documentation commit identities.
+The [V2 authority record](../validation/citlali_v2_spack_validation_authority.json)
+retains its original scope; no older validation record is relabeled here.
+
+## Earlier engineering foundation
 
 Engineering cleanup unifies native source/strict-floating-point declarations,
 builds the complete ordinary test aggregate, gives output/FITS/FFTW resources
@@ -177,13 +209,49 @@ products. Beammap production and OOF remain outside that release target.
 | Pointing-derived calibration consumed by SCIENCE | Flux policy, downstream connection and owner acceptance still required |
 | All-array SCIENCE and genuine multi-observation coadds | Required release milestone; not established by POINT checks |
 | Downstream products and consumers | Product/units/layout qualification still required |
-| Build and publication | Metadata application `012cc7adc` passed bounded owner-run Mac Spack and representative gates; receipt `bb92e062b` passed hosted Python 3.11/3.13 checks. Later cleanup is documentation-only. Unity and release/export qualification remain separate |
+| Build and publication | Metadata application `012cc7adc` passed bounded owner-run Mac Spack and representative gates; receipt `8ed25efb4` passed hosted Python 3.11/3.13 checks. Launch/deployment work is deferred; Unity and release/export qualification remain separate |
 | Production | No new authorization from integration or passing local tests |
 
 General v2 defaults remain 1 arcsec / coverage 0.1 / M10. The frozen trials used
 2 arcsec / 0.15 / M10; prospective M5 diagnostics require their own coherent
 preparation. The retained optical-response minimum is tunable 0.10. Integration
 changes none of these policies and launches no reduction.
+
+## Scientific questions still open
+
+These are the boundaries left open by the integrated records reviewed here,
+not a claim that all scientific work is unvalidated. Ongoing pointing assessment
+keeps its own owner and scope; any later acceptance should be reconciled by its
+exact evidence and decision rather than inferred from a green GitHub result.
+The [approved handoff scope](POINTING_HANDOFF_INTEGRATION_2026-10-31.md#what-remains-after-this-integration)
+remains the source for the handoff and SCIENCE holds below.
+
+| Scientific use or question | Existing evidence or restriction | What remains to be decided or demonstrated |
+| --- | --- | --- |
+| Configured POINT: compact-source measurement versus broad-source recovery | The [five-case saved assessment](../validation/weighted_point_recovery_assessment_2026-10-30/REPORT.md) supports near-unity compact-source response but incomplete shoulder recovery, particularly a2000; its numbers are descriptive | Owner-scoped acceptance for the intended source class and outputs, including which recovery, shape/background and iteration-stability evidence matters; no new threshold is selected here |
+| Source feedback and wings | The [shoulder audit](../validation/point_shoulder_feedback_audit_2026-10-30/REPORT.md) found incomplete wing protection a leading explanation, with loss also inside a2000's mask | A causal policy choice remains open; the evidence does not prove enlarging the mask alone fixes it, and authorizes neither lower thresholds nor more iterations |
+| Pointing tables used for flux calibration | The integrated handoff leaves uncertainties unavailable (`NaN`) and flux eligibility false; the pinned downstream reader rejects those tables for flux calibration | Approved uncertainty/calibration eligibility policy and its validation; a conditional fit error is not automatically a calibration uncertainty |
+| Tables from already-corrected POINT measurements | Nonzero applied POINT corrections withhold the table to avoid double application | Reviewed residual-to-measurement convention and demonstration against the established correction consumer |
+| Current POINT-to-SCIENCE chain and real multi-observation coadds | Historical SCIENCE evidence exists, but the integrated handoff does not finish the current connected pipeline | Separate scientific disposition of source/training and product scope, calibration propagation, celestial mapping and genuine coadds; later bounded implementation/qualification as needed |
+| Downstream interpretation and production use | Current contracts and scoped evidence do not establish every downstream consumer or new operational use | Product meaning, units/layout and consumer qualification for the proposed use, followed by the owner's explicit acceptance; no production expansion is granted here |
+
+A concrete example helps distinguish these statements. In the frozen 152418
+configured-POINT trial at `d0d3eeb7981975a2f43f1a55878668410aa6c20b`, a2000's
+SHOULDER projection gain was **79.96% at M5 and 84.37% at M10**. That is a map
+projection onto the known post-CAL injected raster on a fixed 40-arcsec disk,
+**not integrated flux or absolute calibration accuracy**. The audit supports an
+unresolved broad-source response question; it does not diagnose telescope optics,
+real M1 loss or faint-SCIENCE performance. The positive compact-source result and
+the broad-source limitation must both remain visible.
+
+The next scientific-only step is to reconcile the existing pointing review into
+an owner-facing acceptance scorecard: name the intended use, associate each
+claim with saved evidence and its limitations, and identify the decisions still
+needed. Start with compact POINT versus broad-source recovery, in coordination
+with the ongoing pointing work. This is a proposed review sequence, not a new
+contract, pass threshold, algorithm change or request to launch anything.
+Launch/deployment remains deferred; no new observation, refit or reduction is
+required merely to clarify these existing results.
 
 ## Evidence and ongoing maintenance
 
