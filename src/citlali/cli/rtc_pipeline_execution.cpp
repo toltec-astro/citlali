@@ -206,7 +206,7 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
       auto setup=citlali::cli::native_setup_record(cfg,endpoint,*prepared_output,prepared_ptc);
       setup["source_revision"]=std::string(CITLALI_GIT_REVISION);
       write_yaml(output/"setup.yaml",setup);
-      spdlog::info("{}",citlali::cli::native_setup_summary(setup));
+      citlali::cli::log_native_run_summary(citlali::cli::native_setup_summary(setup));
     }
     const auto raw_path = checked("raw"), tune_path = checked("tune"),
                manifest = checked("manifest");
@@ -1391,7 +1391,7 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
       receipt["status"]="UNAVAILABLE-PTC-fit-or-output;upstream-preserved";
     rtc_yaml_map(output/"receipt.yaml",receipt,receipt_sections);
     performance.mark("root_receipt_written");
-    if(development)spdlog::info("{}",citlali::cli::native_result_summary(nw,receipt));
+    if(development)citlali::cli::log_native_run_summary(citlali::cli::native_result_summary(nw,receipt));
     std::cout<<receipt["status"].as<std::string>()<<" detectors="<<channels.size()<<" events="<<event_table.size()<<" jumps="<<jump_count<<'\n';
     if(development && endpoint!=DevelopmentTerminal::rtc_only && receipt["CAL"]["available"].as<std::size_t>()==0) {
       std::cerr<<"successor.CAL_no_calibrated_output: no sample has supported calibration; inspect cal/receipt.yaml. RTC preserved; no legacy fallback.\n";
@@ -1468,7 +1468,7 @@ int execute_successor_observation(const YAML::Node &request,const fs::path &outp
         ptc_config?&ptc_setups[i]:nullptr);
     setup["source_revision"]=std::string(CITLALI_GIT_REVISION);
     write_yaml(output_layout.network(i).root/"setup.yaml",setup);
-    spdlog::info("{}",citlali::cli::native_setup_summary(setup));
+    citlali::cli::log_native_run_summary(citlali::cli::native_setup_summary(setup));
   }
   auto processing=prepare_processing_scans(cfg,scope,verified,trace);
   auto telescope=load_telescope(checked_file(cfg["telescope"]),scope, {

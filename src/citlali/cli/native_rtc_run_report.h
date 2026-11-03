@@ -5,9 +5,18 @@
 #include <iomanip>
 #include <sstream>
 #include <string>
+#include <spdlog/spdlog.h>
 #include <yaml-cpp/yaml.h>
 
 namespace citlali::cli {
+inline void log_native_run_summary(const std::string &summary) {
+    // The ordinary CLI suppresses info messages on the default console sink.
+    // Reuse its run-owned logger; do not reconfigure either sink or its level.
+    const auto logger = spdlog::get("citlali_logger");
+    if (logger) logger->info("{}", summary);
+    else spdlog::info("{}", summary);
+}
+
 inline std::string native_terminal_name(DevelopmentTerminal terminal) {
     switch (terminal) {
     case DevelopmentTerminal::rtc_only: return "rtc-only";

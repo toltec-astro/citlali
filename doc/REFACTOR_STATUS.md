@@ -1,3 +1,18 @@
+## Stage 3 console-report correction prepared; owner rerun pending — 2026-11-03
+
+Grant's Mac Spack build/version and all 13 focused C++ cases passed for
+`6d6a9f9afaf126375aed5162b2cca75093df2750`. The actual-CLI gate passed six
+of seven cases but caught suppressed native setup text: the new summaries used
+the default logger, whose console sink deliberately permits only critical
+messages during CLI execution. CTest, baseline and config gates did not start.
+
+The correction routes all three setup/result summary call sites through the
+existing named application logger, preserving its verbosity and sink ownership.
+The failing actual-CLI assertion remains unchanged. The failed attempt and
+original binding are preserved in the external packet. No scientific settings
+or numerical code changes. Corrected-candidate owner gates and independent
+exact-SHA review remain pending; no stage-3 integration or push is authorized.
+
 ## Stage 3 configuration setup and reporting prepared; owner gates pending — 2026-11-03
 
 The isolated `codex/review-stage3-20261103` candidate starts at canonical

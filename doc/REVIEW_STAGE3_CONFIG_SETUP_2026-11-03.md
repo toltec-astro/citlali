@@ -98,3 +98,23 @@ exact-SHA review is pending, after owner evidence; the writer does not self-appr
 Stop for unrelated dirt, moving sources, scientific-policy ambiguity, new owners
 or scope expansion. No new integration or production authority follows from
 preparing this candidate.
+
+## Owner-run reporting correction
+
+At exact candidate `6d6a9f9afaf126375aed5162b2cca75093df2750`, Grant's attempt
+`owner-run-20261103T204225.788859Z` passed configure/build/version and all
+13 focused C++ cases (six stage-3 and seven stage-2). The actual-CLI gate
+failed one of seven cases: `test_rtc_only_does_not_activate_or_validate_unused_ptc`
+did not see the expected setup summary. CTest, baseline and config gates were
+not started. The failed log and original candidate binding remain preserved.
+
+Static diagnosis: `configure_run_loggers` deliberately sets the default
+console sink to critical-only and provides a separate `citlali_logger` for
+application messages. The new default-logger info calls were suppressed,
+affecting both setup and final summaries. Repair within scope: use one small
+reporting helper to reuse the existing named logger, with ordinary default
+logging only when no application logger exists. Do not change logger lifetime,
+sinks or verbosity. All three call sites use the helper. The existing actual-CLI
+visibility assertion is retained without weakening; no new scientific policy
+or numerical behavior is introduced. All gates for the corrected source and
+independent exact-SHA review remain pending.
