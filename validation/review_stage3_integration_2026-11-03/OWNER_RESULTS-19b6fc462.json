@@ -1,0 +1,36 @@
+{
+  "date": "2026-11-03",
+  "candidate": "19b6fc462930af6f0a7bf2ca5b5350dd3c72af6e",
+  "tree": "3b1d9e0ae067e502faa1e02895be3695f5166a66",
+  "base": "fba31ae909bbaf6358390937ec0845fe1716dcf3",
+  "attempt": "owner-run-20261103T205227.678366Z",
+  "execution_owner": "Grant",
+  "assessment_owner": "Codex writer, static evidence inspection; independent review separate",
+  "status": "All enabled owner-run software gates passed; independent exact-SHA review passed with recorded limitations and no actionable findings",
+  "independent_review": "INDEPENDENT_REVIEW-19b6fc462.json",
+  "results": {
+    "configure_build_version": "Exit zero; executable reports g19b6fc462",
+    "focused_setup": "13 passed including all 6 stage-3 setup/reporting cases and 7 stage-2 layout cases; zero skips/errors/failures/disabled in XML",
+    "focused_cli": "7 named cases passed, including previously failing native setup visibility assertion",
+    "ctest": "1423 enabled passed; existing opt-in MapFitterLifecycle.ExactProductSequence disabled and not counted as passed",
+    "baseline": "207 passed",
+    "config_preflight": "--require-all passed; 130 unit tests and 8 compatibility cases passed, zero compatibility skips"
+  },
+  "environment": "Mac macos-llvm20 Spack developer build, Clang20.1.8, DAG kqk3pl4f6jgsb5yksobnynlx2gmnqks6, unmanaged deployment",
+  "executable_sha256": "40cf99ab50f3d65f3a37b878ea08e28d39d1f535e9ca8c339ebcf356b0c7358a",
+  "log_sha256": {
+    "configure.log": "5be1f09f79b838ffafec34c9929eb4d0e89b91a1239649843815c60e80b48824",
+    "build-and-version.log": "365112c063d742146487c1fc5e019dc7dd1902ad01924c48b242c50ef50a5d19",
+    "version.log": "63ba05c203474962eaf429179de210707e18c967f0809e4109654b3694ed6256",
+    "focused-setup.log": "4055f69dfe1a48a7c21a3b1d4d970b3f10e1872b54fd71a6b30f9df6225616cd",
+    "focused-cli.log": "185946f2568d07d2734d06bfb889657c53a4b4c2bd8b2f8258a2c581130b052b",
+    "ctest.log": "c8cf755ccfea4d96c588aa3707b651e2e0a3b7d2a9b4d4c5f8d55a753dbca7f4",
+    "baseline-tests.log": "30239d66f30bea0641b9474c8f8b38565740b925d4bf3249a57c7a62a81a4ecc",
+    "config-preflight.log": "66bf9687771789cec721d2c59a3634469f224f5e8de951f4aefb6005bcd7bf77"
+  },
+  "logging": "No unexpected error-level output identified in inspected logs. Sole critical at LastTest.log:27595 is intentional ordered_writer NetCDF fixed-dimension failure/recovery test; source confirms required EXIT_FAILURE. Existing duplicate linker/rpath warnings retained.",
+  "repository": "Candidate and mainline clean at exact bound revisions. Source, runner, environment, log and executable digests match records. Initial failed attempt preserved.",
+  "source_documents": "Preparatory pending-execution statements are superseded by this external evidence record without moving tested source",
+  "limits": "Synthetic setup/reporting and CLI coverage; no whole scientific reduction, Unity, configured POINT scientific or production qualification",
+  "integration_push_activation_cleanup_authority": "none for stage 3"
+}

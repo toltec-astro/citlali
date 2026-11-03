@@ -1,3 +1,21 @@
+## Stage 3 bounded repair acceptance — 2026-11-03
+
+Grant accepted application `19b6fc462930af6f0a7bf2ca5b5350dd3c72af6e`, tree
+`3b1d9e0ae067e502faa1e02895be3695f5166a66`. Clean mainline fast-forwarded
+from `fba31ae909bbaf6358390937ec0845fe1716dcf3` to that exact reviewed source.
+[Owner acceptance](../validation/review_stage3_integration_2026-11-03/OWNER_ACCEPTANCE.json)
+binds the candidate, preserved evidence and fresh independent review:
+pass with recorded limitations, no actionable findings. Grant's Mac Spack
+run passed build/version, 13 focused C++ cases, seven named CLI cases,
+1423 enabled CTests, 207 baseline tests and config preflight (130 unit tests,
+eight compatibility cases, zero compatibility skips). The existing opt-in
+forensic replay remains disabled. Full scientific reductions and configured
+POINT scientific, Unity and production qualification remain separate.
+The following receipt changes documentation only and creates no new tested
+application. All three repair stages are accepted and integrated locally.
+No push, runtime replacement, cleanup or unrelated-work changes occurred;
+no additional repair stage is authorized by this acceptance.
+
 ## Stage 2 bounded repair acceptance — 2026-11-03
 
 Grant accepted application `3d537e978ac0a8e067c93af7804eadf4723f86ff`, tree

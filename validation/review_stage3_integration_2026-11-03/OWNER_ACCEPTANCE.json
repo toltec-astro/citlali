@@ -1,0 +1,24 @@
+{
+  "date": "2026-11-03",
+  "owner": "Grant Wilson",
+  "directive": "I accept stage 3 as a bounded software repair. Record the acceptance and integrate it locally into mainline. No push; I'll continue to run all builds and tests.",
+  "accepted_candidate": "19b6fc462930af6f0a7bf2ca5b5350dd3c72af6e",
+  "accepted_tree": "3b1d9e0ae067e502faa1e02895be3695f5166a66",
+  "prior_mainline": "fba31ae909bbaf6358390937ec0845fe1716dcf3",
+  "integration": "Local fast-forward to exact accepted candidate, followed by documentation-only acceptance record",
+  "scope": "Native PTC configuration checks and array-specific request resolution during setup, with requested/effective/realized reporting and application-logger correction",
+  "owner_evidence": "OWNER_RESULTS-19b6fc462.json",
+  "independent_review": "INDEPENDENT_REVIEW-19b6fc462.json",
+  "evidence_packet": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-stage3-20261103",
+  "evidence_status": "Copied historical assessments retain their pre-acceptance authority statements; this record supplies subsequent owner acceptance and integration authority",
+  "limits": [
+    "Bounded software repair; successful full PTC/observation reporting has static wiring and synthetic coverage, not a complete scientific reduction",
+    "No new numerical-equivalence, Unity, performance, configured POINT scientific, deployment or production qualification",
+    "Existing disabled forensic replay remains unrun",
+    "Worker request-digest recheck reviewed statically; no dedicated mutation-race regression",
+    "Mac Spack developer evidence does not reproduce the accepted Unity V2 campaign"
+  ],
+  "execution_owner": "Grant alone for all builds, tests, probes, benchmarks, reductions and validation runners",
+  "further_development_authority": "No additional repair stage authorized by this acceptance",
+  "push_deployment_cleanup_authority": "none"
+}

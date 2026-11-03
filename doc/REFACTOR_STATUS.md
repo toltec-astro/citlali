@@ -1,3 +1,17 @@
+## Stage 3 accepted and integrated locally — 2026-11-03
+
+Grant accepted exact application `19b6fc462930af6f0a7bf2ca5b5350dd3c72af6e`
+after owner-run Mac Spack gates and independent fresh-context review passed
+with recorded limitations and no actionable findings. Mainline fast-forwarded
+locally from `fba31ae90`. [Acceptance](../validation/review_stage3_integration_2026-11-03/OWNER_ACCEPTANCE.json)
+closes stage 3 as a bounded software repair, including the console-logger
+correction. Stages 1–3 are accepted and integrated locally; earlier pending
+statements below are historical. Full scientific qualification remains separate.
+Grant alone executes builds, tests, probes, reductions and validation runners.
+No push, runtime replacement, cleanup or additional repair stage is authorized.
+The acceptance receipt changes documentation only; application evidence remains
+bound to `19b6fc462`.
+
 ## Stage 3 console-report correction prepared; owner rerun pending — 2026-11-03
 
 Grant's Mac Spack build/version and all 13 focused C++ cases passed for

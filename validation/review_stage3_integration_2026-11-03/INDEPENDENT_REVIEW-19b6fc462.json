@@ -1,0 +1,29 @@
+{
+  "candidate": "19b6fc462930af6f0a7bf2ca5b5350dd3c72af6e",
+  "tree": "3b1d9e0ae067e502faa1e02895be3695f5166a66",
+  "parent": "6d6a9f9afaf126375aed5162b2cca75093df2750",
+  "base": "fba31ae909bbaf6358390937ec0845fe1716dcf3",
+  "reviewer": "/root/stage3_independent_review",
+  "context": "fresh",
+  "verdict": "pass with recorded limitations",
+  "confidence": "high within bounded setup/reporting scope",
+  "actionable_findings": [],
+  "execution": "Read-only static file/Git inspection and evidence hashing; no builds, tests, probes, reductions, validation runners, network operations or mutations. Grant exclusively owns execution.",
+  "coverage": "All 11 cumulative changed paths and relevant callers, setup timing, request immutability, APT/CAL array identity, method/rank/profile preservation, worker lifetime/join, report consumers, logger routing and failure propagation",
+  "dispositions": {
+    "scientific_behavioral": "pass with limitations; cleaning restrictions, rank requirements, method mappings, experimental scopes, solver defaults and special iteration limits preserved; no numerical algorithm/threshold/scientific scope change found",
+    "architecture_ownership": "pass; application-owned YAML snapshot resolves typed PTC request; setup lifetime spans workers and joins; no Engine growth or mutable cross-stage synchronization; existing named logger reused",
+    "repository_evidence": "pass with limitations; candidate and mainline clean at initial/final inspection; source/runner/environment/log/executable hashes match; accepted governance digests verified"
+  },
+  "owner_evidence": "owner-run-20261103T205227.678366Z: build/version pass; 13 focused C++ and 7 focused CLI pass; 1423 enabled CTest,207 baseline,130 config unit and8 compatibility pass, zero compatibility skips",
+  "disabled": "Inherited opt-in MapFitterLifecycle.ExactProductSequence remains unrun",
+  "logging": "No unexplained error-level output found. Sole critical is intentional NetCDF bounds failure and recovery in tests/test_ordered_writer.cpp:212-270. Existing CMake CMP0144 and duplicate linker/rpath warnings retained.",
+  "environment": "Mac Spack macos-llvm20; Clang20.1.8; SDK26.5; DAG kqk3pl4f6jgsb5yksobnynlx2gmnqks6; unmanaged deployment",
+  "executable_sha256": "40cf99ab50f3d65f3a37b878ea08e28d39d1f535e9ca8c339ebcf356b0c7358a",
+  "limitations": [
+    "Successful end-to-end PTC/observation reporting supported by static wiring and synthetic report tests, not a complete scientific reduction",
+    "No new numerical-equivalence, Unity, performance, configured POINT scientific, deployment or production qualification",
+    "Worker request-digest recheck reviewed statically; no dedicated mutation-race regression in this increment"
+  ],
+  "integration_push_activation_cleanup_authority": "none for stage 3"
+}
