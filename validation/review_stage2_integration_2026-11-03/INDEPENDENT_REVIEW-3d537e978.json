@@ -1,0 +1,24 @@
+{
+  "candidate": "3d537e978ac0a8e067c93af7804eadf4723f86ff",
+  "tree": "717f95a1d56fe1408a72bdbd19e6c9f314bf42f1",
+  "parent": "a6feeaf9ca30e136230187028daef56afeb76b8e",
+  "base": "6760ee2100bae091a66de8a1247f64919ecee61f",
+  "reviewer": "/root/stage2_corrected_review",
+  "context": "fresh, extra-high effort",
+  "verdict": "pass with recorded limitations",
+  "actionable_findings": [],
+  "prior_P2": "closed: absolute conversion preserves filesystem interpretation of symlink/..; trailing-separator handling and exclusive directory creation remain; two filesystem regressions and one actual CLI case passed with both separator forms",
+  "execution": "Read-only static source/Git and owner-evidence inspection; no builds, tests, probes, reductions, validation runners, network operations or mutations",
+  "coverage": "All ten cumulative changed paths and relevant callers; root/network/treatment/CAL/PTC claims, direct and observation preparation order, worker lifetime/join, automatic/manual comparison routes, terminal routing, failure preservation and propagation",
+  "dispositions": {
+    "scientific_behavioral": "pass with recorded limitations; path behavior repaired; no numerical/scientific change",
+    "architecture_ownership": "pass; application-owned layout/lifetime and prepared destinations",
+    "repository_evidence": "pass with recorded limitations; exact source and mainline clean at initial/final inspections; all checked source/runner/environment/log/executable digests match"
+  },
+  "owner_evidence": "owner-run-20261103T200235.959686Z: build/version pass; 15 focused filesystem and 4 named CLI cases passed; 1417 enabled CTest, 207 baseline, 130 config and 8 compatibility cases passed, zero compatibility skips",
+  "disabled": "Inherited opt-in MapFitterLifecycle.ExactProductSequence remains unrun",
+  "logging": "No unexpected error-level output identified; sole critical entry is the intentional ordered_writer NetCDF failure/recovery test; CMP0144 and duplicate linker/rpath warnings retained",
+  "executable_sha256": "64123b3d7e4549e9610c1eb42071eb895baf5c64e931357410e18f29a02ae57a",
+  "limits": "Mac Spack developer build, Clang20.1.8, DAG kqk3pl4f6jgsb5yksobnynlx2gmnqks6, unmanaged deployment; no whole scientific reduction, Unity, configured POINT or production qualification",
+  "integration_push_authority": "none for stage 2"
+}

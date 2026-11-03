@@ -1,3 +1,16 @@
+## Stage 2 accepted and integrated locally; stage 3 authorized — 2026-11-03
+
+Grant accepted exact application `3d537e978ac0a8e067c93af7804eadf4723f86ff`
+after owner-run Mac Spack gates and independent re-review passed with recorded
+limitations and no actionable findings. Mainline fast-forwarded locally from
+`6760ee210`. [Acceptance](../validation/review_stage2_integration_2026-11-03/OWNER_ACCEPTANCE.json)
+closes stage 2 as a bounded software repair, including the symlink-parent
+correction. Earlier pending statements below are historical. Stage 3 covers
+upfront configuration checks and readable requested/effective/realized reports;
+scientific algorithms, calibration policy and RTC-only CAL preparation remain
+unchanged. Grant alone executes all builds, tests and probes. No push, runtime
+replacement, cleanup or new scientific/production acceptance is authorized.
+
 ## Stage 2 path-resolution repair prepared; owner rerun pending — 2026-11-03
 
 The isolated `codex/review-stage2-20261103` candidate starts at canonical

@@ -1,5 +1,16 @@
 # Citlali refactor — current state
 
+2026-11-03 stage-2 update: Grant accepted exact application
+`3d537e978ac0a8e067c93af7804eadf4723f86ff` as a bounded software repair.
+Local mainline fast-forwarded from `6760ee210`; this acceptance receipt is
+documentation only. [Acceptance and evidence](../validation/review_stage2_integration_2026-11-03/OWNER_ACCEPTANCE.json)
+record passing owner-run Mac Spack gates and independent re-review with no
+actionable findings. Native output destinations are claimed during setup;
+symlink-parent path semantics are preserved. No scientific/production acceptance,
+push, runtime replacement or cleanup follows. Stage 3 upfront configuration
+checks and readable reporting are authorized for development; Grant retains
+all execution. Earlier pending statements are dated checkpoints.
+
 2026-11-03 update: Grant accepted stage 1 as a bounded software repair and
 authorized local integration of exact application `11937f2e7ba0a9ad0fca64910ecab1ee633572b8`.
 Mainline was fast-forwarded to it; this receipt changes documentation only.

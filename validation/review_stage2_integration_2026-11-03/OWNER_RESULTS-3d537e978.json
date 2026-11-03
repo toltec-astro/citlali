@@ -1,0 +1,36 @@
+{
+  "date": "2026-11-03",
+  "candidate": "3d537e978ac0a8e067c93af7804eadf4723f86ff",
+  "tree": "717f95a1d56fe1408a72bdbd19e6c9f314bf42f1",
+  "base": "6760ee2100bae091a66de8a1247f64919ecee61f",
+  "attempt": "owner-run-20261103T200235.959686Z",
+  "execution_owner": "Grant",
+  "assessment_owner": "Codex writer, static evidence review; independent re-review separate",
+  "status": "Corrected-candidate local software gates passed; independent re-review passed with recorded limitations, no actionable findings",
+  "independent_review": "INDEPENDENT_REVIEW-3d537e978.json",
+  "results": {
+    "configure_build_version": "Exit zero; executable reports g3d537e978",
+    "focused_layout": "15 passed including all 7 stage-2 filesystem cases; zero skips/errors/failures/disabled in XML",
+    "focused_cli": "4 named cases passed including symlink-parent existing-output rejection before raw ingress",
+    "ctest": "1417 enabled passed; existing opt-in MapFitterLifecycle.ExactProductSequence disabled and not counted as passed",
+    "baseline": "207 passed",
+    "config_preflight": "--require-all passed; 130 unit tests and 8 compatibility cases passed with zero compatibility skips"
+  },
+  "environment": "Mac macos-llvm20 Spack developer build, Clang20.1.8, DAG kqk3pl4f6jgsb5yksobnynlx2gmnqks6, unmanaged deployment",
+  "executable_sha256": "64123b3d7e4549e9610c1eb42071eb895baf5c64e931357410e18f29a02ae57a",
+  "log_sha256": {
+    "configure.log": "d6ba78ff2f50a2d2125e7178d7d2a7f2c451c30d3f4d008630c72ccedc07d884",
+    "build-and-version.log": "b74bc858a1eaad3597c02f706584857982b73a6c23b0aea8db9d08bb3a09382b",
+    "version.log": "12556c150a2e4efd75f51497a0afd9cb6723d37e99c05c71f2a56a86d215242c",
+    "focused-layout.log": "55b62fcce83782cec83402f388b71d97de7206d0cf7e7668be477f3a773d36c0",
+    "focused-cli.log": "bed0e2673ba30986c04c01da11f823c560463deb4c34c5d5dce9da1c8918f583",
+    "ctest.log": "b2fb825a98ca1fef75a7dd0f875d8b22e7f574bdf32068ae3b9e162abf3f83e8",
+    "baseline-tests.log": "1531212ddcabefabbf3ca409a5740726ba77036f7200da327ca332563df3fa39",
+    "config-preflight.log": "b9765ca18171b8f6c2091163345455f1185573c26af02c7ac2bec3ad77d5076f"
+  },
+  "logging": "No unexpected error-level output found in inspected command/detailed CTest logs. Critical at LastTest.log:27406 is the intentional ordered_writer fixed-dimension failure/recovery test. CMP0144 and duplicate linker/rpath warnings retained.",
+  "limits": "Synthetic filesystem and CLI coverage, not whole scientific reduction, Unity, configured POINT or production acceptance",
+  "repository": "Candidate clean at exact SHA; mainline clean at base; original candidate/run/review evidence preserved",
+  "source_documents": "Preparatory pending-execution statements are superseded by this external evidence record without moving the tested source",
+  "integration_push_activation_cleanup_authority": "none for stage 2"
+}

@@ -1,0 +1,18 @@
+{
+  "date": "2026-11-03",
+  "owner": "Grant Wilson",
+  "directive": "I accept stage 2 as a bounded software repair. Record the acceptance, integrate it locally into mainline, and proceed with stage 3. No push; I'll continue to run all builds and tests.",
+  "accepted_candidate": "3d537e978ac0a8e067c93af7804eadf4723f86ff",
+  "accepted_tree": "717f95a1d56fe1408a72bdbd19e6c9f314bf42f1",
+  "prior_mainline": "6760ee2100bae091a66de8a1247f64919ecee61f",
+  "integration": "Local fast-forward to exact accepted candidate, followed by documentation-only acceptance record",
+  "scope": "Native RTC/CAL/PTC output names and exclusive directory claims during setup, including preservation of symlink-parent path semantics",
+  "owner_evidence": "OWNER_RESULTS-3d537e978.json",
+  "independent_review": "INDEPENDENT_REVIEW-3d537e978.json",
+  "evidence_packet": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-stage2-20261103",
+  "evidence_status": "Copied historical assessments retain their pre-acceptance authority statements; this record supplies subsequent owner acceptance and integration authority",
+  "limits": ["Bounded software repair with synthetic filesystem and CLI coverage", "No whole scientific reduction, Unity, configured successor POINT or production acceptance", "Existing disabled forensic replay remains unrun", "Mac Spack developer evidence does not reproduce the accepted Unity V2 campaign"],
+  "stage3_authorization": "One bounded development increment for upfront configuration checks and readable requested/effective/realized reporting; later integration requires separate owner acceptance",
+  "execution_owner": "Grant alone for all builds, tests, probes, benchmarks, reductions and validation runners",
+  "push_deployment_cleanup_authority": "none"
+}
