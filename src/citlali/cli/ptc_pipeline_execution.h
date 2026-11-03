@@ -3,48 +3,22 @@
 #include <sys/resource.h>
 namespace {
 YAML::Node execute_connected_ptc(const PtcCalSource &source,const ProcessingScanNativeProjection &scans,
-    const YAML::Node &cfg,const citlali::cli::DevelopmentPtcRequest &requested,
+    const citlali::cli::NativePtcSetup &setup,
     const citlali::cli::NativeRtcOutputLayout::TreatmentPaths &output) {
     const auto began=std::chrono::steady_clock::now();
-    const auto effective=YAML::LoadFile(checked_file(cfg["effective_config"]).string());
-    const auto cleaning=effective["timestream"]["processed_time_chunk"]["clean"];
-    require(cleaning && cleaning["enabled"].as<bool>() && cleaning["grouping"].as<std::vector<std::string>>()==std::vector<std::string>{"nw"},
-        "successor.PTC_grouping_unavailable: explicit network cleaning required; no array/common-grid substitution");
-    const auto pca=cleaning["standard_pca"];
-    require(pca["enabled"].as<bool>() && pca["stddev_limit"].as<double>()==0 && cleaning["mask_radius_arcsec"].as<double>()==0,
-        "successor.PTC_selection_unavailable: adaptive rank or source mask not connected");
-    for(const auto *name:{"adaptive_selector","corr_grouping","marchenko_pastur","null_model"})
-        require(!cleaning[name] || !cleaning[name]["enabled"] || !cleaning[name]["enabled"].as<bool>(),
-            "successor.PTC_selection_unavailable: alternate cleaning selector requested");
-    require(!cleaning["tau"] || cleaning["tau"].as<double>()==0,"successor.PTC_tau_selection_unavailable");
-    PtcSolverRequest request;
-    request.method=requested.method=="observed-als"?PtcMethod::observed_als:requested.method=="masked-covariance-count-v1"?PtcMethod::masked_covariance_count:PtcMethod::pairwise_covariance;
-    const std::array<std::string,3> arrays{"a1100","a1400","a2000"};
-    const auto ranks=pca["n_eig_to_cut"][arrays.at(source.detector_factors().front().array)].as<std::vector<int>>();
-    require(ranks.size()==1 && ranks.front()>0,"successor.PTC_explicit_rank_unavailable");
-    request.rank=requested.rank?requested.rank:ranks.front();
-    if(cfg["point_transfer_runtime_profile"]) {
-        require(cfg["point_transfer_runtime_profile"].as<std::string>()=="point-transfer-runtime-2026-09-29-v1" &&
-            cfg["observation"].as<int>()==152420 && cfg["network"].as<int>()>=1 && cfg["network"].as<int>()<=4 &&
-            source.detector_factors().front().array==0 && request.rank==10 && request.method==PtcMethod::observed_als,
-            "PTC transfer runtime profile outside approved scope");
-        request.iteration_limit=500;
-    }
-    if(citlali::cli::detail::oof_request(cfg)) {
-        require(citlali::cli::detail::oof_network_scope(cfg,cfg["observation"].as<int>(),0,1,cfg["network"].as<int>()) &&
-            source.detector_factors().front().array==citlali::cli::detail::oof_array(cfg) && request.rank==3 && request.method==PtcMethod::observed_als,
-            "OOF cold-M0 PTC requires declared rank3 observed ALS control");
-        request.iteration_limit=500;
-    }
-    if(request.method==PtcMethod::masked_covariance_count)
-        require(cfg["observation"].as<int>()==152430 && (cfg["network"].as<int>()==11 || cfg["network"].as<int>()==12) && (request.rank==10 || request.rank==15),"experimental masked covariance scope");
+    require(!source.detector_factors().empty() && source.detector_factors().front().array==setup.array,
+        "successor.PTC_prepared_array_differs_from_CAL");
+    const auto &request=setup.solver;
     const auto evidence=PtcEvidence::learn(source,scans,request);
     const auto plan=PtcPlan::consider(evidence,source.val_snapshot_handle(),1);
     const auto signal=PtcAppliedSignal::apply(plan,source,source.val_snapshot_handle());
     const auto val=ValSnapshot::commit_ptc_output(source.val_snapshot_handle(),ValPtcOutputFacts::preserve(signal));
     const auto &destination=output.ptc;
     YAML::Node record;record["schema"]="citlali-ptc-output-v2";record["unit"]=std::string(PtcCalSource::unit);
-    record["method"]=requested.method;record["rank"]=request.rank;
+    record["method"]=citlali::cli::ptc_method_name(request.method);record["rank"]=request.rank;
+    record["configured_rank"]=setup.configured_rank;
+    if(setup.requested_rank)record["requested_rank_override"]=setup.requested_rank;
+    else record["requested_rank_override"]=YAML::Null;
     record["use_policy"]=std::string(PtcEvidence::use_policy);record["source_CAL_receipt_sha256"]=citlali::utils::sha256_file(output.cal/"receipt.yaml");
     record["input_VAL_generation"]=source.val_snapshot_handle()->generation().value;record["output_VAL_generation"]=val->generation().value;
     record["processing_generation"]=scans.binding->processing_generation();record["CAL_classification"]=(output.cal/"receipt.yaml").string();

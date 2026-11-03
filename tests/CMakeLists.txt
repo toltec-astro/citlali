@@ -46,6 +46,7 @@ target_sources(citlali_test
     PRIVATE
         test_oof_development_scope.cpp
         test_configured_point_scope.cpp
+        test_native_ptc_setup.cpp
         test_astrometry_config_plan.cpp
         test_beammap_config_plan.cpp
         test_canonical_apt_v1.cpp

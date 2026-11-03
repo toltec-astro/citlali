@@ -69,8 +69,19 @@ int load_and_run_successor_development(const RuntimeConfig &runtime,
         if(workers!=1 || config["ptc"])throw std::invalid_argument("successor.saved_MAP_requires_serial_execution_and_no_PTC_override");
         return run_successor_saved_map(path,output);
     }
-    return run_successor_rtc(path, output, RtcInvocation::development_default, {},
-        terminal == "prepare" ? DevelopmentTerminal::prepare : terminal == "ptc" ? DevelopmentTerminal::ptc : terminal == "cal" ? DevelopmentTerminal::cal : DevelopmentTerminal::rtc_only,ptc,workers);
+    logger->info("Native request: terminal={} requested_workers={} output={}",
+                 terminal, workers, output.string());
+    try {
+        const int code=run_successor_rtc(path, output, RtcInvocation::development_default, {},
+            terminal == "prepare" ? DevelopmentTerminal::prepare : terminal == "ptc" ? DevelopmentTerminal::ptc : terminal == "cal" ? DevelopmentTerminal::cal : DevelopmentTerminal::rtc_only,ptc,workers);
+        logger->info("Native request finished: terminal={} exit_code={} output={}; inspect availability in receipts",
+                     terminal, code, output.string());
+        return code;
+    } catch (...) {
+        logger->info("Native request failed: terminal={} output={}; completion unavailable; preserve any partial output",
+                     terminal, output.string());
+        throw;
+    }
 }
 
 } // namespace citlali::cli

@@ -47,9 +47,70 @@ class SuccessorDefaultCli(unittest.TestCase):
         raw = self.root / "raw-placeholder"
         raw.write_text("deliberately not detector data")
         return dict(schema="rtc-multidetector-experiment-v1",
+                    observation=152389, network=7,
                     terminal_request="rtc-only", decision_apply={},
                     reassessment_selection=dict(intent="retain-development-candidate"),
+                    effective_config=self.ptc_effective_binding(),
+                    manifest=dict(path=str(raw), sha256="0" * 64),
                     raw=dict(path=str(raw), sha256="0" * 64))
+
+    def ptc_effective_binding(self, **changes):
+        cleaning = dict(enabled=True, grouping=["nw"], mask_radius_arcsec=0,
+                        standard_pca=dict(enabled=True, stddev_limit=0,
+                            n_eig_to_cut=dict(a1100=[3], a1400=[7], a2000=[10])))
+        cleaning.update(changes)
+        path = self.root / "effective.json"
+        path.write_text(json.dumps(dict(timestream=dict(processed_time_chunk=dict(clean=cleaning)))))
+        return dict(path=str(path), sha256=hashlib.sha256(path.read_bytes()).hexdigest())
+
+    def test_ptc_config_rejected_before_output_claim_and_native_ingress(self):
+        for changes, reason in (
+            (dict(grouping=["array"]), "successor.PTC_grouping_unavailable"),
+            (dict(mask_radius_arcsec=1), "successor.PTC_selection_unavailable"),
+            (dict(adaptive_selector=dict(enabled=True)), "successor.PTC_selection_unavailable"),
+            (dict(tau=1), "successor.PTC_tau_selection_unavailable"),
+        ):
+            with self.subTest(changes=changes):
+                native = self.native_request_with_bad_raw_digest()
+                native["effective_config"] = self.ptc_effective_binding(**changes)
+                config = self.request(native)
+                config["terminal"] = "ptc"
+                result = self.invoke(config)
+                self.rejected(result, reason)
+                self.assertNotIn("input digest mismatch", result.stdout + result.stderr)
+                self.assertIn("exit_code=1", result.stdout + result.stderr)
+
+    def test_observation_ptc_config_rejected_before_shared_preparation(self):
+        effective = self.ptc_effective_binding(grouping=["array"])
+        entries = []
+        for nw in (0, 7):
+            network = self.root / f"network{nw}.json"
+            network.write_text(json.dumps(dict(network=nw, observation=152389,
+                decision_apply={}, filter_plan={}, effective_config=effective)))
+            entries.append(dict(network=nw, input=dict(path=str(network),
+                sha256=hashlib.sha256(network.read_bytes()).hexdigest())))
+        config = self.request(dict(schema="citlali-observation-networks-v1", observation=152389,
+                                   subobservation=0, scan=2, networks=entries))
+        config["terminal"] = "ptc"
+        config["network_workers"] = 8
+        self.rejected(self.invoke(config), "successor.PTC_grouping_unavailable")
+
+    def test_rtc_only_does_not_activate_or_validate_unused_ptc(self):
+        native = self.native_request_with_bad_raw_digest()
+        native["effective_config"] = self.ptc_effective_binding(grouping=["array"])
+        result = self.invoke(self.request(native))
+        combined = result.stdout + result.stderr
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("input digest mismatch", combined)
+        self.assertNotIn("successor.PTC_grouping_unavailable", combined)
+        self.assertFalse((self.output / "donor-continuity" / "ptc").exists())
+        self.assertIn("Native setup: network=7 terminal=rtc-only", combined)
+        self.assertIn("execution not yet observed", combined)
+        self.assertIn("exit_code=1", combined)
+        self.assertNotIn("Native result:", combined)
+        setup = (self.output / "setup.yaml").read_text()
+        self.assertIn("setup-only;execution-not-yet-observed", setup)
+        self.assertNotIn("PTC:", setup)
 
     def test_existing_output_is_rejected_before_native_ingress(self):
         config = self.request(self.native_request_with_bad_raw_digest())
@@ -96,10 +157,11 @@ class SuccessorDefaultCli(unittest.TestCase):
 
     def test_all_network_directories_exist_before_shared_preparation(self):
         entries = []
+        effective = self.ptc_effective_binding()
         for nw in (0, 7):
             network = self.root / f"network{nw}.json"
             network.write_text(json.dumps(dict(network=nw, observation=152389,
-                                               decision_apply={}, filter_plan={})))
+                                               decision_apply={}, filter_plan={}, effective_config=effective)))
             entries.append(dict(network=nw, input=dict(path=str(network),
                 sha256=hashlib.sha256(network.read_bytes()).hexdigest())))
         config = self.request(dict(schema="citlali-observation-networks-v1", observation=152389,

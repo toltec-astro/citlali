@@ -1,3 +1,21 @@
+## Stage 3 configuration setup and reporting prepared; owner gates pending — 2026-11-03
+
+The isolated `codex/review-stage3-20261103` candidate starts at canonical
+`fba31ae909bbaf6358390937ec0845fe1716dcf3`, after accepted stage-2 application
+`3d537e978`. [Work order](REVIEW_STAGE3_CONFIG_SETUP_2026-11-03.md) bounds
+the work to native PTC configuration preflight and requested/effective/realized
+reporting. Existing cleaning checks move before processing; each selected
+network receives a setup-resolved solver request. Required setup records and
+console summaries distinguish intended settings from actual availability/failures.
+No numerical method, threshold, terminal policy or RTC-only CAL preparation
+changes. Configured POINT receives native service reports; its Python orchestration
+and retained standard reduction remain unchanged.
+
+Six focused C++ cases and three actual-CLI cases are prepared, unexecuted.
+Grant alone runs all builds, tests, probes, reductions and validation.
+Mac Spack gates and independent exact-SHA review remain pending. Stage 3 is
+not integrated or scientifically/operationally accepted. No push or runtime change.
+
 ## Stage 2 accepted and integrated locally; stage 3 authorized — 2026-11-03
 
 Grant accepted exact application `3d537e978ac0a8e067c93af7804eadf4723f86ff`

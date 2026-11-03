@@ -16,6 +16,18 @@ and existing paths cannot be reused. Performance logging and downstream
 publishers consume prepared paths. Required FITS closes and FFTW creation have explicit resource
 owners. Configured POINT's separate atomic `reduNN` creation is unchanged.
 
+Native PTC settings are checked by the private application-boundary
+`NativePtcConfiguration` during setup. It resolves `NativePtcSetup` from the
+verified APT array identity before native ingress (single network) or shared
+preparation (observation), including every selected network before workers start.
+The scientific PTC owner receives the prepared `PtcSolverRequest`; it does not
+reload YAML after RTC/CAL. Observation workers recheck each network request's
+exact input binding before ingress. Required `setup.yaml` records and readable startup summaries
+separate configured rank, explicit override and effective rank; completion
+summaries consume actual RTC/CAL/PTC receipt counts. Setup is not execution or
+scientific acceptance. Existing detailed Learn/Consider/Apply receipts remain
+authoritative for individual decisions.
+
 ## Current application entry points
 
 | Entry | Owner and behavior |
@@ -69,7 +81,7 @@ snapshot. `PtcEvidence` learns an observed-entry configured-rank basis per
 network/physical processing segment; `PtcPlan` freezes it; `PtcAppliedSignal`
 executes full-rank masked application. `ValPtcOutputFacts` references that
 result in one subsequent VAL generation. No `Engine` state or cross-stage
-policy is added. The private PTC adapter recovers explicit configuration and
+policy is added. The private PTC adapter consumes the setup-resolved request and
 publishes artifacts; the numerical owner implements ALS and the explicitly
 selectable pairwise covariance comparator. Parent values and memberships stay
 fixed. Exact local response action is available, but an absent complete

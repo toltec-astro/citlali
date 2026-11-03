@@ -2,6 +2,7 @@
 #include "oof_development_scope.h"
 #include "configured_point_scope.h"
 #include "native_rtc_output_layout.h"
+#include "native_rtc_run_report.h"
 // Shared application-boundary RTC execution. Scientific owners remain the
 // existing typed components; YAML and file checks stop at this boundary.
 #include <citlali/core/cli/successor_development_execution.h>
@@ -140,7 +141,9 @@ struct SharedObservationPreparation {
 static int execute_successor_network(const fs::path &input_path, const fs::path &output_path,
     citlali::cli::RtcInvocation invocation, std::optional<fs::path> reviewed_selection, citlali::cli::DevelopmentTerminal endpoint, citlali::cli::DevelopmentPtcRequest ptc_request,
     const SharedObservationPreparation *common=nullptr,
-    const citlali::cli::NativeRtcOutputLayout::NetworkPaths *prepared_output=nullptr) {
+    const citlali::cli::NativeRtcOutputLayout::NetworkPaths *prepared_output=nullptr,
+    const citlali::cli::NativePtcSetup *prepared_ptc=nullptr,
+    std::string expected_input_sha256={}) {
   using citlali::cli::RtcInvocation;using citlali::cli::DevelopmentTerminal;
   const bool development = invocation == RtcInvocation::development_default;
   std::array<std::string,4> arguments{"citlali",input_path.string(),output_path.string(),
@@ -152,6 +155,9 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
     const auto began=std::chrono::steady_clock::now();
     require(argc==3 || argc==4,"expected input JSON, NEW output directory, optional explicit reviewed-selection YAML");
     require(std::endian::native==std::endian::little,"native binary audit requires little endian");
+    if(!expected_input_sha256.empty())
+      require(citlali::utils::sha256_file(input_path)==expected_input_sha256,
+          "successor.network_request_changed_after_setup");
     const auto cfg=YAML::LoadFile(argv[1]);
     const bool terminal_requested=bool(cfg["terminal_request"]);
     if(terminal_requested) require(cfg["terminal_request"].as<std::string>()=="rtc-only" && cfg["decision_apply"],
@@ -170,6 +176,9 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
           cfg["reassessment_selection"]["intent"].as<std::string>()=="retain-development-candidate",
           "successor.selection_unavailable: explicit frozen-plan development selection is required");
     }
+    std::optional<citlali::cli::NativePtcConfiguration> local_ptc_config;
+    if(development && endpoint==DevelopmentTerminal::ptc && !prepared_ptc)
+      local_ptc_config.emplace(YAML::LoadFile(checked_file(cfg["effective_config"]).string()),ptc_request);
     std::optional<citlali::cli::NativeRtcOutputLayout> local_output;
     if (!prepared_output) {
       local_output.emplace(output_path,std::vector<int>{},bool(cfg["decision_apply"]),
@@ -179,6 +188,26 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
     const fs::path &output=prepared_output->root;
     RtcPerformanceTrace performance(output);
     auto checked=[&](const std::string &key){return checked_file(cfg[key]);};
+    // Resolve the PTC request from exact APT array identity before raw ingress.
+    // Observation execution has already prepared every network's request.
+    std::optional<apt::VerifiedBundle> local_verified;
+    std::optional<pipeline::CanonicalAptDetectorRelationV2> local_relation;
+    std::optional<citlali::cli::NativePtcSetup> local_ptc;
+    if(local_ptc_config) {
+      local_verified=apt::verify_bundle_filesystem(checked("manifest"),true);
+      local_relation=pipeline::admit_canonical_apt_detector_relation_v2(*local_verified);
+      const auto binding=std::find_if(local_relation->bindings().begin(),local_relation->bindings().end(),
+          [&](const auto &b){return b.network==cfg["network"].as<int>();});
+      require(binding!=local_relation->bindings().end(),"native network has no exact APT array binding");
+      local_ptc.emplace(local_ptc_config->resolve(cfg,binding->array));
+      prepared_ptc=&*local_ptc;
+    }
+    if(development && !common) {
+      auto setup=citlali::cli::native_setup_record(cfg,endpoint,*prepared_output,prepared_ptc);
+      setup["source_revision"]=std::string(CITLALI_GIT_REVISION);
+      write_yaml(output/"setup.yaml",setup);
+      spdlog::info("{}",citlali::cli::native_setup_summary(setup));
+    }
     const auto raw_path = checked("raw"), tune_path = checked("tune"),
                manifest = checked("manifest");
     const bool direct=cfg["native_source"] && cfg["native_source"].as<std::string>()=="exact-raw-kids-v1";
@@ -200,11 +229,9 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
     // standalone comparison entry needs the historical logging setup.
     if (!development) (void)configure_logging();
     performance.mark("input_digests_verified");
-    std::optional<apt::VerifiedBundle> local_verified;
-    if(!common)local_verified=apt::verify_bundle_filesystem(manifest,true);
+    if(!common && !local_verified)local_verified=apt::verify_bundle_filesystem(manifest,true);
     const auto &verified=common?common->apt:*local_verified;
-    std::optional<pipeline::CanonicalAptDetectorRelationV2> local_relation;
-    if(!common)local_relation=pipeline::admit_canonical_apt_detector_relation_v2(verified);
+    if(!common && !local_relation)local_relation=pipeline::admit_canonical_apt_detector_relation_v2(verified);
     const auto &relation=common?common->relation:*local_relation;
     performance.mark("APT_verified_and_bound");
     // NetCDF/HDF5 readers are serialized within this process. Once closed,
@@ -1301,7 +1328,8 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
           if(endpoint==DevelopmentTerminal::ptc) {
             require(bool(recovered_scans),"successor.PTC_scan_binding_unavailable");
             performance.mark("PTC_start");
-            receipt["PTC"]=execute_connected_ptc(cal.source,recovered_scans->projection,cfg,ptc_request,treatment_output);
+            require(prepared_ptc!=nullptr,"successor.PTC_setup_unavailable");
+            receipt["PTC"]=execute_connected_ptc(cal.source,recovered_scans->projection,*prepared_ptc,treatment_output);
           }
         }
         performance.mark("downstream_complete");
@@ -1363,6 +1391,7 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
       receipt["status"]="UNAVAILABLE-PTC-fit-or-output;upstream-preserved";
     rtc_yaml_map(output/"receipt.yaml",receipt,receipt_sections);
     performance.mark("root_receipt_written");
+    if(development)spdlog::info("{}",citlali::cli::native_result_summary(nw,receipt));
     std::cout<<receipt["status"].as<std::string>()<<" detectors="<<channels.size()<<" events="<<event_table.size()<<" jumps="<<jump_count<<'\n';
     if(development && endpoint!=DevelopmentTerminal::rtc_only && receipt["CAL"]["available"].as<std::size_t>()==0) {
       std::cerr<<"successor.CAL_no_calibrated_output: no sample has supported calibration; inspect cal/receipt.yaml. RTC preserved; no legacy fallback.\n";
@@ -1404,7 +1433,14 @@ int execute_successor_observation(const YAML::Node &request,const fs::path &outp
     }
     ids.push_back(nw);inputs.push_back(path);configs.push_back(cfg);
   }
+  std::optional<citlali::cli::NativePtcConfiguration> ptc_config;
+  if(terminal==citlali::cli::DevelopmentTerminal::ptc)
+    ptc_config.emplace(YAML::LoadFile(checked_file(configs.front()["effective_config"]).string()),ptc);
   const citlali::cli::NativeRtcOutputLayout output_layout(output,ids,true,false,terminal);
+  std::cout<<"Native observation setup: requested_workers="<<workers
+           <<" effective_workers="<<std::min<std::size_t>(workers,ids.size())
+           <<" terminal="<<citlali::cli::native_terminal_name(terminal)
+           <<" output="<<std::quoted(output_layout.root().string())<<'\n';
   // Set once before concurrent work. No worker mutates library-wide controls.
   Eigen::setNbThreads(1);
 #ifdef _OPENMP
@@ -1416,6 +1452,24 @@ int execute_successor_observation(const YAML::Node &request,const fs::path &outp
   auto verified=apt::verify_bundle_filesystem(checked_file(cfg["manifest"]),true);
   auto relation=pipeline::admit_canonical_apt_detector_relation_v2(verified);
   require(relation.observation().observation==scope.observation && relation.observation().subobservation==scope.subobservation && relation.observation().scan==scope.scan,"observation/APT scope mismatch");
+  std::vector<citlali::cli::NativePtcSetup> ptc_setups;
+  if(ptc_config) {
+    for(std::size_t i=0;i<ids.size();++i) {
+      const auto binding=std::find_if(relation.bindings().begin(),relation.bindings().end(),
+          [&](const auto &b){return b.network==ids[i];});
+      require(binding!=relation.bindings().end(),"native network has no exact APT array binding");
+      ptc_setups.push_back(ptc_config->resolve(configs[i],binding->array));
+    }
+  }
+  // Every network's PTC configuration is resolved before any shared scientific
+  // preparation or worker starts. These are intended settings, not results.
+  for(std::size_t i=0;i<ids.size();++i) {
+    auto setup=citlali::cli::native_setup_record(configs[i],terminal,output_layout.network(i),
+        ptc_config?&ptc_setups[i]:nullptr);
+    setup["source_revision"]=std::string(CITLALI_GIT_REVISION);
+    write_yaml(output_layout.network(i).root/"setup.yaml",setup);
+    spdlog::info("{}",citlali::cli::native_setup_summary(setup));
+  }
   auto processing=prepare_processing_scans(cfg,scope,verified,trace);
   auto telescope=load_telescope(checked_file(cfg["telescope"]),scope, {
       .bounded_repeat_census = false,
@@ -1496,7 +1550,8 @@ int execute_successor_observation(const YAML::Node &request,const fs::path &outp
       const auto start=std::chrono::steady_clock::now();
       codes[i]=execute_successor_network(inputs[i],output_layout.network(i).root,
           citlali::cli::RtcInvocation::development_default,{},terminal,ptc,&common,
-          &output_layout.network(i));
+          &output_layout.network(i),ptc_config?&ptc_setups[i]:nullptr,
+          request["networks"][i]["input"]["sha256"].as<std::string>());
       seconds[i]=std::chrono::duration<double>(std::chrono::steady_clock::now()-start).count();
     }
   });
@@ -1526,6 +1581,9 @@ int execute_successor_observation(const YAML::Node &request,const fs::path &outp
   record["wall_seconds"]=std::chrono::duration<double>(std::chrono::steady_clock::now()-began).count();
   record["exit_code"]=exit;
   write_yaml(output_layout.root()/"observation-receipt.yaml",record);trace.mark("observation_receipt_written");
+  std::cout<<"Native observation result: exit_code="<<exit
+           <<" started_workers="<<threads.size()<<" networks="<<ids.size()
+           <<" receipt="<<std::quoted((output_layout.root()/"observation-receipt.yaml").string())<<'\n';
   return exit;
 }
 }
