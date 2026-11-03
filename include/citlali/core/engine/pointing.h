@@ -120,10 +120,11 @@ public:
 
     // output files
     Eigen::MatrixXf make_pointing_ppt_table(mapmaking::MapBuffer *mb);
+    template <mapmaking::MapType map_type>
     void add_pointing_fit_header_keys(CCfits::ExtHDU &hdu,
                                       const Eigen::MatrixXf &ppt_table,
                                       Eigen::Index map_row);
-    template <typename FitsIoVector>
+    template <mapmaking::MapType map_type, typename FitsIoVector>
     void write_pointing_map_fits_products(FitsIoVector *f_io,
                                           FitsIoVector *n_io,
                                           mapmaking::MapBuffer *mb,

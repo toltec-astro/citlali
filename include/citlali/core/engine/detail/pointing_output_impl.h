@@ -45,37 +45,53 @@ Eigen::MatrixXf Pointing::make_pointing_ppt_table(mapmaking::MapBuffer *mb) {
     return ppt_table;
 }
 
+template <mapmaking::MapType map_type>
 void Pointing::add_pointing_fit_header_keys(CCfits::ExtHDU &hdu,
                                             const Eigen::MatrixXf &ppt_table,
                                             Eigen::Index map_row) {
-    for (Eigen::Index j = 0; j < ppt_header.size(); ++j) {
-        const auto &key = ppt_header[j];
-        const std::string comment = key + " (" + ppt_header_units[key] + ")";
-        const auto value = citlali::pipeline::pointing_fits_header_value(
-            ppt_table(map_row, j));
-        if (!value) {
-            logger->debug(
-                "omitting non-finite POINTING.{} FITS keyword for map row {}",
-                key, static_cast<long long>(map_row));
-            continue;
+    constexpr bool observation_fit =
+        map_type == mapmaking::RawObs || map_type == mapmaking::FilteredObs;
+    static_assert(observation_fit || map_type == mapmaking::RawCoadd ||
+                  map_type == mapmaking::FilteredCoadd);
+    if constexpr (observation_fit) {
+        for (Eigen::Index j = 0; j < ppt_header.size(); ++j) {
+            const auto &key = ppt_header[j];
+            const std::string comment = key + " (" + ppt_header_units[key] + ")";
+            const auto value = citlali::pipeline::pointing_fits_header_value(
+                ppt_table(map_row, j));
+            if (!value) {
+                logger->debug(
+                    "omitting non-finite POINTING.{} FITS keyword for map row {}",
+                    key, static_cast<long long>(map_row));
+                continue;
+            }
+            try {
+                hdu.addKey("POINTING." + key, *value, comment);
+            }
+            catch (const CCfits::FitsError &error) {
+                throw citlali::error::output(
+                    fmt::format(
+                        "failed to write POINTING.{} FITS keyword for map row {}: {}",
+                        key, static_cast<long long>(map_row), error.message()));
+            }
         }
-        try {
-            hdu.addKey("POINTING." + key, *value, comment);
-        }
-        catch (const CCfits::FitsError &error) {
-            throw citlali::error::output(
-                fmt::format(
-                    "failed to write POINTING.{} FITS keyword for map row {}: {}",
-                    key, static_cast<long long>(map_row), error.message()));
-        }
+    } else {
+        // Pointing fits belong to individual observation maps. Coadds retain
+        // their array identity, but have no fit table or fit validity of their
+        // own; never borrow the final observation's measurements or status.
+        hdu.addKey("POINTING.array",
+                   static_cast<float>(map_indices.maps_to_arrays(map_row)),
+                   "array (" + ppt_header_units["array"] + ")");
     }
 
     hdu.addKey(
         "POINTING.fit_enabled",
-        static_cast<int>(citlali::pipeline::pointing_config(*this).fit_gaussian),
-        "Gaussian fit enabled");
-    hdu.addKey("POINTING.fit_valid", static_cast<int>(fit_valid(map_row)),
-               "Gaussian fit valid");
+        static_cast<int>(observation_fit &&
+                         citlali::pipeline::pointing_config(*this).fit_gaussian),
+        "Gaussian fit enabled for this product");
+    hdu.addKey("POINTING.fit_valid",
+               static_cast<int>(observation_fit && fit_valid(map_row) != 0),
+               "Gaussian fit valid for this product");
     hdu.addKey(
         "POINTING.source_strategy",
         std::string(citlali::config::to_string(
@@ -88,7 +104,7 @@ void Pointing::add_pointing_fit_header_keys(CCfits::ExtHDU &hdu,
         "Fruit loops source center mode");
 }
 
-template <typename FitsIoVector>
+template <mapmaking::MapType map_type, typename FitsIoVector>
 void Pointing::write_pointing_map_fits_products(
     FitsIoVector *f_io,
     FitsIoVector *n_io,
@@ -143,7 +159,7 @@ void Pointing::write_pointing_map_fits_products(
                 found = extname.find("signal");
             }
 
-            add_pointing_fit_header_keys(
+            add_pointing_fit_header_keys<map_type>(
                 *f_io->at(map_index).hdus.at(k), ppt_table, i);
             ++k; // Move to next extension
         }
@@ -169,12 +185,9 @@ void Pointing::output(
     // directory name
     std::string dir_name;
 
-    // Matrix holds array identity, fit values/errors, the legacy dynamic-range
-    // field, and explicit dynamic-range/formal-fit significance fields.
-    Eigen::MatrixXf ppt_table(
-        map_indices.n_maps,
-        citlali::pipeline::pointing_fit_table_column_count(
-            map_fitter.n_params));
+    // Only observation outputs have a fit table. Coadd publication must not
+    // allocate or read uninitialized measurements for a fit that never ran.
+    Eigen::MatrixXf ppt_table;
 
     // determine pointers and directory name based on map_type
     if constexpr (map_type == mapmaking::RawObs || map_type == mapmaking::FilteredObs) {
@@ -215,7 +228,7 @@ void Pointing::output(
     }
 
     if (citlali::pipeline::mapmaking_outputs_enabled(*this)) {
-        write_pointing_map_fits_products(f_io, n_io, mb, ppt_table);
+        write_pointing_map_fits_products<map_type>(f_io, n_io, mb, ppt_table);
 
         const auto published_data_paths =
             citlali::pipeline::noise_fits_output_paths(*f_io);

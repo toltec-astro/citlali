@@ -1,4 +1,5 @@
 #include <citlali/core/engine/engine.h>
+#include <citlali/core/engine/pointing.h>
 #include <citlali/core/engine/detail/beammap_ptc_product_output_helpers.h>
 #include <citlali/core/pipeline/output_netcdf_metadata.h>
 #include <citlali/core/pipeline/ptcdiag_netcdf.h>
@@ -32,6 +33,106 @@ void ensure_metadata_logger() {
         spdlog::register_logger(std::make_shared<spdlog::logger>(
             "citlali_logger", std::make_shared<spdlog::sinks::null_sink_mt>()));
     }
+}
+
+template <mapmaking::MapType map_type>
+void check_pointing_fit_header(Pointing &pointing, const Eigen::MatrixXf &table,
+                               const std::filesystem::path &base) {
+    constexpr bool observation =
+        map_type == mapmaking::RawObs || map_type == mapmaking::FilteredObs;
+    Eigen::MatrixXd signal(2, 3);
+    signal << 1.0, -2.0, 3.0, 4.0, 5.0, 6.0;
+    {
+        fitsIO<file_type_enum::write_fits, CCfits::ExtHDU *> output(base.string());
+        for (Eigen::Index row = 0; row < 2; ++row) {
+            output.add_hdu("signal_" + std::to_string(row), signal);
+            // Exercise the production header writer, with output scope carried
+            // by the same MapType used by Pointing::output and its map writer.
+            pointing.add_pointing_fit_header_keys<map_type>(
+                *output.hdus.back(), table, row);
+        }
+    }
+    fitsIO<file_type_enum::read_fits, CCfits::ExtHDU *> input(base.string() + ".fits");
+    for (Eigen::Index row = 0; row < 2; ++row) {
+        SCOPED_TRACE(row);
+        const auto name = "signal_" + std::to_string(row);
+        const auto actual = input.get_hdu(name);
+        EXPECT_TRUE(actual.isApprox(signal, 0.0));
+        auto &hdu = input.pfits->extension(name);
+        int enabled = -1, valid = -1;
+        ASSERT_NO_THROW(hdu.readKey("POINTING.fit_enabled", enabled));
+        ASSERT_NO_THROW(hdu.readKey("POINTING.fit_valid", valid));
+        EXPECT_EQ(enabled, observation ? 1 : 0);
+        if constexpr (observation) {
+            EXPECT_EQ(valid, pointing.fit_valid(row));
+        } else {
+            EXPECT_EQ(valid, 0);
+        }
+        for (Eigen::Index column = 0; column < pointing.ppt_header.size(); ++column) {
+            const auto key = "POINTING." + pointing.ppt_header[column];
+            double value = -1.0;
+            if constexpr (observation) {
+                ASSERT_NO_THROW(hdu.readKey(key, value)) << key;
+                EXPECT_DOUBLE_EQ(value, static_cast<double>(table(row, column))) << key;
+            } else {
+                if (column == 0) {
+                    ASSERT_NO_THROW(hdu.readKey(key, value));
+                    EXPECT_DOUBLE_EQ(value, pointing.map_indices.maps_to_arrays(row));
+                } else {
+                    EXPECT_THROW(hdu.readKey(key, value), CCfits::HDU::NoSuchKeyword) << key;
+                }
+            }
+        }
+    }
+}
+
+template <mapmaking::MapType map_type>
+void check_pointing_output_scope() {
+    ensure_metadata_logger();
+    MetadataDirectory directory;
+    Pointing pointing;
+    pointing.logger = spdlog::get("citlali_logger");
+    pointing.typed_config.pointing.fit_gaussian = true;
+    pointing.map_indices.maps_to_arrays.resize(2);
+    pointing.map_indices.maps_to_arrays << 0, 2;
+    pointing.fit_valid.resize(2);
+    pointing.fit_valid << 1, 0;
+    Eigen::MatrixXf observation_table(2, pointing.ppt_header.size());
+    for (Eigen::Index row = 0; row < observation_table.rows(); ++row) {
+        for (Eigen::Index column = 0; column < observation_table.cols(); ++column) {
+            observation_table(row, column) = static_cast<float>(100 * (row + 1) + column);
+        }
+        observation_table(row, 0) = pointing.map_indices.maps_to_arrays(row);
+    }
+    // Distinct observation measurements and validity must remain unchanged on
+    // observation outputs, and must never be borrowed for either coadd scope.
+    check_pointing_fit_header<map_type>(pointing, observation_table,
+                                        directory.path / "with-observation-state");
+    EXPECT_EQ(pointing.fit_valid(0), 1);
+    EXPECT_EQ(pointing.fit_valid(1), 0);
+    if constexpr (map_type == mapmaking::RawCoadd || map_type == mapmaking::FilteredCoadd) {
+        // Coadds must also work with no observation fit storage at all. This
+        // catches any attempt to read an empty table or stale fit_valid row.
+        pointing.fit_valid.resize(0);
+        check_pointing_fit_header<map_type>(pointing, Eigen::MatrixXf{},
+                                            directory.path / "without-observation-state");
+    }
+}
+
+TEST(pointing_fit_metadata, raw_observation_preserves_measurements_and_validity) {
+    check_pointing_output_scope<mapmaking::RawObs>();
+}
+
+TEST(pointing_fit_metadata, filtered_observation_preserves_measurements_and_validity) {
+    check_pointing_output_scope<mapmaking::FilteredObs>();
+}
+
+TEST(pointing_fit_metadata, raw_coadd_omits_measurements_and_marks_fit_invalid) {
+    check_pointing_output_scope<mapmaking::RawCoadd>();
+}
+
+TEST(pointing_fit_metadata, filtered_coadd_omits_measurements_and_marks_fit_invalid) {
+    check_pointing_output_scope<mapmaking::FilteredCoadd>();
 }
 
 // Supply the observation fields consumed by the actual final-header entry point.

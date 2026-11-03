@@ -1,3 +1,20 @@
+## Review stage 1 candidate prepared; owner execution pending — 2026-11-03
+
+Grant approved two bounded repairs after review of exact mainline
+`fefdd6b7bde5b272ed664561cf996f805cf6852b`: safely read the first NetCDF
+header element (repeated values remain supported), and mark unfitted retained
+pointing coadds invalid while omitting their fit measurements. The isolated
+`codex/review-stage1-20261103` candidate preserves observation fit behavior and
+map arithmetic. [The work-order and conformance note](REVIEW_STAGE1_REPAIRS_2026-11-03.md)
+records the owner clarifications, scope, eight prepared regression cases and
+evidence limitations.
+
+All builds, tests, probes and reductions remain Grant-owned and unexecuted.
+Independent exact-SHA review and all execution gates are pending. No mainline
+integration, runtime replacement, push or scientific/production acceptance is
+claimed. Output setup/ownership and user-facing configuration reporting remain
+later stages; RTC-only/CAL preparation remains deferred investigation.
+
 ## Publication housekeeping and scientific acceptance clarity — 2026-11-02
 
 Grant requested the remaining housekeeping, deferred launch/deployment work, and
