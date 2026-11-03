@@ -32,6 +32,32 @@ and version match, focused output and CLI tests, full enabled CTest, baseline
 tools and config preflight --require-all. All are pending. Independent exact-SHA
 review is required before acceptance; no stage-2 integration is authorized.
 
+## Independent review repair
+
+The owner-run Mac Spack gates passed for candidate
+`a6feeaf9ca30e136230187028daef56afeb76b8e`, including the original eight
+regressions and 1415 enabled CTest cases. Fresh-context read-only review by
+`/root/stage2_independent_review` nevertheless returned **repair required**:
+lexical normalization changed the physical destination of paths containing a
+symlinked ancestor followed by `..`. The original logs and exact review remain
+preserved beside the checkout in `owner-run-20261103T192046.157427Z` and
+`INDEPENDENT_REVIEW.json`.
+
+Grant authorized implementing this repair. Disposition: **repair within scope**,
+under the same output owner and original path-preservation contract. Remove
+`lexically_normal()`; retain absolute conversion, trailing-separator handling,
+root rejection and exclusive directory creation. No canonical-path lookup or
+scientific behavior change is introduced.
+
+Two additional filesystem cases cover absent/existing physical destinations,
+including downstream directory placement and sentinel preservation. One actual
+CLI case requires existing physical output to fail before the deliberately bad
+raw-input digest is examined. All three exercise both trailing-separator forms
+and assert that the unintended lexical destination remains absent. The candidate
+now contains seven filesystem and four CLI regressions. The corrected source
+has not been built or tested; all owner gates and exact-SHA re-review remain
+pending. Earlier passing results do not qualify the corrected candidate.
+
 Stop for unrelated dirt, source drift, scientific-policy ambiguity, new ownership
 areas, or scope growth. No push, Unity, runtime replacement or cleanup. Retain
 stage-1 evidence and protected pointing/legacy work. Whole scientific reductions

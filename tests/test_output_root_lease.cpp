@@ -130,6 +130,55 @@ TEST(native_rtc_output_layout, simultaneous_contenders_cannot_share_output) {
     EXPECT_TRUE(std::filesystem::is_regular_file(path / "owner"));
 }
 
+TEST(native_rtc_output_layout, symlink_parent_dotdot_claims_physical_destination) {
+    for (const bool trailing_separator : {false, true}) {
+        SCOPED_TRACE(trailing_separator);
+        TemporaryOutputRoots roots;
+        const auto work = roots.root("work");
+        const auto storage = roots.root("storage");
+        std::filesystem::create_directories(work);
+        std::filesystem::create_directories(storage / "child");
+        std::filesystem::create_directory_symlink(storage / "child", work / "link");
+        auto requested = work / "link" / ".." / "run";
+        if (trailing_separator) requested /= "";
+        citlali::cli::NativeRtcOutputLayout layout(requested, {0, 7}, true, false,
+                                                  citlali::cli::DevelopmentTerminal::ptc);
+        ASSERT_TRUE(std::filesystem::is_directory(storage / "run"));
+        EXPECT_TRUE(std::filesystem::equivalent(layout.root(), storage / "run"));
+        for (int network : {0, 7}) {
+            const auto arm = storage / "run" / ("network" + std::to_string(network)) /
+                             "donor-continuity";
+            EXPECT_TRUE(std::filesystem::is_directory(arm / "cal"));
+            EXPECT_TRUE(std::filesystem::is_directory(arm / "ptc"));
+        }
+        EXPECT_FALSE(std::filesystem::exists(work / "run"));
+    }
+}
+
+TEST(native_rtc_output_layout, symlink_parent_dotdot_preserves_existing_destination) {
+    for (const bool trailing_separator : {false, true}) {
+        SCOPED_TRACE(trailing_separator);
+        TemporaryOutputRoots roots;
+        const auto work = roots.root("work");
+        const auto storage = roots.root("storage");
+        std::filesystem::create_directories(work);
+        std::filesystem::create_directories(storage / "child");
+        std::filesystem::create_directories(storage / "run");
+        std::filesystem::create_directory_symlink(storage / "child", work / "link");
+        const auto sentinel = storage / "run" / "performance.jsonl";
+        std::ofstream(sentinel) << "original";
+        auto requested = work / "link" / ".." / "run";
+        if (trailing_separator) requested /= "";
+        EXPECT_THROW((citlali::cli::NativeRtcOutputLayout(requested, {}, true, false,
+                      citlali::cli::DevelopmentTerminal::ptc)), std::runtime_error);
+        std::string original;
+        std::ifstream(sentinel) >> original;
+        EXPECT_EQ(original, "original");
+        EXPECT_FALSE(std::filesystem::exists(storage / "run" / "donor-continuity"));
+        EXPECT_FALSE(std::filesystem::exists(work / "run"));
+    }
+}
+
 TEST(native_rtc_output_layout, invalid_inventory_fails_before_claim) {
     TemporaryOutputRoots roots;
     const auto path = roots.root("invalid");

@@ -30,7 +30,9 @@ public:
                           bool automatic, bool comparison,
                           DevelopmentTerminal terminal) {
         if (output.empty()) throw std::invalid_argument("empty native output path");
-        root_ = std::filesystem::absolute(output).lexically_normal();
+        // Keep symlink/.. interpretation with the filesystem. Lexical
+        // normalization can redirect the claim to a different physical parent.
+        root_ = std::filesystem::absolute(output);
         if (root_.filename().empty() && root_ != root_.root_path())
             root_ = root_.parent_path();
         if (root_.filename().empty())

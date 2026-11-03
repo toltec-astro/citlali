@@ -73,6 +73,27 @@ class SuccessorDefaultCli(unittest.TestCase):
         self.assertTrue((self.output / "performance.jsonl").is_file())
         self.assertFalse((self.output / "receipt.yaml").exists())
 
+    def test_symlink_parent_dotdot_existing_output_fails_before_ingress(self):
+        work = self.root / "work"
+        storage = self.root / "storage"
+        work.mkdir()
+        (storage / "child").mkdir(parents=True)
+        (storage / "run").mkdir()
+        (work / "link").symlink_to(storage / "child", target_is_directory=True)
+        sentinel = storage / "run" / "performance.jsonl"
+        sentinel.write_text("preserve physical attempt")
+        config = self.request(self.native_request_with_bad_raw_digest())
+        for suffix in ("", "/"):
+            with self.subTest(trailing_separator=bool(suffix)):
+                config["output"] = str(work / "link" / ".." / "run") + suffix
+                result = self.invoke(config)
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn("native output already claimed", result.stdout + result.stderr)
+                self.assertNotIn("input digest mismatch", result.stdout + result.stderr)
+                self.assertEqual(sentinel.read_text(), "preserve physical attempt")
+                self.assertFalse((work / "run").exists())
+                self.assertFalse((storage / "run" / "donor-continuity").exists())
+
     def test_all_network_directories_exist_before_shared_preparation(self):
         entries = []
         for nw in (0, 7):
