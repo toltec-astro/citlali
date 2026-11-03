@@ -1,4 +1,4 @@
-## Review stage 1 candidate prepared; owner execution pending — 2026-11-03
+## Review stage 1 build correction prepared; owner rerun pending — 2026-11-03
 
 Grant approved two bounded repairs after review of exact mainline
 `fefdd6b7bde5b272ed664561cf996f805cf6852b`: safely read the first NetCDF
@@ -9,9 +9,17 @@ map arithmetic. [The work-order and conformance note](REVIEW_STAGE1_REPAIRS_2026
 records the owner clarifications, scope, eight prepared regression cases and
 evidence limitations.
 
-All builds, tests, probes and reductions remain Grant-owned and unexecuted.
-Independent exact-SHA review and all execution gates are pending. No mainline
-integration, runtime replacement, push or scientific/production acceptance is
+Grant's first Mac Spack attempt configured successfully, then failed compiling
+the new FITS regression test at candidate `b2464ee6b3beebfc14c20def30cf8b8287b4555f`.
+The test exposed a missing direct include for `FruitLoopWeightPolicy` in
+`pointing.h`. The bounded correction adds that include and places `pointing.h`
+first in the regression test; no runtime behavior changes. The failed attempt's
+logs and exact binding are preserved beside the isolated checkout.
+
+All builds, tests, probes and reductions remain Grant-owned. The corrected
+candidate has not been built or tested; the first attempt stopped before version
+verification and test execution. Independent exact-SHA review remains pending.
+No mainline integration, runtime replacement, push or scientific/production acceptance is
 claimed. Output setup/ownership and user-facing configuration reporting remain
 later stages; RTC-only/CAL preparation remains deferred investigation.
 

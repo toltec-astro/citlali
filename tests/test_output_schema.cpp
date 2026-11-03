@@ -1,5 +1,6 @@
-#include <citlali/core/engine/engine.h>
+// Include Pointing first so its declarations cannot rely on a caller's includes.
 #include <citlali/core/engine/pointing.h>
+#include <citlali/core/engine/engine.h>
 #include <citlali/core/engine/detail/beammap_ptc_product_output_helpers.h>
 #include <citlali/core/pipeline/output_netcdf_metadata.h>
 #include <citlali/core/pipeline/ptcdiag_netcdf.h>

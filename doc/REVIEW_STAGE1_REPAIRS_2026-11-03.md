@@ -1,7 +1,8 @@
 # Review stage 1 repairs — 2026-11-03
 
-Status: prepared candidate; all compilation, execution and independent-review
-gates remain pending. This is not an integration or qualification record.
+Status: bounded build correction prepared after an owner-run compilation
+failure; corrected-candidate execution and independent review remain pending.
+This is not an integration or qualification record.
 
 ## Work order and authority
 
@@ -60,7 +61,7 @@ or generic framework is introduced.
 | NetCDF input tests | Scalars, singleton, repeated/differing headers, multidimensional first value, empty/missing headers, actual timestamp-slice caller | Four new tests prepared; unexecuted |
 | Pointing FITS tests | Persisted raw/filtered observation and coadd headers, invalid coadd flags, omitted measurements, retained array identity and unchanged image data | Four new tests prepared; unexecuted |
 | Existing metadata/fit-metric tests | No regression to observation fit metrics or TOD metadata | Pending |
-| Native Mac Spack build | Fresh candidate build and matching executable revision | Pending |
+| Native Mac Spack build | Fresh candidate build and matching executable revision | First candidate failed compilation; corrected-candidate rerun pending |
 | Broad local gates | Enabled CTest suite, baseline-tool tests, config preflight with `--require-all` | Pending |
 | Independent review | Fresh-context read-only review of final exact candidate SHA and the three conformance categories | Pending |
 
@@ -75,7 +76,36 @@ realization, with a new candidate-owned build directory. Its existing lock is
 `00964e0c57c1df96b0ddc3f6d214bef1c1ab8f59cc4e5c4da653cefbcb915238`.
 No dependency installation, environment redesign, runtime replacement or Unity
 access is part of this work. There is no hot-loop change or performance claim.
-Unexpected error-level output has not been assessed because nothing has run.
+The first owner's configure/build logs were inspected as recorded below. No
+successful application run or zero-unexpected-error outcome is claimed.
+
+## First owner-run attempt and bounded reassessment
+
+Grant ran `owner_run.py all` against clean candidate
+`b2464ee6b3beebfc14c20def30cf8b8287b4555f`. The preserved attempt is
+`../owner-run-20261103T131717.670695Z` relative to this checkout, with its original
+`binding.json`, command receipts and logs. Configure exited 0; build exited 1
+while compiling `tests/test_output_schema.cpp`. Version verification and all
+test gates were not reached.
+
+- `configure.log` SHA-256: `b9c4a3921c78ef163fc740c8257b83d2778b32dced0343f91b27820f10e533f8`.
+- `build-and-version.log` SHA-256: `7d65d04661ed29110eb63c9ee2a9aec4c23c08f044b92bebecdf7ca6a5e1b346`.
+
+The compilation trigger was `pointing.h` declaring two methods using
+`FruitLoopWeightPolicy` before its defining header was included. The four
+compiler errors are the two unknown-type errors and their consequent declaration
+mismatches. The new FITS test exposed this existing include-order dependency.
+The configure log also contains a CMake CMP0144 developer warning about
+`BOOST_ROOT`; it is not the compile failure and is not suppressed or repaired here.
+
+Disposition: **repair within scope**. Add the direct
+`timestream_run_context.h` include to the existing Pointing owner and include
+`pointing.h` first in the test translation unit, so caller include ordering
+cannot mask the dependency. This satisfies the existing public-header rule;
+it does not change scientific authority, numerical behavior, build realization,
+or the stage-1 outcome. No other engine header or ownership area is changed.
+The same owner-run gates remain required against the new exact candidate; no
+prior pass transfers. Codex performs only static inspection and preparation.
 
 ## Conformance and remaining boundaries
 

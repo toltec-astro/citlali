@@ -6,6 +6,7 @@
 #include <citlali/core/engine/engine.h>
 #include <citlali/core/pipeline/pointing_execution_plan.h>
 #include <citlali/core/pipeline/timestream_output_context.h>
+#include <citlali/core/pipeline/timestream_run_context.h>
 
 using timestream::TCData;
 using timestream::RTCProc;
