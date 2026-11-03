@@ -1,0 +1,50 @@
+{
+  "date": "2026-11-03",
+  "candidate": "11937f2e7ba0a9ad0fca64910ecab1ee633572b8",
+  "tree": "df472882c205b0479ef4e2e5986fbf98237dcb61",
+  "execution_owner": "Grant",
+  "assessment_owner": "Codex, static inspection of owner-produced evidence only; not independent review",
+  "attempt": "owner-run-20261103T145455.833492Z",
+  "status": "Owner-run local software gates passed with recorded coverage limits; independent review pending",
+  "environment": "Mac Spack macos-llvm20, DAG kqk3pl4f6jgsb5yksobnynlx2gmnqks6, unchanged preserved environment; no Unity execution",
+  "executable_sha256": "10a450c1df56a7ab0476b7f65e4cda052bddd0820fe7da95181c8ba4cbad413e",
+  "results": {
+    "configure_build_version": "All exit 0; version reports g11937f2e7, matching candidate",
+    "focused_input": "10 passed, including all four new input regressions; XML shows no failures, errors, skips or disabled tests",
+    "focused_metadata": "12 passed, including all four new pointing fit-metadata regressions; XML shows no failures, errors, skips or disabled tests",
+    "focused_fit_metrics": "4 passed",
+    "ctest": "1410 enabled tests passed, zero failures; one existing disabled opt-in forensic replay did not run",
+    "baseline_tools": "207 passed",
+    "config_preflight": "--require-all exit 0; 130 unit tests passed; compatibility 8 passed, 0 failed, 0 skipped"
+  },
+  "disabled_test": {
+    "name": "citlali::MapFitterLifecycle.ExactProductSequence",
+    "source": "tests/test_map_fitter_lifecycle.cpp:123",
+    "disposition": "Existing opt-in external 2026-07-23 failure-corpus replay, unchanged from review base; not counted as passed or new stage-1 coverage"
+  },
+  "logging": {
+    "unexpected_error_level_messages_found": 0,
+    "expected_critical": "LastTest.log:27271: NetCDF index exceeds dimension bound, emitted by ordered_writer.netcdf_failure_leaves_diagnosed_partial_product_and_next_run_recovers. Source tests/test_ordered_writer.cpp deliberately writes row 3 into [0,3) and asserts run_with_exception_reporting returns EXIT_FAILURE, then verifies next-run recovery. Expected negative-test diagnostic.",
+    "warnings": "Configure CMP0144 developer warning; linker duplicate rpath and duplicate libcitlali.a warnings. Recorded, not suppressed; no compilation errors.",
+    "scope": "Reviewed command logs, focused XML and detailed CTest output; no claim about unrun reductions"
+  },
+  "log_sha256": {
+    "configure.log": "e683cda34741e413e0c48a2d56dbd999f8a1a5bbfd308f75ab6845b2bdf0f48c",
+    "build-and-version.log": "a42399380538245edb8a05391265b3dd470289aa95e2328193e4b36ae953ffb4",
+    "version.log": "c3cdabc279b76c1b77417a23f8b5a4d407cf46c9ad20c7560daabf6481c82a2f",
+    "focused-input.log": "b5ba8d5681d5550880e813dbf9f80fd325b3c344904b23777ae694f54d055c85",
+    "focused-metadata.log": "f70c91c119cfa23a079fb18abc40be31aea66a89c8e3176577bfe9b16a056295",
+    "focused-fit-metrics.log": "2775d8b27f3e03b01b0b53ff766e8687b3b1710523e41c431630c4a016b30da2",
+    "ctest.log": "46c739f11d5fbcb4f8689e674f99d91565a86db05c0d9aab3f2e3b8987051658",
+    "baseline-tests.log": "80971ffc2cbd9897af120ab0769a81b186901572671769a21b550f0064956bc6",
+    "config-preflight.log": "eee4dcd6563ab112ef114bc755f2599120ad3f242c72bdeb5bba5b1d8514dc07",
+    "build/Testing/Temporary/LastTest.log": "ca12e99a4ce11516ec4b1e079b10c6f04083c9c65e7367751cf3be5be8f1af7f"
+  },
+  "dispositions": {
+    "scientific_behavioral": "Focused regressions support the two owner clarifications; full retained coadd reduction and configured successor POINT acceptance remain unestablished",
+    "architecture_ownership": "Implementation remains at existing input and Pointing owners; independent fresh-context exact-SHA review required before acceptance",
+    "repository_evidence": "Candidate clean and held at tested SHA; mainline clean and unchanged at fefdd6b7bde5b272ed664561cf996f805cf6852b; both owner attempts preserved"
+  },
+  "next": "Independent exact-SHA review and owner disposition of whole-route coverage before integration or stage-1 closure. Source is held at tested SHA; this external record supersedes preparatory pending-execution statements without moving the review target.",
+  "integration_push_activation_cleanup_authority": "none"
+}

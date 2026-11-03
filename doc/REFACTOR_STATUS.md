@@ -1,3 +1,15 @@
+## Stage 1 accepted and integrated locally; stage 2 authorized — 2026-11-03
+
+Grant accepted exact application `11937f2e7ba0a9ad0fca64910ecab1ee633572b8`
+after owner-run Mac Spack gates and independent fresh-context review passed
+with recorded limitations. Mainline fast-forwarded locally from `fefdd6b7b`.
+[Acceptance](../validation/review_stage1_integration_2026-11-03/OWNER_ACCEPTANCE.json)
+closes stage 1 as a bounded software repair. Full coadd qualification remains
+separate; no production or configured successor POINT acceptance is inferred.
+The earlier pending statements below are historical. Stage 2 now covers output
+naming/claims during setup before RTC/CAL/PTC processing. Grant alone executes
+all builds/tests/probes; no push, runtime replacement or cleanup is authorized.
+
 ## Review stage 1 build correction prepared; owner rerun pending — 2026-11-03
 
 Grant approved two bounded repairs after review of exact mainline

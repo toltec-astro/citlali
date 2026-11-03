@@ -1,0 +1,16 @@
+{
+  "date": "2026-11-03",
+  "owner": "Grant Wilson",
+  "directive": "I accept stage 1 as a bounded software repair. Go ahead and record the acceptance, integrate it locally into mainline, and proceed with stage 2. No push; I'll continue to run all builds and tests.",
+  "accepted_candidate": "11937f2e7ba0a9ad0fca64910ecab1ee633572b8",
+  "accepted_tree": "df472882c205b0479ef4e2e5986fbf98237dcb61",
+  "prior_mainline": "fefdd6b7bde5b272ed664561cf996f805cf6852b",
+  "integration": "Local fast-forward to exact accepted candidate, followed by documentation-only acceptance record",
+  "independent_review": {"reviewer": "/root/stage1_independent_review", "context": "fresh", "effort": "xhigh", "verdict": "pass with recorded limitations", "actionable_findings": 0, "execution": "read-only; no builds, tests or probes", "scientific_behavioral": "pass within bounded scope", "architecture_ownership": "pass", "repository_evidence": "pass"},
+  "owner_evidence": "OWNER_RESULTS.json",
+  "scope": "Safe first-element NetCDF header reads and truthful unfitted pointing-coadd fit metadata, including direct Pointing header dependency correction",
+  "limits": ["Full coadd reduction remains separate qualification; not a stage-1 software acceptance prerequisite under this owner disposition", "No configured successor POINT, Unity or production acceptance", "Existing disabled forensic replay remains unrun", "No explicit new cross-type NetCDF conversion regression; dependency overload inspected"],
+  "stage2_authorization": "One bounded development increment for output naming and exclusive claims during setup, before RTC/CAL/PTC work; later integration requires separate owner acceptance",
+  "execution_owner": "Grant alone for all builds, tests, probes, benchmarks, reductions and validation runners",
+  "push_deployment_cleanup_authority": "none"
+}

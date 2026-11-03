@@ -1,5 +1,15 @@
 # Citlali refactor — current state
 
+2026-11-03 update: Grant accepted stage 1 as a bounded software repair and
+authorized local integration of exact application `11937f2e7ba0a9ad0fca64910ecab1ee633572b8`.
+Mainline was fast-forwarded to it; this receipt changes documentation only.
+[Acceptance and independent review](../validation/review_stage1_integration_2026-11-03/OWNER_ACCEPTANCE.json)
+bind the owner-run Mac Spack evidence and limitations. No push or runtime
+replacement occurred. Full coadd and configured successor POINT qualification
+remain separate. Stage 2 output setup/ownership is authorized for development;
+Grant retains all execution. Earlier inventory/publication counts below are
+dated checkpoints; the preserved stage-1 checkout is additional retained evidence.
+
 As of 2026-11-02. **The shared development baseline is `codex/refactor-mainline`.**
 Local mainline now includes qualified metadata application
 `012cc7adc5b50bd3491c47021744310735de3a8a`, followed by a documentation-only

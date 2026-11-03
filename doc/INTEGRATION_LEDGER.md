@@ -1,3 +1,19 @@
+## Stage 1 bounded repair acceptance — 2026-11-03
+
+Grant explicitly accepted and authorized local integration of application
+`11937f2e7ba0a9ad0fca64910ecab1ee633572b8`, tree
+`df472882c205b0479ef4e2e5986fbf98237dcb61`. Clean mainline fast-forwarded from
+`fefdd6b7bde5b272ed664561cf996f805cf6852b` to that exact reviewed source.
+[Owner acceptance](../validation/review_stage1_integration_2026-11-03/OWNER_ACCEPTANCE.json)
+records the fresh-context independent review (pass with limitations, no findings)
+and [owner-run evidence](../validation/review_stage1_integration_2026-11-03/OWNER_RESULTS.json).
+Eight new regressions, 1410 enabled CTest cases, 207 baseline tests and config
+preflight passed on Mac Spack. One existing opt-in forensic replay remains disabled.
+Full coadd qualification remains separate; no configured POINT, Unity or production
+acceptance follows. The following receipt is documentation only, not a new tested
+application. Stage 1 is closed as a software repair; stage 2 development is
+authorized. No push, runtime replacement, cleanup or unrelated-work changes.
+
 ## Publication completion and next focus — 2026-11-02
 
 Grant reported running both owner commands: publication of cleanup commit
