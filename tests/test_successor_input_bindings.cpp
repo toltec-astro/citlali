@@ -2,6 +2,7 @@
 #include <citlali/core/utils/sha256.h>
 #include <gtest/gtest.h>
 #include <yaml-cpp/yaml.h>
+#include <array>
 #include <fstream>
 #include <limits>
 #include <stdexcept>
@@ -16,6 +17,105 @@ void write(const fs::path &path, const std::string &text) {
     std::ofstream output(path);
     output << text;
     ASSERT_TRUE(output.good());
+}
+
+TEST(SuccessorInputBindings, NetcdfFirstValuePreservesScalarAndSingletonHeaders) {
+    inputs::TemporaryDirectory scratch;
+    const auto path = scratch.path() / "headers.nc";
+    {
+        netCDF::NcFile file(path.string(), netCDF::NcFile::replace);
+        const int integer = 42;
+        const double real = 2000.0;
+        file.addVar("scalar_int", netCDF::ncInt).putVar(&integer);
+        file.addVar("scalar_double", netCDF::ncDouble).putVar(&real);
+        file.addVar("singleton", netCDF::ncDouble, file.addDim("one", 1))
+            .putVar(&real);
+    }
+    netCDF::NcFile file(path.string(), netCDF::NcFile::read);
+    EXPECT_EQ(inputs::read_netcdf_scalar<int>(file, "scalar_int"), 42);
+    EXPECT_DOUBLE_EQ(inputs::read_netcdf_scalar<double>(file, "scalar_double"), 2000.0);
+    EXPECT_DOUBLE_EQ(inputs::read_netcdf_scalar<double>(file, "singleton"), 2000.0);
+}
+
+TEST(SuccessorInputBindings, NetcdfFirstValueIgnoresLaterHeaderValues) {
+    inputs::TemporaryDirectory scratch;
+    const auto path = scratch.path() / "repeated-headers.nc";
+    {
+        netCDF::NcFile file(path.string(), netCDF::NcFile::replace);
+        const auto three = file.addDim("three", 3);
+        const auto two = file.addDim("two", 2);
+        const std::array<double, 3> repeated{2000.0, 2000.0, 2000.0};
+        const std::array<double, 3> differing{122.0, 244.0, 366.0};
+        const std::array<int, 3> integers{19, 20, 21};
+        const std::array<int, 6> matrix{7, 8, 9, 10, 11, 12};
+        file.addVar("repeated", netCDF::ncDouble, three).putVar(repeated.data());
+        file.addVar("differing", netCDF::ncDouble, three).putVar(differing.data());
+        file.addVar("integers", netCDF::ncInt, three).putVar(integers.data());
+        file.addVar("matrix", netCDF::ncInt, std::vector<netCDF::NcDim>{two, three})
+            .putVar(matrix.data());
+    }
+    netCDF::NcFile file(path.string(), netCDF::NcFile::read);
+    EXPECT_DOUBLE_EQ(inputs::read_netcdf_scalar<double>(file, "repeated"), 2000.0);
+    EXPECT_DOUBLE_EQ(inputs::read_netcdf_scalar<double>(file, "differing"), 122.0);
+    EXPECT_EQ(inputs::read_netcdf_scalar<int>(file, "integers"), 19);
+    EXPECT_EQ(inputs::read_netcdf_scalar<int>(file, "matrix"), 7);
+}
+
+TEST(SuccessorInputBindings, NetcdfFirstValueRejectsEmptyAndMissingHeaders) {
+    inputs::TemporaryDirectory scratch;
+    const auto path = scratch.path() / "empty-headers.nc";
+    {
+        netCDF::NcFile file(path.string(), netCDF::NcFile::replace, netCDF::NcFile::nc4);
+        const auto empty = file.addDim("empty");
+        const auto two = file.addDim("two", 2);
+        file.addVar("empty_vector", netCDF::ncDouble, empty);
+        file.addVar("empty_matrix", netCDF::ncInt, std::vector<netCDF::NcDim>{two, empty});
+    }
+    netCDF::NcFile file(path.string(), netCDF::NcFile::read);
+    const auto reject = [&](const std::string &name, const std::string &reason) {
+        try {
+            (void)inputs::read_netcdf_scalar<double>(file, name);
+            FAIL() << "expected rejection for " << name;
+        } catch (const std::runtime_error &error) {
+            EXPECT_EQ(error.what(), reason);
+        }
+    };
+    reject("empty_vector", "empty NetCDF scalar empty_vector");
+    reject("empty_matrix", "empty NetCDF scalar empty_matrix");
+    reject("missing", "missing NetCDF scalar missing");
+}
+
+TEST(SuccessorInputBindings, TimestampSliceUsesFirstRepeatedHeaderValues) {
+    inputs::TemporaryDirectory scratch;
+    const auto path = scratch.path() / "timing.nc";
+    const std::array<int, 18> timestamps{
+        0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17};
+    {
+        netCDF::NcFile file(path.string(), netCDF::NcFile::replace);
+        const auto three = file.addDim("three", 3);
+        const auto six = file.addDim("six", 6);
+        const std::array<double, 3> fpga{256000000.0, 256000000.0, 256000000.0};
+        const std::array<double, 3> sample{122.0, 999.0, 1000.0};
+        const std::array<int, 3> accumulation{524288, 1, 2};
+        file.addVar("Header.Toltec.FpgaFreq", netCDF::ncDouble, three).putVar(fpga.data());
+        file.addVar("Header.Toltec.SampleFreq", netCDF::ncDouble, three).putVar(sample.data());
+        file.addVar("Header.Toltec.AccumLen", netCDF::ncInt, three).putVar(accumulation.data());
+        file.addVar("Data.Toltec.Ts", netCDF::ncInt, std::vector<netCDF::NcDim>{three, six})
+            .putVar(timestamps.data());
+    }
+    double fpga = 0.0, sample = 0.0;
+    std::int64_t accumulation = 0;
+    const auto slice = inputs::read_timestamp_slice(path, 1, 2, fpga, sample, accumulation);
+    EXPECT_DOUBLE_EQ(fpga, 256000000.0);
+    EXPECT_DOUBLE_EQ(sample, 122.0);
+    EXPECT_EQ(accumulation, 524288);
+    ASSERT_EQ(slice.rows(), 2);
+    ASSERT_EQ(slice.cols(), 6);
+    for (Eigen::Index row = 0; row < slice.rows(); ++row) {
+        for (Eigen::Index column = 0; column < slice.cols(); ++column) {
+            EXPECT_EQ(slice(row, column), timestamps[(row + 1) * 6 + column]);
+        }
+    }
 }
 
 TEST(SuccessorInputBindings, RuntimeConfigKeepsExactInterfaceOffsets) {

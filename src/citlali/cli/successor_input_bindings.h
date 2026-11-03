@@ -51,7 +51,18 @@ T read_netcdf_scalar(netCDF::NcFile &file, const std::string &name) {
     const auto variable = file.getVar(name);
     require(!variable.isNull(), "missing NetCDF scalar " + name);
     T result{};
-    variable.getVar(&result);
+    const auto dimensions = variable.getDims();
+    if (dimensions.empty()) {
+        variable.getVar(&result);
+    } else {
+        // Instrument headers may repeat a scalar. The established convention
+        // is to use the first value, even when later values differ. A whole-
+        // variable read would overflow the single-value destination.
+        for (const auto &dimension : dimensions) {
+            require(dimension.getSize() > 0, "empty NetCDF scalar " + name);
+        }
+        variable.getVar(std::vector<std::size_t>(dimensions.size(), 0), &result);
+    }
     return result;
 }
 
