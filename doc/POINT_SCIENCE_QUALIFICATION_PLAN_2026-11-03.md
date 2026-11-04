@@ -4,7 +4,9 @@ Prepared 2026-11-03; owner clarification on 2026-11-04 supersedes the earlier
 two-route selection. Active scope: individual configured successor POINT now.
 SCIENCE/RA-Dec/coadd/known-offset qualification is deferred until successor
 SCIENCE is connected. The retained-driver build command is on hold; do not run
-it for this plan. POINT observation/configuration binding remains pending.
+it for this plan. Grant subsequently selected **152389 only**, with its recorded
+weighted settings; the [bound packet](POINT_QUALIFICATION_152389_2026-11-04.md)
+provides owner commands, starting with preflight only. Runtime gates remain pending.
 No qualification runs have been assessed under this plan.
 
 ## Owner workflow clarification
@@ -257,10 +259,11 @@ the execution route, claim, result, limitations and owner disposition.
   New qualification gates have not run. No push, production authorization,
   deployment, runtime replacement or cleanup follows.
 
-Next: select individual POINT observations, bind their existing configuration,
-inputs and applicable scientific acceptance criteria, then prepare and review
-the exact per-case owner-run packet for steps 0 and 1. Preserve its evidence
-for later reuse. SCIENCE implementation, celestial coadds and the known-offset
+Next: execute and assess the prepared 152389 input/configuration preflight,
+then the separate individual POINT reduction. Its existing per-array behavior
+is the scope; the new method/use policy and accuracy acceptance remain separate.
+Preserve the evidence for later reuse. SCIENCE implementation, celestial coadds
+and the known-offset
 check are deferred; their final qualification must use the connected successor
 route. The three accepted software repairs remain accepted within their
 recorded scope. No additional scientific acceptance follows from this sequencing

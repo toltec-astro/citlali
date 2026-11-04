@@ -1,5 +1,13 @@
 # Citlali refactor — current state
 
+2026-11-04 individual POINT preparation: Grant selected **152389 only**, with
+its recorded weighted settings. The [bound packet and owner commands](POINT_QUALIFICATION_152389_2026-11-04.md)
+use accepted application `19b6fc462`; the first command performs input/config
+preflight and a version check, then stops before reduction. No new execution
+results exist. The new selection/beam policy and 1.5 arcsec accuracy claim stay
+outside this existing-code qualification. SCIENCE and the retained driver remain
+deferred/on hold. Grant retains all execution; no push.
+
 2026-11-04 POINT strategy approved: Grant reports team approval of the
 [summary](POINT_TEAM_SUMMARY_2026-11-04.md) reviewed at `5dc124d1a`.
 The [acceptance record](POINT_METHOD_AND_USE_ACCEPTANCE_2026-11-04.md#team-approval)

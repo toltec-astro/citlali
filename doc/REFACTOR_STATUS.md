@@ -9,6 +9,18 @@ implementation scope. Scientific qualification, runtime gates, and consumer
 adaptation remain pending. Documentation only; no application changes, new
 branches/worktrees, execution, or push. Grant retains all execution.
 
+## Individual configured POINT 152389 prepared — 2026-11-04
+
+Grant selected 152389 only, preserving the completed fixture's weighted recipe:
+2 arcsec pixels, coverage 0.15, ranks 3/4/6, zero applied offsets, three workers
+and at most ten feedback applications. The [prepared owner packet](POINT_QUALIFICATION_152389_2026-11-04.md)
+binds accepted application `19b6fc462` and the matching Mac Spack executable.
+Run input/configuration preflight first; review its receipt before the separate
+reduction command. All executable gates remain pending owner execution.
+The new array-selection/beam policy, absolute-accuracy claim and SCIENCE
+qualification remain separate. No application or installed-runtime changes,
+new branch/worktree, push or cleanup.
+
 ## POINT method and use decisions recorded for review — 2026-11-04
 
 The [team summary](POINT_TEAM_SUMMARY_2026-11-04.md) and
