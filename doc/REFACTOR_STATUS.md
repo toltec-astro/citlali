@@ -1,4 +1,16 @@
-## Configured POINT plus retained SCIENCE selected — 2026-11-04
+## Individual successor POINT now; SCIENCE qualification deferred — 2026-11-04
+
+Grant clarified that he wants the recommended sequence: qualify individual
+configured successor POINT now and defer SCIENCE/coadd/known-offset qualification
+until successor SCIENCE is connected. This supersedes the earlier two-route
+selection below. The [plan](POINT_SCIENCE_QUALIFICATION_PLAN_2026-11-03.md)
+keeps only freeze/preflight and individual POINT active. The retained-driver
+build packet is preserved on hold; do not run its earlier command for this plan.
+POINT input/configuration binding remains pending. Accepted software repairs
+remain accepted; no scientific acceptance, application changes or pushes follow.
+Grant alone executes all builds, tests, probes and reductions.
+
+## Earlier configured POINT plus retained SCIENCE selection — superseded 2026-11-04
 
 Grant selected these two implemented execution routes with separate acceptance
 claims. The [qualification plan](POINT_SCIENCE_QUALIFICATION_PLAN_2026-11-03.md)

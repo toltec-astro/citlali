@@ -1,8 +1,11 @@
 # Individual POINT and celestial SCIENCE qualification
 
-Prepared 2026-11-03; route selected by Grant on 2026-11-04. Status: configured
-POINT plus retained-standard SCIENCE, with separate acceptance claims.
-Observation/configuration binding remains pending. No qualification runs performed.
+Prepared 2026-11-03; owner clarification on 2026-11-04 supersedes the earlier
+two-route selection. Active scope: individual configured successor POINT now.
+SCIENCE/RA-Dec/coadd/known-offset qualification is deferred until successor
+SCIENCE is connected. The retained-driver build command is on hold; do not run
+it for this plan. POINT observation/configuration binding remains pending.
+No qualification runs have been assessed under this plan.
 
 ## Owner workflow clarification
 
@@ -30,6 +33,11 @@ algorithm, calibration policy, numerical default, or acceptance threshold.
   clean documentation commit `e425ab715c044a99340941818f92a1009bf2e300` on that
   same branch. It adds a separate external owner-build packet; no application
   source, dependency realization or installed runtime is changed.
+  The subsequent owner clarification starts from
+  `e988f7be19891bb114d77e757bd756c568792ee0`; unrelated untracked
+  `doc/POINT_METHOD_AND_USE_ACCEPTANCE_2026-11-04.md` and
+  `doc/POINT_TEAM_SUMMARY_2026-11-04.md` are preserved untouched. This update
+  changes documentation only and places the external build preparation on hold.
 - Qualification application: accepted stage-3 source
   `19b6fc462930af6f0a7bf2ca5b5350dd3c72af6e`, tree
   `3b1d9e0ae067e502faa1e02895be3695f5166a66`. The later acceptance receipt
@@ -64,17 +72,23 @@ The native CLI also does not silently fall back to the retained driver.
 See [current release boundaries](CURRENT_STATE.md#application-and-release-boundaries)
 and [handoff scope](POINTING_HANDOFF_INTEGRATION_2026-10-31.md).
 
-**Owner selection, 2026-11-04:** "Configured POINT plus retained-standard SCIENCE,
-with separate acceptance claims." The qualification therefore includes both
-implemented routes. Retained SCIENCE results can also inform a future successor
-comparison, but do not qualify the unfinished connected successor SCIENCE path.
-Historical V2 SCIENCE acceptance remains valid within its recorded
-mixed-revision operational scope.
+**Current owner selection, 2026-11-04:** after clarifying the recommendation,
+Grant chose individual configured successor POINT now, with SCIENCE/coadd/offset
+qualification deferred until successor SCIENCE is connected. This supersedes
+the earlier same-day selection of configured POINT plus retained-standard
+SCIENCE. The retained-driver packet is preserved on hold, not part of the
+active qualification. It should be resumed only for a separately selected
+reference/comparison purpose. Historical V2 SCIENCE acceptance remains valid
+within its recorded mixed-revision operational scope.
 
 ## Bind the experiment before launch
 
 Prepare one immutable manifest and separate fully merged YAML for every case.
-The final packet must name:
+For the active POINT step, bind the selected individual observations, raw/APT
+and calibration inputs, POINT settings, outputs, budget and applicable
+acceptance criteria. Prefer observations reusable for the later celestial
+comparison, but do not make the deferred coadd or known-offset decisions a
+prerequisite to qualifying individual POINT. The full eventual packet must name:
 
 - At least two distinct observations of the selected source, raw/telescope
   inputs, compact-v2 APTs and calibration inputs, with file hashes. Repeating
@@ -105,6 +119,11 @@ source/reference requirements. GOODS-N compatibility YAML is not automatically
 a compact-source astrometry fixture.
 
 ## Ordered qualification cases
+
+Only steps 0 and 1 are active. Steps 2–4 describe the deferred successor SCIENCE
+qualification; they are not instructions to launch retained-standard SCIENCE.
+Connecting successor SCIENCE requires its own bounded implementation work and
+review before those qualification commands can be prepared.
 
 | Step | Case and purpose | Required evidence |
 | --- | --- | --- |
@@ -180,13 +199,15 @@ Reuse the owner-run stage-3 environment setup, but not its old mainline-base
 guard or its `all` command. A new final packet must bind the observations,
 configs and environment and record a fresh native version check before launch.
 
-### Retained SCIENCE driver build — prepared 2026-11-04
+### Retained SCIENCE driver build — preserved on hold, 2026-11-04
 
-Grant can prepare the separate driver before selecting observations:
-
-```bash
-"$HOME/tolteca/bin/python" -B /Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-point-science-qualification-20261104/owner_build_driver.py build
-```
+Do not run the previously supplied `owner_build_driver.py build` command for
+this plan. It was prepared for the superseded two-route selection. Preserve
+the packet at
+`/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-point-science-qualification-20261104`.
+The build files and their binding remain unchanged; the hold is recorded in
+its README and `ON_HOLD.md`. The description below is historical preparation,
+not an active execution request.
 
 The external packet contains `README.md`, `BUILD_BINDING.json`, the owner
 wrapper and `driver/{CMakeLists.txt,driver.cpp}`. Binding-file SHA-256:
@@ -212,10 +233,9 @@ digests, command construction and driver equivalence. The new wrapper has not
 been executed, even for syntax/help checks; Grant owns its first execution and
 all resulting build/version gates. No fresh observational result exists.
 
-No runnable SCIENCE reduction command or offset YAML is supplied while the
-observation/reference/correction choices remain unbound. This is a preparation
-limitation, not a failed gate. Concrete reduction commands follow input selection
-and assessment of the driver build.
+No SCIENCE reduction command or offset YAML is supplied. Those steps await the
+connected successor implementation and their own input/reference/correction
+bindings. The retained-driver build is not a prerequisite for POINT.
 
 ## Reporting and disposition
 
@@ -237,8 +257,11 @@ the execution route, claim, result, limitations and owner disposition.
   New qualification gates have not run. No push, production authorization,
   deployment, runtime replacement or cleanup follows.
 
-Next binding decisions: source and distinct observations; reference coordinates
-and correction values/provenance; scientific acceptance criteria. The SCIENCE
-route is selected. After the remaining choices are fixed, prepare the exact
-per-case owner-run packet, review its static configuration, and let Grant
-execute step 0 then step 1. Driver build/version evidence remains pending.
+Next: select individual POINT observations, bind their existing configuration,
+inputs and applicable scientific acceptance criteria, then prepare and review
+the exact per-case owner-run packet for steps 0 and 1. Preserve its evidence
+for later reuse. SCIENCE implementation, celestial coadds and the known-offset
+check are deferred; their final qualification must use the connected successor
+route. The three accepted software repairs remain accepted within their
+recorded scope. No additional scientific acceptance follows from this sequencing
+decision. Grant retains all execution; no push.

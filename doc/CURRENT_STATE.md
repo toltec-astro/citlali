@@ -1,11 +1,19 @@
 # Citlali refactor — current state
 
-2026-11-04 qualification route selected: Grant chose configured POINT plus
+2026-11-04 owner clarification supersedes the earlier route selection:
+qualify individual configured successor POINT now; defer SCIENCE/RA-Dec/coadd
+and known-offset qualification until successor SCIENCE is connected. The
+[plan](POINT_SCIENCE_QUALIFICATION_PLAN_2026-11-03.md) records this sequence.
+The retained-driver build packet is preserved on hold; its previously supplied
+command should not be run for this plan. POINT input/configuration selection
+remains pending. All execution remains with Grant; no push or runtime changes.
+
+Earlier 2026-11-04 selection, now superseded: Grant chose configured POINT plus
 retained-standard SCIENCE, with separate acceptance claims. The [plan and
 owner-build command](POINT_SCIENCE_QUALIFICATION_PLAN_2026-11-03.md)
 now include a separate retained-driver build against accepted application
 `19b6fc462`. Its build/version gates and observation/reference/offset bindings
-remain pending. Retained SCIENCE cannot establish connected successor SCIENCE
+were pending at that checkpoint. Retained SCIENCE cannot establish connected successor SCIENCE
 acceptance. All execution remains with Grant; no push or runtime replacement.
 
 2026-11-03 workflow clarification: Grant runs POINT on individual observations
