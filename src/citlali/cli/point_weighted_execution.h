@@ -36,8 +36,10 @@ PointOpticalInterval point_interval(const YAML::Node &n) {
         n["informative_blocks"].as<std::size_t>(),n["resamples"].as<std::size_t>(),n["seed"].as<std::uint64_t>(),n["reason"].as<std::string>()};
 }
 YAML::Node point_health_record(const PointOpticalPlan &plan) {
-    YAML::Node record;record["schema"]="citlali-point-optical-health-v1";
+    YAML::Node record;record["schema"]="citlali-point-optical-health-v2";
     record["method"]=std::string(PointOpticalEvidence::method);record["uncertainty_limitations"]=std::string(PointOpticalEvidence::uncertainty);
+    record["bootstrap_seed_policy"]=std::string(PointOpticalEvidence::seed_policy);
+    record["bootstrap_seed_identity"]=plan.evidence_handle()->seed_identity();
     const auto &r=plan.evidence_handle()->request();record["min_relative_response"]=plan.min_relative_response();
     record["bin_seconds"]=r.bin_seconds;record["confidence_level"]=r.confidence_level;record["bootstrap_samples"]=r.bootstrap_samples;
     for(std::size_t ni=0;ni<plan.evidence_handle()->networks().size();++ni) {
@@ -59,8 +61,9 @@ YAML::Node point_health_record(const PointOpticalPlan &plan) {
     return record;
 }
 std::shared_ptr<const PointOpticalPlan> point_restore_health(const YAML::Node &record,double threshold) {
-    require(record["schema"].as<std::string>()=="citlali-point-optical-health-v1" &&
+    require(record["schema"].as<std::string>()=="citlali-point-optical-health-v2" &&
         record["method"].as<std::string>()==std::string(PointOpticalEvidence::method) &&
+        record["bootstrap_seed_policy"].as<std::string>()==std::string(PointOpticalEvidence::seed_policy) &&
         record["min_relative_response"].as<double>()==threshold,"POINT frozen health method/threshold differs");
     PointOpticalRequest request;request.min_relative_response=threshold;
     require(record["bin_seconds"].as<double>()==request.bin_seconds && record["confidence_level"].as<double>()==request.confidence_level &&
@@ -82,7 +85,8 @@ std::shared_ptr<const PointOpticalPlan> point_restore_health(const YAML::Node &r
         }
         evidence.push_back(std::move(e));
     }
-    auto plan=PointOpticalPlan::consider(PointOpticalEvidence::restore_verified(request,std::move(evidence)));
+    auto plan=PointOpticalPlan::consider(PointOpticalEvidence::restore_verified(request,std::move(evidence),
+        record["bootstrap_seed_identity"].as<std::string>()));
     for(std::size_t i=0;i<plan->decisions().size();++i)for(std::size_t d=0;d<plan->decisions()[i].size();++d)
         citlali::cli::detail::validate_point_health_decision(record["networks"][i]["detectors"][d],point_optical_state_name(plan->decisions()[i][d].state),plan->decisions()[i][d].reason);
     return plan;

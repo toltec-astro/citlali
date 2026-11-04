@@ -125,10 +125,37 @@ def health_record():
                              reason=state, relative_response=1. if state == 'retained' else .03,
                              interval=[.01, .05]))
         networks.append(dict(array=array, network=network, detectors=rows))
-    return dict(schema='citlali-point-optical-health-v1', min_relative_response=.10,
+    return dict(schema='citlali-point-optical-health-v2', min_relative_response=.10,
+                bootstrap_seed_policy='point-optical-learning-input-seed-v1',
+                bootstrap_seed_identity='sha256:'+'a'*64,
                 method='fixture-source-protected-response',
                 uncertainty_limitations='fixture intervals; no false-rejection qualification',
                 networks=networks)
+
+
+def test_health_summary_preserves_stable_seed_binding(tmp_path):
+    record = health_record()
+    path = tmp_path / 'health.yaml'
+    path.write_text(yaml.safe_dump(record))
+    summary = weighted.health_summary(path)
+    assert summary['bootstrap_seed_policy'] == record['bootstrap_seed_policy']
+    assert summary['bootstrap_seed_identity'] == record['bootstrap_seed_identity']
+
+
+@pytest.mark.parametrize('field,value', [
+    ('schema', 'citlali-point-optical-health-v1'),
+    ('bootstrap_seed_policy', 'receipt-hash'),
+    ('bootstrap_seed_identity', None),
+    ('bootstrap_seed_identity', 'sha256:'+'z'*64),
+    ('bootstrap_seed_identity', ''),
+])
+def test_health_summary_rejects_old_or_invalid_seed_binding(tmp_path, field, value):
+    record = health_record()
+    record[field] = value
+    path = tmp_path / 'health.yaml'
+    path.write_text(yaml.safe_dump(record))
+    with pytest.raises(ValueError):
+        weighted.health_summary(path)
 
 
 @pytest.fixture

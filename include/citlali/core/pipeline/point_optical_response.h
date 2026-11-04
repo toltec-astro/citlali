@@ -76,9 +76,14 @@ public:
     // request and source bindings first. This validates internal consistency;
     // it does not turn arbitrary serialized numbers into scientific authority.
     static std::shared_ptr<const PointOpticalEvidence> restore_verified(
-        PointOpticalRequest, std::vector<PointOpticalNetworkEvidence>);
+        PointOpticalRequest, std::vector<PointOpticalNetworkEvidence>, std::string seed_identity);
     const auto &request() const noexcept { return request_; }
     const auto &networks() const noexcept { return networks_; }
+    // Fingerprint of the realized centered, source-protected learning cohort,
+    // separate from exact CAL/mask publication provenance. Never a replay token.
+    const auto &seed_identity() const noexcept { return seed_identity_; }
+    static constexpr std::string_view seed_policy =
+        "point-optical-learning-input-seed-v1";
     static constexpr std::string_view method =
         "point-optical-heldout-network-block-panel-bootstrap-v2";
     static constexpr std::string_view uncertainty =
@@ -90,6 +95,7 @@ public:
 private:
     PointOpticalRequest request_;
     std::vector<PointOpticalNetworkEvidence> networks_;
+    std::string seed_identity_;
 };
 
 enum class PointOpticalState {

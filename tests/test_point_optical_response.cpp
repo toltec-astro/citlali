@@ -1,5 +1,6 @@
 #include <citlali/core/pipeline/point_optical_response.h>
 #include <gtest/gtest.h>
+#include <algorithm>
 #include <cmath>
 #include <limits>
 using namespace citlali::pipeline;
@@ -88,11 +89,100 @@ TEST(PointOpticalResponse, WeakHealthyQuietNoisyAndReversedHaveSeparateDecisions
 TEST(PointOpticalResponse, SourceProtectionExcludesSourceFromLearningOnly) {
     auto clean=fixture();for(int t=400;t<430;++t)clean[0].source_free(t,2)=0;
     auto injected=clean;for(int t=400;t<430;++t)injected[0].values(t,2)+=1e9;
+    injected[0].cal_identity="different-receipt-for-protected-source";
     const auto a=PointOpticalEvidence::learn(clean,request()),b=PointOpticalEvidence::learn(injected,request());
     const auto &x=a->networks()[0].detectors[2],&y=b->networks()[0].detectors[2];
     EXPECT_DOUBLE_EQ(x.relative_response,y.relative_response);EXPECT_DOUBLE_EQ(x.interval.lower,y.interval.lower);
+    EXPECT_EQ(a->seed_identity(),b->seed_identity());
     EXPECT_EQ(x.available_samples,1200);EXPECT_EQ(x.source_free_samples,1170);
     EXPECT_GT(injected[0].values(405,2),1e8); // owner never mutates calibrated input
+}
+
+TEST(PointOpticalResponse, ReceiptMetadataDoesNotChangeBootstrapDrawsOrDecisions) {
+    const auto data=fixture();auto republished=data;
+    for(auto &n:republished) {
+        // The adapter's receipt digest changes with elapsed-time and output
+        // metadata. These opaque publication bindings must still be retained.
+        n.cal_identity+="-new-destination-and-Learn_seconds";
+        n.source_mask_identity+="-new-receipt-binding";
+    }
+    const auto a=PointOpticalEvidence::learn(data,request());
+    const auto b=PointOpticalEvidence::learn(republished,request());
+    EXPECT_EQ(a->seed_identity(),b->seed_identity());
+    const auto pa=PointOpticalPlan::consider(a),pb=PointOpticalPlan::consider(b);
+    auto same_number=[](double x,double y){if(std::isnan(x))EXPECT_TRUE(std::isnan(y));else EXPECT_DOUBLE_EQ(x,y);};
+    auto same_interval=[&](const PointOpticalInterval &x,const PointOpticalInterval &y) {
+        EXPECT_EQ(x.seed,y.seed);EXPECT_EQ(x.available,y.available);EXPECT_EQ(x.reason,y.reason);
+        EXPECT_EQ(x.informative_blocks,y.informative_blocks);EXPECT_EQ(x.resamples,y.resamples);
+        same_number(x.lower,y.lower);same_number(x.upper,y.upper);
+    };
+    for(std::size_t n=0;n<data.size();++n) {
+        EXPECT_EQ(b->networks()[n].cal_identity,republished[n].cal_identity);
+        EXPECT_EQ(b->networks()[n].source_mask_identity,republished[n].source_mask_identity);
+        // Stable science seeds are not interchangeable replay/provenance IDs.
+        EXPECT_THROW(pa->for_network(republished[n]),std::invalid_argument);
+        for(std::size_t d=0;d<data[n].detector_ids.size();++d) {
+            const auto &x=a->networks()[n].detectors[d],&y=b->networks()[n].detectors[d];
+            same_number(x.relative_response,y.relative_response);same_interval(x.interval,y.interval);
+            for(std::size_t c=0;c<x.checks.size();++c)same_interval(x.checks[c],y.checks[c]);
+            EXPECT_EQ(pa->for_network(data[n])[d].state,pb->for_network(republished[n])[d].state);
+            EXPECT_EQ(pa->for_network(data[n])[d].reason,pb->for_network(republished[n])[d].reason);
+        }
+    }
+}
+
+TEST(PointOpticalResponse, LearningInputsAndCohortRemainSeedRelevant) {
+    const auto data=fixture();const auto baseline=PointOpticalEvidence::learn(data,request());
+    for(int change=0;change<8;++change) {
+        SCOPED_TRACE(change);auto changed=data;
+        switch(change) {
+        case 0: changed[0].values(10,1)+=100;break;
+        case 1: changed[2].values(10,1)+=100;break; // held-out peer content
+        case 2: changed[0].eligible.block(0,1,20,1).setZero();break;
+        case 3: changed[0].source_free.block(0,1,20,1).setZero();break;
+        case 4: for(auto &n:changed)for(auto &block:n.science_blocks)block+=10;break;
+        case 5: changed[2].detector_ids[1]+="-different-occurrence";break;
+        case 6: changed[2].network=4;break;
+        case 7: for(auto &n:changed)for(auto &t:n.times_unix_sec)t+=10.;break;
+        }
+        const auto actual=PointOpticalEvidence::learn(changed,request());
+        EXPECT_NE(baseline->seed_identity(),actual->seed_identity());
+    }
+    // Request identity separates different binning/resampling policies, while
+    // the Consider threshold must not alter learned random draws.
+    auto r=request();r.bin_seconds=1.;EXPECT_NE(baseline->seed_identity(),PointOpticalEvidence::learn(data,r)->seed_identity());
+    r=request();r.bootstrap_samples=800;EXPECT_NE(baseline->seed_identity(),PointOpticalEvidence::learn(data,r)->seed_identity());
+    r=request();r.confidence_level=.98;EXPECT_NE(baseline->seed_identity(),PointOpticalEvidence::learn(data,r)->seed_identity());
+    r=request();r.min_relative_response=.2;EXPECT_EQ(baseline->seed_identity(),PointOpticalEvidence::learn(data,r)->seed_identity());
+}
+
+TEST(PointOpticalResponse, CanonicalDomainOrderPreservesSeedIdentity) {
+    const auto data=fixture();auto reordered=data;std::reverse(reordered.begin(),reordered.end());
+    for(auto &n:reordered) {
+        std::swap(n.detector_ids[0],n.detector_ids[1]);n.values.col(0).swap(n.values.col(1));
+        n.eligible.col(0).swap(n.eligible.col(1));n.source_free.col(0).swap(n.source_free.col(1));
+    }
+    const auto a=PointOpticalEvidence::learn(data,request()),b=PointOpticalEvidence::learn(reordered,request());
+    EXPECT_EQ(a->seed_identity(),b->seed_identity());
+    for(const auto &n:a->networks()) {
+        const auto other=std::find_if(b->networks().begin(),b->networks().end(),[&](const auto &x){return x.network==n.network;});
+        ASSERT_NE(other,b->networks().end());
+        for(const auto &d:n.detectors) {
+            const auto peer=std::find_if(other->detectors.begin(),other->detectors.end(),[&](const auto &x){return x.detector_id==d.detector_id;});
+            ASSERT_NE(peer,other->detectors.end());
+            for(std::size_t c=0;c<d.checks.size();++c)EXPECT_EQ(d.checks[c].seed,peer->checks[c].seed);
+        }
+    }
+}
+
+TEST(PointOpticalResponse, RestorationRejectsMissingForeignOrTamperedSeedIdentity) {
+    const auto e=PointOpticalEvidence::learn(fixture(),request());
+    EXPECT_THROW(PointOpticalEvidence::restore_verified(e->request(),e->networks(),""),std::invalid_argument);
+    EXPECT_THROW(PointOpticalEvidence::restore_verified(e->request(),e->networks(),"sha256:"+std::string(64,'0')),std::invalid_argument);
+    auto changed=e->networks();changed[0].detectors[1].checks[0].seed^=1;
+    EXPECT_THROW(PointOpticalEvidence::restore_verified(e->request(),changed,e->seed_identity()),std::invalid_argument);
+    const auto restored=PointOpticalEvidence::restore_verified(e->request(),e->networks(),e->seed_identity());
+    EXPECT_EQ(restored->seed_identity(),e->seed_identity());
 }
 
 TEST(PointOpticalResponse, MissingAndUnresolvedSupportAreNotConfidentWeakResponse) {
@@ -129,12 +219,12 @@ TEST(PointOpticalResponse, VerifiedRestoreIsDeterministicAndMembershipRejectsFor
     const auto data=fixture();const auto a=PointOpticalEvidence::learn(data,request());const auto b=PointOpticalEvidence::learn(data,request());
     EXPECT_DOUBLE_EQ(a->networks()[0].detectors[0].interval.lower,b->networks()[0].detectors[0].interval.lower);
     EXPECT_EQ(a->networks()[0].detectors[0].checks[0].seed,b->networks()[0].detectors[0].checks[0].seed);
-    const auto restored=PointOpticalEvidence::restore_verified(a->request(),a->networks());const auto p=PointOpticalPlan::consider(restored);
+    const auto restored=PointOpticalEvidence::restore_verified(a->request(),a->networks(),a->seed_identity());const auto p=PointOpticalPlan::consider(restored);
     EXPECT_EQ(p->for_network(data[0])[0].state,PointOpticalState::weak_response);
     auto foreign=data[0];foreign.cal_identity="foreign";EXPECT_THROW(p->for_network(foreign),std::invalid_argument);
     foreign=data[0];std::swap(foreign.detector_ids[0],foreign.detector_ids[1]);EXPECT_THROW(p->for_network(foreign),std::invalid_argument);
     auto bad=a->networks();bad[0].detectors[0].interval.upper=bad[0].detectors[0].interval.lower-1;
-    EXPECT_THROW(PointOpticalEvidence::restore_verified(a->request(),bad),std::invalid_argument);
+    EXPECT_THROW(PointOpticalEvidence::restore_verified(a->request(),bad,a->seed_identity()),std::invalid_argument);
 }
 
 TEST(PointOpticalResponse, InvalidFiniteEligibilityShapesAndConfigurationFailBeforeLearning) {

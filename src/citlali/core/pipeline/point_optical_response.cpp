@@ -1,5 +1,7 @@
 #include <citlali/core/pipeline/point_optical_response.h>
+#include <citlali/core/utils/sha256.h>
 #include <algorithm>
+#include <bit>
 #include <limits>
 #include <map>
 #include <numeric>
@@ -130,6 +132,61 @@ struct Binned {
     std::vector<double> full,reference;
     std::array<std::vector<double>,2> panel,reference_panel;
 };
+
+// Domain-separated, length-framed, little-endian encoding; no native struct
+// bytes, receipt hashes or platform-dependent NaN payloads enter the seed.
+class SeedInputDigest {
+public:
+    void integer(std::uint64_t value) {
+        std::array<std::uint8_t,8> bytes{};
+        for(unsigned i=0;i<8;++i)bytes[i]=static_cast<std::uint8_t>(value>>(8*i));
+        digest_.update(bytes.data(),bytes.size());
+    }
+    void text(std::string_view value) {integer(value.size());digest_.update(value);}
+    void number(double value) {
+        static_assert(sizeof(double)==8 && std::numeric_limits<double>::is_iec559);
+        integer(std::isfinite(value)?1:0);
+        if(std::isfinite(value))integer(std::bit_cast<std::uint64_t>(value==0.?0.:value));
+    }
+    std::string finish() {return "sha256:"+digest_.finish();}
+private:
+    citlali::utils::Sha256 digest_;
+};
+
+std::string learning_seed_identity(const std::vector<PointOpticalNetwork> &input,
+    const std::vector<Binned> &binned,const std::vector<Key> &keys,double origin,const PointOpticalRequest &request) {
+    SeedInputDigest hash;hash.text(PointOpticalEvidence::seed_policy);
+    hash.text(PointOpticalEvidence::method);hash.text("centered-mJy/nominal-beam;science-bin-and-block");
+    hash.text(input.front().observation_identity);
+    hash.number(origin); // UNIX seconds: the absolute learning-grid origin
+    hash.number(request.bin_seconds);hash.number(request.confidence_level);hash.integer(request.bootstrap_samples);
+    // min_relative_response belongs to Consider, not to the learned evidence.
+    hash.integer(keys.size());for(const auto &[bin,block]:keys){hash.integer(bin);hash.integer(block);}
+    std::vector<std::size_t> networks(input.size());std::iota(networks.begin(),networks.end(),0);
+    std::sort(networks.begin(),networks.end(),[&](auto a,auto b){return input[a].network<input[b].network;});
+    hash.integer(networks.size());
+    for(const auto ni:networks) {
+        const auto &n=input[ni];hash.integer(n.network);hash.integer(n.array);
+        std::vector<std::size_t> detectors(n.detector_ids.size());std::iota(detectors.begin(),detectors.end(),0);
+        std::sort(detectors.begin(),detectors.end(),[&](auto a,auto b){return n.detector_ids[a]<n.detector_ids[b];});
+        hash.integer(detectors.size());
+        for(const auto d:detectors) {
+            hash.text(n.detector_ids[d]);
+            for(std::size_t row=0;row<keys.size();++row)hash.number(binned[ni].values(row,d));
+        }
+    }
+    return hash.finish();
+}
+
+bool valid_seed_identity(const std::string &identity) {
+    return identity.size()==71 && identity.starts_with("sha256:") &&
+        std::all_of(identity.begin()+7,identity.end(),[](char c){return (c>='0'&&c<='9')||(c>='a'&&c<='f');});
+}
+std::uint64_t detector_seed(const std::string &identity,const std::string &detector,int part,int panel) {
+    // The framed digest already binds observation, cohort, units and method.
+    return seed_for(identity+":"+std::to_string(detector.size())+":"+detector+":"+
+        std::to_string(part)+":"+std::to_string(panel));
+}
 std::vector<double> combine(const std::vector<const std::vector<double> *> &sources,std::size_t n) {
     std::vector<double> out(n,NAN),v;v.reserve(sources.size());
     for(std::size_t i=0;i<n;++i){v.clear();for(auto p:sources)if(std::isfinite((*p)[i]))v.push_back((*p)[i]);out[i]=median(v);}
@@ -223,6 +280,7 @@ std::shared_ptr<const PointOpticalEvidence> PointOpticalEvidence::learn(
         }
         binned.push_back(std::move(b));out->networks_.push_back(std::move(facts));
     }
+    out->seed_identity_=learning_seed_identity(input,binned,keys,origin,request);
     std::array<std::vector<double>,3> array_reference;
     for(int a=0;a<3;++a){std::vector<const std::vector<double>*> v;
         for(std::size_t n=0;n<input.size();++n)if(input[n].array==a)v.push_back(&binned[n].full);
@@ -285,8 +343,7 @@ std::shared_ptr<const PointOpticalEvidence> PointOpticalEvidence::learn(
             std::vector<double> y(keys.size());for(std::size_t r=0;r<keys.size();++r)y[r]=b.values(r,d);
             bool complete=true;double lower=INFINITY,upper=-INFINITY;std::size_t min_blocks=std::numeric_limits<std::size_t>::max();
             for(int part=0;part<3;++part)for(int panel=0;panel<2;++panel) {
-                const auto seed=seed_for(f.observation_identity+":"+f.cal_identity+":"+z.detector_id+":"+
-                    std::to_string(part)+":"+std::to_string(panel)+":"+std::string(method));
+                const auto seed=detector_seed(out->seed_identity_,z.detector_id,part,panel);
                 auto ci=interval(b.reference_panel[panel],y,keys,request,f.response_normalization,seed,part==0?nullptr:part==1?&early:&late);
                 z.checks[part*2+panel]=ci;complete&=ci.available;
                 if(ci.available){lower=std::min(lower,ci.lower);upper=std::max(upper,ci.upper);min_blocks=std::min(min_blocks,ci.informative_blocks);}
@@ -299,7 +356,8 @@ std::shared_ptr<const PointOpticalEvidence> PointOpticalEvidence::learn(
 }
 
 std::shared_ptr<const PointOpticalEvidence> PointOpticalEvidence::restore_verified(
-    PointOpticalRequest request,std::vector<PointOpticalNetworkEvidence> networks) {
+    PointOpticalRequest request,std::vector<PointOpticalNetworkEvidence> networks,std::string seed_identity) {
+    if(!valid_seed_identity(seed_identity))throw std::invalid_argument("restored optical seed identity is invalid");
     validate_request(request);if(networks.empty())throw std::invalid_argument("restored optical evidence has no networks");
     std::set<int> ids;std::set<std::string> detectors;
     for(const auto &n:networks) {
@@ -316,6 +374,12 @@ std::shared_ptr<const PointOpticalEvidence> PointOpticalEvidence::restore_verifi
                d.source_free_samples>d.available_samples||d.binned_samples>d.source_free_samples)
                 throw std::invalid_argument("restored optical detector binding or support is inconsistent");
             validate_interval(d.interval,request);for(const auto &c:d.checks)validate_interval(c,request);
+            for(std::size_t check=0;check<d.checks.size();++check) {
+                const auto &c=d.checks[check];
+                if((c.reason=="not_evaluated" && (c.available || c.seed!=0)) ||
+                   (c.reason!="not_evaluated" && c.seed!=detector_seed(seed_identity,d.detector_id,check/2,check%2)))
+                    throw std::invalid_argument("restored optical interval seed differs from learning identity");
+            }
             if(d.interval.available) {
                 if(!n.reference_available||(n.cross_array_required&&!n.cross_array_corroborated)||!d.source_free_samples||!std::isfinite(d.relative_response))
                     throw std::invalid_argument("restored optical interval lacks admitted reference or source support");
@@ -328,7 +392,8 @@ std::shared_ptr<const PointOpticalEvidence> PointOpticalEvidence::restore_verifi
         const auto p=std::find_if(networks.begin(),networks.end(),[&](const auto &p){return p.network==ref;});
         if(p==networks.end()||p->array!=n.array)throw std::invalid_argument("restored optical reference has foreign array or missing network");
     }
-    auto out=std::shared_ptr<PointOpticalEvidence>(new PointOpticalEvidence);out->request_=request;out->networks_=std::move(networks);return out;
+    auto out=std::shared_ptr<PointOpticalEvidence>(new PointOpticalEvidence);out->request_=request;
+    out->seed_identity_=std::move(seed_identity);out->networks_=std::move(networks);return out;
 }
 
 std::string_view point_optical_state_name(PointOpticalState s) {

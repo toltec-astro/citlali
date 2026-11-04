@@ -18,12 +18,23 @@ STATES = ("prior_unavailable", "retained", "weak_response", "sign_mismatch", "un
 
 def health_summary(path):
     health = yaml.safe_load(Path(path).read_text())
-    if health["schema"] != "citlali-point-optical-health-v1":
+    if health["schema"] != "citlali-point-optical-health-v2":
         raise ValueError("unexpected optical health publication")
+    seed_identity = health.get("bootstrap_seed_identity", "")
+    if (
+        health.get("bootstrap_seed_policy") != "point-optical-learning-input-seed-v1"
+        or not isinstance(seed_identity, str)
+        or len(seed_identity) != 71
+        or not seed_identity.startswith("sha256:")
+        or any(c not in "0123456789abcdef" for c in seed_identity[7:])
+    ):
+        raise ValueError("unexpected optical bootstrap seed binding")
     summary = dict(
         schema="citlali-point-detector-health-summary-v1",
         min_relative_response=health["min_relative_response"],
         method=health["method"],
+        bootstrap_seed_policy=health["bootstrap_seed_policy"],
+        bootstrap_seed_identity=seed_identity,
         uncertainty_limitations=health["uncertainty_limitations"],
         arrays={},
         exceptions=[],

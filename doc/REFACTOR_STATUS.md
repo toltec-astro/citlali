@@ -1,3 +1,21 @@
+## POINT seed reproducibility repair candidate — 2026-11-04
+
+Grant authorized a bounded seed-dependence repair before performance work.
+The [work order](../validation/point_seed_repair_2026-11-04/WORK_ORDER.md) binds
+clean mainline base `cd0a3c33e` and isolated branch
+`codex/point-seed-repair-20261104`. Optical bootstrap draws now use a separate
+versioned fingerprint of realized centered learning inputs; receipt timings
+and destination metadata remain provenance, not random-seed inputs. Health
+schema v2 records that binding and rejects silent reuse of v1 health evidence.
+The statistical method and thresholds are unchanged, but historical bootstrap
+realizations and borderline decisions may change intentionally.
+
+Implementation and regression coverage are prepared; all build/test and
+observational gates await Grant. Independent exact-candidate review is required.
+No integration, push, runtime replacement, scientific acceptance or performance
+optimization follows from preparation. Prior qualification remains valid in
+its recorded scope; the later profile exposed the new reproducibility defect.
+
 ## Configured POINT 152389 run reviewed — 2026-11-04
 
 Grant's single-observation configured POINT run at `19b6fc462` completed all
