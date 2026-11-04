@@ -1,3 +1,14 @@
+## POINT strategy team approval recorded — 2026-11-04
+
+Grant reports team approval of the [strategy summary](POINT_TEAM_SUMMARY_2026-11-04.md)
+reviewed at `5dc124d1acf8997434f9b75133ac3d7f6e9e86cf`. The
+[approval receipt](POINT_METHOD_AND_USE_ACCEPTANCE_2026-11-04.md#team-approval)
+closes that review while retaining the explicitly provisional threshold and
+unresolved cases. Next is a complete method/use decision table and bounded
+implementation scope. Scientific qualification, runtime gates, and consumer
+adaptation remain pending. Documentation only; no application changes, new
+branches/worktrees, execution, or push. Grant retains all execution.
+
 ## POINT method and use decisions recorded for review — 2026-11-04
 
 The [team summary](POINT_TEAM_SUMMARY_2026-11-04.md) and

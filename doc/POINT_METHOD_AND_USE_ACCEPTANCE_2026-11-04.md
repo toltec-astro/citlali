@@ -2,12 +2,28 @@
 
 Recorded: November 4, 2026. Scientific owner: Grant Wilson.
 
-**Disposition: owner direction recorded; complete method and named-use
+**Disposition: strategy approved by the team; complete method and named-use
 acceptance pending.** This record preserves the POINT decisions from the
 owner discussion preceding this request, reconciles them with existing
 authority, and identifies the evidence still needed. It does not certify
 SCI-POINT conformance or change the application. The
 [team summary](POINT_TEAM_SUMMARY_2026-11-04.md) is the short sharing version.
+
+## Team approval
+
+On November 4, 2026, Grant reported the team's positive reaction and approval
+of the strategy. The reviewed summary and supporting draft record are bound
+to commit **5dc124d1acf8997434f9b75133ac3d7f6e9e86cf**. This closes team review
+of the strategy and preserves the priority of the usable a2000 override.
+The approved summary explicitly retained a provisional 8 arcsec beam threshold
+and unresolved cases; approval does not supply those missing definitions or
+establish achieved accuracy, complete method conformance, or production use.
+
+This approval receipt changes documentation only on the existing branch and
+checkout, from the clean reviewed commit above. The earlier preparation
+preflight and evidence bindings below remain historical facts. The owner's
+no-implementation/no-new-branch-or-worktree boundary remains in force;
+Grant retains all execution. Static review only; no runtime gates were run.
 
 ## Scope and preflight
 
@@ -224,7 +240,7 @@ priority over nominal-beam disagreement failure is settled.
 
 ## Acceptance sequence and current disposition
 
-Review the team summary and resolve the open policy cases, then bind one complete
+Team review is complete. Resolve the open policy cases, then bind one complete
 method/use record and the smallest implementation scope for selection, observer
 reporting, and consumer adaptation. Separate fit completeness, pointing admission,
 telescope QC, and gain/photometric use; approve/register the profiles actually needed.

@@ -1,8 +1,9 @@
-# POINT strategy for team review
+# POINT strategy
 
-Recorded November 4, 2026, from Grant Wilson's owner direction. This is the
-proposed observing policy for team review; implementation and scientific
-qualification remain pending.
+Recorded November 4, 2026, from Grant Wilson's owner direction. Grant subsequently
+reported team approval of this strategy on November 4. Implementation and
+scientific qualification remain pending; the provisional threshold and open
+cases below retain their stated status.
 
 The primary purpose of POINT is to measure azimuth and elevation offsets,
 targeting approximately **1.5 arcsec combined two-dimensional accuracy**.
@@ -35,8 +36,9 @@ the ECSV measurement table. The LMT monitor and control system can consume the
 assessment, and TolTECA will be updated to honor the selected solution while
 retaining responsibility for converting measured displacement into a correction.
 
-Team review should address the thresholds and decision rules, particularly
+Team review of the strategy is complete. The remaining method decisions are
 the definitions of consistent and nominal beams, ambiguous array groupings,
-and unavailable fits. The accuracy target is not yet demonstrated. The
+unavailable fits, and finalization of the provisional beam-width threshold.
+The accuracy target is not yet demonstrated. The
 [method and use acceptance record](POINT_METHOD_AND_USE_ACCEPTANCE_2026-11-04.md)
 links existing evidence and distinguishes agreed direction from those open cases.

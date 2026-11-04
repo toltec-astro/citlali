@@ -1,5 +1,13 @@
 # Citlali refactor — current state
 
+2026-11-04 POINT strategy approved: Grant reports team approval of the
+[summary](POINT_TEAM_SUMMARY_2026-11-04.md) reviewed at `5dc124d1a`.
+The [acceptance record](POINT_METHOD_AND_USE_ACCEPTANCE_2026-11-04.md#team-approval)
+distinguishes this strategy approval from complete method/use acceptance and
+achieved accuracy. Remaining decision cases precede a bounded implementation;
+the provisional 8 arcsec trigger is not silently finalized. No implementation,
+new branch/worktree, execution, or push follows from this documentation receipt.
+
 2026-11-04 POINT policy preparation: the [team summary](POINT_TEAM_SUMMARY_2026-11-04.md)
 and [draft method and use acceptance record](POINT_METHOD_AND_USE_ACCEPTANCE_2026-11-04.md)
 preserve Grant's astrometric target, array-consistency policy, and priority for
