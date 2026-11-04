@@ -1,5 +1,12 @@
 # Citlali refactor — current state
 
+2026-11-04 POINT 152389 preflight reviewed: Grant's version/input preparation
+passed with matching evidence identities and no warnings/errors. The [assessment](POINT_QUALIFICATION_152389_2026-11-04.md#preflight-assessment--2026-11-04)
+confirms the selected settings and 39 bound external inputs for 1146+399,
+11 networks and all three arrays. The separate owner-run reduction command is
+ready. Scientific processing and product assessment remain pending; all execution
+stays with Grant. No application changes, SCIENCE qualification or push.
+
 2026-11-04 individual POINT preparation: Grant selected **152389 only**, with
 its recorded weighted settings. The [bound packet and owner commands](POINT_QUALIFICATION_152389_2026-11-04.md)
 use accepted application `19b6fc462`; the first command performs input/config

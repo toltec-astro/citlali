@@ -1,10 +1,34 @@
 # Configured POINT qualification preparation: 152389
 
-Status: owner selected observation/settings; preflight and reduction pending.
+Status: owner-run preflight completed and reviewed; single-observation reduction
+ready for Grant to invoke, with reduction/scientific results still pending.
 Grant executes every build, test, probe, reduction and validation runner.
 Codex performed file/Git inspection, preparation and static review only.
 
 ## Bound purpose and source
+
+### Preflight assessment — 2026-11-04
+
+Grant's attempt `preflight-152389-20261104T150300.353722Z` completed native
+version and configured-input preparation with exit 0 and no warnings/errors in
+either log. Receipt and log hashes match their recorded identities. Current
+source remains clean at `19b6fc462`; native, helper/config and preserved
+environment hashes match the bound packet. Static rehashing of all 39 external
+input files found no differences. The new output root does not yet exist.
+
+The prepared observation is 152389, source **1146+399**, with all three arrays
+and networks 0,1,2,3,4,5,7,8,9,11,12. Effective settings match the selected
+weighted recipe below, with coadd and the weight-comparison arm disabled.
+Pointing metadata is available; supplied reduction offsets are zero. Recorded
+telescope User/Paddle metadata is preserved separately and is not relabeled as
+zero. Preflight did not execute RTC, CAL, cleaning, mapping or fitting.
+
+Detailed receipt SHA-256:
+`c9b8b700dd2e7336c14c15a907d4acd651b26b8774e14e37be62bb4796866a89`.
+The packet's `PREFLIGHT_REVIEW-152389.json` records the evidence and separate
+scientific, architectural and hygiene dispositions. Ready for the existing
+`owner_run.py run 152389` command below; reduction/product/scientific assessment
+remains pending. No change to the prepared runner, config or binding was needed.
 
 On 2026-11-04 Grant selected **152389 only**, preserving its completed weighted
 POINT fixture's settings: all three arrays, 2 arcsec pixels, coverage cut 0.15,
