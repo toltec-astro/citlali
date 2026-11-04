@@ -1,3 +1,14 @@
+## Configured POINT 152389 run reviewed — 2026-11-04
+
+Grant's single-observation configured POINT run at `19b6fc462` completed all
+11 networks, 13 native calls and M0–M10, with all three final fit guards accepted
+and a published astrometry table. [Assessment and independent static review](../validation/point_152389_qualification_2026-11-04/ASSESSMENT.md)
+found no actionable issue within inspected evidence. Logs are free of
+warning/error messages; all final fit-diagnostic fields match the historical
+fixture except its referenced map hash. No absolute-accuracy, flux-calibration,
+new-policy, SCIENCE or production acceptance is inferred. This result does not
+authorize another observation; no rerun or repair is indicated. No push.
+
 ## POINT 152389 preflight reviewed; owner reduction next — 2026-11-04
 
 Grant's version and input-preparation commands passed for accepted application

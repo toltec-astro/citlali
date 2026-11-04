@@ -1,9 +1,26 @@
 # Configured POINT qualification preparation: 152389
 
-Status: owner-run preflight completed and reviewed; single-observation reduction
-ready for Grant to invoke, with reduction/scientific results still pending.
+Status: owner-run preflight and single-observation reduction completed and
+reviewed, including independent static review. No actionable issue found within
+reviewed scope; broader scientific/use acceptance remains separate.
 Grant executes every build, test, probe, reduction and validation runner.
 Codex performed file/Git inspection, preparation and static review only.
+
+## Completed run assessment — 2026-11-04
+
+[Assessment and exact evidence](../validation/point_152389_qualification_2026-11-04/ASSESSMENT.md)
+record successful configured execution at `19b6fc462`: all 11 networks and
+13 native calls completed, with M0 plus ten feedback applications, all three
+final guards accepted and a published pointing table. Reviewed logs contain
+no warnings/errors. The final saved fit diagnostics match the historical
+fixture exactly except for the referenced FITS hash. Independent read-only
+review found no actionable publication/validity inconsistency.
+
+This is a bounded result for the selected observation/settings. It does not
+establish absolute accuracy, the new selection policy, flux calibration,
+SCIENCE or production acceptance. The commands below are preserved execution
+history; do not rerun this completed case or reuse its output root. No repair
+or rerun is indicated by this review, and no additional observation is selected.
 
 ## Bound purpose and source
 

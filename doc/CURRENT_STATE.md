@@ -1,5 +1,14 @@
 # Citlali refactor — current state
 
+2026-11-04 POINT 152389 run reviewed: Grant completed the configured weighted
+POINT case at accepted application `19b6fc462`. [Assessment](../validation/point_152389_qualification_2026-11-04/ASSESSMENT.md)
+and independent static review found no actionable issue in the inspected
+execution/publication evidence: all arrays fitted, ten feedback applications
+completed and the pointing table published. Scientific method/use acceptance,
+absolute accuracy, new selection policy and SCIENCE remain separate. No repair,
+rerun or added observation is indicated/selected here. No application changes
+or push; Grant retains all execution.
+
 2026-11-04 POINT 152389 preflight reviewed: Grant's version/input preparation
 passed with matching evidence identities and no warnings/errors. The [assessment](POINT_QUALIFICATION_152389_2026-11-04.md#preflight-assessment--2026-11-04)
 confirms the selected settings and 39 bound external inputs for 1146+399,
