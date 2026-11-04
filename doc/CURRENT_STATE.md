@@ -1,5 +1,14 @@
 # Citlali refactor — current state
 
+2026-11-04 POINT policy preparation: the [team summary](POINT_TEAM_SUMMARY_2026-11-04.md)
+and [draft method and use acceptance record](POINT_METHOD_AND_USE_ACCEPTANCE_2026-11-04.md)
+preserve Grant's astrometric target, array-consistency policy, and priority for
+a usable 2 mm solution when the provisional 1.1 mm beam-width trigger applies.
+They propose an observer-facing report and TolTECA consumer adaptation.
+Open cases and evidence limits remain explicit; no frozen contract,
+implementation, runtime, or scientific qualification is changed. Preparation
+uses the existing checkout, and Grant retains all execution.
+
 2026-11-04 owner clarification supersedes the earlier route selection:
 qualify individual configured successor POINT now; defer SCIENCE/RA-Dec/coadd
 and known-offset qualification until successor SCIENCE is connected. The

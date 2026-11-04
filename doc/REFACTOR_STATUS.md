@@ -1,3 +1,22 @@
+## POINT method and use decisions recorded for review — 2026-11-04
+
+The [team summary](POINT_TEAM_SUMMARY_2026-11-04.md) and
+[draft acceptance record](POINT_METHOD_AND_USE_ACCEPTANCE_2026-11-04.md)
+record the approximately 1.5 arcsec combined-error target, normal-case mean of
+consistent arrays, 5 arcsec outlier/disagreement direction, and provisional
+a1100 FWHM greater than 8 arcsec trigger. A usable a2000-only solution under
+that trigger takes precedence over nominal-beam disagreement failure.
+All per-array results remain available; gain monitoring is a separate optional
+use. The intended observer output leads the later TolTECA adaptation.
+
+Frozen SCI-POINT compatibility authority and authorized development fitting
+remain distinct. Complete successor method/use acceptance, nominal/consistent
+definitions, ambiguous and unavailable-fit cases, report/consumer details,
+and accuracy evidence remain open. Documentation only: no implementation,
+tests, reductions, schema change, new branch/worktree, push, or cleanup.
+Grant retains all execution. The separate qualification route selection below
+is preserved; these new policies do not make its experiment launch-ready.
+
 ## Individual successor POINT now; SCIENCE qualification deferred — 2026-11-04
 
 Grant clarified that he wants the recommended sequence: qualify individual
