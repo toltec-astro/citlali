@@ -1,3 +1,14 @@
+## Configured POINT plus retained SCIENCE selected — 2026-11-04
+
+Grant selected these two implemented execution routes with separate acceptance
+claims. The [qualification plan](POINT_SCIENCE_QUALIFICATION_PLAN_2026-11-03.md)
+includes an exact owner-run build-only command for the retained validation
+driver at accepted application `19b6fc462`. Preparation reuses the preserved
+Spack environment; no application code or installed runtime changes. Driver
+build/version and observational qualification remain pending owner execution.
+Input/reference/offset selection is still needed for reduction commands.
+Connected successor SCIENCE remains unqualified. No push or cleanup.
+
 ## POINT / SCIENCE workflow and qualification preparation — 2026-11-03
 
 Owner clarification: individual POINT uses delta-source Alt/Az; coadding is a

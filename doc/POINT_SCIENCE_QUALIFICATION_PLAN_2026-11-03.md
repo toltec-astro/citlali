@@ -1,7 +1,8 @@
 # Individual POINT and celestial SCIENCE qualification
 
-Date: 2026-11-03. Status: plan prepared; observation/configuration binding and
-SCIENCE execution-route selection pending. No qualification runs performed.
+Prepared 2026-11-03; route selected by Grant on 2026-11-04. Status: configured
+POINT plus retained-standard SCIENCE, with separate acceptance claims.
+Observation/configuration binding remains pending. No qualification runs performed.
 
 ## Owner workflow clarification
 
@@ -25,6 +26,10 @@ algorithm, calibration policy, numerical default, or acceptance threshold.
 - Documentation base: `45757b009f33aabfaf691c7ece133e98902f3a41`, branch
   `codex/refactor-mainline`, clean at inspection, in
   `/Users/gwilson/.codex/worktrees/pointing-engineering-candidate-20261030/citlali-refactor`.
+  The November 4 route-selection and command-preparation update starts from
+  clean documentation commit `e425ab715c044a99340941818f92a1009bf2e300` on that
+  same branch. It adds a separate external owner-build packet; no application
+  source, dependency realization or installed runtime is changed.
 - Qualification application: accepted stage-3 source
   `19b6fc462930af6f0a7bf2ca5b5350dd3c72af6e`, tree
   `3b1d9e0ae067e502faa1e02895be3695f5166a66`. The later acceptance receipt
@@ -59,11 +64,12 @@ The native CLI also does not silently fall back to the retained driver.
 See [current release boundaries](CURRENT_STATE.md#application-and-release-boundaries)
 and [handoff scope](POINTING_HANDOFF_INTEGRATION_2026-10-31.md).
 
-**Pending owner selection:** either qualify configured POINT plus the retained
-SCIENCE route with separate conclusions, or keep the entire qualification on
-the successor and hold its SCIENCE portion until the route exists. There is no
-automatic choice of the retained driver. Historical V2 SCIENCE acceptance
-remains valid within its recorded mixed-revision operational scope.
+**Owner selection, 2026-11-04:** "Configured POINT plus retained-standard SCIENCE,
+with separate acceptance claims." The qualification therefore includes both
+implemented routes. Retained SCIENCE results can also inform a future successor
+comparison, but do not qualify the unfinished connected successor SCIENCE path.
+Historical V2 SCIENCE acceptance remains valid within its recorded
+mixed-revision operational scope.
 
 ## Bind the experiment before launch
 
@@ -174,21 +180,42 @@ Reuse the owner-run stage-3 environment setup, but not its old mainline-base
 guard or its `all` command. A new final packet must bind the observations,
 configs and environment and record a fresh native version check before launch.
 
-If retained SCIENCE is selected, prepare a new validation-driver build against
-the same pinned application; do not reuse the historical metadata executable.
-The existing driver source is in the preserved
-`citlali-beammap-iteration-20261101/driver` packet under the October 29
-visualizations tree. It calls `load_and_run_default_citlali_reduction` and is
-not the successor CLI. Its CMake target is `retained_validation_driver` with
-`REVIEWED_SOURCE` bound to the pinned checkout. Grant must build it and verify
-its source/version before running the individual/coadd/offset merged SCIENCE
-YAMLs. Concrete build and reduction commands will be frozen after route and
-input selection. If successor-only is selected, these commands are omitted
-and SCIENCE qualification stays pending implementation.
+### Retained SCIENCE driver build — prepared 2026-11-04
 
-No runnable SCIENCE command or offset YAML is supplied while those choices are
-unbound. This is a preparation limitation, not a failed gate or permission to
-substitute a different implementation.
+Grant can prepare the separate driver before selecting observations:
+
+```bash
+"$HOME/tolteca/bin/python" -B /Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-point-science-qualification-20261104/owner_build_driver.py build
+```
+
+The external packet contains `README.md`, `BUILD_BINDING.json`, the owner
+wrapper and `driver/{CMakeLists.txt,driver.cpp}`. Binding-file SHA-256:
+`e8bd1bd990bd2750ef57b46cebfb4b38bad89ffe7fd4b76c21ca9beecffbfe85`.
+It records the prepared-file hashes and preserved environment digests above.
+The wrapper checks source/tree and dependency identities before and after each
+command, configures/builds in a new timestamped attempt directory, checks the
+driver version, and records logs, receipts and the executable digest. The final
+`DRIVER_BUILT.json` means commands completed with log assessment still pending;
+it does not declare scientific acceptance. No tests or reductions are launched.
+
+The driver source is byte-identical to the preserved
+`citlali-beammap-iteration-20261101/driver/driver.cpp` under the October 29
+visualizations tree; the CMake recipe changes only the validation-project name.
+It calls `load_and_run_default_citlali_reduction`, not the successor entry.
+Its target is `retained_validation_driver`, with `REVIEWED_SOURCE` bound to the
+accepted stage-3 checkout. It builds a new executable without installing it or
+replacing the preserved native POINT executable. This recipe reuses the existing
+Mac Spack realization and does not reproduce Unity V2 acceptance.
+
+Static review only: checked source identities, dependency locator, environment
+digests, command construction and driver equivalence. The new wrapper has not
+been executed, even for syntax/help checks; Grant owns its first execution and
+all resulting build/version gates. No fresh observational result exists.
+
+No runnable SCIENCE reduction command or offset YAML is supplied while the
+observation/reference/correction choices remain unbound. This is a preparation
+limitation, not a failed gate. Concrete reduction commands follow input selection
+and assessment of the driver build.
 
 ## Reporting and disposition
 
@@ -210,7 +237,8 @@ the execution route, claim, result, limitations and owner disposition.
   New qualification gates have not run. No push, production authorization,
   deployment, runtime replacement or cleanup follows.
 
-Next binding decisions: SCIENCE route; source and distinct observations;
-reference coordinates and correction values/provenance; scientific acceptance
-criteria. After those are fixed, prepare the exact per-case owner-run packet,
-review its static configuration, and let Grant execute step 0 then step 1.
+Next binding decisions: source and distinct observations; reference coordinates
+and correction values/provenance; scientific acceptance criteria. The SCIENCE
+route is selected. After the remaining choices are fixed, prepare the exact
+per-case owner-run packet, review its static configuration, and let Grant
+execute step 0 then step 1. Driver build/version evidence remains pending.

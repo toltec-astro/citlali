@@ -1,12 +1,21 @@
 # Citlali refactor — current state
 
+2026-11-04 qualification route selected: Grant chose configured POINT plus
+retained-standard SCIENCE, with separate acceptance claims. The [plan and
+owner-build command](POINT_SCIENCE_QUALIFICATION_PLAN_2026-11-03.md)
+now include a separate retained-driver build against accepted application
+`19b6fc462`. Its build/version gates and observation/reference/offset bindings
+remain pending. Retained SCIENCE cannot establish connected successor SCIENCE
+acceptance. All execution remains with Grant; no push or runtime replacement.
+
 2026-11-03 workflow clarification: Grant runs POINT on individual observations
 in delta-source Alt/Az; observations to be coadded are reduced as SCIENCE in
 RA/Dec. The [qualification plan](POINT_SCIENCE_QUALIFICATION_PLAN_2026-11-03.md)
 orders individual configured POINT, celestial SCIENCE/coadds and a known-offset
-astrometry check. Observation/reference/offset bindings and SCIENCE route
-selection remain pending. Configured successor POINT exists; retained-standard
-SCIENCE is a separate executable route and cannot qualify the unfinished
+astrometry check. Observation/reference/offset bindings remain pending; the
+November 4 update above resolves the route selection. Configured successor
+POINT exists; retained-standard SCIENCE is a separate executable route and
+cannot qualify the unfinished
 connected successor SCIENCE path. No qualification has run under this plan.
 The stage-1 invalid-coadd-fit repair remains defensive; it does not require or
 endorse a POINT-coadd workflow. All execution stays with Grant; no push.
