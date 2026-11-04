@@ -1,5 +1,16 @@
 # Citlali refactor — current state
 
+2026-11-04 seed repair accepted and integrated locally: Grant accepted exact
+application `972484e7e46cb9245fc6e311701c2b90e48d5e9d`; clean mainline
+fast-forwarded from `cd0a3c33e`. [Acceptance](../validation/point_seed_repair_2026-11-04/OWNER_ACCEPTANCE.json)
+and [evidence](../validation/point_seed_repair_2026-11-04/ACCEPTANCE_EVIDENCE.txt)
+record passing local Mac Spack software gates and exact 152389 M0–M5 repeatability
+despite differing timing/provenance. This is bounded software acceptance, not
+broader scientific/production or cross-platform qualification. The seed worktree
+and executable remain preserved. Next is a separate bounded hashing performance
+candidate, with unchanged digests and verification boundaries. Grant executes
+all builds/tests/benchmarks/reductions. No push or runtime replacement.
+
 2026-11-04 POINT 152389 run reviewed: Grant completed the configured weighted
 POINT case at accepted application `19b6fc462`. [Assessment](../validation/point_152389_qualification_2026-11-04/ASSESSMENT.md)
 and independent static review found no actionable issue in the inspected

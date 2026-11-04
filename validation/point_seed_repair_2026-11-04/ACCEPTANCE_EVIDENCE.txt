@@ -1,0 +1,96 @@
+Seed repair acceptance-readiness assessment — 2026-11-04
+
+Disposition: ready for owner acceptance as a bounded software repair; final
+independent evidence review passed with recorded limitations (see below).
+This is a recommendation, not owner acceptance or integration.
+
+Candidate: 972484e7e46cb9245fc6e311701c2b90e48d5e9d
+Tree: 1ee7cfac01ddf57848600fa7e099d6caec876f45
+Parent/base: cd0a3c33e95d218196b41775bfe4362345d5a511
+Branch: codex/point-seed-repair-20261104
+Candidate and canonical mainline both clean; mainline remains at the base.
+Native SHA-256: 96af97f982c62c5217a424d57a161617281287e318dfd928901d2e3c3f492d68
+Comparator SHA-256: c6c70e7ee216dbb1edc93ff4a48e437000a6e08380948002b6bc647c936af847
+
+Execution owner: Grant, for every build/test/probe/reduction/comparison.
+Codex reviewed existing files/Git and hashes only. No additional gate executed.
+Scope/authority: validation/point_seed_repair_2026-11-04/WORK_ORDER.md;
+accepted optical policy and unchanged conditional block-bootstrap method;
+Engineering, Successor and Review/Conformance governance already read.
+No numerical algorithm, threshold, calibration policy or performance change.
+
+Software evidence: local Mac Spack Clang20.1.8 CLI/test/public-header build and
+version match. Focused optical14/14, weighted Python39/39, enabled CTest1427/1427,
+baseline207/207 and corrected full required config preflight pass.
+One unchanged historical forensic replay remains disabled, not claimed passed.
+The helper's failed first preflight and path-binding failures remain preserved.
+
+Owner repeatability evidence:
+- Observation152389, two sequential unprofiled configured POINT M0-M5 runs,
+  all three arrays, same scientific settings, separate output roots.
+- A POINT command375.3317975830287s; B377.41159962513484s. These are descriptive
+  same-machine elapsed times, not a performance acceptance or matched OG claim.
+- Both complete eight native stages, five feedback applications, fixed-budget
+  stop, zero return codes and no reported unexpected error-level lines.
+- All three fits accepted in both runs; required products published.
+- All ten saved comparison checks pass.
+- Same realized learning fingerprint:
+  sha256:11e6fffea82689de74a51919e7ada5a847262e58f7970e7cb175629f65ae18a3
+- Full health scientific records (all seeds, intervals, decisions, support and
+  reference diagnostics) equal after excluding only four declared provenance
+  fields. Per-run CAL/request/effective-config digests remain independently
+  bound to their own saved files. Effective configs differ only in output root.
+- All11 full CAL receipts differ, including measured timings; their declared
+  payload hashes and scientific metadata match under documented exclusions.
+  Thus the original incidental-provenance challenge was actually exercised.
+- All21 FITS products (18M0-M5 array maps plus3final publications),126planes,
+  have exact shape/dtype/values including NaN placement and selected scientific
+  grid/unit/frame metadata. Final fit diagnostics match after excluding the
+  map byte hash. Full file/header provenance is not claimed byte-identical.
+- One historical decision differs from the old profiled run: network3 detector
+  row/association1678 changes unresolved to retained. Both repaired runs retain
+  it identically. This is the previously observed unstable case. Changing the
+  random draw is intentional; equality to an arbitrary historical seed is not
+  an acceptance requirement. No threshold was changed to force this outcome.
+
+Verified saved evidence hashes:
+COMPARISON.json c4a86707178fa9f6e21285915eb82173c1e6db7fa03171eca4e09cc98153085c
+A RUN.json c28909bc7ff8851a6cb5dc7abc696b7c93a3b1baffe9616223c16530ae60e683
+B RUN.json 7cf7a4bfe9c3848ec785bdff591b57f736f01905aa295fbf8c1559e6fcf0456c
+A point log 4d3f94afdc50fff6fbecfe4ec4dd8e4c7d1f0e9285af11e20d98daf961d7b53d
+B point log 303d92a8c55c1ec3360b3759911820a86a1d7ed6adef9432b37b6b2542b6b8ab
+Comparison log 4b04e1d016a747795ccfbaa41d141e6a56accebcded3c6a7fc6a4e8bf7fd3876
+A health 97c355adec4739a3022162820290ba50d95b6182faf9674c88071dd9f32fde5a
+B health f462bed05409cd54edaaba13a9b7d56ca8e4614a6d2b841e46d020d67a8621f2
+Log/run/comparison identities match their completion receipts. Candidate binary
+and helper identities still match the sealed source and packet.
+
+Scientific/behavioral: pass for the bounded reproducibility correction and
+recorded local observation. Cross-machine/other-observation determinism,
+scientific selection efficacy, uncertainty coverage, calibration and production
+acceptance remain outside scope. Ordinary transport cleanup means CAL payload
+digests are native-verified declarations, not a post-cleanup rehash.
+Architecture/ownership: pass from exact-candidate independent static review;
+learning identity stays with typed optical evidence, receipt/replay authority
+remains intact; no Engine growth or application changes during helper repairs.
+Repository/evidence: clean isolated candidate, prior failures and A preserved;
+B ran once under explicit three-profile content-preserving path rebinding.
+All raw/legacy/historical artifacts retained. No integration, push, runtime
+replacement, cleanup, Unity, SCIENCE/coadd or broader POINT-policy work.
+
+Independent application/packet reviews passed with recorded limitations.
+Optional fixed digest-vector test remains non-blocking and deferred.
+Next owner decision: accept the exact candidate as a bounded software repair
+and separately authorize local mainline integration. Performance work follows
+that acceptance/integration; no performance repair has begun.
+
+Final independent evidence review — seed_repair_review — 2026-11-04:
+PASS WITH RECORDED LIMITATIONS. Evidence supports owner acceptance; no further
+repair or rerun indicated. Scientific/behavioral, architecture/ownership and
+repository/evidence dispositions all pass within the declared scope. Candidate
+and tree unchanged/clean. Source/executable/comparison/run/health/inspected log
+identities match receipts. All10 comparison checks and completed software gates
+support the bounded result. Historical1678 decision change is consistent with
+intentional seed realization change, not a threshold change. Limitations above
+remain. Reviewer used file/Git inspection/hashing only; nothing rerun. This is
+not integration authorization.

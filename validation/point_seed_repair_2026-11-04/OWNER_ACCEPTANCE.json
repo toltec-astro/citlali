@@ -1,0 +1,22 @@
+{
+  "date": "2026-11-04",
+  "owner": "Grant Wilson",
+  "directive": "I accept the seed repair as a bounded software repair. Record the acceptance, integrate it locally into mainline, and proceed with the hashing performance work. No push; I'll continue to run all builds and tests.",
+  "accepted_application": "972484e7e46cb9245fc6e311701c2b90e48d5e9d",
+  "accepted_tree": "1ee7cfac01ddf57848600fa7e099d6caec876f45",
+  "previous_mainline": "cd0a3c33e95d218196b41775bfe4362345d5a511",
+  "integration": "clean local mainline fast-forward to exact accepted application; following record is documentation only",
+  "execution_owner": "Grant",
+  "evidence_packet": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-point-seed-repair-20261104",
+  "comparison_sha256": "c4a86707178fa9f6e21285915eb82173c1e6db7fa03171eca4e09cc98153085c",
+  "native_sha256": "96af97f982c62c5217a424d57a161617281287e318dfd928901d2e3c3f492d68",
+  "review": "independent exact-SHA and final evidence review passed with recorded limitations",
+  "scope": "stable scientific-input bootstrap seeds, unchanged method/threshold/replay checks; two same-machine 152389 M0-M5 runs repeat exactly",
+  "limitations": [
+    "one unchanged historical forensic CTest disabled",
+    "not cross-platform or broader scientific/production acceptance",
+    "old health schema remains historical; no migration",
+    "no push, runtime replacement, Unity or cleanup"
+  ],
+  "next_work": "separate bounded SHA-256 block-feeding performance candidate; owner executes all gates; future integration requires acceptance"
+}

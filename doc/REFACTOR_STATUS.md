@@ -1,4 +1,18 @@
-## POINT seed reproducibility repair candidate — 2026-11-04
+## POINT seed repair accepted and integrated locally — 2026-11-04
+
+Grant accepted exact application `972484e7e46cb9245fc6e311701c2b90e48d5e9d`.
+Clean mainline fast-forwarded from `cd0a3c33e`; the following acceptance record
+changes documentation only. [Owner acceptance and scope](../validation/point_seed_repair_2026-11-04/OWNER_ACCEPTANCE.json)
+bind [software and observation evidence](../validation/point_seed_repair_2026-11-04/ACCEPTANCE_EVIDENCE.txt):
+14 optical, 39 weighted, 1427 enabled CTests, 207 baseline tests and full config
+preflight passed; one historical forensic replay remains disabled. Two 152389
+M0–M5 runs match all scientific health, 126 map planes and final fit diagnostics
+despite differing CAL/provenance receipts. Independent static/evidence reviews
+passed with recorded limitations. No wider scientific/production acceptance.
+The next authorized work is a separate bounded hashing performance candidate.
+Grant retains all execution; no push, runtime replacement or cleanup.
+
+## POINT seed reproducibility repair candidate — 2026-11-04 (historical preparation)
 
 Grant authorized a bounded seed-dependence repair before performance work.
 The [work order](../validation/point_seed_repair_2026-11-04/WORK_ORDER.md) binds

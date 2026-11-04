@@ -1,3 +1,19 @@
+## POINT seed repair acceptance — 2026-11-04
+
+Grant accepted application `972484e7e46cb9245fc6e311701c2b90e48d5e9d`, tree
+`1ee7cfac01ddf57848600fa7e099d6caec876f45`. Clean mainline fast-forwarded from
+`cd0a3c33e95d218196b41775bfe4362345d5a511` to this exact reviewed source.
+[Owner acceptance](../validation/point_seed_repair_2026-11-04/OWNER_ACCEPTANCE.json)
+and [evidence](../validation/point_seed_repair_2026-11-04/ACCEPTANCE_EVIDENCE.txt)
+bind passing local Mac Spack software gates and two 152389 M0–M5 repeatability
+runs. The previous single-observation scientific evidence retains its original
+scope. Historical detector1678 changes from the profiled unresolved draw to
+consistently retained under the new seed policy; thresholds are unchanged.
+All three independent review dispositions pass with recorded limitations.
+This following documentation record is not a newly tested application. Hashing
+performance work is separately authorized; its eventual integration is not.
+No push, runtime replacement, cleanup or Unity action occurred.
+
 ## Stage 3 bounded repair acceptance — 2026-11-03
 
 Grant accepted application `19b6fc462930af6f0a7bf2ca5b5350dd3c72af6e`, tree
