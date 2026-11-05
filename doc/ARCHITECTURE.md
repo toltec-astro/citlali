@@ -50,7 +50,25 @@ process-lifetime peak RSS are separate from native stage measurements; per-job
 RSS values must not be summed as an observation peak. `execution.yaml` and
 `RUN.json` contain execution diagnostics, not scientific identity or acceptance.
 
-Saved CAL loading remains serial pending separate library-isolation work.
+For ordinary configured weighted POINT, `PointObservationSession` owns one
+native child from health through the last map pass. Python submits the hash of
+each existing development request in order. The child derives the expected
+stage path, checks the bound request, publishes the stage, and acknowledges its
+digest over a private pipe. Python owns all feedback and early-stop decisions
+and joins the child before final publication or transport release.
+
+`PreparedPointCal` retains only original CAL numerical values, scheduled masks,
+coordinates, segment/occurrence associations and compact detector metadata.
+One observation ledger holds original source digests and APT generations.
+Every reused pass checks the same effective config and ordered network
+bindings and verifies the original bytes before use. Models, residuals,
+weights and products have independent per-pass ownership. Each publication
+rechecks original and pass-specific inputs. The execution receipt times final
+source verification separately with wall and process CPU clocks. Process
+lifetime peak RSS now spans the native observation for this route.
+
+Saved CAL loading remains serial. Diagnostic comparison and standalone MAP
+replay retain their single-stage execution paths.
 Configured v1/historical saved MAP and JINC retain serial admission; only
 configured weighted saved MAP accepts a parallel budget. Other native modes
 retain their existing scheduling. Retained-standard execution is unchanged.

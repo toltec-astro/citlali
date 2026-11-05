@@ -38,8 +38,8 @@ public:
             auto next = std::make_unique<SavedMapApt>(manifest);
             const auto &verified = next->files.verified();
             require_manifest(verified, expected_sha256);
-            const auto [it, inserted] = used_.try_emplace(manifest, identity(verified));
-            if (!inserted) require_identity(it->second, verified);
+            const auto [it, inserted] = used_.try_emplace(manifest, Generation{identity(verified),next->files.transport()});
+            if (!inserted) require_identity(it->second.identity, verified);
             current_ = std::move(next);
             ++full_admissions_;
         }
@@ -57,12 +57,22 @@ public:
         for (const auto &[manifest, admitted] : used_) {
             if (manifest == finish_manifest) continue;
             const auto verified = pipeline::canonical_apt_v2::verify_bundle_filesystem(manifest, true);
-            require_identity(admitted, verified);
+            require_identity(admitted.identity, verified);
             ++evicted_rechecks_;
         }
     }
 
     unsigned full_admissions() const noexcept { return full_admissions_; }
+    // Once initial publication has released the parsed selection, verify
+    // the original generation and complete directory contract on every reuse.
+    void verify_retained_generations() {
+        if (current_ || used_.empty()) throw std::logic_error("POINT APT generation was not sealed");
+        for (const auto &entry : used_) {
+            entry.second.transport.require_unchanged();
+            ++retained_rechecks_;
+        }
+    }
+    unsigned retained_rechecks() const noexcept { return retained_rechecks_; }
     unsigned network_reuses() const noexcept { return network_reuses_; }
     unsigned evicted_rechecks() const noexcept { return evicted_rechecks_; }
     double selection_seconds() const noexcept { return selection_seconds_; }
@@ -80,6 +90,10 @@ private:
         std::string receipt_bytes;
         bool operator==(const Identity &) const = default;
     };
+    struct Generation {
+        Identity identity;
+        pipeline::canonical_apt_v2::FreshFilesystemBundle::Transport transport;
+    };
     static Identity identity(const pipeline::canonical_apt_v2::VerifiedBundle &verified) {
         return {verified.manifest_digests.transport_sha256, verified.payload.root_receipt_bytes};
     }
@@ -92,10 +106,11 @@ private:
     }
     using Clock = std::chrono::steady_clock;
     std::unique_ptr<const SavedMapApt> current_;
-    std::map<std::filesystem::path, Identity> used_;
+    std::map<std::filesystem::path, Generation> used_;
     unsigned full_admissions_ = 0;
     unsigned network_reuses_ = 0;
     unsigned evicted_rechecks_ = 0;
+    unsigned retained_rechecks_ = 0;
     double selection_seconds_ = 0;
 };
 

@@ -9,6 +9,7 @@
 #include <citlali/core/utils/fits_handle.h>
 #include "point_recovery_bindings.h"
 #include "point_execution_budget.h"
+#include "point_cal_sources.h"
 namespace {
 const std::array<std::string,3> weighted_arrays{"a1100","a1400","a2000"};
 const std::array<double,3> weighted_beams{5.,7.5,10.}, weighted_source_radii{35.,42.5,50.};
@@ -93,13 +94,22 @@ std::shared_ptr<const PointOpticalPlan> point_restore_health(const YAML::Node &r
     return plan;
 }
 struct WeightedPointSegment {std::int64_t scan;std::vector<std::int64_t> slots;};
+// Only fields actually consumed by later passes outlive CAL preparation.
+struct WeightedCalDomain {
+    std::string observation_identity,cal_sha,rtc_identity;
+    int network,array;
+    std::vector<int> channels;
+    std::vector<std::string> detectors;
+    std::vector<std::vector<std::uint16_t>> cal_causes;
+};
 struct WeightedPointNetwork {
-    SavedMapNetwork saved;PointOpticalNetwork optical;PtcMatrix coordinates;
+    WeightedCalDomain saved;PtcMatrix coordinates;
     std::vector<WeightedPointSegment> segments;std::string processing_identity;
 };
 WeightedPointNetwork point_load_cal(const YAML::Node &binding,MapFileLedger &ledger,const std::string &config_sha,
-                                    citlali::cli::detail::PointStageApt &stage_apt) {
-    WeightedPointNetwork n;n.saved=load_saved_map_network(binding,ledger,true,true,&stage_apt);auto &s=n.saved;auto &o=n.optical;
+                                    citlali::cli::detail::PointStageApt &stage_apt, PointOpticalNetwork &o) {
+    WeightedPointNetwork n;
+    auto s=load_saved_map_network(binding,ledger,true,true,&stage_apt);
     require(s.input["effective_config"]["sha256"].as<std::string>()==config_sha,"POINT network effective config differs");
     const auto processing=s.root/"processing-scans.yaml";const auto published=map_selected_fields(s.root/"receipt.yaml","",{"processing_scans_sha256"});
     const auto processing_sha=ledger.bind(processing,binding["processing_sha256"].as<std::string>());n.processing_identity="sha256:"+processing_sha;
@@ -134,8 +144,56 @@ WeightedPointNetwork point_load_cal(const YAML::Node &binding,MapFileLedger &led
         const auto mask=ast.outside_source_radius(gx,gy,weighted_source_radii[s.array]);
         for(std::size_t t=0;t<s.scheduled;++t)o.source_free(t,d)=mask[t] && o.eligible(t,d);
     }
+    n.saved={std::move(s.observation_identity),std::move(s.cal_sha),std::move(s.rtc_identity),
+             s.network,s.array,std::move(s.channels),std::move(s.detectors),std::move(s.cal_causes)};
     return n;
 }
+
+// One immutable original-CAL domain for the duration of one weighted
+// observation. Stage-specific requests, models and outputs use their own ledger.
+class PreparedPointCal {
+public:
+    bool ready() const { return !networks_.empty(); }
+    const auto &networks() const { return networks_; }
+    const auto &optical() const { return optical_; }
+    const auto &apt() const { return sources_.apt; }
+    void bind_health(const fs::path &produced) { health_sha_=citlali::utils::sha256_file(produced); }
+    const std::string &health_sha() const { return health_sha_; }
+    const std::string &first_request_sha() const { return first_request_sha_; }
+    void set_first_request_sha(const std::string &sha) { first_request_sha_=sha; }
+    void prepare_or_recheck(const YAML::Node &request,const std::string &config_sha) {
+        if(ready()) {
+            sources_.verify_reuse(request,config_sha);
+            return;
+        }
+        sources_.bind_domain(request,config_sha);
+        std::vector<std::pair<WeightedPointNetwork,PointOpticalNetwork>> loaded;
+        std::set<int> seen;
+        std::array<bool,3> arrays{};
+        for(const auto &binding_row:request["networks"]) {
+            auto &[network,signal]=loaded.emplace_back();
+            network=point_load_cal(binding_row,sources_.files,config_sha,sources_.apt,signal);
+            require(seen.insert(network.saved.network).second &&
+                    network.saved.observation_identity==loaded.front().first.saved.observation_identity,
+                    "weighted POINT network/observation domain differs");
+            arrays.at(network.saved.array)=true;
+        }
+        require(std::all_of(arrays.begin(),arrays.end(),[](bool v){return v;}),"weighted POINT requires all three arrays");
+        std::sort(loaded.begin(),loaded.end(),[](const auto &a,const auto &b){return a.first.saved.network<b.first.saved.network;});
+        for(auto &[network,signal]:loaded) {
+            networks_.push_back(std::move(network));
+            optical_.push_back(std::move(signal));
+        }
+    }
+    void verify_at_publication(bool reused) {
+        sources_.verify_publication(reused);
+    }
+private:
+    std::string health_sha_,first_request_sha_;
+    citlali::cli::detail::PointCalSources sources_;
+    std::vector<WeightedPointNetwork> networks_;
+    std::vector<PointOpticalNetwork> optical_;
+};
 FruitOffsetModel point_read_model(const YAML::Node &binding,MapFileLedger &ledger,int array,double pixel,
     const std::string &observation,const std::string &health_sha,int cycle,PointWeighting weighting) {
     const auto path=checked_file(binding["candidate"]);const auto sha=ledger.bind(path);
@@ -202,7 +260,9 @@ FruitOffsetModel point_recovery_raster(const YAML::Node &binding,MapFileLedger &
     }
     return FruitOffsetModel("sha256:"+sha,{41,41,"recovery-grid:"+sha},21,21,-2,2,values,valid,40.);
 }
-int execute_weighted_point(const fs::path &input,const fs::path &output,unsigned workers) {
+int execute_weighted_point(const fs::path &input,const fs::path &output,unsigned workers,
+                           PreparedPointCal *observation=nullptr,int pass=-1,
+                           const std::string &expected_request_sha={}) {
     const auto budget=citlali::cli::detail::point_execution_budget(workers);
     const auto execution=budget.execution;
     Eigen::setNbThreads(1);
@@ -217,20 +277,25 @@ int execute_weighted_point(const fs::path &input,const fs::path &output,unsigned
     performance["effective_workers"]=execution.workers;
     performance["numerical_library_threads_requested"]=1;
     performance["observed_Eigen_threads"]=Eigen::nbThreads();
-    performance["saved_input_loading_policy"]="serial; shared NetCDF preparation remains serialized";
     auto record_phase=[&](const std::string &name,const citlali::cli::detail::PointPhaseClock &clock,
                           citlali::utils::ParallelWorkReport jobs) {
         auto row=performance["phases"][name];row["wall_seconds"]=clock.wall_seconds();
         row["process_cpu_seconds"]=clock.cpu_seconds();row["jobs"]=jobs.jobs;
         row["started_workers"]=jobs.started_workers;row["peak_active_jobs"]=jobs.peak_active_jobs;
     };
-    citlali::cli::detail::PointStageApt stage_apt;
+    PreparedPointCal local_cal;
+    auto &cal=observation ? *observation : local_cal;
+    const bool reused=cal.ready();
+    const auto previous_apt_rechecks=cal.apt().retained_rechecks();
+    performance["saved_input_loading_policy"]=reused?"verify original CAL sources before reuse":
+        "serial; shared NetCDF preparation remains serialized";
     auto publish_performance=[&](const fs::path &staging) {
         auto apt_stats=performance["saved_apt"];
-        apt_stats["full_admissions"]=stage_apt.full_admissions();
-        apt_stats["network_reuses"]=stage_apt.network_reuses();
-        apt_stats["evicted_locators_reverified"]=stage_apt.evicted_rechecks();
-        apt_stats["selection_wall_seconds"]=stage_apt.selection_seconds();
+        apt_stats["full_admissions"]=reused?0:cal.apt().full_admissions();
+        apt_stats["network_reuses"]=reused?0:cal.apt().network_reuses();
+        apt_stats["retained_generation_rechecks"]=cal.apt().retained_rechecks()-previous_apt_rechecks;
+        apt_stats["evicted_locators_reverified"]=reused?0:cal.apt().evicted_rechecks();
+        apt_stats["selection_wall_seconds"]=reused?0.:cal.apt().selection_seconds();
         apt_stats["final_recheck"]="passed";
         performance["wall_seconds"]=total_clock.wall_seconds();
         performance["process_cpu_seconds"]=total_clock.cpu_seconds();
@@ -239,14 +304,28 @@ int execute_weighted_point(const fs::path &input,const fs::path &output,unsigned
     };
     require(output.is_absolute() && !fs::exists(output),"weighted POINT needs a fresh absolute output");
     const fs::path staging=output.string()+".pending";require(!fs::exists(staging),"weighted POINT pending output exists");
-    MapFileLedger ledger;const auto request_sha=ledger.bind(input);const auto request=YAML::LoadFile(input.string());
-    auto verify_sources=[&] {stage_apt.verify_before_publication();ledger.verify();};
+    MapFileLedger ledger;const auto request_sha=ledger.bind(input,expected_request_sha);const auto request=YAML::LoadFile(input.string());
+    auto verify_sources=[&] {
+        citlali::cli::detail::PointPhaseClock clock;
+        cal.verify_at_publication(reused);
+        ledger.verify();
+        record_phase("final_source_verification",clock,{1,1,1});
+    };
     const std::set<std::string> fields{"schema","stage","effective_config","networks","health","cycle_index","models","verbose","weighting_control","recovery"};
     for(const auto &e:request)require(fields.contains(e.first.as<std::string>()),"weighted POINT unknown request field");
     require(request["schema"].as<std::string>()=="citlali-configured-weighted-point-v1","weighted POINT schema differs");
     require(!request["recovery"] || request["stage"].as<std::string>()=="cycle","recovery cannot change health");
     const auto stage=request["stage"].as<std::string>();require(stage=="health" || stage=="cycle","weighted POINT unknown stage");
-    const auto config_path=checked_file(request["effective_config"]);const auto config_sha=ledger.bind(config_path);const auto config=YAML::LoadFile(config_path.string());
+    if(observation) {
+        require(!request["recovery"] && !request["weighting_control"],"POINT session requires ordinary weighted execution");
+        require(pass==0 ? stage=="health" && !reused :
+                stage=="cycle" && reused && request["cycle_index"].as<int>()==pass-1 &&
+                request["health"]["path"].as<std::string>()==(input.parent_path()/"health/products/health.yaml").string() &&
+                request["health"]["sha256"].as<std::string>()==cal.health_sha(),
+                "POINT session stage order or frozen health differs");
+    }
+    const auto config_path=checked_file(request["effective_config"]);
+    const auto config_sha=ledger.bind(config_path,request["effective_config"]["sha256"].as<std::string>());const auto config=YAML::LoadFile(config_path.string());
     const auto cfg=config["successor"];require(cfg["schema"].as<std::string>()=="citlali-point-v2" && cfg["migration"].as<std::string>()=="replace-legacy-point-controls-v2" &&
         cfg["cleaning"]["method"].as<std::string>()=="noise-weighted-observed-als-v1","weighted POINT requires explicit configured profile");
     const bool comparison=cfg["weight_comparison"] && cfg["weight_comparison"].as<bool>();
@@ -257,21 +336,20 @@ int execute_weighted_point(const fs::path &input,const fs::path &output,unsigned
     const double threshold=cfg["detector_response"]["min_relative_response"].as<double>();
     const double pixel=cfg["map"]["pixel_size_arcsec"].as<double>(),cut=cfg["map"]["coverage_cut"].as<double>();
     require(std::isfinite(pixel) && pixel>0 && std::isfinite(cut) && cut>=0 && cut<=1,"weighted POINT grid request invalid");
-    std::vector<WeightedPointNetwork> networks;std::set<int> seen;std::array<bool,3> arrays{};
-    for(const auto &n:request["networks"]) {
-        networks.push_back(point_load_cal(n,ledger,config_sha,stage_apt));auto &v=networks.back();
-        require(seen.insert(v.saved.network).second && v.saved.observation_identity==networks.front().saved.observation_identity,"weighted POINT network/observation domain differs");arrays[v.saved.array]=true;
-    }
-    require(std::all_of(arrays.begin(),arrays.end(),[](bool v){return v;}),"weighted POINT requires all three arrays");
-    std::sort(networks.begin(),networks.end(),[](const auto &a,const auto &b){return a.saved.network<b.saved.network;});
+    if(observation)require(!comparison,"POINT observation session does not accept diagnostic comparison");
+    cal.prepare_or_recheck(request,config_sha);
+    if(!reused)cal.set_first_request_sha(request_sha);
+    const auto &networks=cal.networks();
+    const auto &optical=cal.optical();
+    performance["cal_preparation"]=reused?"verified-reuse":"fresh";
+    performance["cal_preparation_request_sha256"]=cal.first_request_sha();
     citlali::pipeline::StagedOutputDirectory publication(output);
     record_phase("saved_input_loading",load_clock,{networks.size(),1,1});
     if(stage=="health") {
         citlali::cli::detail::PointPhaseClock clock;
         PointOpticalExecutionReport health_execution;
-        std::vector<PointOpticalNetwork> inputs;for(auto &n:networks)inputs.push_back(std::move(n.optical));
         PointOpticalRequest health_request;health_request.min_relative_response=threshold;
-        const auto health=PointOpticalPlan::consider(PointOpticalEvidence::learn(inputs,health_request,execution,&health_execution));
+        const auto health=PointOpticalPlan::consider(PointOpticalEvidence::learn(optical,health_request,execution,&health_execution));
         auto record=point_health_record(*health);record["effective_config_sha256"]=config_sha;record["request_sha256"]=request_sha;
         record["source_revision"]=std::string(CITLALI_GIT_VERSION);write_yaml(staging/"health.yaml",record);
         record_phase("health",clock,health_execution.bootstrap);
@@ -282,9 +360,11 @@ int execute_weighted_point(const fs::path &input,const fs::path &output,unsigned
         report_work("aggregation",health_execution.aggregation);
         report_work("references",health_execution.references);
         report_work("bootstrap",health_execution.bootstrap);
-        verify_sources();publish_performance(staging);publication.publish();return 0;
+        verify_sources();
+        if(observation) cal.bind_health(staging/"health.yaml");
+        publish_performance(staging);publication.publish();return 0;
     }
-    const auto health_path=checked_file(request["health"]);const auto health_sha=ledger.bind(health_path);const auto health_record=YAML::LoadFile(health_path.string());
+    const auto health_path=checked_file(request["health"]);const auto health_sha=ledger.bind(health_path,request["health"]["sha256"].as<std::string>());const auto health_record=YAML::LoadFile(health_path.string());
     require(health_record["effective_config_sha256"].as<std::string>()==config_sha,"POINT health config differs");
     const auto health=point_restore_health(health_record,threshold);require(health->evidence_handle()->networks().size()==networks.size(),"POINT health network cohort differs");
     const int cycle=request["cycle_index"].as<int>();require(cycle>=0 && (cycle==0 || (cfg["feedback"]["enabled"].as<bool>() && cycle<=cfg["feedback"]["max_iters"].as<int>())),"POINT cycle outside configured budget");
@@ -309,10 +389,12 @@ int execute_weighted_point(const fs::path &input,const fs::path &output,unsigned
         citlali::cli::detail::PointPhaseClock array_clock;
         const int rank=cfg["cleaning"]["ranks"][weighted_arrays[array]].as<int>();
         const auto directory=staging/weighted_arrays[array];fs::create_directory(directory);
-        double ex=0,ey=0;for(const auto &n:networks)if(n.saved.array==array)
-            for(Eigen::Index t=0;t<n.optical.values.rows();++t)for(Eigen::Index d=0;d<n.optical.values.cols();++d)if(n.optical.eligible(t,d)) {
-                const auto x=n.coordinates(t,2*d),y=n.coordinates(t,2*d+1);if(std::isfinite(x)&&std::isfinite(y)){ex=std::max(ex,std::abs(x));ey=std::max(ey,std::abs(y));}
+        double ex=0,ey=0;for(std::size_t i=0;i<networks.size();++i)if(networks[i].saved.array==array) {
+            const auto &signal=optical[i];
+            for(Eigen::Index t=0;t<signal.values.rows();++t)for(Eigen::Index d=0;d<signal.values.cols();++d)if(signal.eligible(t,d)) {
+                const auto x=networks[i].coordinates(t,2*d),y=networks[i].coordinates(t,2*d+1);if(std::isfinite(x)&&std::isfinite(y)){ex=std::max(ex,std::abs(x));ey=std::max(ey,std::abs(y));}
             }
+        }
         const auto wcs=AstRtcTanGrid::source_offset(pixel,ex,ey);mapmaking::ForwardMapGrid grid{wcs.rows,wcs.columns,"CAL-health-independent-grid:"+config_sha+":"+weighted_arrays[array]};
         std::optional<FruitOffsetModel> model;if(cycle)model.emplace(point_read_model(request["models"][weighted_arrays[array]],ledger,array,3600*wcs.cdelt2_deg,networks.front().saved.observation_identity,health_sha,cycle,weighting));
         std::vector<double> values;std::vector<mapmaking::ForwardMapMember> members;std::size_t contributors=0;
@@ -355,7 +437,8 @@ int execute_weighted_point(const fs::path &input,const fs::path &output,unsigned
                 const auto [network_index,segment_index]=jobs[job];
                 const auto &n=networks[network_index];const auto &s=n.saved;
                 const auto &segment=n.segments[segment_index];
-                const auto &decisions=health->for_network(n.optical);
+                const auto &signal=optical[network_index];
+                const auto &decisions=health->for_network(signal);
                 SegmentOutput output;output.contributed.resize(s.detectors.size(),false);
                 output.reference_values.resize(reference_models.size());
                 auto &values=output.values;auto &members=output.members;
@@ -366,7 +449,7 @@ int execute_weighted_point(const fs::path &input,const fs::path &output,unsigned
                 if(injected) {added=PtcMatrix::Zero(rows,cols);injection_supported=PtcMask::Ones(rows,cols);}
                 std::size_t source_free_injected=0;double source_free_power=0.;
                 for(std::size_t t=0;t<rows;++t)for(std::size_t d=0;d<cols;++d) {
-                    const auto slot=segment.slots[t];original(t,d)=n.optical.values(slot,d);eligible(t,d)=n.optical.eligible(slot,d) && decisions[d].retained();source_free(t,d)=n.optical.source_free(slot,d);
+                    const auto slot=segment.slots[t];original(t,d)=signal.values(slot,d);eligible(t,d)=signal.eligible(slot,d) && decisions[d].retained();source_free(t,d)=signal.source_free(slot,d);
                     if(injected && eligible(t,d)) {
                         const auto q=injected->at(3600*n.coordinates(slot,2*d),3600*n.coordinates(slot,2*d+1));
                         injection_supported(t,d)=q.support!=FruitModelSupport::unavailable;

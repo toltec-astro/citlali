@@ -15,6 +15,7 @@ RUNTIME_MODULES = (
     "configured_point_feedback",
     "configured_point_inputs",
     "configured_point_parallel",
+    "configured_point_session",
     "configured_point_products",
     "configured_point_runtime",
     "configured_point_table",

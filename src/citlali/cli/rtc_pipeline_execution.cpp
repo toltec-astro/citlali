@@ -3,6 +3,13 @@
 #include "configured_point_scope.h"
 #include "native_rtc_output_layout.h"
 #include "native_rtc_run_report.h"
+#include "point_observation_pass.h"
+#include <charconv>
+#include <cerrno>
+#include <cstdlib>
+#include <cstdio>
+#include <sys/stat.h>
+#include <unistd.h>
 // Shared application-boundary RTC execution. Scientific owners remain the
 // existing typed components; YAML and file checks stop at this boundary.
 #include <citlali/core/cli/successor_development_execution.h>
@@ -1623,6 +1630,43 @@ int citlali::cli::run_successor_rtc(const fs::path &input,const fs::path &output
 }
 
 namespace citlali::cli {
+int run_point_observation_session(const fs::path &health_request,const fs::path &health_output,
+                                  unsigned workers,const std::string &initial_sha) {
+    const auto work=health_request.parent_path();
+    require(work.is_absolute() && health_request==work/"health-request.json" &&
+            health_output==work/"health/products","POINT session needs its bound health root");
+    const char *fd_text=std::getenv("CITLALI_POINT_REPLY_FD");
+    require(fd_text!=nullptr,"POINT session requires the coordinator reply pipe");
+    const std::string_view descriptor=fd_text;
+    int fd=-1;
+    const auto parsed=std::from_chars(descriptor.data(),descriptor.data()+descriptor.size(),fd);
+    struct stat pipe_status{};
+    require(parsed.ec==std::errc{} && parsed.ptr==descriptor.data()+descriptor.size() &&
+            fd>=3 && ::fstat(fd,&pipe_status)==0 && S_ISFIFO(pipe_status.st_mode),
+            "POINT session reply descriptor is invalid");
+    PreparedPointCal cal;
+    for(unsigned index=0;;++index) {
+        char frame[66]{};
+        require(bool(std::cin.getline(frame,sizeof frame)) && !std::cin.eof(),
+                "POINT session control stream ended without a complete command");
+        const std::string command(frame,static_cast<std::size_t>(std::cin.gcount()-1));
+        if(command=="finish") {
+            require(index>=2,"POINT session finished before M0");
+            return 0;
+        }
+        const auto pass=detail::read_point_observation_pass(work,index,workers,command,initial_sha);
+        const int code=execute_weighted_point(pass.request,pass.output,workers,&cal,
+            static_cast<int>(index),pass.request_sha);
+        if(code) return code;
+        // Logs and protocol traffic have independent descriptors. Make the
+        // stage's diagnostics visible to the coordinator before acknowledging it.
+        std::cout.flush();std::cerr.flush();std::fflush(stdout);std::fflush(stderr);
+        const auto reply=command+"\n";
+        ssize_t written;
+        do {written=::write(fd,reply.data(),reply.size());} while(written<0 && errno==EINTR);
+        require(written==static_cast<ssize_t>(reply.size()),"POINT session reply failed");
+    }
+}
 int run_successor_saved_fruit(const std::filesystem::path &input,const std::filesystem::path &output,bool validate_only) {
     return execute_saved_fruit(input,output,validate_only);
 }

@@ -1,9 +1,41 @@
 #include "../src/citlali/cli/point_weighted_bindings.h"
+#include "../src/citlali/cli/point_observation_pass.h"
+#include <chrono>
 #include <gtest/gtest.h>
 
 namespace {
 using namespace citlali::cli::detail;
 const std::string a(64,'a'),b(64,'b'),c(64,'c'),d(64,'d');
+
+TEST(PointObservationPass, BindsExactNextDescriptorRequestAndOutput) {
+    namespace fs=std::filesystem;
+    const auto root=fs::temp_directory_path()/("point-pass-"+std::to_string(
+        std::chrono::steady_clock::now().time_since_epoch().count()));
+    struct Cleanup {fs::path root; ~Cleanup(){std::error_code ec;fs::remove_all(root,ec);}} cleanup{root};
+    fs::create_directories(root/"health");
+    fs::create_directories(root/"weighted-00");
+    const auto descriptor=root/"health/development.yaml";
+    YAML::Node config;
+    config["schema"]="citlali-development-v1";
+    config["input"]["path"]=(root/"health-request.json").string();
+    config["input"]["sha256"]=a;
+    config["output"]=(root/"health/products").string();
+    config["terminal"]="map";
+    config["network_workers"]=3;
+    auto save=[&](const fs::path &path){std::ofstream(path)<<YAML::Dump(config);return citlali::utils::sha256_file(path);};
+    auto sha=save(descriptor);
+    EXPECT_EQ(read_point_observation_pass(root,0,3,sha,a).request_sha,a);
+    EXPECT_THROW(read_point_observation_pass(root,0,3,sha,b),std::invalid_argument);
+    EXPECT_THROW(read_point_observation_pass(root,0,2,sha,a),std::invalid_argument);
+    EXPECT_THROW(read_point_observation_pass(root,0,3,c,a),std::runtime_error);
+    config["input"]["path"]=(root/"weighted-00-request.json").string();
+    config["output"]=(root/"weighted-00/products").string();
+    sha=save(root/"weighted-00/development.yaml");
+    EXPECT_EQ(read_point_observation_pass(root,1,3,sha,a).output,root/"weighted-00/products");
+    config["output"]=(root/"health/products").string();
+    sha=save(root/"weighted-00/development.yaml");
+    EXPECT_THROW(read_point_observation_pass(root,1,3,sha,a),std::invalid_argument);
+}
 
 struct FeedbackFixture {
     PointFeedbackBinding expected{a,b,c,"obs:152418_0_2","sha256:"+d,"a1100",1};

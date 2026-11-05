@@ -1359,10 +1359,39 @@ inline VerifiedBundle verify_bundle_filesystem(
 // contract. Identical bytes keep the already validated scientific meaning.
 class FreshFilesystemBundle {
 public:
+    // Small immutable proof for a later pass that no longer needs the parsed
+    // table. Only a fully admitted fresh filesystem generation can issue one.
+    class Transport {
+    public:
+        void require_unchanged() const {
+            std::vector<std::filesystem::path> paths;
+            for (const auto &member : members_) {
+                const auto bytes=bundle_detail::read_regular_file_once(member.path,member.size);
+                if (bytes.size()!=member.size || "sha256:"+citlali::utils::sha256(bytes)!=member.digest)
+                    throw ContractError("canonical APT v2 retained source changed: "+member.path.string());
+                paths.push_back(member.path);
+            }
+            bundle_detail::require_exact_directory(directory_,paths);
+        }
+    private:
+        friend class FreshFilesystemBundle;
+        struct Member {std::filesystem::path path; std::uint64_t size; std::string digest;};
+        explicit Transport(const VerifiedBundle &source) : directory_(source.manifest_path.parent_path()) {
+            members_.push_back({source.receipt_path,source.payload.root_receipt_bytes.size(),
+                                "sha256:"+citlali::utils::sha256(source.payload.root_receipt_bytes)});
+            members_.push_back({source.manifest_path,source.payload.root_manifest_bytes.size(),
+                                source.manifest_digests.transport_sha256});
+            for (const auto &member : source.manifest.components)
+                members_.push_back({directory_/member.relative_path,member.byte_count,member.transport_sha256});
+        }
+        std::filesystem::path directory_;
+        std::vector<Member> members_;
+    };
     explicit FreshFilesystemBundle(const std::filesystem::path &manifest)
         : verified_(verify_bundle_filesystem(manifest, true)) {}
 
     const VerifiedBundle &verified() const noexcept { return verified_; }
+    Transport transport() const { return Transport(verified_); }
 
     void require_unchanged() const {
         const auto &snapshot = verified_;

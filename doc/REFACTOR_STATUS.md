@@ -1,3 +1,11 @@
+## Weighted POINT observation-scoped CAL candidate — 2026-11-05
+
+The [CAL reuse increment](../validation/point_cal_reuse_2026-11-05/PLAN.md)
+starts from the recorded local integration below. Ordinary configured weighted
+POINT retains one original CAL preparation across feedback passes, with per-pass
+source and APT verification, and separately timed final verification. Grant's
+software and matched 152389 gates are pending.
+
 ## Configured POINT repairs integrated locally — 2026-11-05
 
 2026-11-05 Grant accepted the configured POINT parallel repair at `07723269e7`

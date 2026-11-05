@@ -1,6 +1,7 @@
 """Exercise the actual default executable; no route flag or alternate binary."""
 import argparse
 import hashlib
+import os
 import json
 from pathlib import Path
 import subprocess
@@ -42,6 +43,54 @@ class SuccessorDefaultCli(unittest.TestCase):
         self.assertIn("schema: citlali-development-v1", result.stdout)
         self.assertIn("terminal: ptc", result.stdout)
         self.assertNotIn("mapmaking:", result.stdout)
+
+    def test_point_observation_rejects_incomplete_sequence_before_publication(self):
+        health = self.root / "health-request.json"
+        health.write_text("{}\n")
+        output = self.root / "health/products"
+        config = self.root / "session.json"
+        config.write_text(json.dumps(dict(schema="citlali-development-v1", terminal="point-observation",
+            input=dict(path=str(health), sha256=hashlib.sha256(health.read_bytes()).hexdigest()),
+            output=str(output), network_workers=3)))
+        for command, reason in [("finish\n", "finished before M0"), ("", "control stream ended"),
+                                ("bad\n", "invalid POINT pass command")]:
+            with self.subTest(command=command):
+                read_fd, write_fd = os.pipe()
+                try:
+                    result = subprocess.run([CLI, str(config)], text=True, input=command,
+                        capture_output=True, timeout=30, pass_fds=(write_fd,),
+                        env=dict(os.environ, CITLALI_POINT_REPLY_FD=str(write_fd)))
+                finally:
+                    os.close(write_fd)
+                    os.close(read_fd)
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn(reason, result.stdout + result.stderr)
+                self.assertFalse(output.exists())
+
+    def test_point_observation_checks_first_scientific_stage_before_cal_loading(self):
+        health = self.root / "health-request.json"
+        health.write_text(json.dumps(dict(schema="citlali-configured-weighted-point-v1", stage="cycle", cycle_index=0)))
+        stage = self.root / "health"
+        stage.mkdir()
+        binding = dict(path=str(health), sha256=hashlib.sha256(health.read_bytes()).hexdigest())
+        descriptor = stage / "development.yaml"
+        cfg = dict(schema="citlali-development-v1", input=binding, output=str(stage/"products"),
+                   terminal="map", network_workers=3)
+        descriptor.write_text(json.dumps(cfg))
+        launch = self.root / "session.yaml"
+        launch.write_text(json.dumps(dict(cfg, terminal="point-observation")))
+        read_fd, write_fd = os.pipe()
+        try:
+            result = subprocess.run([CLI, str(launch)], text=True,
+                input=hashlib.sha256(descriptor.read_bytes()).hexdigest()+"\n",
+                capture_output=True, timeout=30, pass_fds=(write_fd,),
+                env=dict(os.environ, CITLALI_POINT_REPLY_FD=str(write_fd)))
+        finally:
+            os.close(write_fd)
+            os.close(read_fd)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("POINT session stage order or frozen health differs", result.stdout+result.stderr)
+        self.assertFalse((stage/"products").exists())
 
     def native_request_with_bad_raw_digest(self):
         raw = self.root / "raw-placeholder"

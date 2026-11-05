@@ -9,7 +9,9 @@ complete requested products. It never invokes a historical reduction fallback.
 from __future__ import annotations
 
 import argparse
+from contextlib import nullcontext
 from dataclasses import asdict
+from functools import partial
 import json
 import hashlib
 import os
@@ -25,6 +27,7 @@ import yaml
 from configured_point_config import load_request
 from configured_point_runtime import data_root
 from configured_point_parallel import PointArrayExecutor, THREAD_LIMITS
+from configured_point_session import PointObservationSession
 from configured_point_types import FileBinding, PreparedPoint
 
 
@@ -71,7 +74,8 @@ def reserve_reduction(output):
 
 
 def native_call(
-    binary, request, dest, *, terminal, workers=1, method=None, verbose=False, timeout=None
+    binary, request, dest, *, terminal, workers=1, method=None, verbose=False, timeout=None,
+    session=None
 ):
     dest.mkdir()
     config = {
@@ -91,13 +95,16 @@ def native_call(
     started = time.monotonic()
     log_path = dest / "native.log"
     with log_path.open("w") as log:
-        result = subprocess.run(
-            [str(binary), "-l", "debug" if verbose else "warning", str(path)],
-            env=env,
-            stdout=log,
-            stderr=subprocess.STDOUT,
-            **({"timeout": timeout} if timeout is not None else {}),
-        )
+        if session is None:
+            code = subprocess.run(
+                [str(binary), "-l", "debug" if verbose else "warning", str(path)],
+                env=env, stdout=log, stderr=subprocess.STDOUT,
+                **({"timeout": timeout} if timeout is not None else {}),
+            ).returncode
+        else:
+            if terminal != "map" or method is not None or timeout is not None:
+                raise ValueError("POINT observation session only accepts ordinary weighted maps")
+            code = session.run(binary, path, log, env, verbose)
     elapsed = time.monotonic() - started
     # No process sampler or repeated output-tree inventory in ordinary mode.
     # Preserve warnings/errors in the user-facing launch log as well as disk.
@@ -114,7 +121,7 @@ def native_call(
     record = {
         "terminal": terminal,
         "seconds": elapsed,
-        "return_code": result.returncode,
+        "return_code": code,
         "request": bind(path),
         "unexpected_error_lines": error_lines,
     }
@@ -129,7 +136,7 @@ def native_call(
             record["execution"] = receipt["execution"]
             record["execution_receipt"] = bind(observation_path)
     write_json(dest / "stage.json", record)
-    if result.returncode or error_lines:
+    if code or error_lines:
         raise RuntimeError(f"{terminal} failed; see {log_path}\n" + "\n".join(tail))
     return record
 
@@ -292,18 +299,13 @@ def execute(config_path, native, *, launch_dir=None):
         if request.weighted:
             from configured_point_weighted import execute as weighted_point
 
-            map_products = weighted_point(
-                prepared,
-                work,
-                reduction,
-                native,
-                request,
-                record,
-                native_call=native_call,
-                bind=bind,
-                write_json=write_json,
-                array_executor=array_executor,
-            )
+            # Diagnostic comparison arms retain standalone replay semantics.
+            with (nullcontext() if request.weight_comparison else PointObservationSession(work)) as session:
+                map_products = weighted_point(
+                    prepared, work, reduction, native, request, record,
+                    native_call=native_call if session is None else partial(native_call, session=session),
+                    bind=bind, write_json=write_json, array_executor=array_executor,
+                )
         else:
             owner = REPO / "data/development/bright_point_base_v1/map-owner.json"
             q = map_request(prepared, work / "upstream", work / "map-request.json", owner, request)

@@ -1,5 +1,6 @@
 #include "successor_experiment_profiles.h"
 #include "point_saved_apt.h"
+#include "map_file_ledger.h"
 // Private saved-product application adapter. Scientific arithmetic remains in
 // PTC, AST and MAP owners; this boundary parses and verifies persisted sources.
 #include <citlali/core/pipeline/ptc_map_handoff.h>
@@ -11,16 +12,7 @@
 #include <citlali/core/utils/fits_handle.h>
 namespace {
 namespace mapmaking=citlali::mapmaking;
-struct MapFileLedger {
-    std::map<std::string,std::string> files;
-    std::string bind(const fs::path &path,const std::string &expected={}) {
-        const auto digest=citlali::utils::sha256_file(path);
-        require(expected.empty() || digest==expected,"MAP source digest mismatch: "+path.string());
-        const auto [it,inserted]=files.emplace(fs::absolute(path).string(),digest);
-        require(inserted || it->second==digest,"MAP source changed during read");return digest;
-    }
-    void verify() const {for(const auto &[p,h]:files)require(citlali::utils::sha256_file(p)==h,"MAP source changed during application: "+p);}
-};
+using citlali::cli::detail::MapFileLedger;
 YAML::Node map_prefix(const fs::path &path) {
     std::ifstream f(path);require(bool(f),"MAP receipt unavailable");
     std::string line,text;

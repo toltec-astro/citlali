@@ -1,4 +1,5 @@
 #include "../src/citlali/cli/point_saved_apt.h"
+#include "../src/citlali/cli/point_cal_sources.h"
 #include <gtest/gtest.h>
 
 #include <citlali/core/engine/calib.h>
@@ -499,6 +500,60 @@ std::filesystem::path publish_fixture(
     const auto manifest = directory / apt::root_manifest_name_v2;
     (void)apt::publish_prepared_bundle(manifest, prepared);
     return manifest;
+}
+
+TEST(PointCalSources, ReuseAndPublicationRequireOriginalBytesAndAPT) {
+    TemporaryDirectory tmp;
+    const auto fixture=make_matched_fixture();
+    const auto apt_path=publish_fixture(fixture.prepared,tmp.path/"apt");
+    const auto slots=tmp.path/"slots";
+    std::ofstream(slots)<<"0123";
+    citlali::cli::detail::PointCalSources source;
+    source.files.bind(slots);
+    source.apt.select(apt_path,citlali::utils::sha256_file(apt_path));
+    const auto domain=YAML::Load("{networks: [{root: A}, {root: B}], effective_config: {path: cfg, sha256: x}}");
+    source.bind_domain(domain,"config-sha");
+    source.verify_publication(false);
+    EXPECT_NO_THROW(source.verify_reuse(domain,"config-sha"));
+    EXPECT_NO_THROW(source.verify_publication(true));
+    auto other=YAML::Clone(domain);
+    other["networks"]=YAML::Load("[{root: B}, {root: A}]");
+    EXPECT_THROW(source.verify_reuse(other,"config-sha"),std::invalid_argument);
+    EXPECT_THROW(source.verify_reuse(domain,"different"),std::invalid_argument);
+    other=YAML::Clone(domain);
+    other["effective_config"]["path"]="other";
+    EXPECT_THROW(source.verify_reuse(other,"config-sha"),std::invalid_argument);
+    std::ofstream(slots)<<"0321";
+    EXPECT_THROW(source.verify_reuse(domain,"config-sha"),std::runtime_error);
+    EXPECT_THROW(source.verify_publication(true),std::runtime_error);
+    std::ofstream(slots)<<"0123";
+    std::ofstream(apt_path.parent_path()/"extra")<<"x";
+    EXPECT_THROW(source.verify_reuse(domain,"config-sha"),apt::ContractError);
+    EXPECT_THROW(source.verify_publication(true),apt::ContractError);
+}
+
+TEST(PointCalSources, RetainedTransportIncludesEveryPreviouslySelectedBundle) {
+    TemporaryDirectory tmp;
+    const auto first=make_matched_fixture();
+    const auto second=make_matched_fixture(digest('7'));
+    const auto a=publish_fixture(first.prepared,tmp.path/"first");
+    const auto b=publish_fixture(second.prepared,tmp.path/"second");
+    citlali::cli::detail::PointStageApt apt_sources;
+    apt_sources.select(a,citlali::utils::sha256_file(a));
+    apt_sources.select(b,citlali::utils::sha256_file(b));
+    apt_sources.verify_before_publication();
+    EXPECT_NO_THROW(apt_sources.verify_retained_generations());
+    EXPECT_EQ(apt_sources.retained_rechecks(),2u);
+    const auto member=a.parent_path()/first.verified.manifest.components.front().relative_path;
+    const auto elsewhere=tmp.path/"same-bytes";
+    std::filesystem::rename(member,elsewhere);
+    std::filesystem::create_symlink(elsewhere,member);
+    EXPECT_THROW(apt_sources.verify_retained_generations(),apt::ContractError);
+    std::filesystem::remove(member);
+    std::filesystem::rename(elsewhere,member);
+    std::filesystem::permissions(member,std::filesystem::perms::owner_write,std::filesystem::perm_options::add);
+    { std::fstream edit(member,std::ios::in|std::ios::out|std::ios::binary); edit.put('\0'); ASSERT_TRUE(edit.good()); }
+    EXPECT_THROW(apt_sources.verify_retained_generations(),apt::ContractError);
 }
 
 TEST(PointStageApt, SharesOnlyTheBoundGenerationWithinOneStage) {
