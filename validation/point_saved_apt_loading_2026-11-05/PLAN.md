@@ -25,7 +25,10 @@ member's actual bytes, including root receipt and manifest, and checks for
 missing, nonregular, symlinked, aliased or unexpected entries. Network-specific
 manifest digest, observation, channel, array, row, units and CAL bindings still
 apply. A change of locator triggers a new full admission. Before replacing the
-current entry and before publishing the native stage, the owner rechecks it.
+current entry, the owner rechecks it. At stage publication the owner verifies
+every locator used. Evicted locators retain only their original root manifest
+digest and receipt bytes. Fresh canonical readmission at publication enforces
+those bindings and the complete declared member inventory, one bundle at a time.
 Final source-ledger verification also runs. Other saved MAP users keep one
 full admission per network.
 

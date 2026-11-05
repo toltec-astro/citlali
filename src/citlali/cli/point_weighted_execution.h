@@ -229,6 +229,7 @@ int execute_weighted_point(const fs::path &input,const fs::path &output,unsigned
         auto apt_stats=performance["saved_apt"];
         apt_stats["full_admissions"]=stage_apt.full_admissions();
         apt_stats["network_reuses"]=stage_apt.network_reuses();
+        apt_stats["evicted_locators_reverified"]=stage_apt.evicted_rechecks();
         apt_stats["selection_wall_seconds"]=stage_apt.selection_seconds();
         apt_stats["final_recheck"]="passed";
         performance["wall_seconds"]=total_clock.wall_seconds();
@@ -239,7 +240,7 @@ int execute_weighted_point(const fs::path &input,const fs::path &output,unsigned
     require(output.is_absolute() && !fs::exists(output),"weighted POINT needs a fresh absolute output");
     const fs::path staging=output.string()+".pending";require(!fs::exists(staging),"weighted POINT pending output exists");
     MapFileLedger ledger;const auto request_sha=ledger.bind(input);const auto request=YAML::LoadFile(input.string());
-    auto verify_sources=[&] {stage_apt.verify_current();ledger.verify();};
+    auto verify_sources=[&] {stage_apt.verify_before_publication();ledger.verify();};
     const std::set<std::string> fields{"schema","stage","effective_config","networks","health","cycle_index","models","verbose","weighting_control","recovery"};
     for(const auto &e:request)require(fields.contains(e.first.as<std::string>()),"weighted POINT unknown request field");
     require(request["schema"].as<std::string>()=="citlali-configured-weighted-point-v1","weighted POINT schema differs");

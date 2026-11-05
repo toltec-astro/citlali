@@ -519,7 +519,8 @@ TEST(PointStageApt, SharesOnlyTheBoundGenerationWithinOneStage) {
     EXPECT_THROW(stage.select(first_path, second_sha), apt::ContractError);
     EXPECT_EQ(stage.select(second_path, second_sha).relation.bundle_identity(), second.verified.identity);
     EXPECT_EQ(stage.full_admissions(), 2U);
-    EXPECT_NO_THROW(stage.verify_current());
+    EXPECT_NO_THROW(stage.verify_before_publication());
+    EXPECT_EQ(stage.evicted_rechecks(), 1U);
     citlali::cli::detail::PointStageApt next_stage;
     EXPECT_EQ(next_stage.select(second_path, second_sha).relation.bundle_identity(), second.verified.identity);
     EXPECT_EQ(next_stage.network_reuses(), 0U);
@@ -547,7 +548,7 @@ TEST(PointStageApt, RejectsChangedComponentAtReuseAndBeforePublication) {
     }
     ASSERT_EQ(std::filesystem::file_size(member), original.size());
     EXPECT_THROW(stage.select(path, sha), apt::ContractError);
-    EXPECT_THROW(stage.verify_current(), apt::ContractError);
+    EXPECT_THROW(stage.verify_before_publication(), apt::ContractError);
 }
 
 TEST(PointStageApt, RejectsChangedReceiptAndDirectoryMembership) {
@@ -559,14 +560,14 @@ TEST(PointStageApt, RejectsChangedReceiptAndDirectoryMembership) {
     stage.select(path, sha);
     const auto extra = path.parent_path() / "extra";
     std::ofstream(extra).put('x');
-    EXPECT_THROW(stage.verify_current(), apt::ContractError);
+    EXPECT_THROW(stage.verify_before_publication(), apt::ContractError);
     std::filesystem::remove(extra);
     const auto receipt = path.parent_path() / apt::root_receipt_name_v2;
     const auto relocated = temporary.path / "same-bytes";
     std::filesystem::rename(receipt, relocated);
     EXPECT_THROW(stage.select(path, sha), apt::ContractError);
     std::filesystem::create_symlink(relocated, receipt);
-    EXPECT_THROW(stage.verify_current(), apt::ContractError);
+    EXPECT_THROW(stage.verify_before_publication(), apt::ContractError);
 }
 
 TEST(PointStageApt, RejectsWrongInitialBindingAndChangedRootFiles) {
@@ -587,8 +588,42 @@ TEST(PointStageApt, RejectsWrongInitialBindingAndChangedRootFiles) {
         edit.put('\0');
         edit.close();
         ASSERT_TRUE(edit.good());
-        EXPECT_THROW(stage.verify_current(), apt::ContractError);
+        EXPECT_THROW(stage.verify_before_publication(), apt::ContractError);
     }
+}
+
+TEST(PointStageApt, RejectsEvictedBundleMutationAtPublication) {
+    TemporaryDirectory temporary;
+    const auto a = make_matched_fixture();
+    const auto b = make_matched_fixture(digest('7'));
+    const auto a_path = publish_fixture(a.prepared, temporary.path / "a");
+    const auto b_path = publish_fixture(b.prepared, temporary.path / "b");
+    citlali::cli::detail::PointStageApt stage;
+    stage.select(a_path, citlali::utils::sha256_file(a_path));
+    stage.select(b_path, citlali::utils::sha256_file(b_path));
+    const auto member = a_path.parent_path() / a.verified.manifest.components.front().relative_path;
+    ASSERT_TRUE(std::filesystem::remove(member));
+    EXPECT_THROW(stage.verify_before_publication(), apt::ContractError);
+}
+
+TEST(PointStageApt, EvictedLocatorCannotChangeToAnotherValidGeneration) {
+    TemporaryDirectory temporary;
+    const auto a = make_matched_fixture();
+    const auto b = make_matched_fixture(digest('7'));
+    const auto a_path = publish_fixture(a.prepared, temporary.path / "a");
+    const auto b_path = publish_fixture(b.prepared, temporary.path / "b");
+    const auto a_sha = citlali::utils::sha256_file(a_path);
+    const auto b_sha = citlali::utils::sha256_file(b_path);
+    ASSERT_NE(a_sha, b_sha);
+    citlali::cli::detail::PointStageApt reader, publisher;
+    for (auto *stage : {&reader, &publisher}) {
+        stage->select(a_path, a_sha);
+        stage->select(b_path, b_sha);
+    }
+    std::filesystem::rename(a_path.parent_path(), temporary.path / "old-a");
+    publish_fixture(b.prepared, a_path.parent_path());
+    EXPECT_THROW(reader.select(a_path, b_sha), apt::ContractError);
+    EXPECT_THROW(publisher.verify_before_publication(), apt::ContractError);
 }
 
 TEST(sci_align_canonical_apt_relation_v2,
