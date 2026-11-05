@@ -274,15 +274,14 @@ class SuccessorDefaultCli(unittest.TestCase):
         self.rejected(self.invoke(config),'successor.saved_MAP_requires_serial_execution')
 
     def test_weighted_saved_map_accepts_worker_budget_but_rejects_ptc_override(self):
-        # No scientific files: reaching the weighted loader proves dispatch,
-        # while the missing effective configuration still fails closed.
-        config=self.request(dict(schema='citlali-configured-weighted-point-v1'))
+        # No scientific files: the weighted owner's stage rejection proves
+        # dispatch with the worker budget while failing before any loading.
+        config=self.request(dict(schema='citlali-configured-weighted-point-v1', stage='invalid'))
         config['terminal']='map';config['network_workers']=3
         result=self.invoke(config)
-        self.assertNotEqual(result.returncode,0)
-        self.assertNotIn('saved_MAP_requires_serial_execution',result.stdout+result.stderr)
+        self.rejected(result,'weighted POINT unknown stage')
         config['ptc']=dict(rank=3)
-        self.rejected(self.invoke(config),'successor.saved_MAP_requires_no_PTC_override')
+        self.rejected(self.invoke(config),'successor.PTC_request_invalid')
 
     def test_actual_rtc_boundary_refuses_missing_frozen_plan(self):
         config = self.request(dict(schema="rtc-multidetector-experiment-v1"))
