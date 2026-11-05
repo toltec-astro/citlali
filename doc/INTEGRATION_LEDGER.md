@@ -1,3 +1,14 @@
+## Configured weighted POINT CAL reuse acceptance — 2026-11-05
+
+Grant accepted `5b0d63bd670a2db94eddba4f6c0c7fa9f18eeb62`, tree
+`13b9a990e813fb9237893df29dbaa63de5c6c4d8`. Clean local mainline
+fast-forwarded from `2c392652d92044db608546d8335e034e1306e1c0` to the tested
+revision. Grant's software checks passed. The matched three-worker POINT pair
+on 152389 through M5 preserved scientific products across all three arrays.
+The candidate saved 62.59 seconds end to end in this pair. The following
+documentation commit records bounded acceptance. Grant owns any GitHub push.
+[Owner acceptance and evidence](../validation/point_cal_reuse_2026-11-05/OWNER_ACCEPTANCE.json)
+
 ## Parallel and saved-APT loading acceptance — 2026-11-05
 
 2026-11-05 Grant accepted the configured POINT parallel repair at `07723269e7`

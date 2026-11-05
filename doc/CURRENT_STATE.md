@@ -1,5 +1,12 @@
 # Citlali refactor — current state
 
+2026-11-05 Grant accepted observation-scoped CAL reuse for configured weighted
+POINT at `5b0d63bd6`. Local mainline fast-forwarded to the tested application.
+On the three-worker 152389 comparison through M5, elapsed time fell from
+298.65 to 236.06 seconds and all 17 scientific and provenance checks passed.
+The earlier isolated M0 and M4 stalls remain under observation.
+[Owner acceptance and evidence](../validation/point_cal_reuse_2026-11-05/OWNER_ACCEPTANCE.json)
+
 2026-11-05 Grant accepted the configured POINT parallel repair at `07723269e7`
 and the saved-APT loading repair at `3031ddf67`. Local mainline advanced by
 fast-forward to each exact application in that order. The [parallel receipt](../validation/point_parallel_2026-11-04/OWNER_ACCEPTANCE.json)

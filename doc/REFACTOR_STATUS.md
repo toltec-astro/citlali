@@ -1,10 +1,10 @@
-## Weighted POINT observation-scoped CAL candidate — 2026-11-05
+## Weighted POINT observation-scoped CAL reuse accepted — 2026-11-05
 
-The [CAL reuse increment](../validation/point_cal_reuse_2026-11-05/PLAN.md)
-starts from the recorded local integration below. Ordinary configured weighted
-POINT retains one original CAL preparation across feedback passes, with per-pass
-source and APT verification, and separately timed final verification. Grant's
-software and matched 152389 gates are pending.
+Grant accepted application `5b0d63bd6` after his Mac Spack software checks,
+the three-worker 152389 comparison through M5 and independent review. Health
+prepared CAL once and six map passes reused it. All 17 comparison checks passed.
+Saved-input loading fell from 122.47 to 57.93 seconds. Local mainline includes
+the exact application. [Owner acceptance and evidence](../validation/point_cal_reuse_2026-11-05/OWNER_ACCEPTANCE.json)
 
 ## Configured POINT repairs integrated locally — 2026-11-05
 

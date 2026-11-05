@@ -1,0 +1,70 @@
+{
+  "date": "2026-11-05",
+  "owner": "Grant Wilson",
+  "directive": "That's looking great.  I accept this.",
+  "accepted_application": "5b0d63bd670a2db94eddba4f6c0c7fa9f18eeb62",
+  "accepted_tree": "13b9a990e813fb9237893df29dbaa63de5c6c4d8",
+  "previous_mainline": "2c392652d92044db608546d8335e034e1306e1c0",
+  "comparison_application": "3031ddf676be3873c3dcd8e571b4c4f29cff9ec4",
+  "integration": "local fast-forward of codex/refactor-mainline to the exact reviewed application",
+  "execution_owner": "Grant",
+  "scope": "Observation-scoped CAL reuse for ordinary configured weighted POINT; local Mac Spack, three workers, observation 152389 through M5.",
+  "software": "Focused native, CLI and Python checks passed. All 1,442 enabled CTests, 207 baseline tests and required config preflight passed. One pre-existing CTest was disabled.",
+  "scientific_equivalence": "All 17 comparison checks passed, including 126 science-map planes, 45 feedback planes, 11 CAL declarations, three fits and the published pointing table.",
+  "realized_reuse": "One fresh preparation at health, six verified reuses of the original preparation and two retained APT generation checks per map.",
+  "measured": {
+    "order": [
+      "CAL reuse candidate",
+      "integrated loading parent"
+    ],
+    "command_wall_seconds": {
+      "parent": 298.65,
+      "candidate": 236.06
+    },
+    "saved_loading_wall_seconds": {
+      "parent": 122.47,
+      "candidate": 57.93
+    },
+    "sampled_peak_process_tree_rss_gib": {
+      "parent": 4.123,
+      "candidate": 3.756
+    }
+  },
+  "limits": "One fixed-order pair on one observation. The earlier M0 and M4 stalls did not recur; their cause remains open.",
+  "independent_review": "Exact-source, software, packet and matched result reviews passed with recorded limitations.",
+  "publication_scope": "Development branch checkpoint only. GitHub publication is owner-run. Release, deployment and production authorization remain separate.",
+  "evidence": [
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-point-cal-reuse-20261105/owner-run-20261105T144727.704612Z/COMMANDS_COMPLETED.json",
+      "sha256": "43dc87d7e841544117151de81fdc933f295b0ffa59b56f86a0ee91ddab2cdc80"
+    },
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-point-cal-reuse-20261105/SOFTWARE_GATE_ASSESSMENT.txt",
+      "sha256": "9c53c45acb0625a3d85ad77b1b07a6e744af5c722a15435a1cc52cb8d6ca6b91"
+    },
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-point-cal-reuse-20261105/INDEPENDENT_REVIEW.txt",
+      "sha256": "c4c927f77f7d9089e00502d32eb36c4197693bd046d7e5e8a68b7c62fd9f79e7"
+    },
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-point-cal-reuse-20261105/MATCHED_PACKET_REVIEW.txt",
+      "sha256": "2b0c7df176185a002148355d20118dde0df76b3fc08a0b0931a9b34ee59f2ea6"
+    },
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-point-cal-reuse-20261105/matched-point/FILES.sha256",
+      "sha256": "223e4c268eabb41dc3c3667dde84d326782fbc44b544ac9297ae0cd967e7c5ee"
+    },
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-point-cal-reuse-20261105/matched-point/attempt-01/COMPARISON.json",
+      "sha256": "6235490adc96577f7249b04ad0eeaa6828a3114d3b02f40e20137fdca216fba9"
+    },
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-point-cal-reuse-20261105/matched-point/attempt-01/COMPLETED.json",
+      "sha256": "87458bcc70488df2c38f87fbff589ce8d3f566d26ad08b2d3a447b2559d6c00e"
+    },
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-point-cal-reuse-20261105/MATCHED_RESULT_ASSESSMENT.txt",
+      "sha256": "2a094ae5a613425751ab9eec74e4ac5b43d326bbad4a0bc64d32d8e264e78490"
+    }
+  ]
+}
