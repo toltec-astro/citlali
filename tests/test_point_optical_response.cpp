@@ -94,6 +94,10 @@ TEST(PointOpticalResponse, CompactReportMatchesFrozenDecisionsAndFullIntervals) 
     const auto full=citlali::cli::detail::point_health_record(*plan);
     const auto compact=citlali::cli::detail::point_decision_record(*plan);
     EXPECT_EQ(compact["schema"].as<std::string>(),"citlali-point-optical-decisions-v1");
+    std::vector<std::string> keys;
+    for(const auto &field:compact)keys.push_back(field.first.as<std::string>());
+    EXPECT_EQ(keys,(std::vector<std::string>{"schema","method","min_relative_response","bootstrap_seed_policy",
+                    "bootstrap_seed_identity","uncertainty_limitations","networks"}));
     for(const auto *key:{"method","min_relative_response","bootstrap_seed_policy","bootstrap_seed_identity","uncertainty_limitations"})
         EXPECT_EQ(YAML::Dump(compact[key]),YAML::Dump(full[key]));
     ASSERT_EQ(compact["networks"].size(),full["networks"].size());

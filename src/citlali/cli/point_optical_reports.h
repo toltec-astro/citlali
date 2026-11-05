@@ -52,7 +52,12 @@ inline YAML::Node point_health_record(const pipeline::PointOpticalPlan &plan) {
 // Build the user report from the frozen plan. Assigning nodes from the full
 // YAML document to each new row makes yaml-cpp merge the full node pool.
 inline YAML::Node point_decision_record(const pipeline::PointOpticalPlan &plan) {
-    auto report=point_health_header(plan,"citlali-point-optical-decisions-v1");
+    // Keep the v1 compact field order as well as its data. This header has
+    // only scalar metadata and has no connection to the full evidence tree.
+    const auto header=point_health_header(plan,"citlali-point-optical-decisions-v1");
+    YAML::Node report;
+    for(const auto *key:{"schema","method","min_relative_response","bootstrap_seed_policy","bootstrap_seed_identity","uncertainty_limitations"})
+        report[key]=header[key];
     const auto &networks=plan.evidence_handle()->networks();
     for(std::size_t i=0;i<networks.size();++i) {
         const auto &network=networks[i];
