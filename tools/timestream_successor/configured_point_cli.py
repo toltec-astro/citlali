@@ -27,7 +27,7 @@ import yaml
 from configured_point_config import load_request
 from configured_point_runtime import data_root
 from configured_point_parallel import PointArrayExecutor, THREAD_LIMITS
-from configured_point_session import PointObservationSession
+from configured_point_session import PointObservationSession, native_command
 from configured_point_types import FileBinding, PreparedPoint
 
 
@@ -97,7 +97,7 @@ def native_call(
     with log_path.open("w") as log:
         if session is None:
             code = subprocess.run(
-                [str(binary), "-l", "debug" if verbose else "warning", str(path)],
+                native_command(binary, path, verbose),
                 env=env, stdout=log, stderr=subprocess.STDOUT,
                 **({"timeout": timeout} if timeout is not None else {}),
             ).returncode

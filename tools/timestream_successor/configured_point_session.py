@@ -10,6 +10,11 @@ import sys
 import yaml
 
 
+def native_command(binary, descriptor, verbose):
+    """Info is the most detailed level available in the Release executable."""
+    return [str(binary), "-l", "info" if verbose else "warning", str(descriptor)]
+
+
 class PointObservationSession:
     """One sequential request stream, one private acknowledgement pipe and log."""
 
@@ -41,7 +46,7 @@ class PointObservationSession:
         try:
             with self.log_path.open("xb") as log:
                 self.process = subprocess.Popen(
-                    [str(binary), "-l", "debug" if verbose else "warning", str(launch)],
+                    native_command(binary, launch, verbose),
                     stdin=subprocess.PIPE, stdout=log, stderr=subprocess.STDOUT,
                     pass_fds=(write_fd,), env=dict(env, CITLALI_POINT_REPLY_FD=str(write_fd)),
                 )

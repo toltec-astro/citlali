@@ -19,6 +19,7 @@ def peer(tmp_path):
         import time
         import yaml
         config = yaml.safe_load(Path(sys.argv[-1]).read_text())
+        print(f"native log level {sys.argv[2]}", flush=True)
         assert config["terminal"] in ("point-observation", "point-cal-observation")
         fd = int(os.environ["CITLALI_POINT_REPLY_FD"])
         if os.environ.get("POINT_FAKE") == "die-before-read":
@@ -50,11 +51,20 @@ def peer(tmp_path):
     return binary, work
 
 
-def call(peer, session, name):
+def call(peer, session, name, *, verbose=False):
     binary, work = peer
     request = work / (name + "-request.json")
     request.write_text("{}\n")
-    return cli.native_call(binary, request, work/name, terminal="map", workers=3, session=session)
+    return cli.native_call(binary, request, work/name, terminal="map", workers=3, session=session, verbose=verbose)
+
+
+@pytest.mark.parametrize("verbose,level", [(True,"info"),(False,"warning")])
+def test_session_uses_release_log_level(peer, verbose, level):
+    _, work = peer
+    with PointObservationSession(work) as session:
+        call(peer, session, "health", verbose=verbose)
+        call(peer, session, "weighted-00", verbose=verbose)
+    assert f"native log level {level}" in (work/"point-observation.log").read_text()
 
 
 def test_one_process_per_observation_and_separate_stage_logs(peer):

@@ -10,6 +10,7 @@
 #include "point_recovery_bindings.h"
 #include "point_execution_budget.h"
 #include "point_cal_sources.h"
+#include "point_optical_reports.h"
 namespace {
 const std::array<std::string,3> weighted_arrays{"a1100","a1400","a2000"};
 const std::array<double,3> weighted_beams{5.,7.5,10.}, weighted_source_radii{35.,42.5,50.};
@@ -23,64 +24,13 @@ std::string point_support_digest(const PtcMask &mask) {
     }
     return hash.finish();
 }
-void point_number(YAML::Node node,const char *key,double value) {
-    if(std::isfinite(value))node[key]=value;else node[key]=YAML::Null;
-}
+using citlali::cli::detail::point_number;
 double point_number(const YAML::Node &node,const char *key) {
     return node[key] && !node[key].IsNull()?node[key].as<double>():NAN;
-}
-YAML::Node point_interval(const PointOpticalInterval &x) {
-    YAML::Node n;n["available"]=x.available;point_number(n,"lower",x.lower);point_number(n,"upper",x.upper);
-    n["informative_blocks"]=x.informative_blocks;n["resamples"]=x.resamples;n["seed"]=x.seed;n["reason"]=x.reason;return n;
 }
 PointOpticalInterval point_interval(const YAML::Node &n) {
     return {n["available"].as<bool>(),point_number(n,"lower"),point_number(n,"upper"),
         n["informative_blocks"].as<std::size_t>(),n["resamples"].as<std::size_t>(),n["seed"].as<std::uint64_t>(),n["reason"].as<std::string>()};
-}
-YAML::Node point_health_record(const PointOpticalPlan &plan) {
-    YAML::Node record;record["schema"]="citlali-point-optical-health-v2";
-    record["method"]=std::string(PointOpticalEvidence::method);record["uncertainty_limitations"]=std::string(PointOpticalEvidence::uncertainty);
-    record["bootstrap_seed_policy"]=std::string(PointOpticalEvidence::seed_policy);
-    record["bootstrap_seed_identity"]=plan.evidence_handle()->seed_identity();
-    const auto &r=plan.evidence_handle()->request();record["min_relative_response"]=plan.min_relative_response();
-    record["bin_seconds"]=r.bin_seconds;record["confidence_level"]=r.confidence_level;record["bootstrap_samples"]=r.bootstrap_samples;
-    for(std::size_t ni=0;ni<plan.evidence_handle()->networks().size();++ni) {
-        const auto &e=plan.evidence_handle()->networks()[ni];YAML::Node n;
-        n["observation_identity"]=e.observation_identity;n["cal_identity"]=e.cal_identity;n["source_mask_identity"]=e.source_mask_identity;
-        n["array"]=e.array;n["network"]=e.network;n["detector_ids"]=e.detector_ids;n["reference_networks"]=e.reference_networks;
-        n["reference_available"]=e.reference_available;n["cross_array_required"]=e.cross_array_required;
-        n["cross_array_corroborated"]=e.cross_array_corroborated;n["reference_reason"]=e.reference_reason;
-        point_number(n,"response_normalization",e.response_normalization);
-        for(std::size_t di=0;di<e.detectors.size();++di) {
-            const auto &d=e.detectors[di];const auto &decision=plan.decisions()[ni][di];YAML::Node v;
-            v["detector_id"]=d.detector_id;v["available_samples"]=d.available_samples;v["source_free_samples"]=d.source_free_samples;v["binned_samples"]=d.binned_samples;
-            point_number(v,"relative_response",d.relative_response);point_number(v,"correlation",d.correlation);point_number(v,"binned_residual_rms",d.binned_residual_rms);
-            v["interval"]=point_interval(d.interval);for(const auto &c:d.checks)v["checks"].push_back(point_interval(c));
-            v["state"]=std::string(point_optical_state_name(decision.state));v["reason"]=decision.reason;n["detectors"].push_back(v);
-        }
-        record["networks"].push_back(n);
-    }
-    return record;
-}
-// The coordinator needs detector decisions for its user report, not the full
-// frozen evidence with every bootstrap interval. Keep the scientific plan native.
-YAML::Node point_decision_record(const YAML::Node &health) {
-    YAML::Node report;
-    report["schema"]="citlali-point-optical-decisions-v1";
-    for(const auto *key:{"method","min_relative_response","bootstrap_seed_policy","bootstrap_seed_identity","uncertainty_limitations"})
-        report[key]=health[key];
-    for(const auto &network:health["networks"]) {
-        YAML::Node group;group["network"]=network["network"];group["array"]=network["array"];
-        for(const auto &detector:network["detectors"]) {
-            YAML::Node row;row["detector_id"]=detector["detector_id"];row["state"]=detector["state"];
-            const auto state=detector["state"].as<std::string>();
-            if(state!="retained" && state!="prior_unavailable")
-                for(const auto *key:{"reason","relative_response","interval"})row[key]=detector[key];
-            group["detectors"].push_back(row);
-        }
-        report["networks"].push_back(group);
-    }
-    return report;
 }
 std::shared_ptr<const PointOpticalPlan> point_restore_health(const YAML::Node &record,double threshold) {
     require(record["schema"].as<std::string>()=="citlali-point-optical-health-v2" &&
@@ -439,8 +389,16 @@ int execute_weighted_point(const fs::path &input,const fs::path &output,unsigned
         citlali::cli::detail::PointPhaseClock clock;
         PointOpticalExecutionReport health_execution;
         PointOpticalRequest health_request;health_request.min_relative_response=threshold;
+        citlali::cli::detail::PointPhaseClock part;
+        const auto finish_part=[&](const char *name) {
+            auto row=performance["health_timing"][name];
+            row["wall_seconds"]=part.wall_seconds();
+            row["process_cpu_seconds"]=part.cpu_seconds();
+            part={};
+        };
         const auto health=PointOpticalPlan::consider(PointOpticalEvidence::learn(optical,health_request,execution,&health_execution));
-        auto record=point_health_record(*health);
+        finish_part("learn_and_consider");
+        auto record=citlali::cli::detail::point_health_record(*health);
         // The frozen generation includes receipt provenance. Also bind a comparable
         // scientific record for independently located ordinary and detective runs.
         auto science=YAML::Clone(record);
@@ -453,16 +411,20 @@ int execute_weighted_point(const fs::path &input,const fs::path &output,unsigned
             group.remove("cal_identity");group["source_mask_identity"]=mask.substr(prefix.size());
         }
         performance["health_science_sha256"]=citlali::utils::sha256(yaml_bytes(science));
+        finish_part("full_record_and_science_identity");
         record["effective_config_sha256"]=config_sha;record["request_sha256"]=request_sha;
         record["source_revision"]=std::string(CITLALI_GIT_VERSION);
         if(cal.uses_channel_memory()) {
             cal.freeze_health(health,record);
             performance["health_generation_sha256"]=cal.health_sha();
+            finish_part("freeze_generation");
             std::string report_sha;
-            write_yaml(staging/"detector-decisions.yaml",point_decision_record(record),&report_sha);
+            write_yaml(staging/"detector-decisions.yaml",citlali::cli::detail::point_decision_record(*health),&report_sha);
             performance["detector_decisions_sha256"]=report_sha;
+            finish_part("compact_decision_report");
         } else {
             write_yaml(staging/"health.yaml",record);
+            finish_part("write_replay_health");
         }
         record_phase("health",clock,health_execution.bootstrap);
         auto report_work=[&](const char *name,const auto &r) {

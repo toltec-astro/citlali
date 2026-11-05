@@ -1,5 +1,29 @@
 # Configured POINT diagnostic I/O
 
+## Follow-up to the first representative run
+
+Grant's ordinary, CAL-handoff base and detective reductions at six workers
+completed. Total wall times were 666.60, 115.80 and 209.81 seconds. Ordinary
+health alone measured 609.84 wall and 610.41 process CPU seconds inside its
+health phase. Its six map passes took 1.19–1.27 seconds each. The full-health
+science fingerprints agreed in the ordinary and detective runs. The verbose
+M0 arm stopped at native argument parsing, before RTC. Replay, fault injection
+and the complete scientific comparison did not run.
+
+In this follow-up the compact report draws detector facts from the frozen
+plan. Each serialized row owns only the values it needs. The old projection
+assigned nodes from a large YAML document into each new row, causing yaml-cpp
+0.8 to merge the source node pool repeatedly. Phase receipts now separate
+learning, scientific record construction, generation freezing and compact
+report writing. Both verbose launch paths select the Release-supported info
+level. The full record, uncertainty schema and detector summary are preserved.
+
+Grant runs the software gates. Use verbose M0 on 152389 as the first
+representative check of the corrected launch, matched science identity and
+report time. Then complete the matched M5, retained replay and fault gates
+against the same CFITSIO 4.3.0 realization. Keep the failed attempt intact.
+CFITSIO version qualification is a separate build-environment change.
+
 One bounded candidate for the three owner-requested changes. Base application
 `c6ed37f58282a9fde843367456f1795d9a8e4d58` passed its six-worker 152389
 comparison. Local mainline integration is a separate owner decision.

@@ -298,6 +298,18 @@ def test_native_subprocess_exit_and_error_level_output(tmp_path, return_code, li
     assert line in (destination / 'native.log').read_text()
 
 
+@pytest.mark.parametrize("verbose,level", [(True,"info"),(False,"warning")])
+def test_standalone_stage_uses_release_log_level(tmp_path, verbose, level):
+    binary = tmp_path / "native"
+    binary.write_text(f"#!{sys.executable}\nimport sys\nprint('native log level', sys.argv[2])\n")
+    binary.chmod(0o755)
+    request = tmp_path / "input.json"
+    request.write_text("{}\n")
+    dest = tmp_path / "map"
+    cli.native_call(binary, request, dest, terminal="map", verbose=verbose)
+    assert f"native log level {level}" in (dest/"native.log").read_text()
+
+
 def test_cli_carries_observed_pointing_metadata_into_staged_handoff(application, monkeypatch):
     original = cli.prepare
     def prepare(*args, **kwargs):

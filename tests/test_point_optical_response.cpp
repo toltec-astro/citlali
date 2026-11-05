@@ -1,4 +1,5 @@
 #include <citlali/core/pipeline/point_optical_response.h>
+#include "../src/citlali/cli/point_optical_reports.h"
 #include <gtest/gtest.h>
 #include <algorithm>
 #include <cmath>
@@ -84,6 +85,41 @@ TEST(PointOpticalResponse, WeakHealthyQuietNoisyAndReversedHaveSeparateDecisions
     EXPECT_LT(evidence->networks()[0].detectors[7].binned_residual_rms,evidence->networks()[0].detectors[1].binned_residual_rms);
     // Changing the owner-selected cut changes Consider, not the learned cohort.
     EXPECT_EQ(PointOpticalPlan::consider(evidence,.01)->for_network(data[0])[0].state,PointOpticalState::retained);
+}
+
+TEST(PointOpticalResponse, CompactReportMatchesFrozenDecisionsAndFullIntervals) {
+    auto data=fixture();
+    data.front().eligible.col(4).setZero();
+    const auto plan=PointOpticalPlan::consider(PointOpticalEvidence::learn(data,request()));
+    const auto full=citlali::cli::detail::point_health_record(*plan);
+    const auto compact=citlali::cli::detail::point_decision_record(*plan);
+    EXPECT_EQ(compact["schema"].as<std::string>(),"citlali-point-optical-decisions-v1");
+    for(const auto *key:{"method","min_relative_response","bootstrap_seed_policy","bootstrap_seed_identity","uncertainty_limitations"})
+        EXPECT_EQ(YAML::Dump(compact[key]),YAML::Dump(full[key]));
+    ASSERT_EQ(compact["networks"].size(),full["networks"].size());
+    std::size_t retained=0,unavailable=0,exceptions=0;
+    for(std::size_t i=0;i<full["networks"].size();++i) {
+        const auto a=full["networks"][i], b=compact["networks"][i];
+        EXPECT_EQ(a["network"].as<int>(),b["network"].as<int>());
+        EXPECT_EQ(a["array"].as<int>(),b["array"].as<int>());
+        ASSERT_EQ(a["detectors"].size(),b["detectors"].size());
+        for(std::size_t j=0;j<a["detectors"].size();++j) {
+            const auto x=a["detectors"][j], y=b["detectors"][j];
+            EXPECT_EQ(x["detector_id"].as<std::string>(),y["detector_id"].as<std::string>());
+            const auto state=x["state"].as<std::string>();
+            EXPECT_EQ(state,y["state"].as<std::string>());
+            if(state=="retained" || state=="prior_unavailable") {
+                EXPECT_EQ(y.size(),2u);
+                if(state=="retained")++retained;else ++unavailable;
+            } else {
+                EXPECT_EQ(y.size(),5u);
+                for(const auto *key:{"reason","relative_response","interval"})
+                    EXPECT_EQ(YAML::Dump(x[key]),YAML::Dump(y[key]));
+                ++exceptions;
+            }
+        }
+    }
+    EXPECT_GT(retained,0u);EXPECT_GT(unavailable,0u);EXPECT_GT(exceptions,0u);
 }
 
 TEST(PointOpticalResponse, SourceProtectionExcludesSourceFromLearningOnly) {

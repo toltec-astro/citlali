@@ -1,5 +1,11 @@
 ## Configured POINT diagnostic I/O candidate — 2026-11-05
 
+The first matched run found a 610-second ordinary health phase and an invalid
+Release log level on verbose launch. The three complete arms produced matching
+detector summaries; the full comparison and replay gates remain pending.
+The [follow-up](../validation/point_diagnostic_io_2026-11-05/PLAN.md)
+preserves the failed attempt and the CFITSIO 4.3.0 comparator.
+
 The [combined diagnostic I/O repair](../validation/point_diagnostic_io_2026-11-05/PLAN.md)
 uses the reviewed CAL/APT candidate as its development base. The matched
 six-worker 152389 comparison of that base passed all 18 pair checks. The next
