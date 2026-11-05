@@ -6,6 +6,8 @@ explicit outcome, never a convergence or ten-pass success claim.
 """
 
 from collections import Counter
+import hashlib
+import re
 from pathlib import Path
 
 import yaml
@@ -17,8 +19,11 @@ STATES = ("prior_unavailable", "retained", "weak_response", "sign_mismatch", "un
 
 
 def health_summary(path):
-    health = yaml.safe_load(Path(path).read_text())
-    if health["schema"] != "citlali-point-optical-health-v2":
+    return detector_summary(yaml.safe_load(Path(path).read_text()), "citlali-point-optical-health-v2")
+
+
+def detector_summary(health, schema):
+    if health["schema"] != schema:
         raise ValueError("unexpected optical health publication")
     seed_identity = health.get("bootstrap_seed_identity", "")
     if (
@@ -94,6 +99,7 @@ def execute(
     shared_health=None,
     weighting_control="inverse-noise",
     array_executor=None,
+    memory_handoff=False,
 ):
     from configured_point_feedback import initialize, update
 
@@ -103,18 +109,31 @@ def execute(
     ):
         raise ValueError("equal control requires explicit comparison and shared health")
     upstream_work = work if shared_work is None else shared_work
-    networks = []
-    for nw in prepared["networks"]:
-        root = upstream_work / "upstream/products" / f"network{nw}"
-        networks.append(
-            dict(
-                root=str(root),
-                input=bind(prepared["effective_config"].parent / f"network{nw}-input.json"),
-                receipt_sha256=bind(root / "receipt.yaml")["sha256"],
-                cal_receipt_sha256=bind(root / "donor-continuity/cal/receipt.yaml")["sha256"],
-                processing_sha256=bind(root / "processing-scans.yaml")["sha256"],
+    if memory_handoff:
+        if shared_work is not None or shared_health is not None or request.weight_comparison:
+            raise ValueError("live POINT products require their original ordinary observation")
+        networks = record["stages"][0]["point_handoff"]
+        if len(networks) != len(prepared["networks"]):
+            raise ValueError("incomplete live POINT network cohort")
+        for nw, row in zip(prepared["networks"], networks):
+            root = work / "upstream/products" / f"network{nw}"
+            if (row["root"] != str(root) or row["transport"] != "observation-memory"
+                    or row["input"] != bind(prepared["effective_config"].parent / f"network{nw}-input.json")
+                    or not re.fullmatch("[0-9a-f]{64}", row["handoff_sha256"])):
+                raise ValueError("live POINT network/input generation differs")
+    else:
+        networks = []
+        for nw in prepared["networks"]:
+            root = upstream_work / "upstream/products" / f"network{nw}"
+            networks.append(
+                dict(
+                    root=str(root),
+                    input=bind(prepared["effective_config"].parent / f"network{nw}-input.json"),
+                    receipt_sha256=bind(root / "receipt.yaml")["sha256"],
+                    cal_receipt_sha256=bind(root / "donor-continuity/cal/receipt.yaml")["sha256"],
+                    processing_sha256=bind(root / "processing-scans.yaml")["sha256"],
+                )
             )
-        )
     base = dict(
         schema="citlali-configured-weighted-point-v1",
         effective_config=bind(prepared["effective_config"]),
@@ -129,13 +148,24 @@ def execute(
                 native, health_request, work / "health", terminal="map", workers=request.workers, verbose=request.verbose
             )
         )
-        health = work / "health/products/health.yaml"
+        health = None if memory_handoff else work / "health/products/health.yaml"
     else:
         health = Path(shared_health["path"])
         if bind(health) != shared_health:
             raise ValueError("comparison shared health changed")
-    frozen_health = bind(health)
-    summary = health_summary(health)
+    if memory_handoff:
+        execution = record["stages"][-1]["execution"]
+        generation = execution["health_generation_sha256"]
+        if not re.fullmatch("[0-9a-f]{64}", generation):
+            raise ValueError("invalid frozen POINT health identity")
+        frozen_health = dict(transport="observation-memory", sha256=generation)
+        decisions = (work / "health/products/detector-decisions.yaml").read_bytes()
+        if hashlib.sha256(decisions).hexdigest() != execution["detector_decisions_sha256"]:
+            raise ValueError("POINT detector decisions differ from health publication")
+        summary = detector_summary(yaml.safe_load(decisions), "citlali-point-optical-decisions-v1")
+    else:
+        frozen_health = bind(health)
+        summary = health_summary(health)
     summary_path = reduction / "detector-health.json"
     write_json(summary_path, summary)
     record["detector_health"] = bind(summary_path)
@@ -163,7 +193,7 @@ def execute(
     contexts, models = {}, {}
     products = None
     for cycle in range(budget + 1):
-        if bind(health) != frozen_health:
+        if not memory_handoff and bind(health) != frozen_health:
             raise ValueError("frozen optical health changed during feedback")
         stage_dir = work / f"weighted-{cycle:02d}"
         native_request = work / f"weighted-{cycle:02d}-request.json"
@@ -180,7 +210,8 @@ def execute(
 
         family = CONTROL_FAMILY if weighting_control == "equal-control" else EMPIRICAL_FAMILY
         if (
-            bind(health) != frozen_health
+            (not memory_handoff and bind(health) != frozen_health)
+            or (memory_handoff and record["stages"][-1]["execution"].get("health_generation_sha256") != frozen_health["sha256"])
             or result["cycle_index"] != cycle
             or result["frozen_health_identity"] != "sha256:" + frozen_health["sha256"]
             or result["coefficient_family"] != family

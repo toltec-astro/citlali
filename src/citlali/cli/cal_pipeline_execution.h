@@ -236,7 +236,12 @@ ConnectedCal execute_connected_cal(const CalRtcSource &source,const YAML::Node &
     record["Learn_seconds"]=std::chrono::duration<double>(learned-started).count();
     record["Consider_seconds"]=std::chrono::duration<double>(considered-learned).count();
     record["Apply_VAL_seconds"]=std::chrono::duration<double>(applied-considered).count();
-    write_yaml(destination/"receipt.yaml",record,point_cal?&point_cal->receipt_sha:nullptr);
+    if(point_cal) {
+        point_cal->cal=record;
+        point_cal->receipt_sha=citlali::utils::sha256(yaml_bytes(record));
+    } else {
+        write_yaml(destination/"receipt.yaml",record);
+    }
     performance.mark("CAL_publication_complete");return {record,PtcCalSource::bind(signal,val)};
 }
 } // namespace

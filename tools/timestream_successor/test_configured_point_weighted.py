@@ -185,10 +185,22 @@ def orchestration(tmp_path, monkeypatch):
         state.calls.append(deepcopy(value))
         output = directory / 'products'
         output.mkdir(parents=True)
+        execution = {}
         if value['stage'] == 'health':
-            (output / 'health.yaml').write_text(yaml.safe_dump(health_record()))
+            if record['stages'] and 'point_handoff' in record['stages'][0]:
+                decisions = health_record()
+                decisions['schema'] = 'citlali-point-optical-decisions-v1'
+                path = output / 'detector-decisions.yaml'
+                path.write_text(yaml.safe_dump(decisions))
+                execution.update(health_generation_sha256='f' * 64, detector_decisions_sha256=digest(path))
+                if state.defect == 'decisions':
+                    path.write_text(path.read_text() + '# changed after publication\n')
+            else:
+                (output / 'health.yaml').write_text(yaml.safe_dump(health_record()))
         else:
             cycle = value['cycle_index']
+            if value['health'].get('transport') == 'observation-memory':
+                execution['health_generation_sha256'] = ('e' if state.defect == 'generation' else 'f') * 64
             health = 'sha256:' + value['health']['sha256']
             arrays = {array: weighted_map(output / array, array, cycle=cycle, health=health)
                       for array in products.ARRAYS}
@@ -215,7 +227,7 @@ def orchestration(tmp_path, monkeypatch):
                     bundle['observation'] = 'obs:152418_0_2'
                 (output / 'a1400/bundle.yaml').write_text(yaml.safe_dump(bundle))
             (output / 'cycle.yaml').write_text(yaml.safe_dump(result))
-        return dict(stage=value['stage'], terminal=kwargs['terminal'])
+        return dict(stage=value['stage'], terminal=kwargs['terminal'], execution=execution)
 
     original_initialize, original_update = feedback.initialize, feedback.update
 
@@ -238,12 +250,39 @@ def orchestration(tmp_path, monkeypatch):
     monkeypatch.setattr(feedback, 'update', lambda path, context, destination, verbose=False:
                         select(path, context, destination, verbose, False))
 
-    def execute():
+    def execute(**kwargs):
         return weighted.execute(prepared, work, reduction, Path('/synthetic/native'), request, record,
-                                native_call=native_call, bind=cli.bind, write_json=cli.write_json)
+                                native_call=native_call, bind=cli.bind, write_json=cli.write_json, **kwargs)
 
     state.native_call, state.execute = native_call, execute
     return state
+
+
+@pytest.mark.parametrize("defect", [None, "generation", "decisions", "network"])
+def test_live_products_use_one_frozen_health_generation(orchestration, defect):
+    state = orchestration
+    rows = []
+    for nw in state.prepared["networks"]:
+        root = state.work / "upstream/products" / f"network{nw}"
+        for path in (root / "receipt.yaml", root / "donor-continuity/cal/receipt.yaml", root / "processing-scans.yaml"):
+            path.unlink()  # live execution cannot use the replay adapter
+        rows.append(dict(root=str(root), input=cli.bind(state.work / f"inputs/network{nw}-input.json"),
+                         transport="observation-memory", handoff_sha256="a" * 64))
+    state.record["stages"].append(dict(point_handoff=rows))
+    state.defect = defect
+    if defect == "network":
+        rows.reverse()
+    if defect:
+        with pytest.raises(ValueError, match={"network":"network/input", "decisions":"detector decisions",
+                                             "generation":"cycle identity"}[defect]):
+            state.execute(memory_handoff=True)
+        return
+    state.execute(memory_handoff=True)
+    frozen = {"transport":"observation-memory", "sha256":"f" * 64}
+    assert state.record["frozen_health"] == frozen
+    assert all(call["health"] == frozen for call in state.calls if call["stage"] == "cycle")
+    assert not (state.work / "health/products/health.yaml").exists()
+    assert (state.reduction / "detector-health.json").is_file()
 
 
 def test_health_summary_keeps_reasons_separate_and_counts_each_detector_once(tmp_path):

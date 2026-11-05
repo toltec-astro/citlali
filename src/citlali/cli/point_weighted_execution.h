@@ -62,6 +62,26 @@ YAML::Node point_health_record(const PointOpticalPlan &plan) {
     }
     return record;
 }
+// The coordinator needs detector decisions for its user report, not the full
+// frozen evidence with every bootstrap interval. Keep the scientific plan native.
+YAML::Node point_decision_record(const YAML::Node &health) {
+    YAML::Node report;
+    report["schema"]="citlali-point-optical-decisions-v1";
+    for(const auto *key:{"method","min_relative_response","bootstrap_seed_policy","bootstrap_seed_identity","uncertainty_limitations"})
+        report[key]=health[key];
+    for(const auto &network:health["networks"]) {
+        YAML::Node group;group["network"]=network["network"];group["array"]=network["array"];
+        for(const auto &detector:network["detectors"]) {
+            YAML::Node row;row["detector_id"]=detector["detector_id"];row["state"]=detector["state"];
+            const auto state=detector["state"].as<std::string>();
+            if(state!="retained" && state!="prior_unavailable")
+                for(const auto *key:{"reason","relative_response","interval"})row[key]=detector[key];
+            group["detectors"].push_back(row);
+        }
+        report["networks"].push_back(group);
+    }
+    return report;
+}
 std::shared_ptr<const PointOpticalPlan> point_restore_health(const YAML::Node &record,double threshold) {
     require(record["schema"].as<std::string>()=="citlali-point-optical-health-v2" &&
         record["method"].as<std::string>()==std::string(PointOpticalEvidence::method) &&
@@ -112,10 +132,19 @@ WeightedPointNetwork point_load_cal(const YAML::Node &binding,MapFileLedger &led
     WeightedPointNetwork n;
     auto s=load_saved_map_network(binding,ledger,true,true,&stage_apt,point_cal);
     require(s.input["effective_config"]["sha256"].as<std::string>()==config_sha,"POINT network effective config differs");
-    const auto processing=s.root/"processing-scans.yaml";const auto published=map_selected_fields(s.root/"receipt.yaml","",{"processing_scans_sha256"});
-    const auto processing_sha=ledger.bind(processing,binding["processing_sha256"].as<std::string>());n.processing_identity="sha256:"+processing_sha;
-    const auto scans=YAML::LoadFile(processing.string());
-    const auto intervals=citlali::cli::detail::validate_point_processing_binding(published,s.input,scans,binding["processing_sha256"].as<std::string>(),processing_sha,s.native_times.size());
+    std::string processing_sha;
+    YAML::Node scans,published;
+    if(point_cal) {
+        processing_sha=point_cal->processing_sha;
+        scans=point_cal->scans;published=point_cal->learning;
+    } else {
+        const auto processing=s.root/"processing-scans.yaml";
+        auto parsed=ledger.read_yaml(processing,binding["processing_sha256"].as<std::string>());
+        processing_sha=std::move(parsed.first);scans=std::move(parsed.second);
+        published=map_selected_fields(s.root/"receipt.yaml","",{"processing_scans_sha256"});
+    }
+    n.processing_identity="sha256:"+processing_sha;
+    const auto intervals=citlali::cli::detail::validate_point_processing_binding(published,s.input,scans,processing_sha,processing_sha,s.native_times.size());
     o.observation_identity=s.observation_identity;o.cal_identity="sha256:"+s.cal_sha;o.array=s.array;o.network=s.network;o.detector_ids=s.detectors;
     o.source_mask_identity=o.cal_identity+":"+n.processing_identity+":delta-source-AltAz:radius-arcsec="+std::to_string(weighted_source_radii[s.array]);
     o.science_blocks.assign(s.scheduled,-1);o.times_unix_sec.resize(s.scheduled);
@@ -176,6 +205,12 @@ public:
     const auto &original_files() const { return sources_.files; }
     void bind_health(const fs::path &produced) { health_sha_=citlali::utils::sha256_file(produced); }
     const std::string &health_sha() const { return health_sha_; }
+    void freeze_health(std::shared_ptr<const PointOpticalPlan> plan,const YAML::Node &record) {
+        require(from_producer_ && !health_plan_ && plan,"POINT health already frozen or outside observation");
+        health_sha_=citlali::utils::sha256(yaml_bytes(record));
+        health_plan_=std::move(plan);
+    }
+    const auto &health_plan() const { return health_plan_; }
     const std::string &first_request_sha() const { return first_request_sha_; }
     void set_first_request_sha(const std::string &sha) { first_request_sha_=sha; }
     void prepare_or_recheck(const YAML::Node &request,const std::string &config_sha) {
@@ -222,6 +257,7 @@ private:
     citlali::cli::detail::PointCalHandoff handoff_;
     std::size_t admitted_channels_=0;
     std::string health_sha_,first_request_sha_;
+    std::shared_ptr<const PointOpticalPlan> health_plan_;
     citlali::cli::detail::PointCalSources sources_;
     std::vector<WeightedPointNetwork> networks_;
     std::vector<PointOpticalNetwork> optical_;
@@ -369,7 +405,9 @@ int execute_weighted_point(const fs::path &input,const fs::path &output,unsigned
         require(!request["recovery"] && !request["weighting_control"],"POINT session requires ordinary weighted execution");
         require(pass==0 ? stage=="health" && !reused :
                 stage=="cycle" && reused && request["cycle_index"].as<int>()==pass-1 &&
-                request["health"]["path"].as<std::string>()==(input.parent_path()/"health/products/health.yaml").string() &&
+                (cal.uses_channel_memory() ? request["health"].size()==2 && !request["health"]["path"] &&
+                request["health"]["transport"].as<std::string>()=="observation-memory" && bool(cal.health_plan()) :
+                request["health"]["path"].as<std::string>()==(input.parent_path()/"health/products/health.yaml").string()) &&
                 request["health"]["sha256"].as<std::string>()==cal.health_sha(),
                 "POINT session stage order or frozen health differs");
     }
@@ -402,8 +440,30 @@ int execute_weighted_point(const fs::path &input,const fs::path &output,unsigned
         PointOpticalExecutionReport health_execution;
         PointOpticalRequest health_request;health_request.min_relative_response=threshold;
         const auto health=PointOpticalPlan::consider(PointOpticalEvidence::learn(optical,health_request,execution,&health_execution));
-        auto record=point_health_record(*health);record["effective_config_sha256"]=config_sha;record["request_sha256"]=request_sha;
-        record["source_revision"]=std::string(CITLALI_GIT_VERSION);write_yaml(staging/"health.yaml",record);
+        auto record=point_health_record(*health);
+        // The frozen generation includes receipt provenance. Also bind a comparable
+        // scientific record for independently located ordinary and detective runs.
+        auto science=YAML::Clone(record);
+        for(std::size_t i=0;i<networks.size();++i) {
+            auto group=science["networks"][i];
+            const auto prefix="sha256:"+networks[i].saved.cal_sha+":"+networks[i].processing_identity+":";
+            const auto mask=group["source_mask_identity"].as<std::string>();
+            require(group["network"].as<int>()==networks[i].saved.network && mask.starts_with(prefix),
+                    "POINT health source identity differs");
+            group.remove("cal_identity");group["source_mask_identity"]=mask.substr(prefix.size());
+        }
+        performance["health_science_sha256"]=citlali::utils::sha256(yaml_bytes(science));
+        record["effective_config_sha256"]=config_sha;record["request_sha256"]=request_sha;
+        record["source_revision"]=std::string(CITLALI_GIT_VERSION);
+        if(cal.uses_channel_memory()) {
+            cal.freeze_health(health,record);
+            performance["health_generation_sha256"]=cal.health_sha();
+            std::string report_sha;
+            write_yaml(staging/"detector-decisions.yaml",point_decision_record(record),&report_sha);
+            performance["detector_decisions_sha256"]=report_sha;
+        } else {
+            write_yaml(staging/"health.yaml",record);
+        }
         record_phase("health",clock,health_execution.bootstrap);
         auto report_work=[&](const char *name,const auto &r) {
             auto row=performance["health_work"][name];row["jobs"]=r.jobs;
@@ -413,13 +473,22 @@ int execute_weighted_point(const fs::path &input,const fs::path &output,unsigned
         report_work("references",health_execution.references);
         report_work("bootstrap",health_execution.bootstrap);
         verify_sources();
-        if(observation) cal.bind_health(staging/"health.yaml");
+        if(observation && !cal.uses_channel_memory()) cal.bind_health(staging/"health.yaml");
         publish_performance(staging);publication.publish();return 0;
     }
-    const fs::path health_path=request["health"]["path"].as<std::string>();
-    const auto [health_sha,health_record]=ledger.read_yaml(health_path,request["health"]["sha256"].as<std::string>());
-    require(health_record["effective_config_sha256"].as<std::string>()==config_sha,"POINT health config differs");
-    const auto health=point_restore_health(health_record,threshold);require(health->evidence_handle()->networks().size()==networks.size(),"POINT health network cohort differs");
+    std::string health_sha;
+    std::shared_ptr<const PointOpticalPlan> health;
+    if(cal.uses_channel_memory()) {
+        health_sha=cal.health_sha();health=cal.health_plan();
+        performance["health_generation_sha256"]=health_sha;
+        performance["health_transport"]="observation-memory";
+    } else {
+        const fs::path health_path=request["health"]["path"].as<std::string>();
+        const auto saved=ledger.read_yaml(health_path,request["health"]["sha256"].as<std::string>());
+        require(saved.second["effective_config_sha256"].as<std::string>()==config_sha,"POINT health config differs");
+        health_sha=saved.first;health=point_restore_health(saved.second,threshold);
+    }
+    require(health && health->evidence_handle()->networks().size()==networks.size(),"POINT health network cohort differs");
     const int cycle=request["cycle_index"].as<int>();require(cycle>=0 && (cycle==0 || (cfg["feedback"]["enabled"].as<bool>() && cycle<=cfg["feedback"]["max_iters"].as<int>())),"POINT cycle outside configured budget");
     require((cycle==0 && (!request["models"] || request["models"].size()==0)) || (cycle>0 && request["models"].size()==3),"POINT feedback model set differs");
     std::string recovery_role,recovery_sha;YAML::Node recovery;

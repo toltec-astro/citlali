@@ -102,10 +102,15 @@ double field(const auto &row,const std::string &name) {
   if(auto value=std::get_if<std::int64_t>(&it->second)) return *value;
   return NAN;
 }
-void write_yaml(const fs::path &p,const YAML::Node &node,std::string *published_sha=nullptr) {
+std::string yaml_bytes(const YAML::Node &node) {
   YAML::Emitter serialized;serialized.SetDoublePrecision(17);serialized<<node;
-  std::ofstream out(p);out<<serialized.c_str()<<'\n';out.close();require(bool(out),"required output failed: "+p.string());
-  if(published_sha)*published_sha=citlali::utils::sha256(std::string(serialized.c_str())+'\n');
+  require(serialized.good(),"cannot serialize required YAML");
+  return std::string(serialized.c_str())+'\n';
+}
+void write_yaml(const fs::path &p,const YAML::Node &node,std::string *published_sha=nullptr) {
+  const auto bytes=yaml_bytes(node);
+  std::ofstream out(p);out<<bytes;out.close();require(bool(out),"required output failed: "+p.string());
+  if(published_sha)*published_sha=citlali::utils::sha256(bytes);
 }
 YAML::Node range(RtcEventRange r) {YAML::Node n;n.push_back(r.first);n.push_back(r.past_last);return n;}
 void write_matrix(const fs::path &p,const auto &m) {
@@ -727,13 +732,22 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
     // scientific input. A changed code/config/VAL requires a new selection.
     const auto binding=citlali::utils::sha256(std::string(CITLALI_GIT_REVISION)+"\n"+
         checked_config_sha()+"\nVAL-generation=0\n"+mapping->paired_xr_record_id);
-    if(recovered_scans) write_yaml(output/"processing-scans.yaml",recovered_scans->receipt);
-    std::ofstream native_times(output/"native-time.f64",std::ios::binary);
-    for(auto row=axis->first_native_row();row<axis->past_last_native_row();++row){
-      double t=axis->native_identity(row).reconstructed_time_unix_sec();
-      native_times.write(reinterpret_cast<const char*>(&t),8);
+    if(point_cal) {
+      require(recovered_scans.has_value(),"POINT requires realized processing scans");
+      point_cal->scans=recovered_scans->receipt;
+      point_cal->processing_sha=citlali::utils::sha256(yaml_bytes(point_cal->scans));
+      point_cal->native_times.reserve(rows);
+      for(auto row=axis->first_native_row();row<axis->past_last_native_row();++row)
+        point_cal->native_times.push_back(axis->native_identity(row).reconstructed_time_unix_sec());
+    } else {
+      if(recovered_scans) write_yaml(output/"processing-scans.yaml",recovered_scans->receipt);
+      std::ofstream native_times(output/"native-time.f64",std::ios::binary);
+      for(auto row=axis->first_native_row();row<axis->past_last_native_row();++row){
+        double t=axis->native_identity(row).reconstructed_time_unix_sec();
+        native_times.write(reinterpret_cast<const char*>(&t),8);
+      }
+      native_times.close();require(bool(native_times),"native time export failed");
     }
-    native_times.close();require(bool(native_times),"native time export failed");
     YAML::Node receipt;
     if(source_probe_record)receipt["rtc_source_probe"]=source_probe_record;
     if(quarantine_path) {
@@ -745,7 +759,7 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
     receipt["schema"]="rtc-multidetector-learning-v1";
     receipt["source_revision"]=std::string(CITLALI_GIT_REVISION);
     receipt["configuration_sha256"]=checked_config_sha();
-    if(recovered_scans)receipt["processing_scans_sha256"]=citlali::utils::sha256_file(output/"processing-scans.yaml");
+    if(recovered_scans)receipt["processing_scans_sha256"]=point_cal?point_cal->processing_sha:citlali::utils::sha256_file(output/"processing-scans.yaml");
     if(filter_input) {
       receipt["explicit_array_lowpass"]=YAML::Clone(cfg["filter_plan"]);
       receipt["explicit_array_lowpass"]["array"]=health_array;
@@ -774,7 +788,7 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
     receipt["cadence_interval_seconds"]=spectral->network(nw).interval_seconds;
     receipt["physical_runs"]=runs.size();
     if(cfg["fixed11"])receipt["fixed11_applicability"]=cfg["fixed11"];
-    receipt["native_time_sha256"]=citlali::utils::sha256_file(output/"native-time.f64");
+    receipt["native_time_sha256"]=point_cal?citlali::cli::detail::PointCalChannel::digest(point_cal->native_times):citlali::utils::sha256_file(output/"native-time.f64");
     for(const auto &run:runs)receipt["native_runs"].push_back(range({run.first_native_row,run.past_last_native_row}));
     for(std::size_t d=0;d<channels.size();++d){
       YAML::Node entry;entry["detector"]=d;entry["channel"]=channels[d];
@@ -816,81 +830,92 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
       }
       event_table.push_back(entry);
     }
-    write_yaml(output/"events.yaml",event_table);
-    receipt["events_sha256"]=citlali::utils::sha256_file(output/"events.yaml");
+    if(!point_cal) {
+      write_yaml(output/"events.yaml",event_table);
+      receipt["events_sha256"]=citlali::utils::sha256_file(output/"events.yaml");
+    }
     // Diagnostic-only publication of the immutable Learn/Consider chain.
     // Original and reassessed facts remain separate, with explicit causes.
-    YAML::Node step_chain(YAML::NodeType::Sequence);
-    auto step_transition = [&](const RtcJumpTransition &t) {
-      YAML::Node n; n["available"]=t.available(); n["cause"]=static_cast<int>(t.cause);
-      n["affected"]=range(t.affected); n["examined"]=range(t.examined);
-      if(t.affected.present()){n["physical_begin_unix"]=t.physical_bound.begin_unix_sec;n["physical_end_unix"]=t.physical_bound.end_unix_sec;}
-      n["frozen_residual_scale"]=t.frozen_residual_scale;
-      n["invalid_rows"]=t.invalid_rows; n["excluded_rows"]=t.excluded_rows;
-      n["observation_truncated"]=t.observation_truncated;
-      n["acquisition_truncated"]=t.acquisition_truncated;
-      for(const auto &q:t.confirmations){YAML::Node x;x["rows"]=range(q.rows);
-        if(q.rows.present()){x["physical_begin_unix"]=q.physical.begin_unix_sec;x["physical_end_unix"]=q.physical.end_unix_sec;}
-        x["also_matches_other_reference"]=q.also_matches_other_reference;n["confirmations"].push_back(x);}
-      return n;
-    };
-    for(std::size_t i=0;i<event_evidence->events().size();++i){
-      const auto &e=event_evidence->events()[i];YAML::Node row;
-      row["event"]=i;row["network"]=nw;row["detector"]=e.detector;
-      row["candidate_indices"]=e.candidates;
-      for(auto j:e.candidates){const auto &v=spikes->candidates()[j];YAML::Node q;
-        q["index"]=j;q["earlier_row"]=v.earlier_row;q["later_row"]=v.later_row;
-        q["coordinate"]=v.coordinate==NativeReadoutCoordinate::x?"x":"r";
-        q["noise_block"]=v.noise_block_index;q["difference"]=v.difference;q["centered_difference"]=v.centered_difference;
-        q["absolute_score"]=v.absolute_score;row["candidates"].push_back(q);
-      }
-      for(std::size_t c=0;c<2;++c){YAML::Node n;
-        const auto &amp=amplitude->coordinates()[i][c];
-        const auto &shortfit=short_evidence->coordinates()[i][c];
-        const auto &ad=admitted->groups()[i].coordinates[c];
-        n["amplitude_cause"]=static_cast<int>(amp.cause);n["sigma_delta"]=amp.sigma_delta;
-        n["offset_sigma"]=amp.offset_sigma;n["primary_pre_scale"]=e.background[c].pre_scale_fit.scale;
-        n["short_fit_cause"]=static_cast<int>(shortfit.cause);n["short_offset"]=shortfit.cubic_with_offset.offset;
-        n["consistency_cause"]=static_cast<int>(consistency->coordinates()[i][c].cause);
-        n["transition_request_cause"]=static_cast<int>(transition_request->coordinates()[i][c]);
-        n["original_transition"]=step_transition(transition->coordinates()[i][c]);
-        n["admission_cause"]=static_cast<int>(ad.cause);n["admitted"]=ad.admitted();
-        n["reassessed"]=ad.reassessed;n["admitted_affected"]=range(ad.affected);
-        n["reassessment_available"]=false;
-        for(std::size_t j=0;j<support->audits().size();++j)if(support->audits()[j].event==i){
-          n["reassessment_available"]=true;
-          n["reassessment_cause"]=static_cast<int>(reassessment->coordinates()[j][c]);
-          n["refit_requested"]=refit_request->selections()[j].requested;
-          n["remeasure_requested"]=remeasure_request->selections()[j][c].requested;
-          for(auto r:refit_request->selections()[j].paired_mask)n["paired_refit_mask"].push_back(range(r));
-          n["refit_primary_available"]=refit->coordinates()[j][c].primary.available();
-          n["refit_short_available"]=refit->coordinates()[j][c].shorter.available();
-          for(const auto &side:refit->coordinates()[j][c].shorter.support){YAML::Node q;q["usable"]=side.usable;q["rows"]=range({side.first_used,side.last_used+1});n["refit_short_support"].push_back(q);}
-          n["refit_primary_offset"]=refit->coordinates()[j][c].primary.cubic_with_offset.offset;
-          n["refit_short_offset"]=refit->coordinates()[j][c].shorter.cubic_with_offset.offset;
-          n["refit_consistency_cause"]=static_cast<int>(remeasure_request->selections()[j][c].consistency);
-          for(const auto &side:refit->coordinates()[j][c].primary.support){YAML::Node q;q["usable"]=side.usable;q["rows"]=range({side.first_used,side.last_used+1});n["refit_support"].push_back(q);}
-          n["refit_recovery_cause"]=static_cast<int>(refit->coordinates()[j][c].recovery.cause);
-          n["reassessed_transition"]=step_transition(remeasurement->coordinates()[j][c].transition);
+    if(!point_cal) {
+      YAML::Node step_chain(YAML::NodeType::Sequence);
+      auto step_transition = [&](const RtcJumpTransition &t) {
+        YAML::Node n; n["available"]=t.available(); n["cause"]=static_cast<int>(t.cause);
+        n["affected"]=range(t.affected); n["examined"]=range(t.examined);
+        if(t.affected.present()){n["physical_begin_unix"]=t.physical_bound.begin_unix_sec;n["physical_end_unix"]=t.physical_bound.end_unix_sec;}
+        n["frozen_residual_scale"]=t.frozen_residual_scale;
+        n["invalid_rows"]=t.invalid_rows; n["excluded_rows"]=t.excluded_rows;
+        n["observation_truncated"]=t.observation_truncated;
+        n["acquisition_truncated"]=t.acquisition_truncated;
+        for(const auto &q:t.confirmations){YAML::Node x;x["rows"]=range(q.rows);
+          if(q.rows.present()){x["physical_begin_unix"]=q.physical.begin_unix_sec;x["physical_end_unix"]=q.physical.end_unix_sec;}
+          x["also_matches_other_reference"]=q.also_matches_other_reference;n["confirmations"].push_back(x);}
+        return n;
+      };
+      for(std::size_t i=0;i<event_evidence->events().size();++i){
+        const auto &e=event_evidence->events()[i];YAML::Node row;
+        row["event"]=i;row["network"]=nw;row["detector"]=e.detector;
+        row["candidate_indices"]=e.candidates;
+        for(auto j:e.candidates){const auto &v=spikes->candidates()[j];YAML::Node q;
+          q["index"]=j;q["earlier_row"]=v.earlier_row;q["later_row"]=v.later_row;
+          q["coordinate"]=v.coordinate==NativeReadoutCoordinate::x?"x":"r";
+          q["noise_block"]=v.noise_block_index;q["difference"]=v.difference;q["centered_difference"]=v.centered_difference;
+          q["absolute_score"]=v.absolute_score;row["candidates"].push_back(q);
         }
-        row["coordinates"].push_back(n);
+        for(std::size_t c=0;c<2;++c){YAML::Node n;
+          const auto &amp=amplitude->coordinates()[i][c];
+          const auto &shortfit=short_evidence->coordinates()[i][c];
+          const auto &ad=admitted->groups()[i].coordinates[c];
+          n["amplitude_cause"]=static_cast<int>(amp.cause);n["sigma_delta"]=amp.sigma_delta;
+          n["offset_sigma"]=amp.offset_sigma;n["primary_pre_scale"]=e.background[c].pre_scale_fit.scale;
+          n["short_fit_cause"]=static_cast<int>(shortfit.cause);n["short_offset"]=shortfit.cubic_with_offset.offset;
+          n["consistency_cause"]=static_cast<int>(consistency->coordinates()[i][c].cause);
+          n["transition_request_cause"]=static_cast<int>(transition_request->coordinates()[i][c]);
+          n["original_transition"]=step_transition(transition->coordinates()[i][c]);
+          n["admission_cause"]=static_cast<int>(ad.cause);n["admitted"]=ad.admitted();
+          n["reassessed"]=ad.reassessed;n["admitted_affected"]=range(ad.affected);
+          n["reassessment_available"]=false;
+          for(std::size_t j=0;j<support->audits().size();++j)if(support->audits()[j].event==i){
+            n["reassessment_available"]=true;
+            n["reassessment_cause"]=static_cast<int>(reassessment->coordinates()[j][c]);
+            n["refit_requested"]=refit_request->selections()[j].requested;
+            n["remeasure_requested"]=remeasure_request->selections()[j][c].requested;
+            for(auto r:refit_request->selections()[j].paired_mask)n["paired_refit_mask"].push_back(range(r));
+            n["refit_primary_available"]=refit->coordinates()[j][c].primary.available();
+            n["refit_short_available"]=refit->coordinates()[j][c].shorter.available();
+            for(const auto &side:refit->coordinates()[j][c].shorter.support){YAML::Node q;q["usable"]=side.usable;q["rows"]=range({side.first_used,side.last_used+1});n["refit_short_support"].push_back(q);}
+            n["refit_primary_offset"]=refit->coordinates()[j][c].primary.cubic_with_offset.offset;
+            n["refit_short_offset"]=refit->coordinates()[j][c].shorter.cubic_with_offset.offset;
+            n["refit_consistency_cause"]=static_cast<int>(remeasure_request->selections()[j][c].consistency);
+            for(const auto &side:refit->coordinates()[j][c].primary.support){YAML::Node q;q["usable"]=side.usable;q["rows"]=range({side.first_used,side.last_used+1});n["refit_support"].push_back(q);}
+            n["refit_recovery_cause"]=static_cast<int>(refit->coordinates()[j][c].recovery.cause);
+            n["reassessed_transition"]=step_transition(remeasurement->coordinates()[j][c].transition);
+          }
+          row["coordinates"].push_back(n);
+        }
+        step_chain.push_back(row);
       }
-      step_chain.push_back(row);
+      write_yaml(output/"step-evidence.yaml",step_chain);
     }
-    write_yaml(output/"step-evidence.yaml",step_chain);
-
-    std::vector<std::pair<std::string,fs::path>> receipt_sections{{"spectra",output/"original-spectra.yaml"}};
-    std::ofstream original_spectra(receipt_sections.front().second);
-    std::ofstream psd(output/"original-psd.f64",std::ios::binary);
-    for(const auto &s:spectral->spectra()){
-      psd.write(reinterpret_cast<const char*>(s.psd.data()),s.psd.size()*8);
-      rtc_spectrum_record(original_spectra,s,channels[s.detector],false);
+    unsigned rtc_export_files=0;
+    std::vector<std::pair<std::string,fs::path>> receipt_sections;
+    if(point_cal) {
+      for(const auto *key:{"configuration_sha256","original_parent","native_time_sha256","rows","network",
+                           "observation","detectors","native_runs","learning_binding","processing_scans_sha256"})
+        point_cal->learning[key]=receipt[key];
+    } else {
+      receipt_sections.emplace_back("spectra",output/"original-spectra.yaml");
+      std::ofstream original_spectra(receipt_sections.front().second);
+      std::ofstream psd(output/"original-psd.f64",std::ios::binary);
+      for(const auto &s:spectral->spectra()){
+        psd.write(reinterpret_cast<const char*>(s.psd.data()),s.psd.size()*8);
+        rtc_spectrum_record(original_spectra,s,channels[s.detector],false);
+      }
+      psd.close();require(bool(psd),"original spectrum output failed");
+      original_spectra.close();require(bool(original_spectra),"original spectrum metadata output failed");
+      // Preserve the learning product even if subsequent explicit Consider
+      // refuses missing required scan/support bindings. This is not Apply success.
+      rtc_yaml_map(output/"learning-receipt.yaml",receipt,receipt_sections);
     }
-    psd.close();require(bool(psd),"original spectrum output failed");
-    original_spectra.close();require(bool(original_spectra),"original spectrum metadata output failed");
-    // Preserve the learning product even if subsequent explicit Consider
-    // refuses missing required scan/support bindings. This is not Apply success.
-    rtc_yaml_map(output/"learning-receipt.yaml",receipt,receipt_sections);
     performance.mark("initial_evidence_publication_complete");
     if(argc==4 || recovered_scans){
       const auto considered_at=std::chrono::steady_clock::now();
@@ -932,9 +957,14 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
         for(auto rows:d.rows)n["paired_exclusions"].push_back(range(rows));
         jump_record["detectors"].push_back(n);
       }
-      write_yaml(output/"jump-exclusions.yaml",jump_record);
-      receipt["jump_processing_support_file"]="jump-exclusions.yaml";
-      receipt["jump_processing_support_sha256"]=citlali::utils::sha256_file(output/"jump-exclusions.yaml");
+      std::string jump_evidence_sha;
+      if(point_cal) {
+        jump_evidence_sha=citlali::utils::sha256(yaml_bytes(jump_record));
+      } else {
+        write_yaml(output/"jump-exclusions.yaml",jump_record,&jump_evidence_sha);
+        receipt["jump_processing_support_file"]="jump-exclusions.yaml";
+        receipt["jump_processing_support_sha256"]=jump_evidence_sha;
+      }
       auto transient=RtcTransientExclusionPlan::consider(events->original_screening_handle(),jumps,val,23);
       std::vector<std::vector<std::shared_ptr<const RtcDonorFillPlan>>> donors(channels.size());
       for(const auto &event:selected.events){
@@ -975,7 +1005,7 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
             if(r.donor->cause()==RtcDonorFillCause::ready)donors[r.detector].push_back(r.donor);}
           decisions.push_back(n);
         }
-        write_yaml(output/"event-decisions.yaml",decisions);
+        if(!point_cal)write_yaml(output/"event-decisions.yaml",decisions);
         YAML::Node domains;
         for(const auto &f:selected.facts->detectors()){
           YAML::Node d;d["channel"]=channels[f.detector];d["factor_identity"]=f.factor_identity;
@@ -989,7 +1019,7 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
           for(auto r:d.rows)n["excluded"].push_back(range(r));
           domains["transient_exclusions"].push_back(n);
         }
-        write_yaml(output/"support-decisions.yaml",domains);
+        if(!point_cal)write_yaml(output/"support-decisions.yaml",domains);
       }
       receipt["event_selection_state"]=decision ? "runtime-all-event-dispositions;natural-isolated-policy-unavailable" : "explicit-reviewed-selection";
       receipt["stable_support_state"]=decision ? "runtime-original-evidence-boundary-and-support-resolution" : "explicit-reviewed-support";
@@ -1083,7 +1113,7 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
         drops["selected_for_exclusion"]=dropped;
         drops["retained_after_decision"]=channels.size()-empty-dropped;
         drops["initial_attempt"]=complete->attempt();
-        drops["jump_evidence_sha256"]=citlali::utils::sha256_file(root_output/"jump-exclusions.yaml");
+        drops["jump_evidence_sha256"]=jump_evidence_sha;
         write_yaml(root_output/"detector-drops.yaml",drops);
         if(exclusion->has_drops()) {
           // One frozen membership decision, then one original-input application.
@@ -1194,33 +1224,45 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
       if(argc==4)receipt["review_sha256"]=citlali::utils::sha256_file(argv[3]);
       for(std::size_t d=0;d<channels.size();++d){
         const auto &r=*result->detector_results()[d];const auto stem=std::to_string(channels[d]);
-        write_matrix(output/(stem+"-conditioned.f64"),r.conditioned_native_pair());
-        write_matrix(output/(stem+"-filtered.f64"),r.filtered_native_pair());
-        std::vector<std::uint8_t> states,centers,support,speed,causes;
-        states.reserve(rows);centers.reserve(rows);support.reserve(rows);speed.reserve(rows);causes.reserve(rows);
         std::size_t replaced=0,excluded=0;
-        for(auto row=axis->first_native_row();row<axis->past_last_native_row();++row){
-          std::uint8_t b=0;
-          if(r.coordinate_stage_available(NativeReadoutCoordinate::x,row,true))b|=1;
-          if(r.coordinate_stage_available(NativeReadoutCoordinate::r,row,true))b|=2;
-          if(r.representative_replaced(row)){b|=4;++replaced;}
-          if(r.requires_representative_exclusion(row)){b|=8;++excluded;}
-          if(r.replacement_influence(row,true))b|=16;
-          if(r.unrepaired_influence(row,true))b|=32;
-          states.push_back(b);centers.push_back(r.map_center_admitted(row));
+        if(!point_cal) {
+          write_matrix(output/(stem+"-conditioned.f64"),r.conditioned_native_pair());
+          write_matrix(output/(stem+"-filtered.f64"),r.filtered_native_pair());
+          std::vector<std::uint8_t> states,centers,support,speed,causes;
+          states.reserve(rows);centers.reserve(rows);support.reserve(rows);speed.reserve(rows);causes.reserve(rows);
+          for(auto row=axis->first_native_row();row<axis->past_last_native_row();++row){
+            std::uint8_t b=0;
+            if(r.coordinate_stage_available(NativeReadoutCoordinate::x,row,true))b|=1;
+            if(r.coordinate_stage_available(NativeReadoutCoordinate::r,row,true))b|=2;
+            if(r.representative_replaced(row)){b|=4;++replaced;}
+            if(r.requires_representative_exclusion(row)){b|=8;++excluded;}
+            if(r.replacement_influence(row,true))b|=16;
+            if(r.unrepaired_influence(row,true))b|=32;
+            states.push_back(b);centers.push_back(r.map_center_admitted(row));
+          }
+          for(std::size_t i=0;i<plans[d]->input_causes().size();++i){
+            support.push_back(static_cast<std::uint8_t>(plans[d]->support_causes()[i]));
+            speed.push_back(static_cast<std::uint8_t>(plans[d]->speed_restrictions()[i]));
+          }
+          for(auto cause:r.causes())causes.push_back(static_cast<std::uint8_t>(cause));
+          using citlali::cli::detail::write_native_binary;
+          write_native_binary<std::uint8_t>(output/(stem+"-state.u8"),states);
+          write_native_binary<std::uint8_t>(output/(stem+"-map-center.u8"),centers);
+          write_native_binary<std::uint8_t>(output/(stem+"-support-causes.u8"),support);
+          write_native_binary<std::uint8_t>(output/(stem+"-speed-evidence.u8"),speed);
+          write_native_binary<std::uint8_t>(output/(stem+"-causes.u8"),causes);
+          write_native_binary<TimestreamNativeRow>(output/(stem+"-rows.i64"),r.output_native_rows());
+          std::ofstream inputs(output/(stem+"-input-causes.u8"),std::ios::binary);
+          for(auto cause:plans[d]->input_causes()){const auto c=static_cast<std::uint8_t>(cause);inputs.write(reinterpret_cast<const char*>(&c),1);}
+          inputs.close();require(bool(inputs),"input cause output failed");
+          rtc_export_files+=9;
         }
-        for(std::size_t i=0;i<plans[d]->input_causes().size();++i){
-          support.push_back(static_cast<std::uint8_t>(plans[d]->support_causes()[i]));
-          speed.push_back(static_cast<std::uint8_t>(plans[d]->speed_restrictions()[i]));
+        if(point_cal) {
+          YAML::Node column;column["channel"]=channels[d];
+          column["factor"]=filter_input ? filter_input->factor : 2;column["phase_native_rows"]=0;
+          arm["realized_detectors"].push_back(column);
+          continue;
         }
-        for(auto cause:r.causes())causes.push_back(static_cast<std::uint8_t>(cause));
-        using citlali::cli::detail::write_native_binary;
-        write_native_binary<std::uint8_t>(output/(stem+"-state.u8"),states);
-        write_native_binary<std::uint8_t>(output/(stem+"-map-center.u8"),centers);
-        write_native_binary<std::uint8_t>(output/(stem+"-support-causes.u8"),support);
-        write_native_binary<std::uint8_t>(output/(stem+"-speed-evidence.u8"),speed);
-        write_native_binary<std::uint8_t>(output/(stem+"-causes.u8"),causes);
-        write_native_binary<TimestreamNativeRow>(output/(stem+"-rows.i64"),r.output_native_rows());
         YAML::Node record;record["channel"]=channels[d];record["replaced_rows"]=replaced;
         record["representative_excluded_rows"]=excluded;
         record["output_rows"]=r.output_native_rows().size();record["factor"]=filter_input ? filter_input->factor : 2;record["phase_native_rows"]=0;
@@ -1239,19 +1281,17 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
             for(std::size_t i=0;i<m.central_count;++i)cell["central_channels"].push_back(channels[m.central[i]]);
             dr["median_population"].push_back(cell);}
           record["donors"].push_back(dr);}
-        std::ofstream inputs(output/(stem+"-input-causes.u8"),std::ios::binary);
-        for(auto cause:plans[d]->input_causes()){const auto c=static_cast<std::uint8_t>(cause);inputs.write(reinterpret_cast<const char*>(&c),1);}
-        inputs.close();require(bool(inputs),"input cause output failed");
         arm["realized_detectors"].push_back(record);
       }
-      performance.mark("RTC_arrays_exported");
+      performance.mark(point_cal?"RTC_arrays_in_memory":"RTC_arrays_exported");
       std::vector<std::shared_ptr<const RtcConsequenceEvidence>> consequences;
       if(cfg["consequence_study"]) {
         consequences=run_consequence_study(cfg["consequence_study"],output/"purpose-study",channels,result);
         arm["purpose_consequence_evidence_products"]=consequences.size();
       }
       const auto relearned_path=output/"relearned-stages.yaml";
-      std::ofstream relearned_stream(relearned_path);
+      std::ofstream relearned_stream;
+      if(!point_cal)relearned_stream.open(relearned_path);
       const auto relearn_at=std::chrono::steady_clock::now();
       for(bool lowpass:{false,true}){
         auto conditioned=(lowpass && cached_final_spectral) ? cached_final_spectral : RtcNativeSpectralEvidence::learn_conditioned(result->native_product(lowpass,val),val,cadence,1100+lowpass,
@@ -1269,24 +1309,26 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
         const auto reassessment=RtcPipelineReassessment::consider(result,considered,(consequences.empty()?1300:9000)+lowpass,outcome,
             lowpass?consequences:std::vector<std::shared_ptr<const RtcConsequenceEvidence>>{});
         YAML::Node stage;stage["conditioned_grid_policy"]=conditioned->grid_policy_identity();stage["after_lowpass"]=lowpass;stage["producer_attempt"]=complete->attempt();
-        const auto stage_path=output/(lowpass ? "post-lowpass-psd.f64" : "post-notch-psd.f64");
-        std::ofstream stage_psd(stage_path,std::ios::binary);
-        stage["classification_authorized"]=reassessment->classification_authorized;
-        const auto outcome_name=lowpass ? "post-lowpass-outcome" : "post-notch-outcome";
-        write_treatment_outcome(output,outcome_name,*reassessment->outcome_handle(),channels);
-        performance.mark(lowpass?"post_lowpass_outcome_exported":"post_notch_outcome_exported");
-        stage["matched_outcome_file"]=std::string(outcome_name)+".yaml";
-        stage["matched_outcome_seconds"]=outcome_seconds;
-        const auto spectra_path=output/(lowpass?"post-lowpass-spectra.yaml":"post-notch-spectra.yaml");
-        std::ofstream metadata(spectra_path);
-        for(const auto &s:conditioned->spectra()) {
-          stage_psd.write(reinterpret_cast<const char*>(s.psd.data()),s.psd.size()*8);
-          rtc_spectrum_record(metadata,s,channels[s.detector],true);
+        if(!point_cal) {
+          const auto stage_path=output/(lowpass ? "post-lowpass-psd.f64" : "post-notch-psd.f64");
+          std::ofstream stage_psd(stage_path,std::ios::binary);
+          stage["classification_authorized"]=reassessment->classification_authorized;
+          const auto outcome_name=lowpass ? "post-lowpass-outcome" : "post-notch-outcome";
+          write_treatment_outcome(output,outcome_name,*reassessment->outcome_handle(),channels);
+          performance.mark(lowpass?"post_lowpass_outcome_exported":"post_notch_outcome_exported");
+          stage["matched_outcome_file"]=std::string(outcome_name)+".yaml";
+          stage["matched_outcome_seconds"]=outcome_seconds;
+          const auto spectra_path=output/(lowpass?"post-lowpass-spectra.yaml":"post-notch-spectra.yaml");
+          std::ofstream metadata(spectra_path);
+          for(const auto &s:conditioned->spectra()) {
+            stage_psd.write(reinterpret_cast<const char*>(s.psd.data()),s.psd.size()*8);
+            rtc_spectrum_record(metadata,s,channels[s.detector],true);
+          }
+          metadata.close();stage_psd.close();require(bool(metadata)&&bool(stage_psd),"conditioned spectrum output failed");
+          stage["numerical_psd_sha256"]=citlali::utils::sha256_file(stage_path);
+          relearned_stream<<"-\n";rtc_yaml_node(relearned_stream,stage,2);
+          relearned_stream<<"  spectra:\n";rtc_yaml_file(relearned_stream,spectra_path,4);
         }
-        metadata.close();stage_psd.close();require(bool(metadata)&&bool(stage_psd),"conditioned spectrum output failed");
-        stage["numerical_psd_sha256"]=citlali::utils::sha256_file(stage_path);
-        relearned_stream<<"-\n";rtc_yaml_node(relearned_stream,stage,2);
-        relearned_stream<<"  spectra:\n";rtc_yaml_file(relearned_stream,spectra_path,4);
         if(lowpass) {
           // Explicit offline owner selection. No config entry means unavailable,
           // never an implicit retain based on a scalar residual or empty list.
@@ -1322,7 +1364,7 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
         }
       }
       performance.mark("relearning_complete");
-      relearned_stream.close();require(bool(relearned_stream),"relearning metadata output failed");
+      if(!point_cal) {relearned_stream.close();require(bool(relearned_stream),"relearning metadata output failed");}
       arm["conditioned_relearning_seconds"]=std::chrono::duration<double>(std::chrono::steady_clock::now()-relearn_at).count();
       if(terminal_requested) {
         const auto started=std::chrono::steady_clock::now();
@@ -1379,9 +1421,16 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
         arm["terminal"]=record;
       }
       arm["attempt"]=result->plan_handle()->attempt();arm["original_parent"]=mapping->paired_xr_record_id;
-      rtc_yaml_map(output/"apply-receipt.yaml",arm,{{"relearned",relearned_path}});
-      receipt_sections.emplace_back(continuity?"donor_continuity":"exclusion_control",output/"apply-receipt.yaml");
-      receipt[continuity ? "donor_continuity" : "exclusion_control"]=arm;
+      if(point_cal) {
+        for(const auto *key:{"original_parent","attempt","realized_detectors","output_grid"})
+          point_cal->apply[key]=arm[key];
+        point_cal->apply_sha=citlali::utils::sha256(yaml_bytes(point_cal->apply));
+        receipt["donor_continuity"]["terminal"]=arm["terminal"];
+      } else {
+        rtc_yaml_map(output/"apply-receipt.yaml",arm,{{"relearned",relearned_path}});
+        receipt_sections.emplace_back(continuity?"donor_continuity":"exclusion_control",output/"apply-receipt.yaml");
+        receipt[continuity ? "donor_continuity" : "exclusion_control"]=arm;
+      }
       }
     }
     performance.mark("arm_receipts_written");
@@ -1412,7 +1461,18 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
     if(development && endpoint==DevelopmentTerminal::ptc &&
         (receipt["PTC"]["failed_fits"].as<std::size_t>() || !receipt["PTC"]["available"].as<std::size_t>()))
       receipt["status"]="UNAVAILABLE-PTC-fit-or-output;upstream-preserved";
-    rtc_yaml_map(output/"receipt.yaml",receipt,receipt_sections);
+    if(configured && endpoint==DevelopmentTerminal::cal)receipt["rtc_detector_export_files"]=rtc_export_files;
+    if(point_cal) {
+      require(receipt["completed_through"].as<std::string>()=="CAL" && !receipt["legacy_fallback_performed"].as<bool>()
+              && point_cal->learning["original_parent"].as<std::string>()==point_cal->apply["original_parent"].as<std::string>(),
+              "POINT handoff has incomplete RTC/CAL parents");
+      point_cal->rtc_export_files=rtc_export_files;
+      point_cal->generation_sha=citlali::utils::sha256(point_cal->input_sha+"\n"+
+          citlali::utils::sha256(yaml_bytes(point_cal->learning))+"\n"+point_cal->apply_sha+"\n"+
+          point_cal->receipt_sha+"\n"+point_cal->processing_sha);
+    } else {
+      rtc_yaml_map(output/"receipt.yaml",receipt,receipt_sections);
+    }
     performance.mark("root_receipt_written");
     if(development)citlali::cli::log_native_run_summary(citlali::cli::native_result_summary(nw,receipt));
     std::cout<<receipt["status"].as<std::string>()<<" detectors="<<channels.size()<<" events="<<event_table.size()<<" jumps="<<jump_count<<'\n';
@@ -1648,6 +1708,25 @@ int execute_successor_observation(const YAML::Node &request,const fs::path &outp
     n["wall_seconds"]=seconds[i];n["output"]=output_layout.network(i).root.string();
     n["input"]=request["networks"][i]["input"];
     n["state"]=codes[i]==0?"completed":codes[i]==2?"partial-or-unavailable-preserved":"failed-preserved";
+    if(point_cal && codes[i]==0) {
+      const auto &product=point_cal->producer_networks().at(ids[i]);
+      n["point_handoff"]=product.binding();
+      n["rtc_detector_export_files"]=product.rtc_export_files;
+      n["cal_sha256"]=product.receipt_sha;n["processing_sha256"]=product.processing_sha;
+      n["learning_binding"]=product.learning["learning_binding"];n["original_parent"]=product.learning["original_parent"];
+      n["native_time_sha256"]=product.learning["native_time_sha256"];
+      n["channels"]=product.channels.size();
+      n["selected_child_APT"]=product.cal["selected_child_APT"];
+      // Ordered ASCII records are reproducible directly from saved CAL declarations.
+      std::string inventory;
+      for(const auto &det:product.cal["detectors"]) {
+        const auto channel=det["channel"].as<int>();const auto stem="channel-"+std::to_string(channel);
+        inventory+=std::to_string(channel)+" "+det["selected_row"].as<std::string>()+" "+det["available"].as<std::string>();
+        for(const auto *suffix:{"-value.f64","-slot.i64","-causes.u16"})inventory+=" "+det["files"][stem+suffix].as<std::string>();
+        inventory+='\n';
+      }
+      n["cal_payload_inventory_sha256"]=citlali::utils::sha256(inventory);
+    }
     record["networks"].push_back(n);
     if(codes[i]==1 || codes[i]<0)exit=1;else if(codes[i]==2 && !exit)exit=2;
   }

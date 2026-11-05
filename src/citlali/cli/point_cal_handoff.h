@@ -46,6 +46,30 @@ struct PointCalNetwork {
     std::filesystem::path root,input_path;
     std::string input_sha,receipt_sha;
     std::vector<PointCalChannel> channels;
+    // Produced by this network's worker, sealed before the observation joins.
+    YAML::Node learning, apply, cal, scans;
+    std::vector<double> native_times;
+    std::string processing_sha, apply_sha, generation_sha;
+    unsigned rtc_export_files=0;
+
+    void require_live_generation(const YAML::Node &request) const {
+        if (generation_sha.size()!=64 || request["transport"].as<std::string>()!="observation-memory" ||
+            request["handoff_sha256"].as<std::string>()!=generation_sha ||
+            request["root"].as<std::string>()!=root.string() ||
+            request["input"]["path"].as<std::string>()!=input_path.string() ||
+            request["input"]["sha256"].as<std::string>()!=input_sha)
+            throw std::runtime_error("POINT RTC handoff generation differs");
+    }
+
+    YAML::Node binding() const {
+        YAML::Node row;
+        row["root"]=root.string();
+        row["input"]["path"]=input_path.string();
+        row["input"]["sha256"]=input_sha;
+        row["transport"]="observation-memory";
+        row["handoff_sha256"]=generation_sha;
+        return row;
+    }
 
     void require_binding(const std::filesystem::path &expected_root,const std::filesystem::path &expected_input,
                          const std::string &input,

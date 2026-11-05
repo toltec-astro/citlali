@@ -1,3 +1,11 @@
+## Configured POINT diagnostic I/O candidate — 2026-11-05
+
+The [combined diagnostic I/O repair](../validation/point_diagnostic_io_2026-11-05/PLAN.md)
+uses the reviewed CAL/APT candidate as its development base. The matched
+six-worker 152389 comparison of that base passed all 18 pair checks. The next
+candidate covers RTC exports, receipt handoff and frozen health. Its owner-run
+software gates and representative comparison are pending.
+
 ## Configured POINT CAL detector handoff candidate — 2026-11-05
 
 The [CAL/APT increment](../validation/point_cal_handoff_2026-11-05/PLAN.md)

@@ -135,6 +135,8 @@ def native_call(
         if "execution" in receipt:
             record["execution"] = receipt["execution"]
             record["execution_receipt"] = bind(observation_path)
+            if session is not None and session.start_at_cal:
+                record["point_handoff"] = [row["point_handoff"] for row in receipt["networks"]] if code == 0 else []
     write_json(dest / "stage.json", record)
     if code or error_lines:
         raise RuntimeError(f"{terminal} failed; see {log_path}\n" + "\n".join(tail))
@@ -316,6 +318,7 @@ def _execute(config_path, native, launch_dir, lifetime):
                     prepared, work, reduction, native, request, record,
                     native_call=native_call if session is None else partial(native_call, session=session),
                     bind=bind, write_json=write_json, array_executor=array_executor,
+                    memory_handoff=cal_session is not None,
                 )
         else:
             owner = REPO / "data/development/bright_point_base_v1/map-owner.json"

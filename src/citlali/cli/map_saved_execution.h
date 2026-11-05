@@ -69,40 +69,52 @@ SavedMapNetwork load_saved_map_network(const YAML::Node &request,MapFileLedger &
                                       const citlali::cli::detail::PointCalNetwork *point_cal=nullptr) {
     SavedMapNetwork out;out.root=request["root"].as<std::string>();out.ptcroot=out.root/"donor-continuity"/"ptc";
     require(out.root.is_absolute(),"MAP source root must be absolute");
-    ledger.bind(out.root/"receipt.yaml",request["receipt_sha256"].as<std::string>());
-    const auto final=map_prefix(out.root/"receipt.yaml");
-    require(final["completed_through"].as<std::string>()==(cal_only?"CAL":"PTC") && !final["legacy_fallback_performed"].as<bool>(),"saved consumer requires its actual completed successor parent stage");
     const fs::path input_path=request["input"]["path"].as<std::string>();
     auto [input_sha,network_request]=ledger.read_yaml(input_path,request["input"]["sha256"].as<std::string>());
-    require(input_sha==final["configuration_sha256"].as<std::string>(),"MAP network receipt/input digest differs");
     out.input=std::move(network_request);
-    ledger.bind(out.root/"learning-receipt.yaml");out.learn=map_prefix(out.root/"learning-receipt.yaml");
-    for(const auto *key:{"configuration_sha256","original_parent","native_time_sha256","rows",
-                         "network","observation","detectors","native_runs"})
-        require(out.learn[key] && final[key] && YAML::Dump(out.learn[key])==YAML::Dump(final[key]),
-                std::string("MAP learning/final identity mismatch: ")+key);
     const auto apply_path=out.root/"donor-continuity"/"apply-receipt.yaml";
-    ledger.bind(apply_path);
-    const std::set<std::string> apply_fields{"original_parent","attempt","realized_detectors","output_grid"};
-    out.apply=map_selected_fields(apply_path,"",apply_fields);
-    const auto final_apply=map_selected_fields(out.root/"receipt.yaml","donor_continuity",apply_fields);
-    for(const auto &key:apply_fields)
-        require(out.apply[key] && final_apply[key] && YAML::Dump(out.apply[key])==YAML::Dump(final_apply[key]),
-                "MAP apply/final identity mismatch: "+key);
-    require(out.apply["original_parent"].as<std::string>()==out.learn["original_parent"].as<std::string>(),"MAP RTC parent mismatch");
-    if(!cal_only) {
-        out.ptc_sha=ledger.bind(out.ptcroot/"receipt.yaml",request["ptc_receipt_sha256"].as<std::string>());
-        out.ptc=YAML::LoadFile((out.ptcroot/"receipt.yaml").string());
+    YAML::Node final;
+    std::string apply_sha;
+    if(point_cal) {
+        require(cal_only,"POINT memory handoff requires the CAL endpoint");
+        point_cal->require_live_generation(request);
+        out.learn=point_cal->learning;out.apply=point_cal->apply;out.cal=point_cal->cal;
+        out.cal_sha=point_cal->receipt_sha;apply_sha=point_cal->apply_sha;
+        require(out.learn["configuration_sha256"].as<std::string>()==input_sha &&
+                out.learn["original_parent"].as<std::string>()==out.apply["original_parent"].as<std::string>(),
+                "POINT RTC/CAL producer identity differs");
+    } else {
+        ledger.bind(out.root/"receipt.yaml",request["receipt_sha256"].as<std::string>());
+        final=map_prefix(out.root/"receipt.yaml");
+        require(final["completed_through"].as<std::string>()==(cal_only?"CAL":"PTC") && !final["legacy_fallback_performed"].as<bool>(),"saved consumer requires its actual completed successor parent stage");
+        require(input_sha==final["configuration_sha256"].as<std::string>(),"MAP network receipt/input digest differs");
+        ledger.bind(out.root/"learning-receipt.yaml");out.learn=map_prefix(out.root/"learning-receipt.yaml");
+        for(const auto *key:{"configuration_sha256","original_parent","native_time_sha256","rows",
+                             "network","observation","detectors","native_runs"})
+            require(out.learn[key] && final[key] && YAML::Dump(out.learn[key])==YAML::Dump(final[key]),
+                    std::string("MAP learning/final identity mismatch: ")+key);
+        apply_sha=ledger.bind(apply_path);
+        const std::set<std::string> apply_fields{"original_parent","attempt","realized_detectors","output_grid"};
+        out.apply=map_selected_fields(apply_path,"",apply_fields);
+        const auto final_apply=map_selected_fields(out.root/"receipt.yaml","donor_continuity",apply_fields);
+        for(const auto &key:apply_fields)
+            require(out.apply[key] && final_apply[key] && YAML::Dump(out.apply[key])==YAML::Dump(final_apply[key]),
+                    "MAP apply/final identity mismatch: "+key);
+        require(out.apply["original_parent"].as<std::string>()==out.learn["original_parent"].as<std::string>(),"MAP RTC parent mismatch");
+        if(!cal_only) {
+            out.ptc_sha=ledger.bind(out.ptcroot/"receipt.yaml",request["ptc_receipt_sha256"].as<std::string>());
+            out.ptc=YAML::LoadFile((out.ptcroot/"receipt.yaml").string());
+        }
+        auto [cal_sha,cal_receipt]=ledger.read_yaml(out.root/"donor-continuity/cal/receipt.yaml",
+            cal_only?request["cal_receipt_sha256"].as<std::string>():out.ptc["source_CAL_receipt_sha256"].as<std::string>());
+        out.cal_sha=std::move(cal_sha);out.cal=std::move(cal_receipt);
     }
-    auto [cal_sha,cal_receipt]=ledger.read_yaml(out.root/"donor-continuity/cal/receipt.yaml",
-        cal_only?request["cal_receipt_sha256"].as<std::string>():out.ptc["source_CAL_receipt_sha256"].as<std::string>());
-    out.cal_sha=std::move(cal_sha);out.cal=std::move(cal_receipt);
     require(point_cal ? out.cal["payload_storage"].as<std::string>("")=="observation-memory"
                       : !out.cal["payload_storage"],"MAP CAL receipt requires its original transport");
     require(out.cal["schema"].as<std::string>()=="citlali-cal-output-v1" &&
         out.cal["unit"].as<std::string>()=="mJy/nominal-beam" &&
         out.cal["input_RTC_attempt"].as<std::uint64_t>()==out.apply["attempt"].as<std::uint64_t>() &&
-        YAML::Dump(final["CAL"])==YAML::Dump(out.cal),"saved CAL/RTC publication differs");
+        (point_cal || YAML::Dump(final["CAL"])==YAML::Dump(out.cal)),"saved CAL/RTC publication differs");
     if(!cal_only) {
     require(out.ptc["schema"].as<std::string>()=="citlali-ptc-output-v2" && out.cal["schema"].as<std::string>()=="citlali-cal-output-v1" &&
         out.ptc["rank"].as<int>()>0 && (out.ptc["method"].as<std::string>()=="observed-als" || (out.ptc["method"].as<std::string>()=="masked-covariance-count-v1" && citlali::cli::experiment_profiles::masked_covariance_count_152430(out.input))) &&
@@ -151,8 +163,14 @@ SavedMapNetwork load_saved_map_network(const YAML::Node &request,MapFileLedger &
         require(f!=verified.fields.end() && f->unit==unit,"MAP selected APT field units differ");
     }
     const auto n=out.learn["rows"].as<std::size_t>();
-    ledger.bind(out.root/"native-time.f64",out.learn["native_time_sha256"].as<std::string>());
-    out.native_times=map_read_array<double>(out.root/"native-time.f64",n);
+    if(point_cal) {
+        out.native_times=point_cal->native_times;
+        require(out.native_times.size()==n && citlali::cli::detail::PointCalChannel::digest(out.native_times)==out.learn["native_time_sha256"].as<std::string>(),
+                "POINT native timing handoff differs");
+    } else {
+        ledger.bind(out.root/"native-time.f64",out.learn["native_time_sha256"].as<std::string>());
+        out.native_times=map_read_array<double>(out.root/"native-time.f64",n);
+    }
     require(n>0 && out.learn["native_runs"][0][0].as<std::int64_t>()==0,"saved MAP native origin unsupported");
     for(std::size_t i=0;i<n;++i)require(std::isfinite(out.native_times[i]) && (!i || out.native_times[i]>out.native_times[i-1]),"MAP native times invalid");
     const auto ldet=out.learn["detectors"],cdet=out.cal["detectors"],adet=out.apply["realized_detectors"],gdet=out.apply["output_grid"]["detectors"];
@@ -183,7 +201,7 @@ SavedMapNetwork load_saved_map_network(const YAML::Node &request,MapFileLedger &
             out.cal_causes.push_back(map_read_array<std::uint16_t>(p,scheduled));
         }
     }
-    out.rtc_identity="sha256:"+ledger.files.at(fs::absolute(apply_path).string())+":attempt="+std::to_string(out.apply["attempt"].as<std::uint64_t>());
+    out.rtc_identity="sha256:"+apply_sha+":attempt="+std::to_string(out.apply["attempt"].as<std::uint64_t>());
     return out;
 }
 struct SavedSegmentPlan {

@@ -37,6 +37,22 @@ TEST(PointCalHandoff, ReceiptBindsChannelValuesSlotsCausesAndNetwork) {
     EXPECT_THROW(network.admit(0,17,3,record),std::runtime_error);
 }
 
+TEST(PointCalHandoff, LiveBindingRejectsWrongNetworkInputOrGeneration) {
+    PointCalNetwork network;
+    network.root="network7";network.input_path="inputs/7.json";network.input_sha=a;
+    EXPECT_THROW(network.require_live_generation(network.binding()),std::runtime_error);
+    network.generation_sha=b;
+    EXPECT_NO_THROW(network.require_live_generation(network.binding()));
+    for(const auto *key:{"root","transport","handoff_sha256"}) {
+        auto request=network.binding();request[key]="foreign";
+        EXPECT_THROW(network.require_live_generation(request),std::runtime_error);
+    }
+    for(const auto *key:{"path","sha256"}) {
+        auto request=network.binding();request["input"][key]="foreign";
+        EXPECT_THROW(network.require_live_generation(request),std::runtime_error);
+    }
+}
+
 TEST(PointCalHandoff, EmptySupportedDomainStillBindsEveryScheduledCause) {
     PointCalNetwork network{"root","input",a,b,{{2,{},{},{1,2}}}};
     YAML::Node record;
