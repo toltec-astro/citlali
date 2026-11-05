@@ -1,3 +1,11 @@
+## Weighted POINT saved-input loading candidate — 2026-11-05
+
+The [loading increment](../validation/point_saved_apt_loading_2026-11-05/PLAN.md)
+is prepared separately from the measured parallel candidate `07723269e7`.
+The weighted loader shares one fresh canonical APT interpretation within each
+native pass, retaining file and detector binding checks. Software and matched
+152389 timing/product gates await Grant's execution.
+
 ## Configured POINT parallel execution candidate — 2026-11-04
 
 Grant authorized holistic parallel design and implementation, permitting bounded

@@ -1,4 +1,5 @@
 #include "successor_experiment_profiles.h"
+#include "point_saved_apt.h"
 // Private saved-product application adapter. Scientific arithmetic remains in
 // PTC, AST and MAP owners; this boundary parses and verifies persisted sources.
 #include <citlali/core/pipeline/ptc_map_handoff.h>
@@ -71,7 +72,8 @@ struct SavedMapNetwork {
     std::int64_t first;
     std::size_t scheduled;
 };
-SavedMapNetwork load_saved_map_network(const YAML::Node &request,MapFileLedger &ledger,bool source_offset_altaz=false,bool cal_only=false) {
+SavedMapNetwork load_saved_map_network(const YAML::Node &request,MapFileLedger &ledger,bool source_offset_altaz=false,bool cal_only=false,
+                                      citlali::cli::detail::PointStageApt *stage_apt=nullptr) {
     SavedMapNetwork out;out.root=request["root"].as<std::string>();out.ptcroot=out.root/"donor-continuity"/"ptc";
     require(out.root.is_absolute(),"MAP source root must be absolute");
     ledger.bind(out.root/"receipt.yaml",request["receipt_sha256"].as<std::string>());
@@ -136,8 +138,10 @@ SavedMapNetwork load_saved_map_network(const YAML::Node &request,MapFileLedger &
         source_offset_altaz,nullptr,&out.cal);
     require(out.cal["AST_center_ra_rad"].as<double>()==out.observation.ra0 && out.cal["AST_center_dec_rad"].as<double>()==out.observation.dec0 &&
         out.cal["AST_pointing_offset"].as<std::string>()==out.observation.offset_identity,"MAP AST center/offset generation differs");
-    const auto verified=apt::verify_bundle_filesystem(manifest,true);
-    const auto apt_relation=pipeline::admit_canonical_apt_detector_relation_v2(verified);
+    std::optional<citlali::cli::detail::SavedMapApt> local_apt;
+    const auto &selected=stage_apt ? stage_apt->select(manifest,aptsha) : local_apt.emplace(manifest);
+    const auto &verified=selected.files.verified();
+    const auto &apt_relation=selected.relation;
     require(apt_relation.observation().observation==out.obsnum && apt_relation.observation().subobservation==0 &&
         apt_relation.observation().scan==(oof?1:2),"MAP selected APT observation differs from PTC source");
     for(const auto &[name,unit]:std::array<std::pair<std::string,std::string>,3>{{{"flxscale","mJy/beam/xs"},{"x_t","arcsec"},{"y_t","arcsec"}}}) {

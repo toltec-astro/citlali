@@ -97,8 +97,9 @@ struct WeightedPointNetwork {
     SavedMapNetwork saved;PointOpticalNetwork optical;PtcMatrix coordinates;
     std::vector<WeightedPointSegment> segments;std::string processing_identity;
 };
-WeightedPointNetwork point_load_cal(const YAML::Node &binding,MapFileLedger &ledger,const std::string &config_sha) {
-    WeightedPointNetwork n;n.saved=load_saved_map_network(binding,ledger,true,true);auto &s=n.saved;auto &o=n.optical;
+WeightedPointNetwork point_load_cal(const YAML::Node &binding,MapFileLedger &ledger,const std::string &config_sha,
+                                    citlali::cli::detail::PointStageApt &stage_apt) {
+    WeightedPointNetwork n;n.saved=load_saved_map_network(binding,ledger,true,true,&stage_apt);auto &s=n.saved;auto &o=n.optical;
     require(s.input["effective_config"]["sha256"].as<std::string>()==config_sha,"POINT network effective config differs");
     const auto processing=s.root/"processing-scans.yaml";const auto published=map_selected_fields(s.root/"receipt.yaml","",{"processing_scans_sha256"});
     const auto processing_sha=ledger.bind(processing,binding["processing_sha256"].as<std::string>());n.processing_identity="sha256:"+processing_sha;
@@ -223,7 +224,13 @@ int execute_weighted_point(const fs::path &input,const fs::path &output,unsigned
         row["process_cpu_seconds"]=clock.cpu_seconds();row["jobs"]=jobs.jobs;
         row["started_workers"]=jobs.started_workers;row["peak_active_jobs"]=jobs.peak_active_jobs;
     };
+    citlali::cli::detail::PointStageApt stage_apt;
     auto publish_performance=[&](const fs::path &staging) {
+        auto apt_stats=performance["saved_apt"];
+        apt_stats["full_admissions"]=stage_apt.full_admissions();
+        apt_stats["network_reuses"]=stage_apt.network_reuses();
+        apt_stats["selection_wall_seconds"]=stage_apt.selection_seconds();
+        apt_stats["final_recheck"]="passed";
         performance["wall_seconds"]=total_clock.wall_seconds();
         performance["process_cpu_seconds"]=total_clock.cpu_seconds();
         performance["process_lifetime_peak_rss_bytes"]=citlali::cli::detail::point_process_peak_rss_bytes();
@@ -232,6 +239,7 @@ int execute_weighted_point(const fs::path &input,const fs::path &output,unsigned
     require(output.is_absolute() && !fs::exists(output),"weighted POINT needs a fresh absolute output");
     const fs::path staging=output.string()+".pending";require(!fs::exists(staging),"weighted POINT pending output exists");
     MapFileLedger ledger;const auto request_sha=ledger.bind(input);const auto request=YAML::LoadFile(input.string());
+    auto verify_sources=[&] {stage_apt.verify_current();ledger.verify();};
     const std::set<std::string> fields{"schema","stage","effective_config","networks","health","cycle_index","models","verbose","weighting_control","recovery"};
     for(const auto &e:request)require(fields.contains(e.first.as<std::string>()),"weighted POINT unknown request field");
     require(request["schema"].as<std::string>()=="citlali-configured-weighted-point-v1","weighted POINT schema differs");
@@ -250,7 +258,7 @@ int execute_weighted_point(const fs::path &input,const fs::path &output,unsigned
     require(std::isfinite(pixel) && pixel>0 && std::isfinite(cut) && cut>=0 && cut<=1,"weighted POINT grid request invalid");
     std::vector<WeightedPointNetwork> networks;std::set<int> seen;std::array<bool,3> arrays{};
     for(const auto &n:request["networks"]) {
-        networks.push_back(point_load_cal(n,ledger,config_sha));auto &v=networks.back();
+        networks.push_back(point_load_cal(n,ledger,config_sha,stage_apt));auto &v=networks.back();
         require(seen.insert(v.saved.network).second && v.saved.observation_identity==networks.front().saved.observation_identity,"weighted POINT network/observation domain differs");arrays[v.saved.array]=true;
     }
     require(std::all_of(arrays.begin(),arrays.end(),[](bool v){return v;}),"weighted POINT requires all three arrays");
@@ -273,7 +281,7 @@ int execute_weighted_point(const fs::path &input,const fs::path &output,unsigned
         report_work("aggregation",health_execution.aggregation);
         report_work("references",health_execution.references);
         report_work("bootstrap",health_execution.bootstrap);
-        ledger.verify();publish_performance(staging);publication.publish();return 0;
+        verify_sources();publish_performance(staging);publication.publish();return 0;
     }
     const auto health_path=checked_file(request["health"]);const auto health_sha=ledger.bind(health_path);const auto health_record=YAML::LoadFile(health_path.string());
     require(health_record["effective_config_sha256"].as<std::string>()==config_sha,"POINT health config differs");
@@ -485,6 +493,6 @@ int execute_weighted_point(const fs::path &input,const fs::path &output,unsigned
         write_yaml(directory/"bundle.yaml",bundle);diagnostics["arrays"][weighted_arrays[array]]=bundle;
         record_phase("map_and_publish_"+weighted_arrays[array],map_clock,{1,1,1});
     }
-    write_yaml(staging/"cycle.yaml",diagnostics);ledger.verify();publish_performance(staging);publication.publish();return 0;
+    write_yaml(staging/"cycle.yaml",diagnostics);verify_sources();publish_performance(staging);publication.publish();return 0;
 }
 } // namespace

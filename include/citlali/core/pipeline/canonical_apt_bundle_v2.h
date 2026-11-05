@@ -1253,6 +1253,28 @@ inline void require_no_aliases(
     }
 }
 
+inline void require_exact_directory(
+    const std::filesystem::path &directory,
+    const std::vector<std::filesystem::path> &member_paths) {
+    require_no_aliases(member_paths);
+    std::set<std::filesystem::path> expected;
+    for (const auto &path : member_paths) expected.insert(path.lexically_normal());
+    std::error_code error;
+    for (std::filesystem::directory_iterator it(directory, error), end;
+         !error && it != end; it.increment(error)) {
+        if (expected.erase(it->path().lexically_normal()) == 0) {
+            throw ContractError(
+                "canonical APT v2 bundle directory contains an extra member");
+        }
+    }
+    if (error) {
+        throw ContractError("canonical APT v2 bundle directory enumeration failed");
+    }
+    if (!expected.empty()) {
+        throw ContractError("canonical APT v2 bundle directory lost an expected member");
+    }
+}
+
 }  // namespace bundle_detail
 
 inline VerifiedBundle verify_bundle_filesystem(
@@ -1288,9 +1310,6 @@ inline VerifiedBundle verify_bundle_filesystem(
     const auto descriptors =
         bundle_detail::descriptor_map(parsed_root.document);
 
-    std::set<std::filesystem::path> expected_paths{
-        root_manifest_path.lexically_normal(),
-        root_receipt_path.lexically_normal()};
     std::vector<std::filesystem::path> member_paths{
         root_manifest_path, root_receipt_path};
     std::uint64_t admitted_bytes =
@@ -1314,27 +1333,12 @@ inline VerifiedBundle verify_bundle_filesystem(
                 "canonical APT v2 manifest declares an oversized complete bundle");
         }
         admitted_bytes += descriptor.byte_count;
-        expected_paths.insert(member.lexically_normal());
         member_paths.push_back(member);
         payload.component_bytes_by_role.emplace(
             role, bundle_detail::read_regular_file_once(
                       member, descriptor.byte_count));
     }
-    bundle_detail::require_no_aliases(member_paths);
-    std::error_code directory_error;
-    for (std::filesystem::directory_iterator iterator(directory,
-                                                       directory_error),
-         end;
-         !directory_error && iterator != end; iterator.increment(directory_error)) {
-        if (!expected_paths.contains(iterator->path().lexically_normal())) {
-            throw ContractError(
-                "canonical APT v2 bundle directory contains an extra member");
-        }
-    }
-    if (directory_error) {
-        throw ContractError(
-            "canonical APT v2 bundle directory enumeration failed");
-    }
+    bundle_detail::require_exact_directory(directory, member_paths);
     auto verified = verify_bundle_payload(
         std::move(payload), std::move(parsed_receipt),
         std::move(parsed_root));
@@ -1349,5 +1353,39 @@ inline VerifiedBundle verify_bundle_filesystem(
     }
     return verified;
 }
+
+// One admitted, fresh filesystem generation. Rechecking compares every byte
+// to that generation, including the receipt, and rechecks the directory
+// contract. Identical bytes keep the already validated scientific meaning.
+class FreshFilesystemBundle {
+public:
+    explicit FreshFilesystemBundle(const std::filesystem::path &manifest)
+        : verified_(verify_bundle_filesystem(manifest, true)) {}
+
+    const VerifiedBundle &verified() const noexcept { return verified_; }
+
+    void require_unchanged() const {
+        const auto &snapshot = verified_;
+        const auto directory = snapshot.manifest_path.parent_path();
+        std::vector<std::filesystem::path> members;
+        auto check = [&](const std::filesystem::path &path, const std::string &bytes) {
+            if (bundle_detail::read_regular_file_once(path, bytes.size()) != bytes) {
+                throw ContractError("canonical APT v2 member changed since admission: " +
+                                    path.string());
+            }
+            members.push_back(path);
+        };
+        check(snapshot.receipt_path, snapshot.payload.root_receipt_bytes);
+        check(snapshot.manifest_path, snapshot.payload.root_manifest_bytes);
+        for (const auto &descriptor : snapshot.manifest.components) {
+            check(directory / descriptor.relative_path,
+                  snapshot.payload.component_bytes_by_role.at(descriptor.role));
+        }
+        bundle_detail::require_exact_directory(directory, members);
+    }
+
+private:
+    VerifiedBundle verified_;
+};
 
 }  // namespace citlali::pipeline::canonical_apt_v2

@@ -1,3 +1,4 @@
+#include "../src/citlali/cli/point_saved_apt.h"
 #include <gtest/gtest.h>
 
 #include <citlali/core/engine/calib.h>
@@ -498,6 +499,96 @@ std::filesystem::path publish_fixture(
     const auto manifest = directory / apt::root_manifest_name_v2;
     (void)apt::publish_prepared_bundle(manifest, prepared);
     return manifest;
+}
+
+TEST(PointStageApt, SharesOnlyTheBoundGenerationWithinOneStage) {
+    TemporaryDirectory temporary;
+    const auto first = make_matched_fixture();
+    const auto second = make_matched_fixture(digest('7'));
+    const auto first_path = publish_fixture(first.prepared, temporary.path / "first");
+    const auto second_path = publish_fixture(second.prepared, temporary.path / "second");
+    const auto first_sha = citlali::utils::sha256_file(first_path);
+    const auto second_sha = citlali::utils::sha256_file(second_path);
+    ASSERT_NE(first_sha, second_sha);
+    citlali::cli::detail::PointStageApt stage;
+    const auto &selected = stage.select(first_path, first_sha);
+    EXPECT_EQ(selected.relation.bundle_identity(), first.verified.identity);
+    EXPECT_EQ(&stage.select(first_path, first_sha), &selected);
+    EXPECT_EQ(stage.full_admissions(), 1U);
+    EXPECT_EQ(stage.network_reuses(), 1U);
+    EXPECT_THROW(stage.select(first_path, second_sha), apt::ContractError);
+    EXPECT_EQ(stage.select(second_path, second_sha).relation.bundle_identity(), second.verified.identity);
+    EXPECT_EQ(stage.full_admissions(), 2U);
+    EXPECT_NO_THROW(stage.verify_current());
+    citlali::cli::detail::PointStageApt next_stage;
+    EXPECT_EQ(next_stage.select(second_path, second_sha).relation.bundle_identity(), second.verified.identity);
+    EXPECT_EQ(next_stage.network_reuses(), 0U);
+}
+
+TEST(PointStageApt, RejectsChangedComponentAtReuseAndBeforePublication) {
+    TemporaryDirectory temporary;
+    const auto fixture = make_matched_fixture();
+    const auto path = publish_fixture(fixture.prepared, temporary.path / "matched");
+    const auto sha = citlali::utils::sha256_file(path);
+    citlali::cli::detail::PointStageApt stage;
+    const auto &verified = stage.select(path, sha).files.verified();
+    const auto &descriptor = verified.manifest.components.front();
+    const auto member = path.parent_path() / descriptor.relative_path;
+    const auto &original = verified.payload.component_bytes_by_role.at(descriptor.role);
+    ASSERT_FALSE(original.empty());
+    std::filesystem::permissions(member, std::filesystem::perms::owner_write,
+                                 std::filesystem::perm_options::add);
+    {
+        std::fstream edit(member, std::ios::in | std::ios::out | std::ios::binary);
+        ASSERT_TRUE(edit.good());
+        edit.put(original.front() == 'X' ? 'Y' : 'X');
+        edit.close();
+        ASSERT_TRUE(edit.good());
+    }
+    ASSERT_EQ(std::filesystem::file_size(member), original.size());
+    EXPECT_THROW(stage.select(path, sha), apt::ContractError);
+    EXPECT_THROW(stage.verify_current(), apt::ContractError);
+}
+
+TEST(PointStageApt, RejectsChangedReceiptAndDirectoryMembership) {
+    TemporaryDirectory temporary;
+    const auto fixture = make_matched_fixture();
+    const auto path = publish_fixture(fixture.prepared, temporary.path / "matched");
+    const auto sha = citlali::utils::sha256_file(path);
+    citlali::cli::detail::PointStageApt stage;
+    stage.select(path, sha);
+    const auto extra = path.parent_path() / "extra";
+    std::ofstream(extra).put('x');
+    EXPECT_THROW(stage.verify_current(), apt::ContractError);
+    std::filesystem::remove(extra);
+    const auto receipt = path.parent_path() / apt::root_receipt_name_v2;
+    const auto relocated = temporary.path / "same-bytes";
+    std::filesystem::rename(receipt, relocated);
+    EXPECT_THROW(stage.select(path, sha), apt::ContractError);
+    std::filesystem::create_symlink(relocated, receipt);
+    EXPECT_THROW(stage.verify_current(), apt::ContractError);
+}
+
+TEST(PointStageApt, RejectsWrongInitialBindingAndChangedRootFiles) {
+    TemporaryDirectory temporary;
+    const auto fixture = make_matched_fixture();
+    for (const auto filename : {apt::root_manifest_name_v2, apt::root_receipt_name_v2}) {
+        const auto path = publish_fixture(fixture.prepared, temporary.path / filename);
+        const auto sha = citlali::utils::sha256_file(path);
+        citlali::cli::detail::PointStageApt wrong;
+        EXPECT_THROW(wrong.select(path, std::string(64, '0')), apt::ContractError);
+        citlali::cli::detail::PointStageApt stage;
+        stage.select(path, sha);
+        const auto changed = path.parent_path() / filename;
+        std::filesystem::permissions(changed, std::filesystem::perms::owner_write,
+                                     std::filesystem::perm_options::add);
+        std::fstream edit(changed, std::ios::in | std::ios::out | std::ios::binary);
+        ASSERT_TRUE(edit.good());
+        edit.put('\0');
+        edit.close();
+        ASSERT_TRUE(edit.good());
+        EXPECT_THROW(stage.verify_current(), apt::ContractError);
+    }
 }
 
 TEST(sci_align_canonical_apt_relation_v2,
