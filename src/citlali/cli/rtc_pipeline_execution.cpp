@@ -471,7 +471,7 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
     mapping->paired_xr_record_id += ":exact-simultaneous-column-projection:sha256:"+
         citlali::utils::sha256(projection);
     if(cfg["declared_contaminant"])mapping->paired_xr_record_id+=":declared-contaminant:"+
-        citlali::utils::sha256_file(argv[1]);
+        checked_config_sha();
     mapping->timing_uncertainty_state_id =
         "unquantified:uniform-average-center-trial:rtc-native-readout-uniform-"
         "average-assumption-v1";
@@ -560,7 +560,7 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
         YAML::Dump(unmodified_config)==YAML::Dump(YAML::LoadFile(reference_configuration.string())),
         "declared contaminant may not alter the untouched reference configuration");
       require(ref["Apply_performed"].as<bool>() && ref["original_pair_unchanged"].as<bool>() &&
-        ref["original_parent"].as<std::string>()+":declared-contaminant:"+citlali::utils::sha256_file(argv[1])==mapping->paired_xr_record_id,
+        ref["original_parent"].as<std::string>()+":declared-contaminant:"+checked_config_sha()==mapping->paired_xr_record_id,
         "contaminant does not identify its untouched applied reference");
       declared_contaminant=RtcDeclaredContaminant{parent,nw,static_cast<std::uint32_t>(d),{row,row+1},
         "sha256:"+citlali::utils::sha256_file(reference),"one-occurrence-additive-x-and-r-test-contaminant;not-a-sky-injection"};
@@ -726,7 +726,7 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
     // The immutable configuration includes exact content hashes for every
     // scientific input. A changed code/config/VAL requires a new selection.
     const auto binding=citlali::utils::sha256(std::string(CITLALI_GIT_REVISION)+"\n"+
-        citlali::utils::sha256_file(argv[1])+"\nVAL-generation=0\n"+mapping->paired_xr_record_id);
+        checked_config_sha()+"\nVAL-generation=0\n"+mapping->paired_xr_record_id);
     if(recovered_scans) write_yaml(output/"processing-scans.yaml",recovered_scans->receipt);
     std::ofstream native_times(output/"native-time.f64",std::ios::binary);
     for(auto row=axis->first_native_row();row<axis->past_last_native_row();++row){

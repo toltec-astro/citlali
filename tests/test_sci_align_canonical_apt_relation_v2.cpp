@@ -609,7 +609,12 @@ TEST(PointStageApt, ProvenanceNamesTheAdmittedTableAndBackingChangesStillFail) {
     const auto sha=citlali::utils::sha256_file(path);
     citlali::cli::detail::PointStageApt stage;
     const auto &bundle=stage.select(path,sha).files.verified();
-    std::ofstream(path,std::ios::app)<<"changed after admission";
+    std::filesystem::permissions(path,std::filesystem::perms::owner_write,std::filesystem::perm_options::add);
+    std::ofstream edit(path,std::ios::app | std::ios::binary);
+    ASSERT_TRUE(edit.good());
+    edit<<"changed after admission";
+    edit.close();
+    ASSERT_TRUE(edit.good());
     const auto replacement=citlali::utils::sha256_file(path);
     ASSERT_NE(replacement,sha);
     using citlali::cli::detail::admitted_apt_identity;

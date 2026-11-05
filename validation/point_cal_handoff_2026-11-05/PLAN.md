@@ -51,6 +51,8 @@ intermediate output and recovery retain their file-backed paths.
 2. Fresh matched six-worker 152389 through M5 against `5b0d63bd6`. Require
    matching CAL payload declarations, health seed, segment decisions, every
    scientific map and feedback plane, final fits and pointing table. Check
+   each learning binding against its setup request digest and original pair,
+   and RTC/CAL factor labels against the admitted APT manifest digest. Check
    the new memory transport designation separately. Expect zero channel file
    hashes and bytes in health and all maps, one APT admission shared by RTC
    and health, eleven health network selections reusing that generation, and
