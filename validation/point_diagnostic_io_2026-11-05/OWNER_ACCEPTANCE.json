@@ -1,0 +1,91 @@
+{
+  "date": "2026-11-05",
+  "owner": "Grant Wilson",
+  "directive": "I accept both the CAL/APT handoff and diagnostic I/O changes as bounded software repairs. Record the acceptances and integrate them locally into mainline, then give me the commit ID and push command. I’ll do the push.",
+  "disposition": "accepted as a bounded software repair",
+  "execution_owner": "Grant",
+  "integration": {
+    "branch": "codex/refactor-mainline",
+    "previous_mainline": "cbe2ef64372e1353bf86901ff0e1f1a3699e5adf",
+    "tested_application_tip": "fc9c1f2935b433782ae3cfa1a79e2ac0247dd8f1",
+    "method": "Local fast-forward through both accepted revisions, followed by a documentation-only acceptance commit."
+  },
+  "repair": "Diagnostic I/O",
+  "accepted_application": "fc9c1f2935b433782ae3cfa1a79e2ac0247dd8f1",
+  "accepted_tree": "0214c707a4ac6e3af17ee74e78321f052b2b9932",
+  "comparison_application": "c6ed37f58282a9fde843367456f1795d9a8e4d58",
+  "scope": "Configured weighted POINT, ordinary and detective modes. Mac Spack Release with CFITSIO 4.3.0, observation 152389 with six workers through M5.",
+  "software": "Grant’s corrected focused gates passed. All 1,449 enabled CTests and 207 baseline tests passed. The required config preflight completed with all eight compact cases passing. One pre-existing CTest was disabled.",
+  "behavior": "All 11 matched checks passed. Detector-health summaries were byte-identical across all three runs. Detector-drop decisions, map and feedback planes, accepted final fits for all three arrays and pointing-table measurements matched. The ordinary compact report matched the reviewed verbose M0 byte for byte.",
+  "architecture": "Ordinary weighted POINT uses observation memory for detector, scan and frozen-health handoffs. Detective mode produces the requested replay files. Saved M0 replay reproduced the plans and map planes. Injecting a required writer failure stopped publication.",
+  "measured": {
+    "command_wall_seconds": {
+      "ordinary_comparison": 115.162,
+      "ordinary_accepted": 66.312,
+      "detective_accepted": 181.483
+    },
+    "ordinary_seconds_saved": 48.85,
+    "ordinary_percent_saved": 42.4,
+    "peak_process_tree_rss_gib": {
+      "ordinary_comparison": 6.84,
+      "ordinary_accepted": 5.15
+    },
+    "ordinary_transport_files_removed_at_cleanup": {
+      "comparison": 49750,
+      "accepted": 0
+    },
+    "ordinary_transport_bytes_removed_at_cleanup": {
+      "comparison": 1994933448,
+      "accepted": 0
+    },
+    "detective_rtc_exports_matching_reference": 49662
+  },
+  "independent_review": "Exact corrected source and sealed M5 measurement packet reviewed read-only. Both the fresh ordinary cleanup receipt and the archived verbose M0 receipt recorded zero transport files and bytes removed.",
+  "limitations": "One fixed-order comparison on one observation. Summed RSS was sampled. SCIENCE/coadd, absolute pointing accuracy, CFITSIO upgrades, deployment and production qualification remain separate.",
+  "evidence": [
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-point-diagnostic-followup-20261105/CANDIDATE.json",
+      "sha256": "2ebe0cc8dcee7a9e77b9360839a09f99bdce66303402d63e3cf99b2a2fcf310c"
+    },
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-point-diagnostic-followup-20261105/INDEPENDENT_REVIEW.txt",
+      "sha256": "fed19c50aea1ef6e7c4cf85c0d931743bdde5a158892b3e418fbe45ec0658794"
+    },
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-point-diagnostic-followup-20261105/SOFTWARE_GATE_ASSESSMENT.txt",
+      "sha256": "2a69641db38d788b63242cf7d7d7addd4332cfd3622ec2ec7a55b6049e4f0f0d"
+    },
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-point-diagnostic-followup-20261105/owner-run-20261105T185907.790989Z/COMMANDS_COMPLETED.json",
+      "sha256": "76295fccfefaff2e99e9217964774d32a531a7a505c98a2c3a89d4014acd1532"
+    },
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-point-diagnostic-followup-20261105/verbose-M0/attempt-01/RESULT.json",
+      "sha256": "d1bfd3c112282489af986e5b59c4badf5cc7d7aed51bfa9446b550b7400cc3b1"
+    },
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-point-diagnostic-followup-20261105/verbose-M0/RESULT_ASSESSMENT.txt",
+      "sha256": "7a36ef5a8fdeface284c4888a22e440f2827a0bbeda332250b1ac7d8500e9a2a"
+    },
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-point-diagnostic-followup-20261105/MATCHED_M5_PACKET_REVIEW.txt",
+      "sha256": "f9b988b22aab4103507759f3181938bbfc98230b1572db51727c3c8682328087"
+    },
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-point-diagnostic-followup-20261105/matched-point/FILES.sha256",
+      "sha256": "21e316edccbae4b4175a3ad9359ebbb198ad1609d8b117b52bf245cff1ea4c85"
+    },
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-point-diagnostic-followup-20261105/matched-point/attempt-01/COMPLETED.json",
+      "sha256": "12bfc08c66f0502a178d2374bc3b81e194d23eecb47e00959404b1acfe391407"
+    },
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-point-diagnostic-followup-20261105/matched-point/attempt-01/COMPARISON.json",
+      "sha256": "8e4381a66165663aa266872c449747418b6893483688820d999d5e9aa687c074"
+    },
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-point-diagnostic-followup-20261105/matched-point/RESULT_ASSESSMENT.txt",
+      "sha256": "38c064cf4a77bdf2fffffbabb5701e5c8c14ffc88e9934bafc166aebaa3cf4f3"
+    }
+  ]
+}

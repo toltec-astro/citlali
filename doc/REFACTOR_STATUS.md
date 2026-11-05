@@ -1,24 +1,18 @@
-## Configured POINT diagnostic I/O candidate — 2026-11-05
+## Configured POINT CAL/APT and diagnostic I/O repairs accepted — 2026-11-05
 
-The first matched run found a 610-second ordinary health phase and an invalid
-Release log level on verbose launch. The three complete arms produced matching
-detector summaries; the full comparison and replay gates remain pending.
-The [follow-up](../validation/point_diagnostic_io_2026-11-05/PLAN.md)
-preserves the failed attempt and the CFITSIO 4.3.0 comparator.
+Grant accepted the CAL/APT handoff at `c6ed37f58` and diagnostic I/O at
+`fc9c1f293`. Local mainline includes both tested applications. His Mac Spack
+software gates and both six-worker 152389 comparisons through M5 passed.
 
-The [combined diagnostic I/O repair](../validation/point_diagnostic_io_2026-11-05/PLAN.md)
-uses the reviewed CAL/APT candidate as its development base. The matched
-six-worker 152389 comparison of that base passed all 18 pair checks. The next
-candidate covers RTC exports, receipt handoff and frozen health. Its owner-run
-software gates and representative comparison are pending.
+The handoff shared 5,518 CAL channels and one admitted APT generation. All
+18 comparison checks passed. [CAL/APT acceptance and evidence](../validation/point_cal_handoff_2026-11-05/OWNER_ACCEPTANCE.json)
 
-## Configured POINT CAL detector handoff candidate — 2026-11-05
-
-The [CAL/APT increment](../validation/point_cal_handoff_2026-11-05/PLAN.md)
-keeps generated channel values, scheduled slots and cause bits in observation
-memory on ordinary weighted POINT. It shares one admitted APT generation
-between upstream and health and preserves verification of mutable APT files.
-Grant's Mac Spack software gates and matched six-worker 152389 run are pending.
+The corrected diagnostic I/O repair completed verbose M0 and the full matched
+M5 comparison with CFITSIO 4.3.0. All 11 checks passed. The ordinary run
+took 66.31 seconds versus 115.16 seconds for the handoff baseline and removed
+zero transport files at cleanup. All 49,662 detective RTC exports matched
+their references. Saved replay and required writer failure checks passed.
+[Diagnostic I/O acceptance and evidence](../validation/point_diagnostic_io_2026-11-05/OWNER_ACCEPTANCE.json)
 
 ## Weighted POINT observation-scoped CAL reuse accepted — 2026-11-05
 

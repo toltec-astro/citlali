@@ -1,0 +1,71 @@
+{
+  "date": "2026-11-05",
+  "owner": "Grant Wilson",
+  "directive": "I accept both the CAL/APT handoff and diagnostic I/O changes as bounded software repairs. Record the acceptances and integrate them locally into mainline, then give me the commit ID and push command. I’ll do the push.",
+  "disposition": "accepted as a bounded software repair",
+  "execution_owner": "Grant",
+  "integration": {
+    "branch": "codex/refactor-mainline",
+    "previous_mainline": "cbe2ef64372e1353bf86901ff0e1f1a3699e5adf",
+    "tested_application_tip": "fc9c1f2935b433782ae3cfa1a79e2ac0247dd8f1",
+    "method": "Local fast-forward through both accepted revisions, followed by a documentation-only acceptance commit."
+  },
+  "repair": "CAL/APT handoff",
+  "accepted_application": "c6ed37f58282a9fde843367456f1795d9a8e4d58",
+  "accepted_tree": "f3547a37354df281f7271df37aad4405c85a430b",
+  "comparison_application": "5b0d63bd670a2db94eddba4f6c0c7fa9f18eeb62",
+  "scope": "Configured weighted POINT on the Mac Spack Release build, observation 152389 with six workers through M5.",
+  "software": "Grant’s focused gates passed. All 1,446 enabled CTests and 207 baseline tests passed. The required config preflight completed with all eight compact cases passing. One pre-existing CTest was disabled.",
+  "behavior": "All 18 matched checks passed across 11 networks. Map and feedback planes, CAL payload declarations, detector decisions, final fits and pointing-table measurements agreed with the comparison application.",
+  "architecture": "The observation owns the CAL channel values, slots and causes and supplies them directly to each weighted stage. The upstream and health stages share the admitted APT generation. Final checks authenticate the original inputs before publication.",
+  "measured": {
+    "command_wall_seconds": {
+      "comparison": 250.54,
+      "accepted": 119.83
+    },
+    "cal_channels_admitted_from_memory_per_weighted_stage": 5518,
+    "cal_channel_file_reads_per_weighted_stage": 0,
+    "avoided_transport_cleanup_files": 16554,
+    "avoided_transport_cleanup_bytes": 498421382
+  },
+  "independent_review": "Exact source and measurement packet reviewed read-only. Software and matched results came from Grant's recorded runs.",
+  "limitations": "One fixed-order matched pair on one observation. A long final verification contributed to the comparison application's wall time. Wider performance and scientific qualification remain separate.",
+  "evidence": [
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-point-cal-handoff-20261105/CANDIDATE.json",
+      "sha256": "f6c6379a47d4b53fb78c2a177f2c725d2e70b26d3626b921b379fb29b3fd267d"
+    },
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-point-cal-handoff-20261105/INDEPENDENT_REVIEW.txt",
+      "sha256": "82401d5f338277056ca05dc3dfb16aac8c5b7917542b6f9f73871584e390a35c"
+    },
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-point-cal-handoff-20261105/SOFTWARE_GATE_ASSESSMENT.txt",
+      "sha256": "31370b891c48b32899a38790fec3140d03a0b26ede1e53715e81f1ef63d419ac"
+    },
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-point-cal-handoff-20261105/owner-run-20261105T170318.181820Z/COMMANDS_COMPLETED.json",
+      "sha256": "1cc22edb9d3d74eb315a37aa5cb12e3afe6e538656c4e94e6791cbfb1cfd6ee7"
+    },
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-point-cal-handoff-20261105/MATCHED_PACKET_REVIEW.txt",
+      "sha256": "80d49cb047f3c162593e5a774ef9b66526291ffb6ef2c1234f0e62f57ce683d9"
+    },
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-point-cal-handoff-20261105/matched-point/FILES.sha256",
+      "sha256": "1363c7747144cd2f73a4dfde9664a6766aa096a48feff3decf7c07c329494c75"
+    },
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-point-cal-handoff-20261105/matched-point/attempt-01/COMPLETED.json",
+      "sha256": "492e138da3816501e42d5c6cadb8fbcf2ffd0049fc189809cedc6c5f72521674"
+    },
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-point-cal-handoff-20261105/matched-point/attempt-01/COMPARISON.json",
+      "sha256": "4a16184ed9ac9d9f249240a97be8c9f655b19ce62de20705dc1a5d5a7c0bec2f"
+    },
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-point-cal-handoff-20261105/MATCHED_RESULT_ASSESSMENT.txt",
+      "sha256": "f1afeaa3089984225c0ba6bcb4f01180ddacf9af6f41b2bc444ed8748ba91e00"
+    }
+  ]
+}

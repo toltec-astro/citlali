@@ -1,5 +1,14 @@
 # Citlali refactor — current state
 
+2026-11-05 Grant accepted two bounded configured POINT repairs. Local
+`codex/refactor-mainline` advanced from `cbe2ef643` through the CAL/APT
+handoff at `c6ed37f58` to the diagnostic I/O repair at `fc9c1f293`.
+On Grant's matched six-worker 152389 runs through M5, ordinary command time
+fell from 115.16 to 66.31 seconds in the diagnostic I/O comparison. Detector
+decisions, maps, feedback, fits and pointing-table measurements agreed.
+Grant owns the GitHub push. [CAL/APT acceptance](../validation/point_cal_handoff_2026-11-05/OWNER_ACCEPTANCE.json)
+and [diagnostic I/O acceptance](../validation/point_diagnostic_io_2026-11-05/OWNER_ACCEPTANCE.json).
+
 2026-11-05 Grant accepted observation-scoped CAL reuse for configured weighted
 POINT at `5b0d63bd6`. Local mainline fast-forwarded to the tested application.
 On the three-worker 152389 comparison through M5, elapsed time fell from

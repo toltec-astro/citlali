@@ -1,3 +1,22 @@
+## Configured POINT CAL/APT handoff and diagnostic I/O acceptances — 2026-11-05
+
+Grant accepted two bounded software repairs and authorized one fast-forward
+of local `codex/refactor-mainline` from `cbe2ef64372e1353bf86901ff0e1f1a3699e5adf`
+to the exact tested tip `fc9c1f2935b433782ae3cfa1a79e2ac0247dd8f1`.
+
+- The CAL/APT handoff at `c6ed37f58282a9fde843367456f1795d9a8e4d58` passed
+  all 18 checks against the previously accepted CAL reuse application. Each
+  weighted stage took 5,518 channels from memory. [Owner receipt and evidence](../validation/point_cal_handoff_2026-11-05/OWNER_ACCEPTANCE.json)
+- The diagnostic I/O repair at `fc9c1f2935b433782ae3cfa1a79e2ac0247dd8f1`
+  passed all 11 checks against the handoff. Ordinary mode saved 48.85 seconds
+  on 152389. Detective mode reproduced the reference RTC exports and supported
+  saved M0 replay. A required writer failure stopped publication.
+  [Owner receipt and evidence](../validation/point_diagnostic_io_2026-11-05/OWNER_ACCEPTANCE.json)
+
+Grant performed the Mac Spack software checks and both six-worker 152389
+comparisons through M5. This entry and the two receipts record his acceptance.
+GitHub publication is Grant's next step.
+
 ## Configured weighted POINT CAL reuse acceptance — 2026-11-05
 
 Grant accepted `5b0d63bd670a2db94eddba4f6c0c7fa9f18eeb62`, tree
