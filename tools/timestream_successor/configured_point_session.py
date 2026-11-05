@@ -5,12 +5,15 @@ import os
 from pathlib import Path
 import re
 import subprocess
+import sys
 
 import yaml
 
 
 class PointObservationSession:
     """One sequential request stream, one private acknowledgement pipe and log."""
+
+    finish_timeout = 30  # Only teardown is bounded; the final scientific pass has already acknowledged.
 
     def __init__(self, work):
         self.work = Path(work)
@@ -76,19 +79,43 @@ class PointObservationSession:
         log.write(self._new_log_text())
         return 0
 
+    def _finish(self):
+        try:
+            self.process.stdin.write(b"finish\n")
+            self.process.stdin.flush()
+            self.process.stdin.close()
+            code = self.process.wait(timeout=self.finish_timeout)
+        except BrokenPipeError as error:
+            raise RuntimeError(f"POINT observation closed during finish; see {self.log_path}") from error
+        except subprocess.TimeoutExpired as error:
+            raise RuntimeError(f"POINT observation finish timed out; see {self.log_path}") from error
+        tail = self._new_log_text()
+        if code or re.search(r"\[(?:error|critical)\]", tail, re.I):
+            raise RuntimeError(f"POINT observation finish failed ({code}); see {self.log_path}")
+
+    def _dispose(self):
+        try:
+            self._abort()
+        finally:
+            try:
+                if self.process is not None and not self.process.stdin.closed:
+                    self.process.stdin.close()
+            except BrokenPipeError:
+                pass  # Failed peer may already have closed its read end.
+            finally:
+                if self.replies is not None:
+                    self.replies.close()
+
     def __exit__(self, exc_type, exc, traceback):
         try:
             if self.process is not None and exc_type is None:
-                self.process.stdin.write(b"finish\n")
-                self.process.stdin.flush()
-                self.process.stdin.close()
-                code = self.process.wait()
-                tail = self._new_log_text()
-                if code or re.search(r"\[(?:error|critical)\]", tail, re.I):
-                    raise RuntimeError(f"POINT observation finish failed ({code}); see {self.log_path}")
+                self._finish()
         finally:
-            self._abort()
-            if self.process is not None and not self.process.stdin.closed:
-                self.process.stdin.close()
-            if self.replies is not None:
-                self.replies.close()
+            primary = exc if exc is not None else sys.exc_info()[1]
+            try:
+                self._dispose()
+            except Exception as cleanup:
+                if primary is None:
+                    raise
+                if hasattr(primary, "add_note"):
+                    primary.add_note(f"POINT child cleanup also failed: {cleanup}")

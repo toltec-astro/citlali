@@ -196,16 +196,22 @@ private:
 };
 FruitOffsetModel point_read_model(const YAML::Node &binding,MapFileLedger &ledger,int array,double pixel,
     const std::string &observation,const std::string &health_sha,int cycle,PointWeighting weighting) {
-    const auto path=checked_file(binding["candidate"]);const auto sha=ledger.bind(path);
-    const auto feedback_path=checked_file(binding["feedback"]),bundle_path=checked_file(binding["bundle"]);
-    ledger.bind(feedback_path);const auto bundle_sha=ledger.bind(bundle_path);
-    const auto feedback=YAML::LoadFile(feedback_path.string()),bundle=YAML::LoadFile(bundle_path.string());
+    const fs::path path=binding["candidate"]["path"].as<std::string>();
+    auto [sha,bytes]=ledger.read_bytes(path,binding["candidate"]["sha256"].as<std::string>());
+    const fs::path feedback_path=binding["feedback"]["path"].as<std::string>();
+    const fs::path bundle_path=binding["bundle"]["path"].as<std::string>();
+    const auto feedback=ledger.read_yaml(feedback_path,binding["feedback"]["sha256"].as<std::string>()).second;
+    const auto [bundle_sha,bundle]=ledger.read_yaml(bundle_path,binding["bundle"]["sha256"].as<std::string>());
     require(bundle["coefficient_family"].as<std::string>()==PtcEmpiricalCoefficients::family_for(weighting),
         "POINT feedback belongs to a different weighting arm");
     const auto map_sha=ledger.bind(bundle_path.parent_path()/"map.fits",feedback["map_sha256"].as<std::string>());
     citlali::cli::detail::validate_point_feedback_provenance(feedback,bundle,{sha,bundle_sha,map_sha,observation,"sha256:"+health_sha,weighted_arrays[array],cycle-1});
+    void *buffer=bytes.data();
+    std::size_t buffer_size=bytes.size();
     citlali::utils::FitsHandle handle;
-    int status=0,any=0;fits_open_file(handle.address(),path.c_str(),READONLY,&status);auto *f=handle.get();
+    int status=0,any=0;
+    fits_open_memfile(handle.address(),"POINT-feedback",READONLY,&buffer,&buffer_size,0,nullptr,&status);
+    auto *f=handle.get();
     require(!status,"POINT feedback FITS open failed");int ndim=0;long axes[2]{0,0};fits_get_img_dim(f,&ndim,&status);fits_get_img_size(f,2,axes,&status);
     auto number=[&](const char *k){double v=NAN;fits_read_key(f,TDOUBLE,k,&v,nullptr,&status);return v;};
     auto string=[&](const char *k){char v[FLEN_VALUE]{};fits_read_key(f,TSTRING,k,v,nullptr,&status);return std::string(v);};
@@ -262,7 +268,7 @@ FruitOffsetModel point_recovery_raster(const YAML::Node &binding,MapFileLedger &
 }
 int execute_weighted_point(const fs::path &input,const fs::path &output,unsigned workers,
                            PreparedPointCal *observation=nullptr,int pass=-1,
-                           const std::string &expected_request_sha={}) {
+                           const std::optional<std::string> &expected_request_sha=std::nullopt) {
     const auto budget=citlali::cli::detail::point_execution_budget(workers);
     const auto execution=budget.execution;
     Eigen::setNbThreads(1);
@@ -304,7 +310,8 @@ int execute_weighted_point(const fs::path &input,const fs::path &output,unsigned
     };
     require(output.is_absolute() && !fs::exists(output),"weighted POINT needs a fresh absolute output");
     const fs::path staging=output.string()+".pending";require(!fs::exists(staging),"weighted POINT pending output exists");
-    MapFileLedger ledger;const auto request_sha=ledger.bind(input,expected_request_sha);const auto request=YAML::LoadFile(input.string());
+    MapFileLedger ledger;
+    const auto [request_sha,request]=ledger.read_yaml(input,expected_request_sha);
     auto verify_sources=[&] {
         citlali::cli::detail::PointPhaseClock clock;
         cal.verify_at_publication(reused);
@@ -324,8 +331,8 @@ int execute_weighted_point(const fs::path &input,const fs::path &output,unsigned
                 request["health"]["sha256"].as<std::string>()==cal.health_sha(),
                 "POINT session stage order or frozen health differs");
     }
-    const auto config_path=checked_file(request["effective_config"]);
-    const auto config_sha=ledger.bind(config_path,request["effective_config"]["sha256"].as<std::string>());const auto config=YAML::LoadFile(config_path.string());
+    const fs::path config_path=request["effective_config"]["path"].as<std::string>();
+    const auto [config_sha,config]=ledger.read_yaml(config_path,request["effective_config"]["sha256"].as<std::string>());
     const auto cfg=config["successor"];require(cfg["schema"].as<std::string>()=="citlali-point-v2" && cfg["migration"].as<std::string>()=="replace-legacy-point-controls-v2" &&
         cfg["cleaning"]["method"].as<std::string>()=="noise-weighted-observed-als-v1","weighted POINT requires explicit configured profile");
     const bool comparison=cfg["weight_comparison"] && cfg["weight_comparison"].as<bool>();
@@ -336,7 +343,8 @@ int execute_weighted_point(const fs::path &input,const fs::path &output,unsigned
     const double threshold=cfg["detector_response"]["min_relative_response"].as<double>();
     const double pixel=cfg["map"]["pixel_size_arcsec"].as<double>(),cut=cfg["map"]["coverage_cut"].as<double>();
     require(std::isfinite(pixel) && pixel>0 && std::isfinite(cut) && cut>=0 && cut<=1,"weighted POINT grid request invalid");
-    if(observation)require(!comparison,"POINT observation session does not accept diagnostic comparison");
+    if(observation)require(!comparison && config["runtime"]["n_threads"].as<unsigned>()==workers,
+        "POINT observation session requires the configured ordinary worker budget");
     cal.prepare_or_recheck(request,config_sha);
     if(!reused)cal.set_first_request_sha(request_sha);
     const auto &networks=cal.networks();
@@ -364,7 +372,8 @@ int execute_weighted_point(const fs::path &input,const fs::path &output,unsigned
         if(observation) cal.bind_health(staging/"health.yaml");
         publish_performance(staging);publication.publish();return 0;
     }
-    const auto health_path=checked_file(request["health"]);const auto health_sha=ledger.bind(health_path,request["health"]["sha256"].as<std::string>());const auto health_record=YAML::LoadFile(health_path.string());
+    const fs::path health_path=request["health"]["path"].as<std::string>();
+    const auto [health_sha,health_record]=ledger.read_yaml(health_path,request["health"]["sha256"].as<std::string>());
     require(health_record["effective_config_sha256"].as<std::string>()==config_sha,"POINT health config differs");
     const auto health=point_restore_health(health_record,threshold);require(health->evidence_handle()->networks().size()==networks.size(),"POINT health network cohort differs");
     const int cycle=request["cycle_index"].as<int>();require(cycle>=0 && (cycle==0 || (cfg["feedback"]["enabled"].as<bool>() && cycle<=cfg["feedback"]["max_iters"].as<int>())),"POINT cycle outside configured budget");

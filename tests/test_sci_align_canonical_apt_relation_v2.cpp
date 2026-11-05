@@ -502,6 +502,27 @@ std::filesystem::path publish_fixture(
     return manifest;
 }
 
+TEST(PointCalSources, ConsumedPassBytesMatchTheirDeclaredDigests) {
+    TemporaryDirectory tmp;
+    const auto path=tmp.path/"pass.yaml";
+    const std::string original="stage: health\n";
+    std::ofstream(path)<<original;
+    const auto sha=citlali::utils::sha256(original);
+    citlali::cli::detail::MapFileLedger ledger;
+    auto [actual,node]=ledger.read_yaml(path,sha);
+    EXPECT_EQ(actual,sha);
+    EXPECT_EQ(node["stage"].as<std::string>(),"health");
+    const auto binary_path=tmp.path/"binary";
+    const std::string payload("A\0B\n",4);
+    std::ofstream(binary_path,std::ios::binary).write(payload.data(),payload.size());
+    EXPECT_EQ(ledger.read_bytes(binary_path,citlali::utils::sha256(payload)).second,payload);
+    std::ofstream(path)<<"stage: other\n";
+    EXPECT_EQ(node["stage"].as<std::string>(),"health");
+    EXPECT_THROW(ledger.verify(),std::runtime_error);
+    EXPECT_THROW(ledger.read_yaml(path,sha),std::runtime_error);
+    EXPECT_THROW(ledger.read_bytes(binary_path,std::string()),std::runtime_error);
+}
+
 TEST(PointCalSources, ReuseAndPublicationRequireOriginalBytesAndAPT) {
     TemporaryDirectory tmp;
     const auto fixture=make_matched_fixture();

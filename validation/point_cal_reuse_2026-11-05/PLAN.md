@@ -18,6 +18,11 @@ whose path is derived from its ordinal beneath the original work directory.
 A private reply pipe associates completion with the submitted descriptor.
 Separate logs capture native diagnostics. Python owns feedback and early
 stopping, and finishes or aborts and joins the session before final publication.
+Finish has a 30-second teardown deadline once the scientific work has been
+acknowledged. Session cleanup reaps the child and closes both streams even
+when a peer dies before the next write. Stage descriptors, pass requests,
+effective config, frozen health, model FITS bytes and feedback/bundle records
+are interpreted from the same bytes that satisfied their declared digests.
 Native standalone requests, v1, comparison and recovery retain individual
 stage/replay entry points.
 
