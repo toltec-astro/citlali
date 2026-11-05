@@ -1,3 +1,15 @@
+## Parallel and saved-APT loading acceptance — 2026-11-05
+
+2026-11-05 Grant accepted the configured POINT parallel repair at `07723269e7`
+and the saved-APT loading repair at `3031ddf67`. Local mainline advanced by
+fast-forward to each exact application in that order. The [parallel receipt](../validation/point_parallel_2026-11-04/OWNER_ACCEPTANCE.json)
+and [loading receipt](../validation/point_saved_apt_loading_2026-11-05/OWNER_ACCEPTANCE.json)
+bind their software gates and matched three-worker 152389 results. Scientific
+products agreed exactly. Saved-input loading in the latter pair fell from
+183.34 to 123.27 seconds. The intermittent M4 and M0 stalls remain open.
+Grant approved a separate observation-scoped CAL reuse increment with final
+verification timing. Grant runs all builds, tests and reductions.
+
 ## POINT seed repair acceptance — 2026-11-04
 
 Grant accepted application `972484e7e46cb9245fc6e311701c2b90e48d5e9d`, tree

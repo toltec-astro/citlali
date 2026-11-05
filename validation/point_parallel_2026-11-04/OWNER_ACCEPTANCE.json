@@ -1,0 +1,34 @@
+{
+  "date": "2026-11-05",
+  "owner": "Grant Wilson",
+  "directive": "Sounds good. Let's proceed",
+  "approved_proposal": "Record acceptance of the parallel and loading repairs, integrate locally in that order, then prepare observation-scoped CAL reuse and verification timing.",
+  "accepted_application": "07723269e79f9f74a389f584edeca1d232e08fcd",
+  "accepted_tree": "7f7344cbeaf28b5919cb1213ae76c78cc1aff447",
+  "previous_mainline": "09794feddde610e4332b0924fabf235e2d10005e",
+  "integration": "local fast-forward to the exact reviewed revision",
+  "execution_owner": "Grant",
+  "scope": "Configured POINT worker realization and deterministic scientific products on 152389 through M5.",
+  "limits": "The three-worker candidate took 56.66 seconds longer in the first pair and 16.19 seconds less in the reverse-order pair.",
+  "evidence": [
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-point-parallel-20261104/matched-point/attempt-01/COMPARISON.json",
+      "sha256": "dfbfe750d443328d7d9ff4db86d94498f4b9802cddafbe8b5beff355c38a3055"
+    },
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-point-parallel-20261104/matched-repeat/attempt-01/COMPARISON.json",
+      "sha256": "0927c8820216893cde92e19c0bf923b7afbc08a21a26356b3c10afa31d137264"
+    },
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-point-parallel-20261104/SOFTWARE_GATE_ASSESSMENT.txt",
+      "sha256": "964ebaf58a4af949aa255030d22268636e50a995b6ca27d44d54ffdc4cdc2f54"
+    },
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-point-parallel-20261104/MATCHED_REPEAT_ASSESSMENT.txt",
+      "sha256": "0cf89a2e44e82b99b7cca5d986aa97fbd5ab789b67a75719816d5616dee81923"
+    }
+  ],
+  "review": "independent exact-revision and matched evidence reviews passed within the recorded limits",
+  "environment": "Owner-run local Mac Spack, Clang 20.1.8 Release, three-worker 152389 qualification",
+  "authority": "Bounded local software integration; owner retains execution and remote operations."
+}

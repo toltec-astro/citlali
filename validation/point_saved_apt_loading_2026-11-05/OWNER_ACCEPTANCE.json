@@ -1,0 +1,34 @@
+{
+  "date": "2026-11-05",
+  "owner": "Grant Wilson",
+  "directive": "Sounds good. Let's proceed",
+  "approved_proposal": "Record acceptance of the parallel and loading repairs, integrate locally in that order, then prepare observation-scoped CAL reuse and verification timing.",
+  "accepted_application": "3031ddf676be3873c3dcd8e571b4c4f29cff9ec4",
+  "accepted_tree": "11332443b81a6c7ed05dbe8166299a65c2e298e9",
+  "previous_mainline": "07723269e79f9f74a389f584edeca1d232e08fcd",
+  "integration": "local fast-forward to the exact reviewed revision",
+  "execution_owner": "Grant",
+  "scope": "Stage-local fresh APT reuse, final checks of every selected locator and exact products on 152389 through M5.",
+  "limits": "Saved loading fell 183.34 to 123.27 s and the command fell 429.31 to 312.75 s. Parent M0 included an unexplained 63.81 s outside named phases.",
+  "evidence": [
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-point-loading-20261105/matched-point/attempt-01/COMPARISON.json",
+      "sha256": "bea3a49918ff655b119feb714947f4c9bf07f25b7a45e87a494ac867c787fbdf"
+    },
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-point-loading-20261105/SOFTWARE_GATE_ASSESSMENT.txt",
+      "sha256": "8a00585cb5e0e670b59d90e81bfd0f4e6d4f317ff6023d1f6f8f16dd9d4e3ff0"
+    },
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-point-loading-20261105/MATCHED_RESULT_ASSESSMENT.txt",
+      "sha256": "02325e6649a9bb1d20123fafe89446a9815d884b6f081c9b5cc3718482da06c1"
+    },
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-point-loading-20261105/TIMING_WATCH.txt",
+      "sha256": "cb435ea7070cc9e4044d5dcba211cf680dd1fb88537c72ecd98318b62f8e3be3"
+    }
+  ],
+  "review": "independent exact-revision and matched evidence reviews passed within the recorded limits",
+  "environment": "Owner-run local Mac Spack, Clang 20.1.8 Release, three-worker 152389 qualification",
+  "authority": "Bounded local software integration; owner retains execution and remote operations."
+}
