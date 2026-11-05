@@ -18,11 +18,13 @@ def peer(tmp_path):
         import time
         import yaml
         config = yaml.safe_load(Path(sys.argv[-1]).read_text())
-        assert config["terminal"] == "point-observation"
+        assert config["terminal"] in ("point-observation", "point-cal-observation")
         fd = int(os.environ["CITLALI_POINT_REPLY_FD"])
         if os.environ.get("POINT_FAKE") == "die-before-read":
             sys.exit(7)
         for ordinal, line in enumerate(sys.stdin.buffer):
+            if line == b"verify-originals\\n" and os.environ.get("POINT_FAKE") == "changed-original":
+                sys.exit(8)
             if line == b"finish\\n":
                 if os.environ.get("POINT_FAKE") == "stall-finish":
                     time.sleep(60)
@@ -57,6 +59,39 @@ def test_one_process_per_observation_and_separate_stage_logs(peer):
     second = (work/"weighted-00/native.log").read_text()
     assert f"pass 0 pid {child.pid}" in first and "pass 1" not in first
     assert f"pass 1 pid {child.pid}" in second and "pass 0" not in second
+
+
+def upstream(peer, session):
+    binary, work = peer
+    (work/"inputs").mkdir()
+    observation = work/"inputs/observation.json"
+    observation.write_text("{}\n")
+    cli.native_call(binary, observation, work/"upstream", terminal="cal", workers=3, session=session)
+
+
+def test_one_process_from_cal_through_maps_and_final_check(peer):
+    _, work = peer
+    with PointObservationSession(work, start_at_cal=True) as session:
+        upstream(peer, session)
+        child = session.process
+        call(peer, session, "health")
+        call(peer, session, "weighted-00")
+        assert session.process is child
+    assert child.returncode == 0
+    for i, name in enumerate(("upstream", "health", "weighted-00")):
+        assert f"pass {i} pid {child.pid}" in (work/name/"native.log").read_text()
+    assert f"pass 3 pid {child.pid}" in session.log_path.read_text()
+
+
+def test_changed_original_at_final_check_fails_and_reaps(peer, monkeypatch):
+    _, work = peer
+    monkeypatch.setenv("POINT_FAKE", "changed-original")
+    with pytest.raises(RuntimeError, match="final input verification failed"):
+        with PointObservationSession(work, start_at_cal=True) as session:
+            upstream(peer, session)
+            call(peer, session, "health")
+            call(peer, session, "weighted-00")
+    assert session.process.poll() is not None and session.replies.closed
 
 
 @pytest.mark.parametrize("failure", ["no-ack", "wrong-ack"])

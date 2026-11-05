@@ -65,14 +65,17 @@ struct SavedMapNetwork {
     std::size_t scheduled;
 };
 SavedMapNetwork load_saved_map_network(const YAML::Node &request,MapFileLedger &ledger,bool source_offset_altaz=false,bool cal_only=false,
-                                      citlali::cli::detail::PointStageApt *stage_apt=nullptr) {
+                                      citlali::cli::detail::PointStageApt *stage_apt=nullptr,
+                                      const citlali::cli::detail::PointCalNetwork *point_cal=nullptr) {
     SavedMapNetwork out;out.root=request["root"].as<std::string>();out.ptcroot=out.root/"donor-continuity"/"ptc";
     require(out.root.is_absolute(),"MAP source root must be absolute");
     ledger.bind(out.root/"receipt.yaml",request["receipt_sha256"].as<std::string>());
     const auto final=map_prefix(out.root/"receipt.yaml");
     require(final["completed_through"].as<std::string>()==(cal_only?"CAL":"PTC") && !final["legacy_fallback_performed"].as<bool>(),"saved consumer requires its actual completed successor parent stage");
-    const auto input_path=checked_file(request["input"]);ledger.bind(input_path,final["configuration_sha256"].as<std::string>());
-    out.input=YAML::LoadFile(input_path.string());
+    const fs::path input_path=request["input"]["path"].as<std::string>();
+    auto [input_sha,network_request]=ledger.read_yaml(input_path,request["input"]["sha256"].as<std::string>());
+    require(input_sha==final["configuration_sha256"].as<std::string>(),"MAP network receipt/input digest differs");
+    out.input=std::move(network_request);
     ledger.bind(out.root/"learning-receipt.yaml");out.learn=map_prefix(out.root/"learning-receipt.yaml");
     for(const auto *key:{"configuration_sha256","original_parent","native_time_sha256","rows",
                          "network","observation","detectors","native_runs"})
@@ -91,9 +94,11 @@ SavedMapNetwork load_saved_map_network(const YAML::Node &request,MapFileLedger &
         out.ptc_sha=ledger.bind(out.ptcroot/"receipt.yaml",request["ptc_receipt_sha256"].as<std::string>());
         out.ptc=YAML::LoadFile((out.ptcroot/"receipt.yaml").string());
     }
-    out.cal_sha=ledger.bind(out.root/"donor-continuity/cal/receipt.yaml",
+    auto [cal_sha,cal_receipt]=ledger.read_yaml(out.root/"donor-continuity/cal/receipt.yaml",
         cal_only?request["cal_receipt_sha256"].as<std::string>():out.ptc["source_CAL_receipt_sha256"].as<std::string>());
-    out.cal=YAML::LoadFile((out.root/"donor-continuity/cal/receipt.yaml").string());
+    out.cal_sha=std::move(cal_sha);out.cal=std::move(cal_receipt);
+    require(point_cal ? out.cal["payload_storage"].as<std::string>("")=="observation-memory"
+                      : !out.cal["payload_storage"],"MAP CAL receipt requires its original transport");
     require(out.cal["schema"].as<std::string>()=="citlali-cal-output-v1" &&
         out.cal["unit"].as<std::string>()=="mJy/nominal-beam" &&
         out.cal["input_RTC_attempt"].as<std::uint64_t>()==out.apply["attempt"].as<std::uint64_t>() &&
@@ -117,8 +122,13 @@ SavedMapNetwork load_saved_map_network(const YAML::Node &request,MapFileLedger &
     require(!citlali::cli::detail::oof_request(out.input) || (oof && out.array==citlali::cli::detail::oof_array(out.input)),"MAP OOF acquisition or array differs");
     require((oof || citlali::cli::detail::configured_point_scope(out.input,out.obsnum,0,2) || (out.input["development_reference"] && out.input["development_reference"].as<std::string>()=="bright-point-base-v1") || out.obsnum==152389 || out.obsnum==152390 || (out.obsnum==152430 && out.array==2 && (out.network==11 || out.network==12))) && out.input["observation"].as<int>()==out.obsnum &&
         out.array>=0 && out.array<3,"MAP owner binding requires selected observation and known array");
-    const auto telescope=checked_file(out.input["telescope"]),effective=checked_file(out.input["effective_config"]),manifest=checked_file(out.input["manifest"]);
-    ledger.bind(telescope);ledger.bind(effective);const auto aptsha=ledger.bind(manifest);
+    const auto telescope=checked_file(out.input["telescope"]),effective=checked_file(out.input["effective_config"]);
+    const fs::path manifest=out.input["manifest"]["path"].as<std::string>();
+    // On the weighted route PointStageApt authenticates this exact declared
+    // manifest and the complete bundle on selection and at publication.
+    const auto expected_apt=out.input["manifest"]["sha256"].as<std::string>();
+    ledger.bind(telescope);ledger.bind(effective);
+    const auto aptsha=stage_apt ? expected_apt : ledger.bind(manifest,expected_apt);
     require(out.cal["AST_telescope"].as<std::string>()=="sha256:"+citlali::utils::sha256_file(telescope) &&
         out.cal["selected_child_APT"].as<std::string>()=="sha256:"+aptsha &&
         out.cal["AST_method"].as<std::string>()==std::string(AstRtcCoordinates::method),"MAP AST/calibration source differs");
@@ -146,6 +156,8 @@ SavedMapNetwork load_saved_map_network(const YAML::Node &request,MapFileLedger &
     require(n>0 && out.learn["native_runs"][0][0].as<std::int64_t>()==0,"saved MAP native origin unsupported");
     for(std::size_t i=0;i<n;++i)require(std::isfinite(out.native_times[i]) && (!i || out.native_times[i]>out.native_times[i-1]),"MAP native times invalid");
     const auto ldet=out.learn["detectors"],cdet=out.cal["detectors"],adet=out.apply["realized_detectors"],gdet=out.apply["output_grid"]["detectors"];
+    if(point_cal)point_cal->require_binding(out.root,request["input"]["sha256"].as<std::string>(),
+                                            out.cal_sha,cdet.size());
     require(ldet.size()==cdet.size() && adet.size()==ldet.size() && gdet.size()==ldet.size(),"MAP detector domains differ");
     std::set<int> seen;
     for(std::size_t d=0;d<ldet.size();++d) {
@@ -164,7 +176,12 @@ SavedMapNetwork load_saved_map_network(const YAML::Node &request,MapFileLedger &
         out.channels.push_back(ch);out.detectors.push_back(occurrence+":association="+ldet[d]["array_association"].as<std::string>());
         out.geometry.emplace_back(field(*row,"x_t"),field(*row,"y_t"));
         const auto name="channel-"+std::to_string(ch)+"-causes.u16";const auto p=out.root/"donor-continuity/cal"/name;
-        ledger.bind(p,cdet[d]["files"][name].as<std::string>());out.cal_causes.push_back(map_read_array<std::uint16_t>(p,scheduled));
+        if(point_cal) {
+            out.cal_causes.push_back(point_cal->admit(d,ch,scheduled,cdet[d]).causes);
+        } else {
+            ledger.bind_channel(p,cdet[d]["files"][name].as<std::string>());
+            out.cal_causes.push_back(map_read_array<std::uint16_t>(p,scheduled));
+        }
     }
     out.rtc_identity="sha256:"+ledger.files.at(fs::absolute(apply_path).string())+":attempt="+std::to_string(out.apply["attempt"].as<std::uint64_t>());
     return out;

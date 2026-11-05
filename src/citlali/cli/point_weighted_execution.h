@@ -107,9 +107,10 @@ struct WeightedPointNetwork {
     std::vector<WeightedPointSegment> segments;std::string processing_identity;
 };
 WeightedPointNetwork point_load_cal(const YAML::Node &binding,MapFileLedger &ledger,const std::string &config_sha,
-                                    citlali::cli::detail::PointStageApt &stage_apt, PointOpticalNetwork &o) {
+                                    citlali::cli::detail::PointStageApt &stage_apt, PointOpticalNetwork &o,
+                                    const citlali::cli::detail::PointCalNetwork *point_cal=nullptr) {
     WeightedPointNetwork n;
-    auto s=load_saved_map_network(binding,ledger,true,true,&stage_apt);
+    auto s=load_saved_map_network(binding,ledger,true,true,&stage_apt,point_cal);
     require(s.input["effective_config"]["sha256"].as<std::string>()==config_sha,"POINT network effective config differs");
     const auto processing=s.root/"processing-scans.yaml";const auto published=map_selected_fields(s.root/"receipt.yaml","",{"processing_scans_sha256"});
     const auto processing_sha=ledger.bind(processing,binding["processing_sha256"].as<std::string>());n.processing_identity="sha256:"+processing_sha;
@@ -133,8 +134,16 @@ WeightedPointNetwork point_load_cal(const YAML::Node &binding,MapFileLedger &led
     for(std::size_t d=0;d<s.detectors.size();++d) {
         const auto &record=s.cal["detectors"][d];const auto count=record["available"].as<std::size_t>();
         const auto stem="channel-"+std::to_string(s.channels[d]);const auto root=s.root/"donor-continuity/cal";
-        for(const auto *suffix:{"-value.f64","-slot.i64"})ledger.bind(root/(stem+suffix),record["files"][stem+suffix].as<std::string>());
-        const auto values=map_read_array<double>(root/(stem+"-value.f64"),count);const auto slots=map_read_array<std::int64_t>(root/(stem+"-slot.i64"),count);
+        citlali::cli::detail::PointCalChannel from_disk{s.channels[d],{},{},{}};
+        if(!point_cal) {
+            for(const auto *suffix:{"-value.f64","-slot.i64"})
+                ledger.bind_channel(root/(stem+suffix),record["files"][stem+suffix].as<std::string>());
+            from_disk.values=map_read_array<double>(root/(stem+"-value.f64"),count);
+            from_disk.slots=map_read_array<std::int64_t>(root/(stem+"-slot.i64"),count);
+        }
+        const auto &channel=point_cal ? point_cal->channels.at(d) : from_disk;
+        const auto &values=channel.values;
+        const auto &slots=channel.slots;
         std::size_t seen=0;for(std::size_t t=0;t<s.scheduled;++t)if(s.cal_causes[d][t]==0) {
             require(seen<count && slots[seen]==static_cast<std::int64_t>(t) && std::isfinite(values[seen]),"POINT CAL values/support join differs");
             o.values(t,d)=values[seen++];o.eligible(t,d)=o.science_blocks[t]>=0;
@@ -153,10 +162,18 @@ WeightedPointNetwork point_load_cal(const YAML::Node &binding,MapFileLedger &led
 // observation. Stage-specific requests, models and outputs use their own ledger.
 class PreparedPointCal {
 public:
+    explicit PreparedPointCal(bool from_producer=false) : from_producer_(from_producer) {}
+    bool uses_channel_memory() const { return from_producer_; }
+    auto &producer_networks() { return handoff_; }
+    const auto &admit_setup_apt(const fs::path &manifest,const std::string &sha) {
+        return sources_.apt.select(manifest,sha);
+    }
+    std::size_t admitted_channels() const { return admitted_channels_; }
     bool ready() const { return !networks_.empty(); }
     const auto &networks() const { return networks_; }
     const auto &optical() const { return optical_; }
     const auto &apt() const { return sources_.apt; }
+    const auto &original_files() const { return sources_.files; }
     void bind_health(const fs::path &produced) { health_sha_=citlali::utils::sha256_file(produced); }
     const std::string &health_sha() const { return health_sha_; }
     const std::string &first_request_sha() const { return first_request_sha_; }
@@ -172,13 +189,25 @@ public:
         std::array<bool,3> arrays{};
         for(const auto &binding_row:request["networks"]) {
             auto &[network,signal]=loaded.emplace_back();
-            network=point_load_cal(binding_row,sources_.files,config_sha,sources_.apt,signal);
+            if(from_producer_) {
+                const fs::path root=binding_row["root"].as<std::string>();
+                auto it=handoff_.begin();
+                require(it!=handoff_.end() && it->second.root==root,
+                        "POINT CAL handoff missing, repeated or reordered network");
+                network=point_load_cal(binding_row,sources_.files,config_sha,sources_.apt,signal,&it->second);
+                require(network.saved.network==it->first,"POINT CAL handoff network differs");
+                admitted_channels_+=it->second.channels.size();
+                handoff_.erase(it); // This network now lives in the immutable prepared domain.
+            } else {
+                network=point_load_cal(binding_row,sources_.files,config_sha,sources_.apt,signal);
+            }
             require(seen.insert(network.saved.network).second &&
                     network.saved.observation_identity==loaded.front().first.saved.observation_identity,
                     "weighted POINT network/observation domain differs");
             arrays.at(network.saved.array)=true;
         }
         require(std::all_of(arrays.begin(),arrays.end(),[](bool v){return v;}),"weighted POINT requires all three arrays");
+        require(handoff_.empty(),"POINT CAL handoff contains unused networks");
         std::sort(loaded.begin(),loaded.end(),[](const auto &a,const auto &b){return a.first.saved.network<b.first.saved.network;});
         for(auto &[network,signal]:loaded) {
             networks_.push_back(std::move(network));
@@ -189,6 +218,9 @@ public:
         sources_.verify_publication(reused);
     }
 private:
+    bool from_producer_;
+    citlali::cli::detail::PointCalHandoff handoff_;
+    std::size_t admitted_channels_=0;
     std::string health_sha_,first_request_sha_;
     citlali::cli::detail::PointCalSources sources_;
     std::vector<WeightedPointNetwork> networks_;
@@ -293,6 +325,9 @@ int execute_weighted_point(const fs::path &input,const fs::path &output,unsigned
     auto &cal=observation ? *observation : local_cal;
     const bool reused=cal.ready();
     const auto previous_apt_rechecks=cal.apt().retained_rechecks();
+    const auto previous_original=cal.original_files().io,previous_channels=cal.original_files().channel_io;
+    const auto previous_apt_files=cal.apt().retained_file_reads(),previous_apt_bytes=cal.apt().retained_file_bytes();
+    MapFileLedger ledger;
     performance["saved_input_loading_policy"]=reused?"verify original CAL sources before reuse":
         "serial; shared NetCDF preparation remains serialized";
     auto publish_performance=[&](const fs::path &staging) {
@@ -300,6 +335,14 @@ int execute_weighted_point(const fs::path &input,const fs::path &output,unsigned
         apt_stats["full_admissions"]=reused?0:cal.apt().full_admissions();
         apt_stats["network_reuses"]=reused?0:cal.apt().network_reuses();
         apt_stats["retained_generation_rechecks"]=cal.apt().retained_rechecks()-previous_apt_rechecks;
+        apt_stats["retained_member_reads"]=cal.apt().retained_file_reads()-previous_apt_files;
+        apt_stats["retained_member_bytes"]=cal.apt().retained_file_bytes()-previous_apt_bytes;
+        auto io=performance["file_hash_io"];
+        io["original_files"]=cal.original_files().io.files-previous_original.files;
+        io["original_bytes"]=cal.original_files().io.bytes-previous_original.bytes;
+        io["cal_channel_files"]=cal.original_files().channel_io.files-previous_channels.files;
+        io["cal_channel_bytes"]=cal.original_files().channel_io.bytes-previous_channels.bytes;
+        io["pass_files"]=ledger.io.files;io["pass_bytes"]=ledger.io.bytes;
         apt_stats["evicted_locators_reverified"]=reused?0:cal.apt().evicted_rechecks();
         apt_stats["selection_wall_seconds"]=reused?0.:cal.apt().selection_seconds();
         apt_stats["final_recheck"]="passed";
@@ -310,7 +353,6 @@ int execute_weighted_point(const fs::path &input,const fs::path &output,unsigned
     };
     require(output.is_absolute() && !fs::exists(output),"weighted POINT needs a fresh absolute output");
     const fs::path staging=output.string()+".pending";require(!fs::exists(staging),"weighted POINT pending output exists");
-    MapFileLedger ledger;
     const auto [request_sha,request]=ledger.read_yaml(input,expected_request_sha);
     auto verify_sources=[&] {
         citlali::cli::detail::PointPhaseClock clock;
@@ -350,6 +392,8 @@ int execute_weighted_point(const fs::path &input,const fs::path &output,unsigned
     const auto &networks=cal.networks();
     const auto &optical=cal.optical();
     performance["cal_preparation"]=reused?"verified-reuse":"fresh";
+    performance["cal_channel_transport"]=cal.uses_channel_memory()?"observation-memory":"saved-files";
+    performance["cal_channels_admitted_from_memory"]=cal.admitted_channels();
     performance["cal_preparation_request_sha256"]=cal.first_request_sha();
     citlali::pipeline::StagedOutputDirectory publication(output);
     record_phase("saved_input_loading",load_clock,{networks.size(),1,1});

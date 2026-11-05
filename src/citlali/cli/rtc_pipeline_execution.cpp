@@ -4,6 +4,7 @@
 #include "native_rtc_output_layout.h"
 #include "native_rtc_run_report.h"
 #include "point_observation_pass.h"
+#include "point_cal_handoff.h"
 #include <charconv>
 #include <cerrno>
 #include <cstdlib>
@@ -101,9 +102,10 @@ double field(const auto &row,const std::string &name) {
   if(auto value=std::get_if<std::int64_t>(&it->second)) return *value;
   return NAN;
 }
-void write_yaml(const fs::path &p,const YAML::Node &node) {
+void write_yaml(const fs::path &p,const YAML::Node &node,std::string *published_sha=nullptr) {
   YAML::Emitter serialized;serialized.SetDoublePrecision(17);serialized<<node;
   std::ofstream out(p);out<<serialized.c_str()<<'\n';out.close();require(bool(out),"required output failed: "+p.string());
+    if(published_sha)*published_sha=citlali::utils::sha256(std::string(serialized.c_str())+'\n');
 }
 YAML::Node range(RtcEventRange r) {YAML::Node n;n.push_back(r.first);n.push_back(r.past_last);return n;}
 void write_matrix(const fs::path &p,const auto &m) {
@@ -136,8 +138,8 @@ namespace {
 // One observation lifetime, prepared before workers start; only the I/O mutex
 // is mutable. Numerical work and detector populations remain network-owned.
 struct SharedObservationPreparation {
-  apt::VerifiedBundle apt;
-  pipeline::CanonicalAptDetectorRelationV2 relation;
+  const apt::VerifiedBundle &apt;
+  const pipeline::CanonicalAptDetectorRelationV2 &relation;
   PreparedProcessingScans processing;
   CalObservationInput cal;
   TelescopeInput telescope;
@@ -150,7 +152,7 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
     const SharedObservationPreparation *common=nullptr,
     const citlali::cli::NativeRtcOutputLayout::NetworkPaths *prepared_output=nullptr,
     const citlali::cli::NativePtcSetup *prepared_ptc=nullptr,
-    std::string expected_input_sha256={}) {
+    std::string expected_input_sha256={},citlali::cli::detail::PointCalNetwork *point_cal=nullptr) {
   using citlali::cli::RtcInvocation;using citlali::cli::DevelopmentTerminal;
   const bool development = invocation == RtcInvocation::development_default;
   std::array<std::string,4> arguments{"citlali",input_path.string(),output_path.string(),
@@ -1330,7 +1332,7 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
                 recovered_scans->receipt["grid_last_unix_seconds"].as<double>();
           }
           const auto cal=execute_connected_cal(cal_source,cfg,verified,relation,channels,treatment_output.cal,performance,
-              common?&common->cal:nullptr,offset_support.size()==2?&offset_support:nullptr);
+              common?&common->cal:nullptr,offset_support.size()==2?&offset_support:nullptr,point_cal);
           receipt["CAL"]=cal.receipt;
           if(endpoint==DevelopmentTerminal::ptc) {
             require(bool(recovered_scans),"successor.PTC_scan_binding_unavailable");
@@ -1412,7 +1414,8 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
 
 namespace {
 int execute_successor_observation(const YAML::Node &request,const fs::path &output,
-    citlali::cli::DevelopmentTerminal terminal,citlali::cli::DevelopmentPtcRequest ptc,unsigned workers) {
+    citlali::cli::DevelopmentTerminal terminal,citlali::cli::DevelopmentPtcRequest ptc,unsigned workers,
+    PreparedPointCal *point_cal=nullptr) {
   const bool reference=request["development_reference"] && request["development_reference"].as<std::string>()=="bright-point-base-v1";
   const bool configured=citlali::cli::detail::configured_point_scope(request,request["observation"].as<int>(),request["subobservation"].as<int>(),request["scan"].as<int>());
   require(!citlali::cli::detail::configured_point_request(request) || configured,"configured POINT acquisition differs");
@@ -1428,7 +1431,9 @@ int execute_successor_observation(const YAML::Node &request,const fs::path &outp
   for(const auto &entry:request["networks"]) {
     const int nw=entry["network"].as<int>();
     require((reference || configured || request["observation"].as<int>()!=152430 || nw==11 || nw==12) && nw>=0 && nw<13 && (ids.empty() || nw>ids.back()),"successor.network_order_duplicate_or_invalid");
-    const auto path=checked_file(entry["input"]);const auto cfg=YAML::LoadFile(path.string());
+    const fs::path path=entry["input"]["path"].as<std::string>();
+    MapFileLedger input_ledger;
+    const auto cfg=input_ledger.read_yaml(path,entry["input"]["sha256"].as<std::string>()).second;
     require(!oof || (citlali::cli::detail::oof_network_scope(cfg,request["observation"].as<int>(),0,1,nw) &&
         cfg["development_reference"].as<std::string>()==request["development_reference"].as<std::string>()),"OOF observation/network identity differs");
     require(!reference || (cfg["development_reference"] && cfg["development_reference"].as<std::string>()=="bright-point-base-v1"),"reference network scope differs");
@@ -1443,6 +1448,17 @@ int execute_successor_observation(const YAML::Node &request,const fs::path &outp
     input_digests.push_back(entry["input"]["sha256"].as<std::string>());
   }
   std::optional<citlali::cli::NativePtcConfiguration> ptc_config;
+  if(point_cal) {
+    const auto cfg=configs.front()["effective_config"];
+    MapFileLedger admission;
+    const auto effective=admission.read_yaml(cfg["path"].as<std::string>(),cfg["sha256"].as<std::string>()).second;
+    const auto profile=effective["successor"];
+    require(configured && terminal==citlali::cli::DevelopmentTerminal::cal && point_cal->producer_networks().empty() &&
+            profile["schema"].as<std::string>()=="citlali-point-v2" &&
+            !profile["products"]["retain_intermediates"].as<bool>() &&
+            !profile["weight_comparison"].as<bool>(false) && effective["runtime"]["n_threads"].as<unsigned>()==workers,
+            "POINT memory handoff requires ordinary weighted CAL without retained intermediates");
+  }
   if(terminal==citlali::cli::DevelopmentTerminal::ptc)
     ptc_config.emplace(YAML::LoadFile(checked_file(configs.front()["effective_config"]).string()),ptc);
   const auto budget=citlali::cli::detail::point_execution_budget(workers);
@@ -1460,8 +1476,13 @@ int execute_successor_observation(const YAML::Node &request,const fs::path &outp
   const auto began=std::chrono::steady_clock::now();
   RtcPerformanceTrace trace(output_layout.root());
   const auto &cfg=configs.front();const NativeObservationScope scope{request["observation"].as<int>(),request["subobservation"].as<int>(),request["scan"].as<int>()};
-  auto verified=apt::verify_bundle_filesystem(checked_file(cfg["manifest"]),true);
-  auto relation=pipeline::admit_canonical_apt_detector_relation_v2(verified);
+  std::optional<citlali::cli::detail::SavedMapApt> local_apt;
+  const auto manifest=cfg["manifest"];
+  const auto &selected_apt=point_cal ?
+      point_cal->admit_setup_apt(manifest["path"].as<std::string>(),manifest["sha256"].as<std::string>()) :
+      local_apt.emplace(checked_file(manifest));
+  const auto &verified=selected_apt.files.verified();
+  const auto &relation=selected_apt.relation;
   require(relation.observation().observation==scope.observation && relation.observation().subobservation==scope.subobservation && relation.observation().scan==scope.scan,"observation/APT scope mismatch");
   std::vector<citlali::cli::NativePtcSetup> ptc_setups;
   if(ptc_config) {
@@ -1546,16 +1567,24 @@ int execute_successor_observation(const YAML::Node &request,const fs::path &outp
     }
     write_yaml(output_layout.root()/"PREPARED.yaml",record);return 0;
   }
-  SharedObservationPreparation common{std::move(verified),std::move(relation),std::move(processing),
+  SharedObservationPreparation common{verified,relation,std::move(processing),
       std::move(cal),std::move(telescope),std::move(motion)};
   trace.mark("shared_observation_preparation_complete");
+  if(point_cal) {
+    for(std::size_t i=0;i<ids.size();++i) {
+      auto &product=point_cal->producer_networks().try_emplace(ids[i]).first->second;
+      product.root=output_layout.network(i).root;
+      product.input_sha=input_digests[i];
+    }
+  }
   const double preparation=std::chrono::duration<double>(std::chrono::steady_clock::now()-began).count();
   std::vector<int> codes(ids.size(),-1);std::vector<double> seconds(ids.size());
   auto execute_network=[&](std::size_t i) {
     const auto start=std::chrono::steady_clock::now();
     codes[i]=execute_successor_network(inputs[i],output_layout.network(i).root,
         citlali::cli::RtcInvocation::development_default,{},terminal,ptc,&common,
-        &output_layout.network(i),ptc_config?&ptc_setups[i]:nullptr,input_digests[i]);
+        &output_layout.network(i),ptc_config?&ptc_setups[i]:nullptr,input_digests[i],
+        point_cal?&point_cal->producer_networks().at(ids[i]):nullptr);
     seconds[i]=std::chrono::duration<double>(std::chrono::steady_clock::now()-start).count();
   };
   citlali::utils::ParallelWorkReport work_report;
@@ -1630,11 +1659,13 @@ int citlali::cli::run_successor_rtc(const fs::path &input,const fs::path &output
 }
 
 namespace citlali::cli {
-int run_point_observation_session(const fs::path &health_request,const fs::path &health_output,
-                                  unsigned workers,const std::string &initial_sha) {
-    const auto work=health_request.parent_path();
-    require(work.is_absolute() && health_request==work/"health-request.json" &&
-            health_output==work/"health/products","POINT session needs its bound health root");
+int run_point_observation_session(const fs::path &first_request,const fs::path &first_output,
+                                  unsigned workers,const std::string &initial_sha,bool start_at_cal) {
+    const auto work=first_output.parent_path().parent_path();
+    const auto expected_input=work/(start_at_cal ? "inputs/observation.json" : "health-request.json");
+    const auto expected_output=work/(start_at_cal ? "upstream/products" : "health/products");
+    require(work.is_absolute() && first_request==expected_input && first_output==expected_output,
+            "POINT session needs its bound observation root");
     const char *fd_text=std::getenv("CITLALI_POINT_REPLY_FD");
     require(fd_text!=nullptr,"POINT session requires the coordinator reply pipe");
     const std::string_view descriptor=fd_text;
@@ -1644,27 +1675,69 @@ int run_point_observation_session(const fs::path &health_request,const fs::path 
     require(parsed.ec==std::errc{} && parsed.ptr==descriptor.data()+descriptor.size() &&
             fd>=3 && ::fstat(fd,&pipe_status)==0 && S_ISFIFO(pipe_status.st_mode),
             "POINT session reply descriptor is invalid");
-    PreparedPointCal cal;
-    for(unsigned index=0;;++index) {
+    const auto next_command=[] {
         char frame[66]{};
         require(bool(std::cin.getline(frame,sizeof frame)) && !std::cin.eof(),
                 "POINT session control stream ended without a complete command");
-        const std::string command(frame,static_cast<std::size_t>(std::cin.gcount()-1));
-        if(command=="finish") {
-            require(index>=2,"POINT session finished before M0");
-            return 0;
-        }
-        const auto pass=detail::read_point_observation_pass(work,index,workers,command,initial_sha);
-        const int code=execute_weighted_point(pass.request,pass.output,workers,&cal,
-            static_cast<int>(index),pass.request_sha);
-        if(code) return code;
-        // Logs and protocol traffic have independent descriptors. Make the
-        // stage's diagnostics visible to the coordinator before acknowledging it.
+        return std::string(frame,static_cast<std::size_t>(std::cin.gcount()-1));
+    };
+    const auto acknowledge=[fd](const std::string &command) {
         std::cout.flush();std::cerr.flush();std::fflush(stdout);std::fflush(stderr);
         const auto reply=command+"\n";
         ssize_t written;
         do {written=::write(fd,reply.data(),reply.size());} while(written<0 && errno==EINTR);
         require(written==static_cast<ssize_t>(reply.size()),"POINT session reply failed");
+    };
+    PreparedPointCal cal(start_at_cal);
+    detail::MapFileLedger observation_files;
+    if(start_at_cal) {
+        const auto command=next_command();
+        const auto pass=detail::read_point_stage({work/"upstream/development.yaml",first_request,first_output,{}},
+                                                 "cal",workers,command,initial_sha);
+        const auto observation=observation_files.read_yaml(pass.request,pass.request_sha).second;
+        const int code=execute_successor_observation(observation,pass.output,DevelopmentTerminal::cal,{},workers,&cal);
+        if(code)return code;
+        observation_files.verify();
+        acknowledge(command);
+    }
+    bool sealed=false;
+    for(unsigned index=0;;++index) {
+        const auto command=next_command();
+        if(command=="finish") {
+            require(index>=2 && (!start_at_cal || sealed),"POINT session finished before M0 or final input check");
+            return 0;
+        }
+        require(!sealed,"POINT session already sealed");
+        if(start_at_cal && command=="verify-originals") {
+            require(index>=2,"POINT session input check before M0");
+            detail::PointPhaseClock clock;
+            const auto before=cal.original_files().io;
+            const auto apt_files=cal.apt().retained_file_reads(),apt_bytes=cal.apt().retained_file_bytes();
+            observation_files.verify();
+            cal.verify_at_publication(true);
+            YAML::Node check;
+            check["schema"]="citlali-point-final-originals-v1";
+            check["observation_request_sha256"]=initial_sha;
+            check["health_request_sha256"]=cal.first_request_sha();
+            check["last_cycle_index"]=index-2;
+            check["original_files"]=cal.original_files().io.files-before.files;
+            check["original_bytes"]=cal.original_files().io.bytes-before.bytes;
+            check["apt_member_reads"]=cal.apt().retained_file_reads()-apt_files;
+            check["apt_member_bytes"]=cal.apt().retained_file_bytes()-apt_bytes;
+            check["wall_seconds"]=clock.wall_seconds();
+            check["process_cpu_seconds"]=clock.cpu_seconds();
+            write_yaml(work/"final-originals.yaml",check);
+            sealed=true;
+            acknowledge(command);
+            continue;
+        }
+        const auto pass=detail::read_point_observation_pass(work,index,workers,command,start_at_cal ? "" : initial_sha);
+        const int code=execute_weighted_point(pass.request,pass.output,workers,&cal,
+            static_cast<int>(index),pass.request_sha);
+        if(code) return code;
+        // Logs and protocol traffic have independent descriptors. Make the
+        // stage's diagnostics visible to the coordinator before acknowledging it.
+        acknowledge(command);
     }
 }
 int run_successor_saved_fruit(const std::filesystem::path &input,const std::filesystem::path &output,bool validate_only) {

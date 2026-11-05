@@ -68,11 +68,15 @@ public:
     void verify_retained_generations() {
         if (current_ || used_.empty()) throw std::logic_error("POINT APT generation was not sealed");
         for (const auto &entry : used_) {
-            entry.second.transport.require_unchanged();
+            const auto reads=entry.second.transport.require_unchanged();
+            retained_reads_+=reads.files;
+            retained_bytes_+=reads.bytes;
             ++retained_rechecks_;
         }
     }
     unsigned retained_rechecks() const noexcept { return retained_rechecks_; }
+    std::uintmax_t retained_file_reads() const noexcept { return retained_reads_; }
+    std::uintmax_t retained_file_bytes() const noexcept { return retained_bytes_; }
     unsigned network_reuses() const noexcept { return network_reuses_; }
     unsigned evicted_rechecks() const noexcept { return evicted_rechecks_; }
     double selection_seconds() const noexcept { return selection_seconds_; }
@@ -111,6 +115,7 @@ private:
     unsigned network_reuses_ = 0;
     unsigned evicted_rechecks_ = 0;
     unsigned retained_rechecks_ = 0;
+    std::uintmax_t retained_reads_=0,retained_bytes_=0;
     double selection_seconds_ = 0;
 };
 

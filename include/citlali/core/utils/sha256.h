@@ -149,27 +149,34 @@ inline std::string sha256(std::string_view data) {
     return digest.finish();
 }
 
-inline std::string sha256_file(const std::filesystem::path &path) {
+inline std::string sha256_file_with_size(const std::filesystem::path &path,std::uintmax_t &bytes_read) {
     std::ifstream stream(path, std::ios::binary);
     if (!stream) {
         throw std::runtime_error("unable to open file for SHA-256: " +
                                  path.string());
     }
     Sha256 digest;
+    bytes_read=0;
     std::array<char, 8192> buffer{};
     while (stream) {
         stream.read(buffer.data(), buffer.size());
         const auto count = stream.gcount();
         if (count > 0) {
+            bytes_read+=static_cast<std::uintmax_t>(count);
             digest.update(reinterpret_cast<const std::uint8_t *>(buffer.data()),
                           static_cast<std::size_t>(count));
         }
     }
-    if (!stream.eof()) {
+    if (!stream.eof() || stream.bad()) {
         throw std::runtime_error("unable to read file for SHA-256: " +
                                  path.string());
     }
     return digest.finish();
+}
+
+inline std::string sha256_file(const std::filesystem::path &path) {
+    std::uintmax_t bytes_read{};
+    return sha256_file_with_size(path,bytes_read);
 }
 
 }  // namespace citlali::utils

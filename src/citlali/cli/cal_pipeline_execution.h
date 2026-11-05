@@ -68,7 +68,8 @@ ConnectedCal execute_connected_cal(const CalRtcSource &source,const YAML::Node &
     const apt::VerifiedBundle &verified,const pipeline::CanonicalAptDetectorRelationV2 &relation,
     const std::vector<int> &channels,const fs::path &destination,RtcPerformanceTrace &performance,
     const CalObservationInput *common=nullptr,
-    const Eigen::VectorXd *common_offset_support=nullptr) {
+    const Eigen::VectorXd *common_offset_support=nullptr,
+    citlali::cli::detail::PointCalNetwork *point_cal=nullptr) {
     performance.mark("CAL_start");
     const auto started=std::chrono::steady_clock::now();
     const auto grid=source.rtc_terminal_handle()->grid_handle();const auto scope=grid->align_handle()->scope();
@@ -194,32 +195,46 @@ ConnectedCal execute_connected_cal(const CalRtcSource &source,const YAML::Node &
     record["literal_peak_response_qualified"]=false;record["science_qualified"]=false;
     record["PTC_executed"]=false;record["MAP_executed"]=false;
     record["numerical_layout"]="supported slots only: slot.i64 and value.f64; causes.u16 covers every original RTC slot, little endian";
+    if(point_cal)record["payload_storage"]="observation-memory";
     record["cause_bits"]["rtc_unavailable"]=1;record["cause_bits"]["direct_replacement_or_exclusion"]=2;
     record["cause_bits"]["invalid_factor"]=4;record["cause_bits"]["outside_supported_calibration"]=8;
     record["cause_bits"]["invalid_atmosphere"]=16;record["cause_bits"]["pointing_unavailable"]=32;record["cause_bits"]["numeric_failure"]=64;
     for(std::size_t d=0;d<grid->detectors().size();++d) {
         const auto stem="channel-"+std::to_string(channels[d]);
-        std::ofstream values(destination/(stem+"-value.f64"),std::ios::binary),slots(destination/(stem+"-slot.i64"),std::ios::binary),causes(destination/(stem+"-causes.u16"),std::ios::binary);
+        citlali::cli::detail::PointCalChannel payload{channels[d],{},{},{}};
         YAML::Node detector;detector["channel"]=channels[d];detector["selected_row"]=evidence->factors()[d].selected_row_identity;
         if(!std::isfinite(ast->geometry()[d].x_t_arcsec) || !std::isfinite(ast->geometry()[d].y_t_arcsec))
             detector["AST_coordinate_cause"]="missing-detector-geometry:selected-APT-offset-unavailable";
         detector["array"]=evidence->factors()[d].array;detector["uniquely_matched"]=evidence->factors()[d].uniquely_matched;
         if(evidence->factors()[d].flxscale_mJy_beam_per_x)detector["selected_flxscale"]=*evidence->factors()[d].flxscale_mJy_beam_per_x;
-        std::map<std::uint16_t,std::size_t> counts;std::size_t available=0;
+        std::map<std::uint16_t,std::size_t> counts;
+        payload.causes.reserve(grid->detectors()[d].scheduled_count);
         for(std::size_t s=0;s<grid->detectors()[d].scheduled_count;++s) {
             const auto cause=val->committed_cal_output_facts_handle()->at(signal,d,s);++counts[cause];
-            causes.write(reinterpret_cast<const char*>(&cause),sizeof(cause));
-            if(const auto value=signal->value(d,s)){const auto slot=static_cast<std::int64_t>(s);slots.write(reinterpret_cast<const char*>(&slot),8);values.write(reinterpret_cast<const char*>(&*value),8);++available;}
+            payload.causes.push_back(cause);
+            if(const auto value=signal->value(d,s)) {
+                payload.slots.push_back(static_cast<std::int64_t>(s));
+                payload.values.push_back(*value);
+            }
         }
-        values.close();slots.close();causes.close();require(bool(values)&&bool(slots)&&bool(causes),"required CAL output failed");
-        detector["available"]=available;for(const auto &[cause,count]:counts)detector["joint_cause_counts"][std::to_string(cause)]=count;
-        for(const auto *suffix:{"-value.f64","-slot.i64","-causes.u16"})detector["files"][stem+suffix]=citlali::utils::sha256_file(destination/(stem+suffix));
+        detector["available"]=payload.values.size();
+        for(const auto &[cause,count]:counts)detector["joint_cause_counts"][std::to_string(cause)]=count;
+        if(point_cal) {
+            detector["files"]=payload.declarations();
+            point_cal->channels.push_back(std::move(payload));
+        } else {
+            citlali::cli::detail::write_native_binary<double>(destination/(stem+"-value.f64"),payload.values);
+            citlali::cli::detail::write_native_binary<std::int64_t>(destination/(stem+"-slot.i64"),payload.slots);
+            citlali::cli::detail::write_native_binary<std::uint16_t>(destination/(stem+"-causes.u16"),payload.causes);
+            for(const auto *suffix:{"-value.f64","-slot.i64","-causes.u16"})
+                detector["files"][stem+suffix]=citlali::utils::sha256_file(destination/(stem+suffix));
+        }
         record["detectors"].push_back(detector);
     }
     record["Learn_seconds"]=std::chrono::duration<double>(learned-started).count();
     record["Consider_seconds"]=std::chrono::duration<double>(considered-learned).count();
     record["Apply_VAL_seconds"]=std::chrono::duration<double>(applied-considered).count();
-    write_yaml(destination/"receipt.yaml",record);
+    write_yaml(destination/"receipt.yaml",record,point_cal?&point_cal->receipt_sha:nullptr);
     performance.mark("CAL_publication_complete");return {record,PtcCalSource::bind(signal,val)};
 }
 } // namespace

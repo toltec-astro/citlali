@@ -92,6 +92,34 @@ class SuccessorDefaultCli(unittest.TestCase):
         self.assertIn("POINT session stage order or frozen health differs", result.stdout+result.stderr)
         self.assertFalse((stage/"products").exists())
 
+    def test_point_cal_session_requires_its_bound_upstream_descriptor(self):
+        inputs = self.root / "inputs"
+        inputs.mkdir()
+        observation = inputs / "observation.json"
+        observation.write_text("{}\n")
+        upstream = self.root / "upstream"
+        upstream.mkdir()
+        output = upstream / "products"
+        descriptor = upstream / "development.yaml"
+        binding = dict(path=str(observation), sha256=hashlib.sha256(observation.read_bytes()).hexdigest())
+        settings = dict(schema="citlali-development-v1", input=binding, output=str(output),
+                        terminal="point-cal-observation", network_workers=3)
+        launch = self.root / "launch.yaml"
+        launch.write_text(json.dumps(settings))
+        descriptor.write_text(json.dumps(dict(settings, terminal="map")))
+        read_fd, write_fd = os.pipe()
+        try:
+            result = subprocess.run([CLI, str(launch)], text=True, timeout=30,
+                input=hashlib.sha256(descriptor.read_bytes()).hexdigest()+"\n",
+                capture_output=True, pass_fds=(write_fd,),
+                env=dict(os.environ, CITLALI_POINT_REPLY_FD=str(write_fd)))
+        finally:
+            os.close(write_fd)
+            os.close(read_fd)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("POINT pass descriptor route or binding differs", result.stdout+result.stderr)
+        self.assertFalse(output.exists())
+
     def native_request_with_bad_raw_digest(self):
         raw = self.root / "raw-placeholder"
         raw.write_text("deliberately not detector data")

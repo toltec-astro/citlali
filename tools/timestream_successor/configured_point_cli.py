@@ -9,7 +9,7 @@ complete requested products. It never invokes a historical reduction fallback.
 from __future__ import annotations
 
 import argparse
-from contextlib import nullcontext
+from contextlib import ExitStack, nullcontext
 from dataclasses import asdict
 from functools import partial
 import json
@@ -102,8 +102,8 @@ def native_call(
                 **({"timeout": timeout} if timeout is not None else {}),
             ).returncode
         else:
-            if terminal != "map" or method is not None or timeout is not None:
-                raise ValueError("POINT observation session only accepts ordinary weighted maps")
+            if (terminal != "map" and not (terminal == "cal" and session.start_at_cal)) or method is not None or timeout is not None:
+                raise ValueError("Invalid configured POINT observation stage")
             code = session.run(binary, path, log, env, verbose)
     elapsed = time.monotonic() - started
     # No process sampler or repeated output-tree inventory in ordinary mode.
@@ -201,6 +201,11 @@ def release_transport(work):
 
 
 def execute(config_path, native, *, launch_dir=None):
+    with ExitStack() as lifetime:
+        return _execute(config_path, native, launch_dir, lifetime)
+
+
+def _execute(config_path, native, launch_dir, lifetime):
     launch_dir = Path.cwd() if launch_dir is None else launch_dir
     config_path = config_path.resolve()
     native = native.resolve()
@@ -261,6 +266,9 @@ def execute(config_path, native, *, launch_dir=None):
             f"all three arrays, {request.workers} workers",
             flush=True,
         )
+        cal_session = None
+        if request.weighted and not request.weight_comparison and not request.retain_intermediates:
+            cal_session = lifetime.enter_context(PointObservationSession(work, start_at_cal=True))
         try:
             record["stages"].append(
                 native_call(
@@ -271,6 +279,7 @@ def execute(config_path, native, *, launch_dir=None):
                     workers=request.workers,
                     method=None if request.weighted else request.cleaning_method,
                     verbose=request.verbose,
+                    **({"session": cal_session} if cal_session is not None else {}),
                 )
             )
         finally:
@@ -300,7 +309,9 @@ def execute(config_path, native, *, launch_dir=None):
             from configured_point_weighted import execute as weighted_point
 
             # Diagnostic comparison arms retain standalone replay semantics.
-            with (nullcontext() if request.weight_comparison else PointObservationSession(work)) as session:
+            session_context = (nullcontext(cal_session) if cal_session is not None or request.weight_comparison
+                               else PointObservationSession(work))
+            with session_context as session:
                 map_products = weighted_point(
                     prepared, work, reduction, native, request, record,
                     native_call=native_call if session is None else partial(native_call, session=session),
@@ -343,6 +354,11 @@ def execute(config_path, native, *, launch_dir=None):
             pointing_metadata=prepared.get("pointing_metadata"),
             array_executor=array_executor,
         )
+        # The observation child verifies originals, finishes and joins while
+        # final products are still private and original transports still exist.
+        lifetime.close()
+        if cal_session is not None:
+            record["final_original_inputs"] = bind(work / "final-originals.yaml")
         if not request.retain_intermediates:
             record["transport_retention"] = release_transport(work)
         else:

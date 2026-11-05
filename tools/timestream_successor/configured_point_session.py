@@ -15,8 +15,9 @@ class PointObservationSession:
 
     finish_timeout = 30  # Only teardown is bounded; the final scientific pass has already acknowledged.
 
-    def __init__(self, work):
+    def __init__(self, work, *, start_at_cal=False):
         self.work = Path(work)
+        self.start_at_cal = start_at_cal
         self.process = None
         self.replies = None
         self.log_path = self.work / "point-observation.log"
@@ -26,11 +27,12 @@ class PointObservationSession:
         return self
 
     def _start(self, binary, descriptor, env, verbose):
-        if descriptor != self.work / "health/development.yaml":
-            raise ValueError("POINT observation must begin with health")
+        first = "upstream" if self.start_at_cal else "health"
+        if descriptor != self.work / first / "development.yaml":
+            raise ValueError(f"POINT observation must begin with {first}")
         launch = self.work / "point-observation.yaml"
         settings = yaml.safe_load(descriptor.read_text())
-        settings["terminal"] = "point-observation"
+        settings["terminal"] = "point-cal-observation" if self.start_at_cal else "point-observation"
         with launch.open("x") as stream:
             yaml.safe_dump(settings, stream, sort_keys=False)
         read_fd, write_fd = os.pipe()
@@ -61,17 +63,19 @@ class PointObservationSession:
                 self.process.kill()
                 self.process.wait()
 
+    def _exchange(self, message):
+        try:
+            self.process.stdin.write(message)
+            self.process.stdin.flush()
+            return self.replies.readline(len(message) + 1) == message
+        except BrokenPipeError:
+            return False
+
     def run(self, binary, descriptor, log, env, verbose):
         if self.process is None:
             self._start(binary, descriptor, env, verbose)
         digest = hashlib.sha256(descriptor.read_bytes()).hexdigest().encode() + b"\n"
-        try:
-            self.process.stdin.write(digest)
-            self.process.stdin.flush()
-            reply = self.replies.readline(len(digest) + 1)
-        except BrokenPipeError:
-            reply = b""
-        if reply != digest or hashlib.sha256(descriptor.read_bytes()).hexdigest().encode() != digest[:-1]:
+        if not self._exchange(digest) or hashlib.sha256(descriptor.read_bytes()).hexdigest().encode() != digest[:-1]:
             self._abort()
             log.write(self._new_log_text())
             log.write("POINT observation ended without a bound success acknowledgement\n")
@@ -80,6 +84,11 @@ class PointObservationSession:
         return 0
 
     def _finish(self):
+        if self.start_at_cal:
+            # Mutable original sources still need verification after final fits.
+            # This is scientific work, outside the post-acknowledgement timeout.
+            if not self._exchange(b"verify-originals\n"):
+                raise RuntimeError(f"POINT observation final input verification failed; see {self.log_path}")
         try:
             self.process.stdin.write(b"finish\n")
             self.process.stdin.flush()

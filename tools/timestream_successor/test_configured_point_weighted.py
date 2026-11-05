@@ -352,15 +352,42 @@ def test_disabled_feedback_runs_one_weighted_forward_map_only(orchestration):
 
 
 def test_v2_cli_stops_upstream_at_cal_and_uses_weighted_dispatch(tmp_path, weighted_config, monkeypatch):
+    _weighted_cli_handoff_case(tmp_path, weighted_config, monkeypatch, retain=True)
+
+
+@pytest.mark.parametrize("changed", [False, True])
+def test_default_cal_handoff_verifies_after_fits_before_publication(tmp_path, weighted_config, monkeypatch, changed):
+    _weighted_cli_handoff_case(tmp_path, weighted_config, monkeypatch, retain=False, changed=changed)
+
+
+def _weighted_cli_handoff_case(tmp_path, weighted_config, monkeypatch, *, retain, changed=False):
     weighted_config['runtime']['output_dir'] = str(tmp_path / 'reduced')
     weighted_config['successor']['rtc']['disturbance_exclusion'] = 'disabled'
-    weighted_config['successor']['products'].update(fit_diagnostics=False, retain_intermediates=True)
+    weighted_config['successor']['products'].update(fit_diagnostics=False, retain_intermediates=retain)
     config_path = tmp_path / 'merged.yaml'
     config_path.write_text(yaml.safe_dump(weighted_config))
     binary = tmp_path / 'native'
     binary.write_text('fake identity\n')
     monkeypatch.setattr(cli.subprocess, 'check_output', lambda *a, **kw: 'synthetic-native\n')
     calls = []
+    sessions = []
+
+    class Session:
+        def __init__(self, work, *, start_at_cal=False):
+            self.work = work
+            self.start_at_cal = start_at_cal
+            sessions.append(self)
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, kind, error, trace):
+            if self.start_at_cal and kind is None:
+                assert len(list((self.work/'publish/raw').glob('toltec_*.fits'))) == 3
+                assert not (self.work.parent/'152389').exists()
+                if changed:
+                    raise RuntimeError('material input changed')
+                (self.work/'final-originals.yaml').write_text('verified: true\n')
 
     def prepare(effective, destination, **kwargs):
         destination.mkdir()
@@ -377,7 +404,12 @@ def test_v2_cli_stops_upstream_at_cal_and_uses_weighted_dispatch(tmp_path, weigh
         return dict(terminal=kwargs['terminal'], execution=dict(requested_workers=6, effective_workers=2))
 
     def execute(prepared, work, reduction, native, request, record, **kwargs):
-        assert calls == [dict(terminal='cal', workers=6, method=None, verbose=False)]
+        arguments = dict(terminal='cal', workers=6, method=None, verbose=False)
+        assert len(sessions) == 1 and sessions[0].start_at_cal == (not retain)
+        if not retain:
+            arguments['session'] = sessions[0]
+        assert calls == [arguments]
+        assert kwargs['native_call'].keywords['session'] is sessions[0]
         assert request.weighted
         assert kwargs['array_executor'].workers == 2
         for array in products.ARRAYS:
@@ -386,10 +418,19 @@ def test_v2_cli_stops_upstream_at_cal_and_uses_weighted_dispatch(tmp_path, weigh
         return work / 'weighted-00/products'
 
     monkeypatch.setattr(cli, 'prepare', prepare)
+    monkeypatch.setattr(cli, 'PointObservationSession', Session)
     monkeypatch.setattr(cli, 'native_call', native_call)
     monkeypatch.setattr(weighted, 'execute', execute)
     monkeypatch.setattr(cli, 'map_request', lambda *a, **kw: pytest.fail('legacy PTC MAP route used'))
+    if changed:
+        with pytest.raises(RuntimeError, match='material input changed'):
+            cli.execute(config_path, binary, launch_dir=tmp_path)
+        reduction = tmp_path/'reduced/redu00'
+        assert json.loads((reduction/'RUN.json').read_text())['status'] == 'failed'
+        assert not (reduction/'152389').exists()
+        return
     reduction = cli.execute(config_path, binary, launch_dir=tmp_path)
     record = json.loads((reduction / 'RUN.json').read_text())
     assert record['status'] == 'completed' and record['final_cycle'] == 0
+    assert ('final_original_inputs' in record) == (not retain)
     assert len(list((reduction / '152389/raw').glob('toltec_*.fits'))) == 3

@@ -50,22 +50,37 @@ process-lifetime peak RSS are separate from native stage measurements; per-job
 RSS values must not be summed as an observation peak. `execution.yaml` and
 `RUN.json` contain execution diagnostics, not scientific identity or acceptance.
 
-For ordinary configured weighted POINT, `PointObservationSession` owns one
-native child from health through the last map pass. Python submits the hash of
+For ordinary configured weighted POINT with intermediate retention off,
+`PointObservationSession` owns one native child from RTC/CAL through the
+final input check after fits. Python submits the hash of
 each existing development request in order. The child derives the expected
 stage path, checks the bound request, publishes the stage, and acknowledges its
-digest over a private pipe. Python owns all feedback and early-stop decisions
-and joins the child before final publication or transport release.
+digest over a private pipe. Each network CAL producer fills its own
+`PointCalNetwork` with channel values (mJy/nominal beam), scheduled slots
+and cause bits. The CAL receipt declares their exact byte digests and memory
+storage. Workers join before health begins. Health checks the original
+ordered network, receipt, channels, dimensions, slots and digests and
+consumes each handoff once. Python owns feedback and early stopping and
+joins the child before public publication or transport release. Retained
+intermediates and standalone replay use the saved channel transport.
 
 `PreparedPointCal` retains only original CAL numerical values, scheduled masks,
 coordinates, segment/occurrence associations and compact detector metadata.
 One observation ledger holds original source digests and APT generations.
 Every reused pass checks the same effective config and ordered network
-bindings and verifies the original bytes before use. Models, residuals,
+bindings. The in-memory CAL channel data have no filesystem locator to
+reopen. The full external APT generation admitted at upstream setup also
+serves health. The APT owner verifies its mutable backing, including the
+manifest, members and directory, at the existing integrity boundaries.
+Remaining file-backed originals are checked before use and publication.
+Models, residuals,
 weights and products have independent per-pass ownership. Each publication
 rechecks original and pass-specific inputs. The execution receipt times final
 source verification separately with wall and process CPU clocks. Process
-lifetime peak RSS now spans the native observation for this route.
+lifetime peak RSS spans upstream and maps on the in-memory route. Stage
+receipts distinguish channel, original-ledger, pass-ledger and retained APT
+file reads. A final receipt binds the remaining original inputs checked
+after final fits, while products are still staged.
 
 Saved CAL loading remains serial. Diagnostic comparison and standalone MAP
 replay retain their single-stage execution paths.

@@ -1,11 +1,66 @@
 #include "../src/citlali/cli/point_weighted_bindings.h"
 #include "../src/citlali/cli/point_observation_pass.h"
+#include "../src/citlali/cli/point_cal_handoff.h"
+#include "../src/citlali/cli/map_file_ledger.h"
 #include <chrono>
 #include <gtest/gtest.h>
 
 namespace {
 using namespace citlali::cli::detail;
 const std::string a(64,'a'),b(64,'b'),c(64,'c'),d(64,'d');
+
+TEST(PointCalHandoff, ReceiptBindsChannelValuesSlotsCausesAndNetwork) {
+    PointCalNetwork network{"products/network7",a,b,{{17,{0.5,-3.0},{0,2},{0,1,0}}}};
+    YAML::Node record;
+    record["available"]=2;
+    record["files"]=network.channels[0].declarations();
+    const std::string old_values("\0\0\0\0\0\0\xe0\x3f\0\0\0\0\0\0\x08\xc0",16);
+    const std::string old_slots("\0\0\0\0\0\0\0\0\x02\0\0\0\0\0\0\0",16);
+    const std::string old_causes("\0\0\1\0\0\0",6);
+    EXPECT_EQ(record["files"]["channel-17-value.f64"].as<std::string>(),citlali::utils::sha256(old_values));
+    EXPECT_EQ(record["files"]["channel-17-slot.i64"].as<std::string>(),citlali::utils::sha256(old_slots));
+    EXPECT_EQ(record["files"]["channel-17-causes.u16"].as<std::string>(),citlali::utils::sha256(old_causes));
+    network.require_binding("products/network7",a,b,1);
+    EXPECT_NO_THROW(network.admit(0,17,3,record));
+    EXPECT_THROW(network.require_binding("products/network8",a,b,1),std::runtime_error);
+    EXPECT_THROW(network.require_binding("products/network7",c,b,1),std::runtime_error);
+    EXPECT_THROW(network.require_binding("products/network7",a,c,1),std::runtime_error);
+    EXPECT_THROW(network.admit(0,18,3,record),std::runtime_error);
+    EXPECT_THROW(network.admit(0,17,4,record),std::runtime_error);
+    for (const auto &suffix:{"-value.f64","-slot.i64","-causes.u16"}) {
+        auto changed=YAML::Clone(record);
+        changed["files"][std::string("channel-17")+suffix]=c;
+        EXPECT_THROW(network.admit(0,17,3,changed),std::runtime_error);
+    }
+    network.channels[0].values[0]=2.0;
+    EXPECT_THROW(network.admit(0,17,3,record),std::runtime_error);
+}
+
+TEST(PointCalHandoff, EmptySupportedDomainStillBindsEveryScheduledCause) {
+    PointCalNetwork network{"root",a,b,{{2,{},{},{1,2}}}};
+    YAML::Node record;
+    record["available"]=0;record["files"]=network.channels[0].declarations();
+    EXPECT_EQ(record["files"]["channel-2-value.f64"].as<std::string>(),citlali::utils::sha256(""));
+    EXPECT_NO_THROW(network.admit(0,2,2,record));
+    record["files"]["extra"]=a;
+    EXPECT_THROW(network.admit(0,2,2,record),std::runtime_error);
+}
+
+TEST(PointCalHandoff, FileVerificationCountsActualChannelAndOtherBytes) {
+    const auto root=std::filesystem::temp_directory_path()/("point-hash-io-"+std::to_string(
+        std::chrono::steady_clock::now().time_since_epoch().count()));
+    struct Cleanup {std::filesystem::path dir;~Cleanup(){std::error_code ec;std::filesystem::remove_all(dir,ec);}} cleanup{root};
+    ASSERT_TRUE(std::filesystem::create_directory(root));
+    std::ofstream(root/"channel",std::ios::binary)<<"xyz";
+    std::ofstream(root/"other",std::ios::binary)<<"ab";
+    MapFileLedger ledger;
+    ledger.bind_channel(root/"channel",citlali::utils::sha256("xyz"));
+    ledger.bind(root/"other");ledger.verify();
+    EXPECT_EQ(ledger.io.files,4u);EXPECT_EQ(ledger.io.bytes,10u);
+    EXPECT_EQ(ledger.channel_io.files,2u);EXPECT_EQ(ledger.channel_io.bytes,6u);
+    std::ofstream(root/"other",std::ios::binary)<<"XY";
+    EXPECT_THROW(ledger.verify(),std::runtime_error);
+}
 
 TEST(PointObservationPass, BindsExactNextDescriptorRequestAndOutput) {
     namespace fs=std::filesystem;

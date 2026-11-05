@@ -1,3 +1,11 @@
+## Configured POINT CAL detector handoff candidate — 2026-11-05
+
+The [CAL/APT increment](../validation/point_cal_handoff_2026-11-05/PLAN.md)
+keeps generated channel values, scheduled slots and cause bits in observation
+memory on ordinary weighted POINT. It shares one admitted APT generation
+between upstream and health and preserves verification of mutable APT files.
+Grant's Mac Spack software gates and matched six-worker 152389 run are pending.
+
 ## Weighted POINT observation-scoped CAL reuse accepted — 2026-11-05
 
 Grant accepted application `5b0d63bd6` after his Mac Spack software checks,

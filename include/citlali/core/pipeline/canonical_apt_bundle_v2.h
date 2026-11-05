@@ -1363,15 +1363,19 @@ public:
     // table. Only a fully admitted fresh filesystem generation can issue one.
     class Transport {
     public:
-        void require_unchanged() const {
+        struct ReadCounts { std::uintmax_t files=0,bytes=0; };
+        ReadCounts require_unchanged() const {
             std::vector<std::filesystem::path> paths;
+            ReadCounts counts;
             for (const auto &member : members_) {
                 const auto bytes=bundle_detail::read_regular_file_once(member.path,member.size);
                 if (bytes.size()!=member.size || "sha256:"+citlali::utils::sha256(bytes)!=member.digest)
                     throw ContractError("canonical APT v2 retained source changed: "+member.path.string());
                 paths.push_back(member.path);
+                ++counts.files;counts.bytes+=bytes.size();
             }
             bundle_detail::require_exact_directory(directory_,paths);
+            return counts;
         }
     private:
         friend class FreshFilesystemBundle;
