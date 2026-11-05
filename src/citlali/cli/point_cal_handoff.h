@@ -51,6 +51,32 @@ struct PointCalNetwork {
     std::vector<double> native_times;
     std::string processing_sha, apply_sha, generation_sha;
     unsigned rtc_export_files=0;
+    YAML::Node unavailable_receipt;
+
+    YAML::Node unavailable_report(const YAML::Node &terminal) const {
+        if(cal["available"].as<std::uint64_t>()!=0 || terminal["state"].as<std::string>()!="complete-logical-RTC-terminal")
+            throw std::logic_error("POINT unavailable report needs a completed RTC and zero available CAL samples");
+        YAML::Node report;report["schema"]="citlali-point-cal-unavailable-v1";
+        report["status"]="UNAVAILABLE-no-calibrated-output";report["observation"]=learning["observation"];
+        report["network"]=learning["network"];report["input_sha256"]=input_sha;
+        report["RTC_terminal"]=terminal;report["handoff_sha256"]=generation_sha;report["CAL_sha256"]=receipt_sha;
+        for(const auto *key:{"scheduled","available","input_RTC_attempt","input_VAL_generation","output_VAL_generation",
+                             "selected_child_APT","unit","cause_bits"})
+            report[key]=cal[key];
+        std::map<unsigned,std::uint64_t> causes;
+        std::uint64_t total=0;
+        for(const auto &det:cal["detectors"]) {
+            for(const auto &entry:det["joint_cause_counts"]) {
+                const auto count=entry.second.as<std::uint64_t>();
+                causes[entry.first.as<unsigned>()]+=count;total+=count;
+            }
+        }
+        if(total!=cal["scheduled"].as<std::uint64_t>())
+            throw std::logic_error("POINT unavailable causes do not cover the scheduled slots");
+        report["joint_cause_counts"]=YAML::Node(YAML::NodeType::Map);
+        for(const auto &[cause,count]:causes)report["joint_cause_counts"][std::to_string(cause)]=count;
+        return report;
+    }
 
     void require_live_generation(const YAML::Node &request) const {
         if (generation_sha.size()!=64 || request["transport"].as<std::string>()!="observation-memory" ||

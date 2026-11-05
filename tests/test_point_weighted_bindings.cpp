@@ -53,6 +53,26 @@ TEST(PointCalHandoff, LiveBindingRejectsWrongNetworkInputOrGeneration) {
     }
 }
 
+TEST(PointCalHandoff, ZeroAvailableCalPreservesRtcAndAllCauseCounts) {
+    PointCalNetwork network;
+    network.input_sha=a;network.receipt_sha=b;network.generation_sha=c;
+    network.learning=YAML::Load("{observation: 152389, network: 7}");
+    network.cal=YAML::Load("{available: 0, scheduled: 3, input_RTC_attempt: 1001, input_VAL_generation: 1,"
+        " output_VAL_generation: 2, selected_child_APT: apt, unit: mJy/nominal-beam, cause_bits: {rtc_unavailable: 1},"
+        " detectors: [{joint_cause_counts: {1: 1, 9: 1}}, {joint_cause_counts: {1: 1}}]}");
+    const auto terminal=YAML::Load("{state: complete-logical-RTC-terminal, scheduled_slots: 3}");
+    const auto report=network.unavailable_report(terminal);
+    EXPECT_EQ(report["available"].as<int>(),0);
+    EXPECT_EQ(report["RTC_terminal"]["scheduled_slots"].as<int>(),3);
+    EXPECT_EQ(report["joint_cause_counts"]["1"].as<int>(),2);
+    EXPECT_EQ(report["joint_cause_counts"]["9"].as<int>(),1);
+    EXPECT_EQ(report["CAL_sha256"].as<std::string>(),b);
+    network.cal["scheduled"]=4;
+    EXPECT_THROW(network.unavailable_report(terminal),std::logic_error);
+    network.cal["scheduled"]=3;network.cal["available"]=1;
+    EXPECT_THROW(network.unavailable_report(terminal),std::logic_error);
+}
+
 TEST(PointCalHandoff, EmptySupportedDomainStillBindsEveryScheduledCause) {
     PointCalNetwork network{"root","input",a,b,{{2,{},{},{1,2}}}};
     YAML::Node record;

@@ -1473,11 +1473,19 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
     } else {
       rtc_yaml_map(output/"receipt.yaml",receipt,receipt_sections);
     }
-    performance.mark("root_receipt_written");
+    performance.mark(point_cal?"point_handoff_sealed":"root_receipt_written");
     if(development)citlali::cli::log_native_run_summary(citlali::cli::native_result_summary(nw,receipt));
     std::cout<<receipt["status"].as<std::string>()<<" detectors="<<channels.size()<<" events="<<event_table.size()<<" jumps="<<jump_count<<'\n';
     if(development && endpoint!=DevelopmentTerminal::rtc_only && receipt["CAL"]["available"].as<std::size_t>()==0) {
-      std::cerr<<"successor.CAL_no_calibrated_output: no sample has supported calibration; inspect cal/receipt.yaml. RTC preserved; no legacy fallback.\n";
+      fs::path diagnostic=output/"donor-continuity/cal/receipt.yaml";
+      if(point_cal) {
+        diagnostic=output/"cal-unavailable.yaml";
+        std::string sha;
+        write_yaml(diagnostic,point_cal->unavailable_report(receipt["donor_continuity"]["terminal"]),&sha);
+        point_cal->unavailable_receipt["path"]=diagnostic.string();
+        point_cal->unavailable_receipt["sha256"]=sha;
+      }
+      std::cerr<<"successor.CAL_no_calibrated_output: no sample has supported calibration; inspect "<<diagnostic<<'\n';
       return 2;
     }
     if(development && endpoint==DevelopmentTerminal::ptc &&
@@ -1726,6 +1734,8 @@ int execute_successor_observation(const YAML::Node &request,const fs::path &outp
         inventory+='\n';
       }
       n["cal_payload_inventory_sha256"]=citlali::utils::sha256(inventory);
+    } else if(point_cal && codes[i]==2) {
+      n["unavailable_receipt"]=point_cal->producer_networks().at(ids[i]).unavailable_receipt;
     }
     record["networks"].push_back(n);
     if(codes[i]==1 || codes[i]<0)exit=1;else if(codes[i]==2 && !exit)exit=2;
