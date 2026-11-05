@@ -210,6 +210,7 @@ def publish_maps(
     fit_diagnostics: bool,
     verbose: bool,
     pointing_metadata: dict | None = None,
+    array_executor=None,
 ) -> list[dict]:
     """Publish to a fresh reduNN/<obs>/raw directory; never replace a reduction.
 
@@ -245,12 +246,22 @@ def publish_maps(
             "empirical POINT arrays have different cycle or frozen health identities",
         )
     destination.mkdir(parents=True, exist_ok=False)
-    records, guards = [], {}
+    # Copy and authenticate all maps before isolated array fits. Publication
+    # remains the caller's serial commit after every required fit returns.
+    for array, source in zip(arrays, sources):
+        output = destination / f"toltec_point_{observation:06d}_{array}_successor.fits"
+        shutil.copyfile(source["source"], output)
+        require(digest(output) == source["sha256"], "required MAP copy differs")
+    guards = {}
+    if fit_diagnostics and array_executor is not None:
+        jobs = [(destination / f"toltec_point_{observation:06d}_{array}_successor.fits",
+                 destination / f"point-fit-{array}-details" if verbose else None)
+                for array in arrays]
+        guards = dict(zip(arrays, array_executor.run("fit", jobs, phase="final-fits"), strict=True))
+    records = []
     for array, source in zip(arrays, sources):
         name = f"toltec_point_{observation:06d}_{array}_successor.fits"
         output = destination / name
-        shutil.copyfile(source["source"], output)
-        require(digest(output) == source["sha256"], "required MAP copy differs")
         record = dict(
             schema="citlali-configured-point-product-v1",
             observation=observation,
@@ -279,7 +290,7 @@ def publish_maps(
         if fit_diagnostics:
             from point_reference import measure_forward
 
-            guard = measure_forward(
+            guard = guards[array] if array_executor is not None else measure_forward(
                 output, details=destination / f"point-fit-{array}-details" if verbose else None
             )
             fit_name = f"point-fit-{array}.json"

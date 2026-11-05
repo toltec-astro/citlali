@@ -56,6 +56,9 @@ def application(tmp_path, config, monkeypatch):
         output.mkdir()
         terminal = development['terminal']
         if terminal == 'ptc':
+            (output / 'observation-receipt.yaml').write_text(yaml.safe_dump(dict(execution=dict(
+                requested_workers=development['network_workers'], effective_workers=2,
+                available_workers=2, availability_source='fixture', started_workers=2))))
             for nw in request['networks']:
                 root = output / f'network{nw}'
                 receipt = root / 'donor-continuity/ptc/receipt.yaml'
@@ -165,6 +168,9 @@ def test_preserves_existing_reductions_and_releases_only_consumed_transport(appl
     assert len(list((work / 'map/products').rglob('map.fits'))) == 3
     record = json.loads((output / 'RUN.json').read_text())
     assert record['status'] == 'completed'
+    assert record['array_execution_budget']['effective_workers'] == 2
+    assert record['stages'][0]['execution_receipt']['sha256'] == cli.digest(
+        work / 'upstream/products/observation-receipt.yaml')
     assert record['transport_retention']['files'] == 6
     assert record['calibration_eligible'] is False
     assert app.execute().name == 'redu05'

@@ -24,6 +24,7 @@ import yaml
 
 from configured_point_config import load_request
 from configured_point_runtime import data_root
+from configured_point_parallel import PointArrayExecutor, THREAD_LIMITS
 from configured_point_types import FileBinding, PreparedPoint
 
 
@@ -86,15 +87,7 @@ def native_call(
         config["ptc"] = {"method": method}
     path = dest / "development.yaml"
     path.write_text(yaml.safe_dump(config, sort_keys=False))
-    env = dict(
-        os.environ,
-        OMP_NUM_THREADS="1",
-        OPENBLAS_NUM_THREADS="1",
-        MKL_NUM_THREADS="1",
-        VECLIB_MAXIMUM_THREADS="1",
-        BLIS_NUM_THREADS="1",
-        OMP_DYNAMIC="FALSE",
-    )
+    env = dict(os.environ, **THREAD_LIMITS)
     started = time.monotonic()
     log_path = dest / "native.log"
     with log_path.open("w") as log:
@@ -125,6 +118,16 @@ def native_call(
         "request": bind(path),
         "unexpected_error_lines": error_lines,
     }
+    execution_path = dest / "products/execution.yaml"
+    observation_path = dest / "products/observation-receipt.yaml"
+    if execution_path.is_file():
+        record["execution"] = yaml.safe_load(execution_path.read_text())
+        record["execution_receipt"] = bind(execution_path)
+    elif observation_path.is_file():
+        receipt = yaml.safe_load(observation_path.read_text())
+        if "execution" in receipt:
+            record["execution"] = receipt["execution"]
+            record["execution_receipt"] = bind(observation_path)
     write_json(dest / "stage.json", record)
     if result.returncode or error_lines:
         raise RuntimeError(f"{terminal} failed; see {log_path}\n" + "\n".join(tail))
@@ -217,6 +220,7 @@ def execute(config_path, native, *, launch_dir=None):
     started = time.monotonic()
     shutil.copyfile(config_path, work / "received.yaml")
     write_json(reduction / "RUN.json", record)
+    array_executor = None
     try:
         drop_enabled = (
             request.effective_config["successor"]["rtc"].get("disturbance_exclusion", "disabled")
@@ -275,6 +279,16 @@ def execute(config_path, native, *, launch_dir=None):
                 print(console_summary(summary, path), flush=True)
         if drop_enabled and summary["evaluation_state"] != "complete":
             raise RuntimeError("required detector-drop evaluation/application is incomplete")
+        # Native setup is the single authority for CPU availability. Array
+        # workers inherit that effective budget; the requested YAML stays intact.
+        array_executor = PointArrayExecutor(request.workers, record["stages"][0].get("execution", {}))
+        record["array_execution_budget"] = array_executor.budget
+        record["array_execution"] = array_executor.reports
+        print(f"POINT CPU budget: requested {request.workers}, effective "
+              f"{array_executor.budget['effective_workers']} "
+              f"({array_executor.budget.get('availability_source', 'native setup')}); "
+              f"up to {array_executor.workers} array workers, numerical-library threads limited to 1",
+              flush=True)
         if request.weighted:
             from configured_point_weighted import execute as weighted_point
 
@@ -288,6 +302,7 @@ def execute(config_path, native, *, launch_dir=None):
                 native_call=native_call,
                 bind=bind,
                 write_json=write_json,
+                array_executor=array_executor,
             )
         else:
             owner = REPO / "data/development/bright_point_base_v1/map-owner.json"
@@ -310,6 +325,7 @@ def execute(config_path, native, *, launch_dir=None):
                 bind=bind,
                 write_json=write_json,
                 publish_maps=publish_maps,
+                array_executor=array_executor,
             )
         # Publish into hidden staging first. A failed required product never
         # leaves a discoverable, apparently complete observation directory.
@@ -323,6 +339,7 @@ def execute(config_path, native, *, launch_dir=None):
             fit_diagnostics=request.fit_diagnostics,
             verbose=request.verbose,
             pointing_metadata=prepared.get("pointing_metadata"),
+            array_executor=array_executor,
         )
         if not request.retain_intermediates:
             record["transport_retention"] = release_transport(work)
@@ -351,6 +368,9 @@ def execute(config_path, native, *, launch_dir=None):
         record.update(status="failed", seconds=time.monotonic() - started, error=str(exc))
         write_json(reduction / "RUN.json", record)
         raise
+    finally:
+        if array_executor is not None:
+            array_executor.close()
 
 
 def default_config():

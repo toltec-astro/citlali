@@ -1,6 +1,7 @@
 #pragma once
 
 #include <citlali/core/pipeline/timestream_ptc_numerics.h>
+#include <citlali/core/utils/parallel_work.h>
 #include <array>
 #include <cmath>
 #include <cstdint>
@@ -68,10 +69,15 @@ struct PointOpticalNetworkEvidence {
     std::vector<PointOpticalDetectorEvidence> detectors;
 };
 
+struct PointOpticalExecutionReport {
+    citlali::utils::ParallelWorkReport aggregation, references, bootstrap;
+};
+
 class PointOpticalEvidence {
 public:
     static std::shared_ptr<const PointOpticalEvidence> learn(
-        const std::vector<PointOpticalNetwork> &, PointOpticalRequest = {});
+        const std::vector<PointOpticalNetwork> &, PointOpticalRequest = {},
+        citlali::utils::ParallelExecution = {}, PointOpticalExecutionReport * = nullptr);
     // Adapter must verify the immutable producer publication and its method,
     // request and source bindings first. This validates internal consistency;
     // it does not turn arbitrary serialized numbers into scientific authority.

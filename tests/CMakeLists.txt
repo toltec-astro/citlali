@@ -664,7 +664,7 @@ endif()
 citlali_discover_tests(citlali_ptc_inverse_noise_test TEST_PREFIX "citlali::" DISCOVERY_MODE PRE_TEST)
 
 add_executable(citlali_point_optical_response_test EXCLUDE_FROM_ALL
-    test_point_optical_response.cpp point_optical_response_header.cpp)
+    test_point_optical_response.cpp test_parallel_work.cpp point_optical_response_header.cpp)
 set_source_files_properties(point_optical_response_header.cpp PROPERTIES SKIP_PRECOMPILE_HEADERS ON)
 target_link_libraries(citlali_point_optical_response_test PRIVATE citlali::citlali GTest::gtest_main)
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")

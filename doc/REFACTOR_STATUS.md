@@ -1,3 +1,25 @@
+## Configured POINT parallel execution candidate — 2026-11-04
+
+Grant authorized holistic parallel design and implementation, permitting bounded
+additional memory for throughput. The [plan and authority map](../validation/point_parallel_2026-11-04/PLAN.md)
+start from accepted mainline `09794feddde610e4332b0924fabf235e2d10005e` in
+`codex/point-parallel-20261104`. The unaccepted hashing experiment remains
+preserved and parked; it is not incorporated into this candidate. OG Citlali
+is a reference for engineering care, not an implementation template.
+
+Configured native networks, optical learning and weighted segment cleaning use
+a bounded CPU budget and independent task state. Ordered merges preserve the
+existing numerical order. Reduction-owned spawn processes handle array feedback
+and final fits, inheriting the native effective budget and single-thread
+numerical-library limits before imports. Resource/timing records distinguish
+requests from realization. Saved loading, v1 saved MAP, final map accumulation
+and publication retain their serial boundaries. Scientific recipes are unchanged.
+
+All builds, tests and measurements remain pending Grant execution. Independent
+exact-candidate static review and same-candidate serial/parallel 152389 evidence
+are required before acceptance. No speedup, integration, production acceptance,
+runtime replacement or push is claimed.
+
 ## POINT seed repair accepted and integrated locally — 2026-11-04
 
 Grant accepted exact application `972484e7e46cb9245fc6e311701c2b90e48d5e9d`.

@@ -281,3 +281,57 @@ TEST(PointOpticalResponse, RankDeficientBlockResampleIsUnavailableAndDetectorUnr
     const auto plan=PointOpticalPlan::consider(evidence);
     EXPECT_EQ(plan->for_network(data[0])[0].state,PointOpticalState::unresolved);
 }
+
+TEST(PointOpticalResponse, ParallelWorkersPreserveEveryEvidenceValueSeedAndDecision) {
+    auto data=fixture();
+    data[0].eligible.col(4).setZero();data[0].values.col(4).setConstant(NAN);
+    data[0].source_free.col(3).setZero();
+    // Include the two-network cross-array reference branch, not just bootstrap.
+    for(int i=0;i<2;++i) {
+        auto n=data[i];n.network+=11;n.array=2;n.cal_identity+="-a2000";
+        n.source_mask_identity+="-a2000";
+        for(auto &id:n.detector_ids)id+="-a2000";
+        data.push_back(std::move(n));
+    }
+    const auto serial=PointOpticalEvidence::learn(data,request(),{1});
+    const auto serial_plan=PointOpticalPlan::consider(serial);
+    auto number=[](double a,double b){EXPECT_TRUE((std::isnan(a)&&std::isnan(b)) || a==b);};
+    auto interval=[&](const auto &a,const auto &b) {
+        EXPECT_EQ(a.available,b.available);number(a.lower,b.lower);number(a.upper,b.upper);
+        EXPECT_EQ(a.informative_blocks,b.informative_blocks);EXPECT_EQ(a.resamples,b.resamples);
+        EXPECT_EQ(a.seed,b.seed);EXPECT_EQ(a.reason,b.reason);
+    };
+    for(unsigned workers:{3,12}) {
+        SCOPED_TRACE(workers);PointOpticalExecutionReport report;
+        const auto other=PointOpticalEvidence::learn(data,request(),{workers},&report);
+        const auto plan=PointOpticalPlan::consider(other);
+        EXPECT_EQ(serial->seed_identity(),other->seed_identity());
+        EXPECT_EQ(report.aggregation.jobs,data.size());
+        EXPECT_EQ(report.references.started_workers,std::min<std::size_t>(workers,data.size()));
+        EXPECT_EQ(report.bootstrap.jobs,60);EXPECT_LE(report.bootstrap.peak_active_jobs,workers);
+        ASSERT_EQ(serial->networks().size(),other->networks().size());
+        for(std::size_t ni=0;ni<data.size();++ni) {
+            const auto &a=serial->networks()[ni],&b=other->networks()[ni];
+            EXPECT_EQ(a.observation_identity,b.observation_identity);EXPECT_EQ(a.cal_identity,b.cal_identity);
+            EXPECT_EQ(a.source_mask_identity,b.source_mask_identity);EXPECT_EQ(a.array,b.array);EXPECT_EQ(a.network,b.network);
+            EXPECT_EQ(a.detector_ids,b.detector_ids);EXPECT_EQ(a.reference_networks,b.reference_networks);
+            EXPECT_EQ(a.reference_available,b.reference_available);EXPECT_EQ(a.cross_array_required,b.cross_array_required);
+            EXPECT_EQ(a.cross_array_corroborated,b.cross_array_corroborated);EXPECT_EQ(a.reference_reason,b.reference_reason);
+            number(a.response_normalization,b.response_normalization);
+            ASSERT_EQ(a.detectors.size(),b.detectors.size());
+            for(std::size_t di=0;di<a.detectors.size();++di) {
+                const auto &x=a.detectors[di],&y=b.detectors[di];
+                EXPECT_EQ(x.detector_id,y.detector_id);EXPECT_EQ(x.available_samples,y.available_samples);
+                EXPECT_EQ(x.source_free_samples,y.source_free_samples);EXPECT_EQ(x.binned_samples,y.binned_samples);
+                number(x.relative_response,y.relative_response);number(x.correlation,y.correlation);
+                number(x.binned_residual_rms,y.binned_residual_rms);interval(x.interval,y.interval);
+                for(std::size_t k=0;k<x.checks.size();++k)interval(x.checks[k],y.checks[k]);
+                EXPECT_EQ(serial_plan->for_network(data[ni])[di].state,plan->for_network(data[ni])[di].state);
+                EXPECT_EQ(serial_plan->for_network(data[ni])[di].reason,plan->for_network(data[ni])[di].reason);
+            }
+        }
+    }
+    EXPECT_THROW(PointOpticalEvidence::learn(data,request(),{0}),std::invalid_argument);
+    data[0].values(20,1)=NAN;
+    EXPECT_THROW(PointOpticalEvidence::learn(data,request(),{3}),std::invalid_argument);
+}

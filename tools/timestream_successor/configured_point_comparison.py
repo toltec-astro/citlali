@@ -104,6 +104,7 @@ def execute_equal_arm(
     bind,
     write_json,
     publish_maps,
+    array_executor=None,
 ):
     from configured_point_weighted import execute
 
@@ -153,6 +154,7 @@ def execute_equal_arm(
             shared_work=work,
             shared_health=weighted_record["frozen_health"],
             weighting_control="equal-control",
+            array_executor=array_executor,
         )
         # Preserve the complete equal-arm maps even if the controlled support gate fails.
         record["products"] = publish_maps(
@@ -162,6 +164,7 @@ def execute_equal_arm(
             request.arrays,
             fit_diagnostics=request.fit_diagnostics,
             verbose=request.verbose,
+            array_executor=array_executor,
         )
         record["status"] = "completed"
         comparison["checks"] = compare_support(weighted_record, record, bind)

@@ -93,6 +93,7 @@ def execute(
     shared_work=None,
     shared_health=None,
     weighting_control="inverse-noise",
+    array_executor=None,
 ):
     from configured_point_feedback import initialize, update
 
@@ -125,7 +126,7 @@ def execute(
         write_json(health_request, dict(base, stage="health"))
         record["stages"].append(
             native_call(
-                native, health_request, work / "health", terminal="map", verbose=request.verbose
+                native, health_request, work / "health", terminal="map", workers=request.workers, verbose=request.verbose
             )
         )
         health = work / "health/products/health.yaml"
@@ -171,7 +172,7 @@ def execute(
             dict(base, stage="cycle", health=frozen_health, cycle_index=cycle, models=models),
         )
         record["stages"].append(
-            native_call(native, native_request, stage_dir, terminal="map", verbose=request.verbose)
+            native_call(native, native_request, stage_dir, terminal="map", workers=request.workers, verbose=request.verbose)
         )
         products = stage_dir / "products"
         result = yaml.safe_load((products / "cycle.yaml").read_text())
@@ -215,18 +216,26 @@ def execute(
             )
             break
         models, selections = {}, {}
-        for array in ARRAYS:
-            map_path = products / array / "map.fits"
-            destination = stage_dir / f"feedback-{array}"
-            if cycle == 0:
-                contexts[array], selection = initialize(map_path, destination, request.verbose)
-            else:
-                selection = update(map_path, contexts[array], destination, request.verbose)
+        jobs = [(products / array / "map.fits", stage_dir / f"feedback-{array}",
+                 request.verbose, contexts.get(array)) for array in ARRAYS]
+        if array_executor is None:
+            # Direct library callers retain their explicit serial execution.
+            results = []
+            for path, destination, verbose, context in jobs:
+                if context is None:
+                    context, selection = initialize(path, destination, verbose)
+                else:
+                    selection = update(path, context, destination, verbose)
+                results.append((context, selection))
+        else:
+            results = array_executor.run("feedback", jobs, phase=f"feedback-M{cycle}")
+        for array, (context, selection) in zip(ARRAYS, results, strict=True):
+            contexts[array] = context
             selections[array] = selection
             if selection["status"] == "ready":
                 models[array] = dict(
                     candidate=bind(Path(selection["model_path"])),
-                    feedback=bind(destination / "feedback.json"),
+                    feedback=bind(stage_dir / f"feedback-{array}" / "feedback.json"),
                     bundle=bind(products / array / "bundle.yaml"),
                 )
         entry["source_selection"] = selections

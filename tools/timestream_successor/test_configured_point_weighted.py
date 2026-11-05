@@ -174,13 +174,14 @@ def orchestration(tmp_path, monkeypatch):
         (root / 'receipt.yaml').write_text('original: RTC\n')
         (root / 'processing-scans.yaml').write_text('scans: [1, 2]\n')
     prepared = dict(networks=[0, 7, 11], effective_config=effective, observation=152389)
-    request = SimpleNamespace(verbose=False, feedback_enabled=True, feedback_iterations=2, weight_comparison=False)
+    request = SimpleNamespace(verbose=False, workers=3, feedback_enabled=True, feedback_iterations=2, weight_comparison=False)
     record = dict(stages=[])
     state = SimpleNamespace(work=work, reduction=reduction, prepared=prepared, request=request,
                             record=record, calls=[], selections=[], defect=None, stop=None)
 
     def native_call(native, request_path, directory, **kwargs):
         value = json.loads(request_path.read_text())
+        assert kwargs['workers'] == request.workers
         state.calls.append(deepcopy(value))
         output = directory / 'products'
         output.mkdir(parents=True)
@@ -373,11 +374,12 @@ def test_v2_cli_stops_upstream_at_cal_and_uses_weighted_dispatch(tmp_path, weigh
     def native_call(native, request_path, directory, **kwargs):
         calls.append(kwargs)
         directory.mkdir()
-        return dict(terminal=kwargs['terminal'])
+        return dict(terminal=kwargs['terminal'], execution=dict(requested_workers=6, effective_workers=2))
 
     def execute(prepared, work, reduction, native, request, record, **kwargs):
         assert calls == [dict(terminal='cal', workers=6, method=None, verbose=False)]
         assert request.weighted
+        assert kwargs['array_executor'].workers == 2
         for array in products.ARRAYS:
             weighted_map(work / 'weighted-00/products' / array, array)
         record['final_cycle'] = 0

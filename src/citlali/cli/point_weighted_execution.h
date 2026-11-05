@@ -8,6 +8,7 @@
 #include <citlali/core/pipeline/staged_output_directory.h>
 #include <citlali/core/utils/fits_handle.h>
 #include "point_recovery_bindings.h"
+#include "point_execution_budget.h"
 namespace {
 const std::array<std::string,3> weighted_arrays{"a1100","a1400","a2000"};
 const std::array<double,3> weighted_beams{5.,7.5,10.}, weighted_source_radii{35.,42.5,50.};
@@ -200,7 +201,34 @@ FruitOffsetModel point_recovery_raster(const YAML::Node &binding,MapFileLedger &
     }
     return FruitOffsetModel("sha256:"+sha,{41,41,"recovery-grid:"+sha},21,21,-2,2,values,valid,40.);
 }
-int execute_weighted_point(const fs::path &input,const fs::path &output) {
+int execute_weighted_point(const fs::path &input,const fs::path &output,unsigned workers) {
+    const auto budget=citlali::cli::detail::point_execution_budget(workers);
+    const auto execution=budget.execution;
+    Eigen::setNbThreads(1);
+#ifdef _OPENMP
+    omp_set_dynamic(0);omp_set_num_threads(1);
+#endif
+    citlali::cli::detail::PointPhaseClock total_clock,load_clock;
+    YAML::Node performance;performance["schema"]="citlali-point-execution-v1";
+    performance["requested_workers"]=budget.requested;
+    performance["available_workers"]=budget.available.available_threads;
+    performance["availability_source"]=budget.available.source;
+    performance["effective_workers"]=execution.workers;
+    performance["numerical_library_threads_requested"]=1;
+    performance["observed_Eigen_threads"]=Eigen::nbThreads();
+    performance["saved_input_loading_policy"]="serial; shared NetCDF preparation remains serialized";
+    auto record_phase=[&](const std::string &name,const citlali::cli::detail::PointPhaseClock &clock,
+                          citlali::utils::ParallelWorkReport jobs) {
+        auto row=performance["phases"][name];row["wall_seconds"]=clock.wall_seconds();
+        row["process_cpu_seconds"]=clock.cpu_seconds();row["jobs"]=jobs.jobs;
+        row["started_workers"]=jobs.started_workers;row["peak_active_jobs"]=jobs.peak_active_jobs;
+    };
+    auto publish_performance=[&](const fs::path &staging) {
+        performance["wall_seconds"]=total_clock.wall_seconds();
+        performance["process_cpu_seconds"]=total_clock.cpu_seconds();
+        performance["process_lifetime_peak_rss_bytes"]=citlali::cli::detail::point_process_peak_rss_bytes();
+        write_yaml(staging/"execution.yaml",performance);
+    };
     require(output.is_absolute() && !fs::exists(output),"weighted POINT needs a fresh absolute output");
     const fs::path staging=output.string()+".pending";require(!fs::exists(staging),"weighted POINT pending output exists");
     MapFileLedger ledger;const auto request_sha=ledger.bind(input);const auto request=YAML::LoadFile(input.string());
@@ -228,13 +256,24 @@ int execute_weighted_point(const fs::path &input,const fs::path &output) {
     require(std::all_of(arrays.begin(),arrays.end(),[](bool v){return v;}),"weighted POINT requires all three arrays");
     std::sort(networks.begin(),networks.end(),[](const auto &a,const auto &b){return a.saved.network<b.saved.network;});
     citlali::pipeline::StagedOutputDirectory publication(output);
+    record_phase("saved_input_loading",load_clock,{networks.size(),1,1});
     if(stage=="health") {
+        citlali::cli::detail::PointPhaseClock clock;
+        PointOpticalExecutionReport health_execution;
         std::vector<PointOpticalNetwork> inputs;for(auto &n:networks)inputs.push_back(std::move(n.optical));
         PointOpticalRequest health_request;health_request.min_relative_response=threshold;
-        const auto health=PointOpticalPlan::consider(PointOpticalEvidence::learn(inputs,health_request));
+        const auto health=PointOpticalPlan::consider(PointOpticalEvidence::learn(inputs,health_request,execution,&health_execution));
         auto record=point_health_record(*health);record["effective_config_sha256"]=config_sha;record["request_sha256"]=request_sha;
         record["source_revision"]=std::string(CITLALI_GIT_VERSION);write_yaml(staging/"health.yaml",record);
-        ledger.verify();publication.publish();return 0;
+        record_phase("health",clock,health_execution.bootstrap);
+        auto report_work=[&](const char *name,const auto &r) {
+            auto row=performance["health_work"][name];row["jobs"]=r.jobs;
+            row["started_workers"]=r.started_workers;row["peak_active_jobs"]=r.peak_active_jobs;
+        };
+        report_work("aggregation",health_execution.aggregation);
+        report_work("references",health_execution.references);
+        report_work("bootstrap",health_execution.bootstrap);
+        ledger.verify();publish_performance(staging);publication.publish();return 0;
     }
     const auto health_path=checked_file(request["health"]);const auto health_sha=ledger.bind(health_path);const auto health_record=YAML::LoadFile(health_path.string());
     require(health_record["effective_config_sha256"].as<std::string>()==config_sha,"POINT health config differs");
@@ -256,7 +295,10 @@ int execute_weighted_point(const fs::path &input,const fs::path &output) {
     YAML::Node diagnostics;diagnostics["schema"]="citlali-weighted-point-cycle-v1";diagnostics["cycle_index"]=cycle;
     diagnostics["frozen_health_identity"]="sha256:"+health_sha;diagnostics["coefficient_family"]=std::string(PtcEmpiricalCoefficients::family_for(weighting));
     diagnostics["normalization_interpretation"]=std::string(PtcEmpiricalCoefficients::interpretation);diagnostics["request_sha256"]=request_sha;
+    const bool verbose=request["verbose"].as<bool>();
     for(int array=0;array<3;++array) {
+        citlali::cli::detail::PointPhaseClock array_clock;
+        const int rank=cfg["cleaning"]["ranks"][weighted_arrays[array]].as<int>();
         const auto directory=staging/weighted_arrays[array];fs::create_directory(directory);
         double ex=0,ey=0;for(const auto &n:networks)if(n.saved.array==array)
             for(Eigen::Index t=0;t<n.optical.values.rows();++t)for(Eigen::Index d=0;d<n.optical.values.cols();++d)if(n.optical.eligible(t,d)) {
@@ -286,9 +328,29 @@ int execute_weighted_point(const fs::path &input,const fs::path &output) {
         if(model)plan["source_model"]=model->identity();else plan["source_model"]="M0:zero-operand";
         auto frame=plan["WCS"];frame["ASTFRAME"]="delta-source-AltAz";frame["CTYPE1"]="AZOFFSET";frame["CTYPE2"]="ELOFFSET";frame["CUNIT1"]="arcsec";frame["CUNIT2"]="arcsec";
         frame["CRPIX1"]=wcs.crpix1;frame["CRPIX2"]=wcs.crpix2;frame["CDELT1"]=3600*wcs.cdelt1_deg;frame["CDELT2"]=3600*wcs.cdelt2_deg;frame["CRVAL1"]=0.;frame["CRVAL2"]=0.;frame["rows"]=wcs.rows;frame["columns"]=wcs.columns;
-        for(const auto &n:networks)if(n.saved.array==array) {
-            const auto &s=n.saved;const auto &decisions=health->for_network(n.optical);std::size_t si=0;std::vector<bool> contributed(s.detectors.size(),false);
-            for(const auto &segment:n.segments) {
+        struct SegmentOutput {
+            std::vector<double> values;
+            std::vector<mapmaking::ForwardMapMember> members;
+            std::vector<std::vector<double>> reference_values;
+            std::vector<bool> contributed;
+            YAML::Node evidence;
+        };
+        std::vector<std::pair<std::size_t,std::size_t>> jobs;
+        std::vector<std::vector<bool>> contributed_by_network(networks.size());
+        for(std::size_t ni=0;ni<networks.size();++ni)if(networks[ni].saved.array==array) {
+            contributed_by_network[ni].resize(networks[ni].saved.detectors.size(),false);
+            for(std::size_t si=0;si<networks[ni].segments.size();++si)jobs.emplace_back(ni,si);
+        }
+        const auto segment_report=citlali::utils::ordered_parallel_batches(jobs.size(),execution,
+            [&](std::size_t job) {
+                const auto [network_index,segment_index]=jobs[job];
+                const auto &n=networks[network_index];const auto &s=n.saved;
+                const auto &segment=n.segments[segment_index];
+                const auto &decisions=health->for_network(n.optical);
+                SegmentOutput output;output.contributed.resize(s.detectors.size(),false);
+                output.reference_values.resize(reference_models.size());
+                auto &values=output.values;auto &members=output.members;
+                auto &reference_values=output.reference_values;auto &contributed=output.contributed;
                 const auto rows=segment.slots.size(),cols=s.detectors.size();PtcMatrix original(rows,cols),operand=PtcMatrix::Zero(rows,cols);
                 PtcMask eligible(rows,cols),source_free(rows,cols),model_supported=PtcMask::Ones(rows,cols);
                 PtcMatrix added;PtcMask injection_supported;
@@ -309,9 +371,9 @@ int execute_weighted_point(const fs::path &input,const fs::path &output) {
                     citlali::cli::detail::apply_point_recovery(recovery_role,cycle,
                         original,operand,eligible,added,injection_supported);
                 }
-                const auto identity="sha256:"+request_sha+":network="+std::to_string(s.network)+":segment="+std::to_string(si++);
+                const auto identity="sha256:"+request_sha+":network="+std::to_string(s.network)+":segment="+std::to_string(segment_index);
                 const auto residual=FruitResidual::subtract(identity+":CAL-minus-model",original,eligible,std::move(operand),std::move(model_supported));
-                PtcSolverRequest solver;solver.rank=cfg["cleaning"]["ranks"][weighted_arrays[array]].as<int>();
+                PtcSolverRequest solver;solver.rank=rank;
                 auto result=inverse_noise_fruit(residual,source_free,solver,identity,weighting);const auto &noise=result.noise;
                 PtcMapPublicationIdentity id{identity,identity+":apply","sha256:"+s.cal_sha,s.rtc_identity,n.processing_identity,s.observation_identity,
                     "scan="+std::to_string(segment.scan)+":"+identity,identity+":retained",s.network,array,solver.rank,s.detectors,segment.slots};
@@ -330,7 +392,7 @@ int execute_weighted_point(const fs::path &input,const fs::path &output) {
                     records.push_back({s.detectors[d],noise.detectors[d]});const auto &nd=noise.detectors[d];
                     if(nd.map_coefficient){lowest=std::min(lowest,*nd.map_coefficient);highest=std::max(highest,*nd.map_coefficient);}
                     if(decisions[d].retained() && !nd.map_coefficient)++unavailable;
-                    if(request["verbose"].as<bool>() || (decisions[d].retained() && !nd.map_coefficient)) {
+                    if(verbose || (decisions[d].retained() && !nd.map_coefficient)) {
                         auto e=point_noise_record(nd);e["detector_id"]=s.detectors[d];e["channel"]=s.channels[d];evidence["detector_details"].push_back(e);
                     }
                 }
@@ -349,7 +411,7 @@ int execute_weighted_point(const fs::path &input,const fs::path &output) {
                 }
                 if(!q->retained()) {
                     if(comparison || injected)evidence["mapped_support_sha256"]=point_support_digest(mapped_support);
-                    plan["segments"].push_back(evidence);continue;
+                    output.evidence=std::move(evidence);return output;
                 }
                 const auto g=PtcEmpiricalCoefficients::publish(q,identity+":coefficients",identity+":noise",std::move(records),q->identity().support_reference,weighting);
                 const auto admission=ValEmpiricalMapAdmission::bind(q,g,{q->identity().publication,q->identity().cal_parent,q->identity().rtc_grid,q->identity().detectors,q->identity().slots});
@@ -370,13 +432,29 @@ int execute_weighted_point(const fs::path &input,const fs::path &output) {
                                 projected.value==expected.value,"recovery projection does not match MAP cell");
                             reference_values[k].push_back(projected.value);
                         }
-                        if(!contributed[d]){contributed[d]=true;++contributors;}}
+                        contributed[d]=true;}
                 }
                 if(comparison || injected)evidence["mapped_support_sha256"]=point_support_digest(mapped_support);
-                plan["segments"].push_back(evidence);
+
+                output.evidence=std::move(evidence);return output;
+            },
+            [&](std::size_t job,SegmentOutput output) {
+                const auto network_index=jobs[job].first;
+                const auto offset=values.size();
+                for(auto member:output.members){member.input_row+=offset;members.push_back(member);}
+                values.insert(values.end(),output.values.begin(),output.values.end());
+                for(std::size_t k=0;k<reference_values.size();++k)
+                    reference_values[k].insert(reference_values[k].end(),output.reference_values[k].begin(),output.reference_values[k].end());
+                for(std::size_t d=0;d<output.contributed.size();++d)
+                    contributed_by_network[network_index][d]=contributed_by_network[network_index][d] || output.contributed[d];
+                plan["segments"].push_back(output.evidence);
+            });
+        record_phase("prepare_clean_and_project_"+weighted_arrays[array],array_clock,segment_report);
+        for(std::size_t ni=0;ni<networks.size();++ni)if(networks[ni].saved.array==array)
+            for(std::size_t d=0;d<contributed_by_network[ni].size();++d)if(contributed_by_network[ni][d]) {
+                ++contributors;plan["contributing_channels"][std::to_string(networks[ni].saved.network)].push_back(networks[ni].saved.channels[d]);
             }
-            for(std::size_t d=0;d<contributed.size();++d)if(contributed[d])plan["contributing_channels"][std::to_string(s.network)].push_back(s.channels[d]);
-        }
+        citlali::cli::detail::PointPhaseClock map_clock;
         const std::string domain="sha256:"+request_sha+":"+weighted_arrays[array]+":ordered-physical-PTC-support";
         const auto op=mapmaking::ForwardMapOperator::resolve(grid,domain,values.size(),std::move(members),{cut,{}});
         require(!op.output_rows().empty(),"POINT required array has no supported weighted map: "+weighted_arrays[array]);const auto result=op.apply(domain,values);
@@ -405,7 +483,8 @@ int execute_weighted_point(const fs::path &input,const fs::path &output) {
         for(const auto *name:{"map.fits","plan.yaml"})bundle["files"][name]=citlali::utils::sha256_file(directory/name);
         bundle["product_identity"]="weighted-POINT:"+request_sha+":"+bundle["files"]["map.fits"].as<std::string>();
         write_yaml(directory/"bundle.yaml",bundle);diagnostics["arrays"][weighted_arrays[array]]=bundle;
+        record_phase("map_and_publish_"+weighted_arrays[array],map_clock,{1,1,1});
     }
-    write_yaml(staging/"cycle.yaml",diagnostics);ledger.verify();publication.publish();return 0;
+    write_yaml(staging/"cycle.yaml",diagnostics);ledger.verify();publish_performance(staging);publication.publish();return 0;
 }
 } // namespace

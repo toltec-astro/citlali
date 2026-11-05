@@ -1417,6 +1417,7 @@ int execute_successor_observation(const YAML::Node &request,const fs::path &outp
           request["scan"].as<int>()==2)),"successor.observation_scope_unsupported");
   require(request["networks"].IsSequence() && request["networks"].size()>0,"successor.empty_network_request");
   std::vector<fs::path> inputs;std::vector<int> ids;std::vector<YAML::Node> configs;
+  std::vector<std::string> input_digests; // Parse YAML before any worker starts.
   for(const auto &entry:request["networks"]) {
     const int nw=entry["network"].as<int>();
     require((reference || configured || request["observation"].as<int>()!=152430 || nw==11 || nw==12) && nw>=0 && nw<13 && (ids.empty() || nw>ids.back()),"successor.network_order_duplicate_or_invalid");
@@ -1432,13 +1433,16 @@ int execute_successor_observation(const YAML::Node &request,const fs::path &outp
         require(YAML::Dump(cfg[key])==YAML::Dump(configs.front()[key]),std::string("successor.shared_input_mismatch: ")+key);
     }
     ids.push_back(nw);inputs.push_back(path);configs.push_back(cfg);
+    input_digests.push_back(entry["input"]["sha256"].as<std::string>());
   }
   std::optional<citlali::cli::NativePtcConfiguration> ptc_config;
   if(terminal==citlali::cli::DevelopmentTerminal::ptc)
     ptc_config.emplace(YAML::LoadFile(checked_file(configs.front()["effective_config"]).string()),ptc);
+  const auto budget=citlali::cli::detail::point_execution_budget(workers);
+  const auto effective_workers=configured?budget.execution.workers:workers;
   const citlali::cli::NativeRtcOutputLayout output_layout(output,ids,true,false,terminal);
   std::cout<<"Native observation setup: requested_workers="<<workers
-           <<" effective_workers="<<std::min<std::size_t>(workers,ids.size())
+           <<" effective_workers="<<std::min<std::size_t>(effective_workers,ids.size())
            <<" terminal="<<citlali::cli::native_terminal_name(terminal)
            <<" output="<<std::quoted(output_layout.root().string())<<'\n';
   // Set once before concurrent work. No worker mutates library-wide controls.
@@ -1540,38 +1544,56 @@ int execute_successor_observation(const YAML::Node &request,const fs::path &outp
   trace.mark("shared_observation_preparation_complete");
   const double preparation=std::chrono::duration<double>(std::chrono::steady_clock::now()-began).count();
   std::vector<int> codes(ids.size(),-1);std::vector<double> seconds(ids.size());
-  std::vector<std::jthread> threads;
-  // Static round-robin assignment is deterministic; only scheduling changes.
-  for(unsigned w=0;w<std::min<std::size_t>(workers,ids.size());++w)threads.emplace_back([&,w]{
+  auto execute_network=[&](std::size_t i) {
+    const auto start=std::chrono::steady_clock::now();
+    codes[i]=execute_successor_network(inputs[i],output_layout.network(i).root,
+        citlali::cli::RtcInvocation::development_default,{},terminal,ptc,&common,
+        &output_layout.network(i),ptc_config?&ptc_setups[i]:nullptr,input_digests[i]);
+    seconds[i]=std::chrono::duration<double>(std::chrono::steady_clock::now()-start).count();
+  };
+  citlali::utils::ParallelWorkReport work_report;
+  if(configured) {
+    work_report=citlali::utils::parallel_for(ids.size(),budget.execution,execute_network);
+  } else {
+    // Preserve the established other-mode scheduling boundary.
+    std::vector<std::jthread> threads;
+    for(unsigned w=0;w<std::min<std::size_t>(workers,ids.size());++w)threads.emplace_back([&,w]{
 #ifdef _OPENMP
-    omp_set_num_threads(1);
+      omp_set_num_threads(1);
 #endif
-    for(std::size_t i=w;i<ids.size();i+=workers) {
-      const auto start=std::chrono::steady_clock::now();
-      codes[i]=execute_successor_network(inputs[i],output_layout.network(i).root,
-          citlali::cli::RtcInvocation::development_default,{},terminal,ptc,&common,
-          &output_layout.network(i),ptc_config?&ptc_setups[i]:nullptr,
-          request["networks"][i]["input"]["sha256"].as<std::string>());
-      seconds[i]=std::chrono::duration<double>(std::chrono::steady_clock::now()-start).count();
-    }
-  });
-  for(auto &thread:threads)thread.join();
+      for(std::size_t i=w;i<ids.size();i+=workers)execute_network(i);
+    });
+    for(auto &thread:threads)thread.join();
+    work_report={ids.size(),static_cast<unsigned>(threads.size()),0};
+  }
   trace.mark("all_networks_finished");
   YAML::Node record;record["schema"]="citlali-observation-networks-result-v1";
   record["source_revision"]=std::string(CITLALI_GIT_REVISION);
   record["observation"]=scope.observation;record["subobservation"]=scope.subobservation;record["scan"]=scope.scan;
   record["requested_network_workers"]=workers;record["observed_Eigen_threads"]=Eigen::nbThreads();
-  record["started_network_workers"]=threads.size();
+  record["started_network_workers"]=work_report.started_workers;
+  if(configured) {
+    auto execution=record["execution"];
+    execution["requested_workers"]=workers;
+    execution["effective_workers"]=effective_workers;
+    execution["available_workers"]=budget.available.available_threads;
+    execution["availability_source"]=budget.available.source;
+    execution["started_workers"]=work_report.started_workers;
+    execution["peak_active_jobs"]=work_report.peak_active_jobs;
+    execution["numerical_library_threads_requested"]=1;
+  }
   record["requested_internal_threads"]=1;
   record["numerical_backend_observation"]="Eigen reports its setting; other backend counts not asserted";
   record["shared_preparation_count"]=1;record["shared_preparation_seconds"]=preparation;
-  record["assignment"]="sorted-network round-robin by worker index";
+  record["assignment"]=configured?"bounded indexed network jobs; ordered receipts":"sorted-network round-robin by worker index";
   record["shared_state"]="read-only APT, native clocks, processing-slot grid, TEL trajectory, AST motion, CAL headers; per-network numerical ownership";
   record["NetCDF_IO"]="serialized; numerical work concurrent; no shared open handles";
   record["timing_scope"]="per-network wall intervals overlap; process CPU and memory reported only as aggregate";
   int exit=0;
   for(std::size_t i=0;i<ids.size();++i) {
-    YAML::Node n;n["network"]=ids[i];n["worker_index"]=i%workers;n["exit_code"]=codes[i];
+    YAML::Node n;n["network"]=ids[i];n["exit_code"]=codes[i];
+    if(!configured)n["worker_index"]=i%workers;
+    n["job_index"]=i;
     n["wall_seconds"]=seconds[i];n["output"]=output_layout.network(i).root.string();
     n["input"]=request["networks"][i]["input"];
     n["state"]=codes[i]==0?"completed":codes[i]==2?"partial-or-unavailable-preserved":"failed-preserved";
@@ -1582,7 +1604,7 @@ int execute_successor_observation(const YAML::Node &request,const fs::path &outp
   record["exit_code"]=exit;
   write_yaml(output_layout.root()/"observation-receipt.yaml",record);trace.mark("observation_receipt_written");
   std::cout<<"Native observation result: exit_code="<<exit
-           <<" started_workers="<<threads.size()<<" networks="<<ids.size()
+           <<" started_workers="<<work_report.started_workers<<" networks="<<ids.size()
            <<" receipt="<<std::quoted((output_layout.root()/"observation-receipt.yaml").string())<<'\n';
   return exit;
 }
@@ -1604,9 +1626,10 @@ namespace citlali::cli {
 int run_successor_saved_fruit(const std::filesystem::path &input,const std::filesystem::path &output,bool validate_only) {
     return execute_saved_fruit(input,output,validate_only);
 }
-int run_successor_saved_map(const std::filesystem::path &input,const std::filesystem::path &output) {
+int run_successor_saved_map(const std::filesystem::path &input,const std::filesystem::path &output,unsigned workers) {
     const auto request=YAML::LoadFile(input.string());
-    if(request["schema"] && request["schema"].as<std::string>()=="citlali-configured-weighted-point-v1")return execute_weighted_point(input,output);
+    if(request["schema"] && request["schema"].as<std::string>()=="citlali-configured-weighted-point-v1")return execute_weighted_point(input,output,workers);
+    require(workers==1,"successor.saved_MAP_requires_serial_execution_for_this_profile");
     if(request["schema"] && (request["schema"].as<std::string>()=="point-152389-jinc-ast-v1" || request["schema"].as<std::string>()=="oof-a2000-altaz-ast-v1"))return execute_jinc_ast(input,output);
     return execute_saved_map(input,output);
 }

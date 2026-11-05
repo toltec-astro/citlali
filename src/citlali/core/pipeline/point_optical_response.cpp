@@ -206,7 +206,9 @@ void validate_interval(const PointOpticalInterval &x,const PointOpticalRequest &
 } // namespace
 
 std::shared_ptr<const PointOpticalEvidence> PointOpticalEvidence::learn(
-    const std::vector<PointOpticalNetwork> &input,PointOpticalRequest request) {
+    const std::vector<PointOpticalNetwork> &input,PointOpticalRequest request,citlali::utils::ParallelExecution execution,
+    PointOpticalExecutionReport *execution_report) {
+    if(!execution.workers)throw std::invalid_argument("optical worker budget must be positive");
     validate_request(request);if(input.empty())throw std::invalid_argument("optical response requires CAL networks");
     auto out=std::shared_ptr<PointOpticalEvidence>(new PointOpticalEvidence);out->request_=request;
     std::set<int> networks;std::set<std::string> detector_ids;double first=INFINITY;
@@ -245,8 +247,9 @@ std::shared_ptr<const PointOpticalEvidence> PointOpticalEvidence::learn(
     for(auto k:keys)if(seen.insert(k.second).second)block_order.push_back(k.second);
     const auto half=block_order.size()/2;
     const std::set<std::int64_t> early(block_order.begin(),block_order.begin()+half),late(block_order.begin()+half,block_order.end());
-    std::vector<Binned> binned; binned.reserve(input.size());out->networks_.reserve(input.size());
-    for(const auto &n:input) {
+    std::vector<Binned> binned(input.size());out->networks_.resize(input.size());
+    const auto aggregation_report=citlali::utils::parallel_for(input.size(),execution,[&](std::size_t index) {
+        const auto &n=input[index];
         PointOpticalNetworkEvidence facts;facts.observation_identity=n.observation_identity;facts.cal_identity=n.cal_identity;
         facts.source_mask_identity=n.source_mask_identity;facts.array=n.array;facts.network=n.network;facts.detector_ids=n.detector_ids;
         facts.detectors.resize(n.detector_ids.size());
@@ -278,8 +281,8 @@ std::shared_ptr<const PointOpticalEvidence> PointOpticalEvidence::learn(
             for(std::size_t i=0;i<order.size();++i){const double x=b.values(r,order[i]);if(std::isfinite(x)){all.push_back(x);panel[i%2].push_back(x);}}
             b.full[r]=median(all);for(int j=0;j<2;++j)b.panel[j][r]=median(panel[j]);
         }
-        binned.push_back(std::move(b));out->networks_.push_back(std::move(facts));
-    }
+        binned[index]=std::move(b);out->networks_[index]=std::move(facts);
+    });
     out->seed_identity_=learning_seed_identity(input,binned,keys,origin,request);
     std::array<std::vector<double>,3> array_reference;
     for(int a=0;a<3;++a){std::vector<const std::vector<double>*> v;
@@ -287,7 +290,7 @@ std::shared_ptr<const PointOpticalEvidence> PointOpticalEvidence::learn(
         array_reference[a]=combine(v,keys.size());}
     // Equal influence per peer network; no candidate detector or its own
     // readout network enters its temporal reference.
-    for(std::size_t n=0;n<input.size();++n) {
+    const auto reference_report=citlali::utils::parallel_for(input.size(),execution,[&](std::size_t n) {
         auto &f=out->networks_[n];auto &b=binned[n];std::vector<const std::vector<double>*> refs;
         std::array<std::vector<const std::vector<double>*>,2> panels;
         for(std::size_t p=0;p<input.size();++p)if(p!=n&&input[p].array==f.array) {
@@ -295,13 +298,13 @@ std::shared_ptr<const PointOpticalEvidence> PointOpticalEvidence::learn(
             for(int j=0;j<2;++j)panels[j].push_back(&binned[p].panel[j]);}
         b.reference=combine(refs,keys.size());for(int j=0;j<2;++j)b.reference_panel[j]=combine(panels[j],keys.size());
         f.reference_reason="heldout_network_reference_unavailable";
-        if(refs.empty())continue;
+        if(refs.empty())return;
         f.reference_available=normalize(b.reference,array_reference[f.array]);
         for(auto &panel:b.reference_panel)f.reference_available&=normalize(panel,array_reference[f.array]);
-        if(!f.reference_available){f.reference_reason="shared_reference_excitation_unavailable";continue;}
+        if(!f.reference_available){f.reference_reason="shared_reference_excitation_unavailable";return;}
         const auto shared=interval(b.reference,b.full,keys,request,1,
             seed_for(f.observation_identity+":shared-network:"+std::to_string(f.network)));
-        if(!shared.available||shared.lower<=0){f.reference_available=false;f.reference_reason="shared_network_coupling_unavailable";continue;}
+        if(!shared.available||shared.lower<=0){f.reference_available=false;f.reference_reason="shared_network_coupling_unavailable";return;}
         f.reference_reason="heldout_network_reference_available";
         // With just one other readout network, two panels are not independent
         // electronics. Require positive block-resampled cross-array coupling.
@@ -322,7 +325,7 @@ std::shared_ptr<const PointOpticalEvidence> PointOpticalEvidence::learn(
             const auto model=fit(b.reference,y,keys);
             if(model.available){f.detectors[d].relative_response=model.beta;f.detectors[d].correlation=model.correlation;f.detectors[d].binned_residual_rms=model.rms;}
         }
-    }
+    });
     for(int a=0;a<3;++a) {
         std::vector<double> slopes;
         for(const auto &n:out->networks_)if(n.array==a&&n.reference_available)
@@ -334,12 +337,14 @@ std::shared_ptr<const PointOpticalEvidence> PointOpticalEvidence::learn(
             for(auto &d:n.detectors)d.relative_response=n.reference_available?d.relative_response/normal:NAN;
         }
     }
-    for(std::size_t n=0;n<input.size();++n) {
-        auto &f=out->networks_[n];auto &b=binned[n];
-        for(std::size_t d=0;d<f.detectors.size();++d) {
+    std::vector<std::pair<std::size_t,std::size_t>> detector_jobs;
+    for(std::size_t n=0;n<input.size();++n)
+        for(std::size_t d=0;d<out->networks_[n].detectors.size();++d)detector_jobs.emplace_back(n,d);
+    const auto bootstrap_report=citlali::utils::parallel_for(detector_jobs.size(),execution,[&](std::size_t job) {
+        const auto [n,d]=detector_jobs[job];auto &f=out->networks_[n];const auto &b=binned[n];
             auto &z=f.detectors[d];z.interval.reason=f.reference_reason;
-            if(!f.reference_available||(f.cross_array_required&&!f.cross_array_corroborated)||!z.source_free_samples)continue;
-            if(!std::isfinite(z.relative_response)){z.interval.reason="response_fit_unavailable";continue;}
+            if(!f.reference_available||(f.cross_array_required&&!f.cross_array_corroborated)||!z.source_free_samples)return;
+            if(!std::isfinite(z.relative_response)){z.interval.reason="response_fit_unavailable";return;}
             std::vector<double> y(keys.size());for(std::size_t r=0;r<keys.size();++r)y[r]=b.values(r,d);
             bool complete=true;double lower=INFINITY,upper=-INFINITY;std::size_t min_blocks=std::numeric_limits<std::size_t>::max();
             for(int part=0;part<3;++part)for(int panel=0;panel<2;++panel) {
@@ -350,8 +355,8 @@ std::shared_ptr<const PointOpticalEvidence> PointOpticalEvidence::learn(
             }
             z.interval.available=complete;z.interval.reason=complete?"conditional_block_panel_and_temporal_envelope":"response_interval_or_stability_unavailable";
             if(complete){z.interval.lower=lower;z.interval.upper=upper;z.interval.informative_blocks=min_blocks;z.interval.resamples=request.bootstrap_samples;}
-        }
-    }
+    });
+    if(execution_report)*execution_report={aggregation_report,reference_report,bootstrap_report};
     return out;
 }
 

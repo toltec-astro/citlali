@@ -66,8 +66,8 @@ int load_and_run_successor_development(const RuntimeConfig &runtime,
         return run_successor_saved_fruit(path,output,terminal=="point-fruit-validate");
     }
     if(terminal=="map") {
-        if(workers!=1 || config["ptc"])throw std::invalid_argument("successor.saved_MAP_requires_serial_execution_and_no_PTC_override");
-        return run_successor_saved_map(path,output);
+        if(config["ptc"])throw std::invalid_argument("successor.saved_MAP_requires_no_PTC_override");
+        return run_successor_saved_map(path,output,workers);
     }
     logger->info("Native request: terminal={} requested_workers={} output={}",
                  terminal, workers, output.string());

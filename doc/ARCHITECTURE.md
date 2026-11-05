@@ -30,6 +30,31 @@ authoritative for individual decisions.
 
 ## Current application entry points
 
+The configured POINT parallel candidate uses `runtime.n_threads` as the CPU
+worker budget. Native setup resolves the existing Slurm/affinity/hardware cap;
+the Python array executor consumes that realized budget. Native health workers
+own indexed network/detector results, joining before cohort identity and array
+normalization. Weighted cleaning uses worker-sized batches of independent
+physical segments with private matrices and evidence; the caller merges in the
+original network/segment/sample/detector order. Final MAP accumulation and
+required publication remain sequential. YAML configuration is resolved before
+concurrent callbacks; only task-local evidence is written by workers.
+
+`configured_point_parallel.PointArrayExecutor` owns up to three spawn processes
+for one reduction. They inherit numerical-library limits before imports, own
+separate array paths, and join before the next feedback pass or publication.
+The same pool is reused across feedback and final fits and shut down on success
+or failure; idle workers never compete with native stages for computation.
+No pool, cache or observation state survives a reduction. Python worker CPU and
+process-lifetime peak RSS are separate from native stage measurements; per-job
+RSS values must not be summed as an observation peak. `execution.yaml` and
+`RUN.json` contain execution diagnostics, not scientific identity or acceptance.
+
+Saved CAL loading remains serial pending separate library-isolation work.
+Configured v1/historical saved MAP and JINC retain serial admission; only
+configured weighted saved MAP accepts a parallel budget. Other native modes
+retain their existing scheduling. Retained-standard execution is unchanged.
+
 | Entry | Owner and behavior |
 | --- | --- |
 | Native `citlali` | `main.cpp` dispatches the `citlali-development-v1` request through `default_development_execution.h` and `citlali_rtc_execution`; omitted terminal defaults to `ptc`, with explicit `rtc-only`, `cal`, saved `map` and bounded `point-fruit` routes |
