@@ -72,6 +72,9 @@ bindings. The in-memory CAL channel data have no filesystem locator to
 reopen. The full external APT generation admitted at upstream setup also
 serves health. The APT owner verifies its mutable backing, including the
 manifest, members and directory, at the existing integrity boundaries.
+RTC and CAL name the digest of the admitted table when recording detector
+factors and population identities. Each network worker consumes the request
+authenticated at setup. Its locator and digest stay with the CAL handoff.
 Remaining file-backed originals are checked before use and publication.
 Models, residuals,
 weights and products have independent per-pass ownership. Each publication
@@ -80,7 +83,9 @@ source verification separately with wall and process CPU clocks. Process
 lifetime peak RSS spans upstream and maps on the in-memory route. Stage
 receipts distinguish channel, original-ledger, pass-ledger and retained APT
 file reads. A final receipt binds the remaining original inputs checked
-after final fits, while products are still staged.
+after final fits, while products are still staged. The child returns the digest
+of the exact final receipt bytes over the private pipe. Python verifies it
+before making the observation public.
 
 Saved CAL loading remains serial. Diagnostic comparison and standalone MAP
 replay retain their single-stage execution paths.

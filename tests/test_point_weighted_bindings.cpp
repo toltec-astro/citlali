@@ -10,7 +10,7 @@ using namespace citlali::cli::detail;
 const std::string a(64,'a'),b(64,'b'),c(64,'c'),d(64,'d');
 
 TEST(PointCalHandoff, ReceiptBindsChannelValuesSlotsCausesAndNetwork) {
-    PointCalNetwork network{"products/network7",a,b,{{17,{0.5,-3.0},{0,2},{0,1,0}}}};
+    PointCalNetwork network{"products/network7","inputs/network7.json",a,b,{{17,{0.5,-3.0},{0,2},{0,1,0}}}};
     YAML::Node record;
     record["available"]=2;
     record["files"]=network.channels[0].declarations();
@@ -20,11 +20,12 @@ TEST(PointCalHandoff, ReceiptBindsChannelValuesSlotsCausesAndNetwork) {
     EXPECT_EQ(record["files"]["channel-17-value.f64"].as<std::string>(),citlali::utils::sha256(old_values));
     EXPECT_EQ(record["files"]["channel-17-slot.i64"].as<std::string>(),citlali::utils::sha256(old_slots));
     EXPECT_EQ(record["files"]["channel-17-causes.u16"].as<std::string>(),citlali::utils::sha256(old_causes));
-    network.require_binding("products/network7",a,b,1);
+    network.require_binding("products/network7","inputs/network7.json",a,b,1);
     EXPECT_NO_THROW(network.admit(0,17,3,record));
-    EXPECT_THROW(network.require_binding("products/network8",a,b,1),std::runtime_error);
-    EXPECT_THROW(network.require_binding("products/network7",c,b,1),std::runtime_error);
-    EXPECT_THROW(network.require_binding("products/network7",a,c,1),std::runtime_error);
+    EXPECT_THROW(network.require_binding("products/network8","inputs/network7.json",a,b,1),std::runtime_error);
+    EXPECT_THROW(network.require_binding("products/network7","inputs/replacement.json",a,b,1),std::runtime_error);
+    EXPECT_THROW(network.require_binding("products/network7","inputs/network7.json",c,b,1),std::runtime_error);
+    EXPECT_THROW(network.require_binding("products/network7","inputs/network7.json",a,c,1),std::runtime_error);
     EXPECT_THROW(network.admit(0,18,3,record),std::runtime_error);
     EXPECT_THROW(network.admit(0,17,4,record),std::runtime_error);
     for (const auto &suffix:{"-value.f64","-slot.i64","-causes.u16"}) {
@@ -37,7 +38,7 @@ TEST(PointCalHandoff, ReceiptBindsChannelValuesSlotsCausesAndNetwork) {
 }
 
 TEST(PointCalHandoff, EmptySupportedDomainStillBindsEveryScheduledCause) {
-    PointCalNetwork network{"root",a,b,{{2,{},{},{1,2}}}};
+    PointCalNetwork network{"root","input",a,b,{{2,{},{},{1,2}}}};
     YAML::Node record;
     record["available"]=0;record["files"]=network.channels[0].declarations();
     EXPECT_EQ(record["files"]["channel-2-value.f64"].as<std::string>(),citlali::utils::sha256(""));

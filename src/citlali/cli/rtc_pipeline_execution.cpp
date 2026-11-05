@@ -105,7 +105,7 @@ double field(const auto &row,const std::string &name) {
 void write_yaml(const fs::path &p,const YAML::Node &node,std::string *published_sha=nullptr) {
   YAML::Emitter serialized;serialized.SetDoublePrecision(17);serialized<<node;
   std::ofstream out(p);out<<serialized.c_str()<<'\n';out.close();require(bool(out),"required output failed: "+p.string());
-    if(published_sha)*published_sha=citlali::utils::sha256(std::string(serialized.c_str())+'\n');
+  if(published_sha)*published_sha=citlali::utils::sha256(std::string(serialized.c_str())+'\n');
 }
 YAML::Node range(RtcEventRange r) {YAML::Node n;n.push_back(r.first);n.push_back(r.past_last);return n;}
 void write_matrix(const fs::path &p,const auto &m) {
@@ -152,7 +152,8 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
     const SharedObservationPreparation *common=nullptr,
     const citlali::cli::NativeRtcOutputLayout::NetworkPaths *prepared_output=nullptr,
     const citlali::cli::NativePtcSetup *prepared_ptc=nullptr,
-    std::string expected_input_sha256={},citlali::cli::detail::PointCalNetwork *point_cal=nullptr) {
+    const std::string &expected_input_sha256={},const YAML::Node *setup_request=nullptr,
+    citlali::cli::detail::PointCalNetwork *point_cal=nullptr) {
   using citlali::cli::RtcInvocation;using citlali::cli::DevelopmentTerminal;
   const bool development = invocation == RtcInvocation::development_default;
   std::array<std::string,4> arguments{"citlali",input_path.string(),output_path.string(),
@@ -164,10 +165,22 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
     const auto began=std::chrono::steady_clock::now();
     require(argc==3 || argc==4,"expected input JSON, NEW output directory, optional explicit reviewed-selection YAML");
     require(std::endian::native==std::endian::little,"native binary audit requires little endian");
-    if(!expected_input_sha256.empty())
+    std::string config_sha;
+    YAML::Node local_request;
+    if(setup_request) {
       require(citlali::utils::sha256_file(input_path)==expected_input_sha256,
           "successor.network_request_changed_after_setup");
-    const auto cfg=YAML::LoadFile(argv[1]);
+      config_sha=expected_input_sha256;
+    } else {
+      MapFileLedger inputs;
+      auto parsed=inputs.read_yaml(input_path);
+      config_sha=std::move(parsed.first);local_request=std::move(parsed.second);
+    }
+    const auto &cfg=setup_request ? *setup_request : local_request;
+    const auto checked_config_sha=[&] {
+      require(citlali::utils::sha256_file(input_path)==config_sha,"successor.network_request_changed_during_execution");
+      return config_sha;
+    };
     const bool terminal_requested=bool(cfg["terminal_request"]);
     if(terminal_requested) require(cfg["terminal_request"].as<std::string>()=="rtc-only" && cfg["decision_apply"],
         "this bounded caller supports only an explicit RTC-only terminal, never a downstream fallback");
@@ -242,6 +255,8 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
     const auto &verified=common?common->apt:*local_verified;
     if(!common && !local_relation)local_relation=pipeline::admit_canonical_apt_detector_relation_v2(verified);
     const auto &relation=common?common->relation:*local_relation;
+    const auto &apt_identity=citlali::cli::detail::admitted_apt_identity(verified,manifest,
+        cfg["manifest"]["sha256"].as<std::string>());
     performance.mark("APT_verified_and_bound");
     // NetCDF/HDF5 readers are serialized within this process. Once closed,
     // each worker owns its numerical arrays and proceeds independently.
@@ -618,7 +633,7 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
     if(cfg["common_mode_health"]) {
       require(recovered_scans.has_value() && motion,"health needs the existing processing and motion binding");
       RtcCommonModeDomain domain;domain.network=nw;domain.scans=recovered_scans->projection.binding;
-      domain.motion=motion;domain.population_authority="exact-APT-flag=flag2=0-and-Tune-valid:sha256:"+citlali::utils::sha256_file(manifest);
+      domain.motion=motion;domain.population_authority="exact-APT-flag=flag2=0-and-Tune-valid:"+apt_identity;
       domain.array=static_cast<RtcOpticalArray>(health_array);domain.nominal_interval_seconds=duration;
       domain.speed_ceiling_arcsec_per_sec=235;domain.output_factor=filter_input ? filter_input->factor : 2;
       for(std::size_t d=0;d<channels.size();++d)domain.members.push_back({detectors[d].detector_occurrence_id,peer_good[d] && tune.valid[channels[d]],factors[d]});
@@ -648,7 +663,7 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
         const auto &net=parent->network(nw);
         require(original_x_digest==native_plane_digest(net.values(NativeReadoutCoordinate::x)) &&
             original_r_digest==native_plane_digest(net.values(NativeReadoutCoordinate::r)),"health changed original pair");
-        YAML::Node receipt;receipt["source_revision"]=std::string(CITLALI_GIT_REVISION);receipt["configuration_sha256"]=citlali::utils::sha256_file(argv[1]);
+        YAML::Node receipt;receipt["source_revision"]=std::string(CITLALI_GIT_REVISION);receipt["configuration_sha256"]=checked_config_sha();
         performance.mark("original_pair_verified_unchanged");
         receipt["original_pair_unchanged"]=true;receipt["Apply_performed"]=false;receipt["production_filtering_active"]=false;
         receipt["status"]="PASS-full-network-diagnostic-only";receipt["rows"]=rows;receipt["detectors"]=channels.size();receipt["network"]=nw;receipt["native_integration_seconds"]=duration;
@@ -663,8 +678,7 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
       peers.push_back({nw,d,detectors[d].detector_occurrence_id,
                        peer_good[d] && tune.valid[channels[d]]});
     auto peer=RtcEventPeerPopulation::admit(spikes,
-        "exact-projected-APT-population:flag=flag2=0:Tune-valid:sha256:"+
-        citlali::utils::sha256_file(manifest),std::move(peers));
+        "exact-projected-APT-population:flag=flag2=0:Tune-valid:"+apt_identity,std::move(peers));
     auto event_evidence=measure(learn_seconds,[&]{return learn_rtc_event_assessment(spikes,peer,2);});
     auto events=measure(consider_seconds,[&]{return RtcEventAssessmentDecision::consider(event_evidence,val,3);});
     auto amplitude=measure(consider_seconds,[&]{return RtcJumpAmplitudeDecision::consider(events,val,4);});
@@ -730,7 +744,7 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
     if(declared_contaminant)receipt["declared_contaminant"]=contaminant_record;
     receipt["schema"]="rtc-multidetector-learning-v1";
     receipt["source_revision"]=std::string(CITLALI_GIT_REVISION);
-    receipt["configuration_sha256"]=citlali::utils::sha256_file(argv[1]);
+    receipt["configuration_sha256"]=checked_config_sha();
     if(recovered_scans)receipt["processing_scans_sha256"]=citlali::utils::sha256_file(output/"processing-scans.yaml");
     if(filter_input) {
       receipt["explicit_array_lowpass"]=YAML::Clone(cfg["filter_plan"]);
@@ -767,7 +781,7 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
       entry["occurrence"]=detectors[d].detector_occurrence_id;
       entry["array_association"]=detectors[d].detector_association_record_id;
       entry["samples_sha256"]=sample_hashes[d];entry["peer_eligible"]=peer->eligible(nw,d);
-      entry["prior_flxscale"]=factors[d];entry["factor_authority"]="sha256:"+citlali::utils::sha256_file(manifest);
+      entry["prior_flxscale"]=factors[d];entry["factor_authority"]=apt_identity;
       entry["factor_unit"]="mJy/beam/xs";
       receipt["detectors"].push_back(entry);
     }
@@ -885,7 +899,7 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
       if(argc==4){
       const auto selections=YAML::LoadFile(argv[3]);
       selected=caller::read_review(selections,binding,events->evidence_handle(),channels,factors,nw,
-                                             "sha256:"+citlali::utils::sha256_file(manifest));
+                                             apt_identity);
       } else {
         require(cfg["decision_apply"]["policy"].as<std::string>()==
             "existing-authorities-with-unavailable-isolated-admission-v1","unknown decision policy");
@@ -930,7 +944,7 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
       std::shared_ptr<const RtcEventTreatmentDecision> decision;
       if(recovered_scans){
         std::vector<RtcDonorDetectorFacts> factor_facts;
-        const auto authority="sha256:"+citlali::utils::sha256_file(manifest);
+        const auto &authority=apt_identity;
         for(std::uint32_t d=0;d<channels.size();++d){
           RtcDonorDetectorFacts f;f.network=nw;f.detector=d;
           f.detector_occurrence_id=detectors[d].detector_occurrence_id;
@@ -1574,6 +1588,7 @@ int execute_successor_observation(const YAML::Node &request,const fs::path &outp
     for(std::size_t i=0;i<ids.size();++i) {
       auto &product=point_cal->producer_networks().try_emplace(ids[i]).first->second;
       product.root=output_layout.network(i).root;
+      product.input_path=inputs[i];
       product.input_sha=input_digests[i];
     }
   }
@@ -1583,7 +1598,7 @@ int execute_successor_observation(const YAML::Node &request,const fs::path &outp
     const auto start=std::chrono::steady_clock::now();
     codes[i]=execute_successor_network(inputs[i],output_layout.network(i).root,
         citlali::cli::RtcInvocation::development_default,{},terminal,ptc,&common,
-        &output_layout.network(i),ptc_config?&ptc_setups[i]:nullptr,input_digests[i],
+        &output_layout.network(i),ptc_config?&ptc_setups[i]:nullptr,input_digests[i],&configs[i],
         point_cal?&point_cal->producer_networks().at(ids[i]):nullptr);
     seconds[i]=std::chrono::duration<double>(std::chrono::steady_clock::now()-start).count();
   };
@@ -1726,9 +1741,10 @@ int run_point_observation_session(const fs::path &first_request,const fs::path &
             check["apt_member_bytes"]=cal.apt().retained_file_bytes()-apt_bytes;
             check["wall_seconds"]=clock.wall_seconds();
             check["process_cpu_seconds"]=clock.cpu_seconds();
-            write_yaml(work/"final-originals.yaml",check);
+            std::string receipt_sha;
+            write_yaml(work/"final-originals.yaml",check,&receipt_sha);
             sealed=true;
-            acknowledge(command);
+            acknowledge(receipt_sha);
             continue;
         }
         const auto pass=detail::read_point_observation_pass(work,index,workers,command,start_at_cal ? "" : initial_sha);

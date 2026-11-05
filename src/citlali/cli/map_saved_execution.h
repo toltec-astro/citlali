@@ -156,7 +156,7 @@ SavedMapNetwork load_saved_map_network(const YAML::Node &request,MapFileLedger &
     require(n>0 && out.learn["native_runs"][0][0].as<std::int64_t>()==0,"saved MAP native origin unsupported");
     for(std::size_t i=0;i<n;++i)require(std::isfinite(out.native_times[i]) && (!i || out.native_times[i]>out.native_times[i-1]),"MAP native times invalid");
     const auto ldet=out.learn["detectors"],cdet=out.cal["detectors"],adet=out.apply["realized_detectors"],gdet=out.apply["output_grid"]["detectors"];
-    if(point_cal)point_cal->require_binding(out.root,request["input"]["sha256"].as<std::string>(),
+    if(point_cal)point_cal->require_binding(out.root,input_path,input_sha,
                                             out.cal_sha,cdet.size());
     require(ldet.size()==cdet.size() && adet.size()==ldet.size() && gdet.size()==ldet.size(),"MAP detector domains differ");
     std::set<int> seen;

@@ -358,7 +358,9 @@ def _execute(config_path, native, launch_dir, lifetime):
         # final products are still private and original transports still exist.
         lifetime.close()
         if cal_session is not None:
-            record["final_original_inputs"] = bind(work / "final-originals.yaml")
+            if cal_session.final_binding is None:
+                raise RuntimeError("POINT observation closed without an authenticated final receipt")
+            record["final_original_inputs"] = cal_session.final_binding
         if not request.retain_intermediates:
             record["transport_retention"] = release_transport(work)
         else:

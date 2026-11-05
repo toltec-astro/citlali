@@ -602,6 +602,23 @@ TEST(PointStageApt, SharesOnlyTheBoundGenerationWithinOneStage) {
     EXPECT_EQ(next_stage.network_reuses(), 0U);
 }
 
+TEST(PointStageApt, ProvenanceNamesTheAdmittedTableAndBackingChangesStillFail) {
+    TemporaryDirectory temporary;
+    const auto fixture=make_matched_fixture();
+    const auto path=publish_fixture(fixture.prepared,temporary.path/"matched");
+    const auto sha=citlali::utils::sha256_file(path);
+    citlali::cli::detail::PointStageApt stage;
+    const auto &bundle=stage.select(path,sha).files.verified();
+    std::ofstream(path,std::ios::app)<<"changed after admission";
+    const auto replacement=citlali::utils::sha256_file(path);
+    ASSERT_NE(replacement,sha);
+    using citlali::cli::detail::admitted_apt_identity;
+    EXPECT_EQ(admitted_apt_identity(bundle,path,sha),"sha256:"+sha);
+    EXPECT_THROW(admitted_apt_identity(bundle,path,replacement),apt::ContractError);
+    EXPECT_THROW(admitted_apt_identity(bundle,temporary.path/"other",sha),apt::ContractError);
+    EXPECT_THROW(stage.verify_before_publication(),apt::ContractError);
+}
+
 TEST(PointStageApt, RejectsChangedComponentAtReuseAndBeforePublication) {
     TemporaryDirectory temporary;
     const auto fixture = make_matched_fixture();

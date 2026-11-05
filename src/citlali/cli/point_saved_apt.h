@@ -11,6 +11,14 @@
 
 namespace citlali::cli::detail {
 
+inline const std::string &admitted_apt_identity(const pipeline::canonical_apt_v2::VerifiedBundle &bundle,
+    const std::filesystem::path &manifest,const std::string &expected_sha256) {
+    const auto &identity=bundle.manifest_digests.transport_sha256;
+    if(bundle.manifest_path!=manifest || identity!="sha256:"+expected_sha256)
+        throw pipeline::canonical_apt_v2::ContractError("APT request differs from the admitted generation");
+    return identity;
+}
+
 struct SavedMapApt {
     explicit SavedMapApt(const std::filesystem::path &manifest)
         : files(manifest),

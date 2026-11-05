@@ -43,13 +43,14 @@ struct PointCalChannel {
 // A worker fills only its own network slot. All workers join before Python
 // can request health. This storage is consumed once, never selected by path.
 struct PointCalNetwork {
-    std::filesystem::path root;
+    std::filesystem::path root,input_path;
     std::string input_sha,receipt_sha;
     std::vector<PointCalChannel> channels;
 
-    void require_binding(const std::filesystem::path &expected_root,const std::string &input,
+    void require_binding(const std::filesystem::path &expected_root,const std::filesystem::path &expected_input,
+                         const std::string &input,
                          const std::string &receipt,std::size_t detectors) const {
-        if (root!=expected_root || input_sha!=input || receipt_sha!=receipt ||
+        if (root!=expected_root || input_path!=expected_input || input_sha!=input || receipt_sha!=receipt ||
             channels.size()!=detectors || channels.empty())
             throw std::runtime_error("POINT in-memory CAL network binding differs");
     }

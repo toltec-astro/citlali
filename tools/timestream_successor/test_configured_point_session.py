@@ -13,6 +13,7 @@ def peer(tmp_path):
     binary = tmp_path / "native"
     binary.write_text("#!" + sys.executable + "\n" + textwrap.dedent("""
         from pathlib import Path
+        import hashlib
         import os
         import sys
         import time
@@ -32,6 +33,15 @@ def peer(tmp_path):
             print(f"[warning] pass {ordinal} pid {os.getpid()}", flush=True)
             if os.environ.get("POINT_FAKE") == "no-ack":
                 sys.exit(7)
+            if line == b"verify-originals\\n":
+                receipt = Path(sys.argv[-1]).parent / "final-originals.yaml"
+                payload = b"verified: true\\n"
+                receipt.write_bytes(payload)
+                ack = hashlib.sha256(payload).hexdigest().encode() + b"\\n"
+                if os.environ.get("POINT_FAKE") == "replace-receipt":
+                    receipt.write_bytes(b"changed\\n")
+                os.write(fd, ack)
+                continue
             os.write(fd, b"x" * 64 + b"\\n" if os.environ.get("POINT_FAKE") == "wrong-ack" else line)
     """))
     binary.chmod(0o755)
@@ -81,6 +91,18 @@ def test_one_process_from_cal_through_maps_and_final_check(peer):
     for i, name in enumerate(("upstream", "health", "weighted-00")):
         assert f"pass {i} pid {child.pid}" in (work/name/"native.log").read_text()
     assert f"pass 3 pid {child.pid}" in session.log_path.read_text()
+    assert session.final_binding == cli.bind(work/"final-originals.yaml")
+
+
+def test_replaced_native_final_receipt_fails_before_publication(peer, monkeypatch):
+    _, work = peer
+    monkeypatch.setenv("POINT_FAKE", "replace-receipt")
+    with pytest.raises(RuntimeError, match="differs from native acknowledgement"):
+        with PointObservationSession(work, start_at_cal=True) as session:
+            upstream(peer, session)
+            call(peer, session, "health")
+            call(peer, session, "weighted-00")
+    assert session.final_binding is None
 
 
 def test_changed_original_at_final_check_fails_and_reaps(peer, monkeypatch):

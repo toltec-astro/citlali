@@ -23,8 +23,10 @@ health and feedback keep their existing numerical owners.
 The APT owner keeps the same admitted table and relation from upstream setup
 through health. Bundle checks still cover the writable external paths at each
 map entry and publication. The old duplicate manifest hash in the original
-CAL ledger is covered by that complete APT check. File-backed receipts,
-times, config and telescope inputs remain distinct from the channel handoff.
+CAL ledger is covered by that complete APT check. Detector factor and peer
+population labels use the admitted APT digest. The worker consumes the
+authenticated setup network request and the handoff also binds its locator.
+Network receipts, native times, config and telescope data remain file-backed.
 There is no assumption that a fresh APT receipt, a filename or a timestamp
 makes an external source immutable. Endpoint checks reject observed changes;
 they do not detect every possible change-and-restoration between checkpoints.
@@ -32,7 +34,9 @@ Stronger guarantees for writable external files require a producer-backed
 immutable generation or a reliable write-exclusion contract.
 
 After final fits and before transport release/publication, the child verifies
-the remaining original ledger and full APT, writes a bound receipt and joins.
+the remaining original ledger and full APT, writes a receipt and sends its
+producer digest over the private pipe. Python authenticates the receipt and
+joins the child before publication.
 A failure leaves the public observation directory unpublished. Final verification
 is outside the teardown timeout. Standalone MAP, comparison, retained
 intermediate output and recovery retain their file-backed paths.

@@ -3,6 +3,7 @@
 #include <citlali/core/pipeline/timestream_cal_pipeline.h>
 #include "cal_opacity_header.h"
 #include "cal_pointing_offsets.h"
+#include "point_saved_apt.h"
 #include <citlali/core/pipeline/timestream_ptc_cal_source.h>
 
 namespace {
@@ -75,7 +76,8 @@ ConnectedCal execute_connected_cal(const CalRtcSource &source,const YAML::Node &
     const auto grid=source.rtc_terminal_handle()->grid_handle();const auto scope=grid->align_handle()->scope();
     const auto telescope_path=checked_file(cfg["telescope"]);
     const std::string telescope_identity="sha256:"+citlali::utils::sha256_file(telescope_path);
-    const std::string apt_identity="sha256:"+citlali::utils::sha256_file(checked_file(cfg["manifest"]));
+    const auto &apt_identity=citlali::cli::detail::admitted_apt_identity(verified,checked_file(cfg["manifest"]),
+        cfg["manifest"]["sha256"].as<std::string>());
     require(scope.observation==relation.observation().observation &&
             scope.subobservation==relation.observation().subobservation && scope.scan==relation.observation().scan,
             "CAL selected APT belongs to another observation");

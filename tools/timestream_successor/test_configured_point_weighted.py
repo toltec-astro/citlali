@@ -388,6 +388,7 @@ def _weighted_cli_handoff_case(tmp_path, weighted_config, monkeypatch, *, retain
                 if changed:
                     raise RuntimeError('material input changed')
                 (self.work/'final-originals.yaml').write_text('verified: true\n')
+                self.final_binding = cli.bind(self.work/'final-originals.yaml')
 
     def prepare(effective, destination, **kwargs):
         destination.mkdir()
