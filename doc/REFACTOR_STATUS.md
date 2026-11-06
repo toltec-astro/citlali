@@ -1,3 +1,14 @@
+## POINT selection and reporting scope prepared — 2026-11-05
+
+The [initial decision table](POINT_METHOD_AND_USE_ACCEPTANCE_2026-11-04.md#agreed-decision-table)
+records the owner-approved disagreement, beam override, missing-array and
+background-coverage rules. The [team summary](POINT_TEAM_SUMMARY_2026-11-04.md)
+incorporates those later decisions. The
+[bounded scope](POINT_POLICY_IMPLEMENTATION_SCOPE_2026-11-05.md) is ready for
+Grant's approval before application changes. Its explicit proposals cover
+unavailable a1100 shape, numerical background definitions, publication and
+consumer handling. Absolute accuracy and threshold qualification remain open.
+
 ## Configured POINT CAL/APT and diagnostic I/O repairs accepted — 2026-11-05
 
 Grant accepted the CAL/APT handoff at `c6ed37f58` and diagnostic I/O at

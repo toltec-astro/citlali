@@ -1,5 +1,14 @@
 # Citlali refactor — current state
 
+2026-11-05 POINT policy reconciliation is prepared for scope review. Grant's
+later decisions in “Assess contract compliance” are now in the
+[decision table](POINT_METHOD_AND_USE_ACCEPTANCE_2026-11-04.md#agreed-decision-table)
+and [team summary](POINT_TEAM_SUMMARY_2026-11-04.md). The
+[proposed implementation scope](POINT_POLICY_IMPLEMENTATION_SCOPE_2026-11-05.md)
+covers selected pointing, background diagnostics, partial-array reporting and
+an explicitly bound TolTECA consumer follow-up. Grant's next decision is scope
+approval. Application work and owner-run gates follow that decision.
+
 2026-11-05 Grant accepted two bounded configured POINT repairs. Local
 `codex/refactor-mainline` advanced from `cbe2ef643` through the CAL/APT
 handoff at `c6ed37f58` to the diagnostic I/O repair at `fc9c1f293`.

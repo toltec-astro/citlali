@@ -1,13 +1,32 @@
-# Draft POINT method and use acceptance record
+# POINT method and use acceptance record
 
-Recorded: November 4, 2026. Scientific owner: Grant Wilson.
+Recorded November 4, 2026. Reconciled November 5, 2026.
+Scientific owner — Grant Wilson.
 
-**Disposition: strategy approved by the team; complete method and named-use
-acceptance pending.** This record preserves the POINT decisions from the
-owner discussion preceding this request, reconciles them with existing
-authority, and identifies the evidence still needed. It does not certify
-SCI-POINT conformance or change the application. The
+**Disposition — initial owner policy recorded, implementation scope awaiting
+approval, complete method and named-use qualification pending.** The
 [team summary](POINT_TEAM_SUMMARY_2026-11-04.md) is the short sharing version.
+The [proposed implementation scope](POINT_POLICY_IMPLEMENTATION_SCOPE_2026-11-05.md)
+identifies the affected application and consumer boundaries.
+
+## November 5 reconciliation
+
+Grant requested the agreed decision table, updated team summary and this
+record before application changes. The clean preparation base is
+`185ed7d9098f09f2444e6cfcaa7dc9f24050315a` on `codex/refactor-mainline`.
+It records acceptance of tested application
+`fc9c1f2935b433782ae3cfa1a79e2ac0247dd8f1`, tree
+`0214c707a4ac6e3af17ee74e78321f052b2b9932`.
+The owner-run 152389 software and M0–M5 evidence binds that application.
+The policy below awaits implementation and its own owner-run checks.
+
+The decisions were recovered from **Assess contract compliance**, chat
+`01a1a329-84fd-77c0-8575-e972d03460c5`, through the final owner agreement
+`01a1a7aa-d983-7ed2-879e-d894a4c17302`. Later decisions in that discussion
+supply the definitions and missing-array outcomes that the original summary
+left open. This reconciliation records those decisions on repository authority.
+The governance, source and existing reports were inspected statically.
+Grant executes all builds, tests, probes, reductions and validation runners.
 
 ## Team approval
 
@@ -15,17 +34,17 @@ On November 4, 2026, Grant reported the team's positive reaction and approval
 of the strategy. The reviewed summary and supporting draft record are bound
 to commit **5dc124d1acf8997434f9b75133ac3d7f6e9e86cf**. This closes team review
 of the strategy and preserves the priority of the usable a2000 override.
-The approved summary explicitly retained a provisional 8 arcsec beam threshold
-and unresolved cases; approval does not supply those missing definitions or
-establish achieved accuracy, complete method conformance, or production use.
+That approved summary retained a provisional 8 arcsec beam threshold and
+unresolved cases. The later owner decisions recorded below resolve the
+selection cases. Accuracy, complete method conformance and production use
+retain their own acceptance requirements.
 
-This approval receipt changes documentation only on the existing branch and
-checkout, from the clean reviewed commit above. The earlier preparation
-preflight and evidence bindings below remain historical facts. The owner's
-no-implementation/no-new-branch-or-worktree boundary remains in force;
-Grant retains all execution. Static review only; no runtime gates were run.
+The November 4 approval was recorded as a documentation change following the
+reviewed commit above. Its preparation preflight and evidence bindings below
+are historical facts. The current owner request is documentation preparation
+and scope review before application edits. Grant retains all execution.
 
-## Scope and preflight
+## Historical November 4 scope and preflight
 
 The owner requested saving the summary and preparing this record, with no
 new branches or worktrees and no implementation changes. Initial clean base:
@@ -44,7 +63,7 @@ No reset, merge, branch, or worktree operation reconciled the moving base.
 Only the new POINT policy navigation entries in the status documents belong
 to this change; the linked plan owns the execution sequence.
 
-The accepted application remains **19b6fc462930af6f0a7bf2ca5b5350dd3c72af6e**,
+At that preparation checkpoint the accepted application was **19b6fc462930af6f0a7bf2ca5b5350dd3c72af6e**,
 tree **3b1d9e0ae067e502faa1e02895be3695f5166a66**. Later changes through the
 documentation base are documentation and acceptance evidence. The
 [stage-3 acceptance](../validation/review_stage3_integration_2026-11-03/OWNER_ACCEPTANCE.json)
@@ -106,8 +125,7 @@ scientific profile. This record does not supply their final approval.
 ## Recovered development method
 
 This describes the implementation and its scoped owner directions, not a newly
-approved numerical specification. Source links are read at the exact
-documentation base above.
+approved numerical specification. The recovered behavior was inspected again at the November 5 preparation base.
 
 | Aspect | Recovered behavior and limit |
 | --- | --- |
@@ -126,40 +144,103 @@ No new fit model, weighting, feedback rule, optical threshold, or optimizer
 change is selected here. Carrying this method into a formally accepted successor
 method with an exact parent route/configuration and identity remains open.
 
-## Owner decisions and their priority
+## Agreed decision table
 
-These statements paraphrase Grant's direction in the discussion leading to
-the November 4 documentation request. They supersede the earlier suggestion
-that all-array disagreement always defeats the beam-quality override.
+The initial method uses the existing elliptical Gaussian plus constant fit,
+its weights, search limits and solver behavior. Each array retains its fit
+and explicit usable, failed or unavailable state. Existing source/fit validity
+checks supply usability for this initial policy. Map contrast is descriptive.
+The 1.5 arcsec combined two-dimensional accuracy target applies to the
+**final adopted solution**. Initial adoption may carry unavailable positional
+uncertainty, reported explicitly.
 
-- **Primary use:** measure azimuth and elevation pointing offsets. The target
-  is approximately **1.5 arcsec combined two-dimensional error**, not 1.5 arcsec
-  independently on each axis. Its statistical acceptance interpretation remains
-  open. Telescope-gain monitoring is optional and separately qualified.
-- **Preserve all three measurements:** reduce a1100, a1400, and a2000 and retain
-  each fit result or explicit failure/unavailability. One outlier does not erase
-  the other results or automatically fail the observation's pointing use.
-- **First priority, beam-quality override:** if a1100 fitted FWHM is **greater
-  than 8 arcsec in either dimension**, use the **usable a2000 solution alone**,
-  even if the three offsets disagree. The owner offered 8 arcsec provisionally.
-  Fitted shape is evidence of possible deformation/defocus, not a unique causal
-  diagnosis or an intrinsic optical beam measurement.
-- **Otherwise, with roughly nominal beam shapes:** adopt the arithmetic mean of
-  the consistent array solutions. Exclude a clear outlier separated by
-  **5 arcsec or more** from an otherwise agreeing pair, retaining its values
-  and reason. Typical agreement near or below 1 arcsec is descriptive, not an
-  independently approved agreement cutoff.
-- **Nominal-beam failure:** if all three pairwise offset separations are
-  **5 arcsec or more**, report no accepted pointing solution. This use-level
-  failure preserves per-array measurements, maps, and diagnostics. The usable
-  a2000 beam-quality override takes precedence over this failure rule.
-- **Observer feedback:** report beam assessments and selection/failure to LMT
-  monitor and control. The intended output contract leads; TolTECA may be
-  adapted instead of constraining the policy to its present mean.
+Pair distance is `sqrt((az_i - az_j)^2 + (el_i - el_j)^2)` in the common
+tangent-azimuth/elevation frame, in arcseconds. A pair agrees below 5 arcsec
+and is discrepant at or above 5 arcsec. Means are componentwise arithmetic
+means over the selected arrays. The 5 arcsec rule is the adopted agreement
+criterion. Typical 1 arcsec agreement and the 1.5 arcsec qualification target
+have separate meanings.
 
-These rules are not yet a total executable decision function. The discussion
-did not authorize a closest-pair tie breaker, a median, uncertainty weighting,
-or acceptance of a lone remaining array outside the explicit a2000 override.
+Evaluate the beam override first. Its trigger is the **larger fitted
+principal-axis FWHM of a1100 strictly greater than 8 arcsec**. Exactly 8 arcsec
+follows the ordinary selection rows. The 8 arcsec value is the owner-approved
+initial setting with provisional scientific qualification.
+
+| Priority and condition | Adopted measured offset | Observer outcome |
+| --- | --- | --- |
+| Override triggered, a2000 usable | a2000 alone | Identify the a1100 beam trigger and the a2000 override, including any disagreement. |
+| Override triggered, a2000 failed or unavailable | Unavailable | Withhold automatic pointing and report the unavailable preferred array. Preserve all per-array results. |
+| Override absent, three usable arrays, all three pairs agree | Mean of all three | Report three contributing arrays and their separations. |
+| Override absent, three usable arrays, exactly one agreeing pair | Mean of that pair | Exclude the array discrepant from both members. The a1100/a1400 consensus wins when a2000 is the outlier. |
+| Override absent, three usable arrays, two agreeing pairs and one discrepant pair | Unavailable | Withhold for ambiguous array agreement. For example, offsets 0, 4 and 8 arcsec on one axis. |
+| Override absent, three usable arrays, all pairs discrepant | Unavailable | Withhold for all-array disagreement. |
+| Override absent, two usable arrays which agree | Mean of those two | Identify the unavailable array and the contributing pair. |
+| Override absent, two usable arrays which disagree, including a2000 | a2000 alone | Identify the disagreement and the 2 mm preference. |
+| Override absent, a1100 and a1400 usable but discrepant, a2000 unavailable | Unavailable | Withhold for disagreement without a usable 2 mm estimate. |
+| Override absent, one usable array of any wavelength | That array alone | Report that inter-array comparison is unavailable. |
+| No usable arrays | Unavailable | Withhold and report the per-array causes. |
+
+The single-array rule supersedes the earlier proposed two-array minimum.
+Missing corroboration permits use of the remaining estimate. Contradictory
+measurements follow the disagreement rows. The override's failed-a2000 row
+has priority over the single-array rule.
+
+The discussion defines what to do with usable estimates and a known beam
+assessment. Evaluating a1100 widths from a fit that failed its source guard,
+or otherwise lacks reliable shape, needs an explicit representation. The
+implementation scope proposes how to report that case for owner review.
+
+## Agreed background assessment
+
+| Condition or quantity | Initial policy | Report |
+| --- | --- | --- |
+| Region | Fixed annulus `30 <= r < 60 arcsec` centered on each array's **measured source centroid** | Center, radii, units and map/fit identity. |
+| Background variation | RMS about the background mean over valid finite supported pixels, including real stripes, clumps and negative structure | RMS and robust scatter alongside it. |
+| Map contrast | Fitted Gaussian peak above its fitted constant divided by background RMS | Diagnostic value and availability. New contrast warning/rejection thresholds are deferred. |
+| Sufficient region coverage | At least 75% of the full annulus and at least 50% in **each** tangent-azimuth/elevation quadrant | Overall and per-quadrant fractions. The limits are adopted initial safeguards awaiting empirical qualification. |
+| Insufficient coverage is the only missing assessment | Accept an otherwise usable pointing under the selection table | Explicit warning identifying affected arrays and unavailable background quality. |
+| Other invalid or unavailable assessment input | Preserve the applicable fit/measurement validity and report the specific cause | The insufficient-coverage exception applies only to its named cause. |
+
+The measured-centroid choice supersedes the earlier expected-center proposal.
+The policy excludes invalid pixels while retaining finite background
+structure. A successful adopted offset carries diagnostics for all arrays.
+Automatic tuning-specific warnings and a hard contrast cutoff await evidence.
+
+Grant's saved-map assessment covered 30 maps from ten observations, with
+historical V2 and weighted successor families assessed separately. All had
+complete support in the selected annulus. This supports the initial compact
+source region. Partial coverage, broad wings and tuning degradation need
+further evidence. [Background-region review](/Users/gwilson/.codex/visualizations/2026/11/03/01a1a329-84fd-77c0-8575-e972d03460c5/point-background-region-20261104/REVIEW_2026-11-04.md)
+
+The assessment report SHA-256 is
+`b9aa96ae4d9e3b3eaaef64640e332b3f03ac04b722ccca4d1130e8e8745efd2d`;
+its input record SHA-256 is
+`07e7dad79d79602106cea0475e913c51534374d402c80e23ee4a8a3e8d3d38a5`.
+[Report](/Users/gwilson/.codex/visualizations/2026/11/03/01a1a329-84fd-77c0-8575-e972d03460c5/point-background-region-20261104/results-ngoy9q3r/REPORT.json)
+and [input record](/Users/gwilson/.codex/visualizations/2026/11/03/01a1a329-84fd-77c0-8575-e972d03460c5/point-background-region-20261104/results-ngoy9q3r/INPUTS.json).
+
+## Decision provenance
+
+These are owner turns in the chat identified above. Their preceding proposals
+supply the detailed definitions that the owner accepted.
+
+| Decision | Owner turn |
+| --- | --- |
+| Two-dimensional separation, discrepancy at 5 arcsec | `01a1a71a-80e2-7472-9e92-c5487065e23e` |
+| Withhold ambiguous groups | `01a1a71c-22f4-7172-b323-eb0be8121c7d` |
+| Larger principal-axis FWHM, strict 8 arcsec trigger | `01a1a71f-6dab-7d20-8fab-1d2c4e49ce99` |
+| Triggered override with unusable a2000 withholds | `01a1a723-6d37-7c93-b96f-3edb5a95a47a` |
+| Disagreeing pair defaults to usable a2000 | `01a1a725-dea6-7831-9005-349f399d6bd1` |
+| Lone a2000 accepted; shorter pair follows agreement | `01a1a726-d651-7de1-b658-0b9d0ce97245`, `01a1a728-2724-76d2-9e0c-7d2bdd3caaf6` |
+| Any lone usable array accepted | `01a1a72c-039a-70f3-87ad-5240127fa31b` |
+| Shorter pair consensus beats an a2000 outlier | `01a1a730-65b8-7c90-8fac-b3ea7f153314` |
+| Positional uncertainty may be unavailable | `01a1a731-6e38-76f3-a8b2-f4d2f6680262` |
+| Retain current fitter; apply accuracy target to adopted solution | `01a1a73a-087c-7290-b00a-e860a4c8c4bf`, `01a1a74b-9be5-70f0-ac25-123117f59cf1` |
+| Use RMS including background structure, plus robust scatter | `01a1a75a-4983-73e0-8416-fd24f24632fc` |
+| Annulus follows measured centroid, 30–60 arcsec | `01a1a77b-3ae7-75d2-8205-a71571251e5b`, `01a1a7a0-9b96-7d50-a222-ab8afb2272c7` |
+| Coverage 75% overall and 50% per quadrant | `01a1a7a6-b0f0-7d91-9496-ee2f9cd6f99e` |
+| Insufficient coverage permits adoption with a warning | `01a1a7a8-85c3-7f52-a032-8a0d0f9a8ecf` |
+| Map contrast diagnostic-only; hard cutoff deferred | `01a1a7aa-d983-7ed2-879e-d894a4c17302` |
 
 ## Product ownership and proposed reporting
 
@@ -218,69 +299,45 @@ do not transfer to the proposed selection/reporting policy.
 | Iteration stability | Same 152418 report: REF M5-to-M10 centroid shifts are 0.0000167, 0.0000260, and 0.0021921 arcsec for a1100/a1400/a2000. | Stability on one observation is not independent accuracy or justification to retune iteration limits. |
 | Coordinates and consumer handoff | [Handoff report](../validation/point_handoff_2026-10-30/REPORT.md), [consumer results](../validation/point_handoff_2026-10-30/consumer_results.json), and [integration acceptance](../validation/pointing_handoff_integration_2026-10-31/OWNER_ACCEPTANCE.json). Actual pinned TolTECA 2791e6a1e6349ad1d3ac549a648f41cbc51b98c7 and TolProj 6309a5a852a0412cee867992aff01341a56b0ebf exercised the former interface. | Supports existing signs, discovery, correction composition, and unavailable errors. Does not exercise outlier selection or the beam override. |
 | Gain and calibration | [Calibration audit](../validation/point_calibration_audit_2026-10-30/REPORT.md) and handoff report. Conditional sigma_A is not a calibrated amplitude error; the actual flux reader rejects NaN amp_err. | Gain monitoring is a separate proposed use; photometric transfer stays held. Shape and nominal-beam peak alone do not establish gain change. |
-| Engineering baseline | [Stage-3 acceptance](../validation/review_stage3_integration_2026-11-03/OWNER_ACCEPTANCE.json) and [owner results](../validation/review_stage3_integration_2026-11-03/OWNER_RESULTS-19b6fc462.json). | Accepted Mac Spack software evidence with limits; no new configured POINT scientific or Unity qualification. |
+| Engineering baseline | [CAL/APT handoff acceptance](../validation/point_cal_handoff_2026-11-05/OWNER_ACCEPTANCE.json) and [diagnostic I/O acceptance](../validation/point_diagnostic_io_2026-11-05/OWNER_ACCEPTANCE.json), tested application fc9c1f2935b433782ae3cfa1a79e2ac0247dd8f1. | Mac Spack software gates and 152389 M0–M5 equivalence provide the regression baseline for the proposed policy. |
 | New owner policy | Decisions above; no execution of the new policy is asserted. | Direction recorded. Implementation, named-use registration, threshold qualification, and the 1.5 arcsec accuracy claim remain pending. |
 
-## Unresolved cases and required decisions
+## Remaining implementation and qualification decisions
 
-| Open case | Required disposition before dependent acceptance |
+| Subject | Recorded disposition and remaining work |
 | --- | --- |
-| Formal method and route | Bind a separately versioned successor estimator and intended parent/configuration, including weighting, grid, source class, and feedback recipe. Decide its formal relationship to frozen SCI-POINT without replacing the compatibility result. A successful historical trial does not select those settings. |
-| Accuracy target | Specify bias/repeatability measure, confidence or coverage, population, per-array versus selected-solution obligations, and acceptable failure rate for the combined 1.5 arcsec target. Decide whether initial use may retain unavailable per-observation errors. |
-| Separation definition | Confirm that 5 arcsec means physical two-dimensional distance in the common tangent plane, and whether an outlier is compared with each other array or their mean. Later owner wording includes equality at 5; it does not define that operator. |
-| Consistency and ambiguous groups | Define an agreeing pair and handle chained/tied groups. Offsets (0,0), (4,0), (8,0) arcsec have two close pairs and one distant pair; no exclusion rule was selected. Typical 1 arcsec agreement and the 1.5 arcsec accuracy goal are not automatic cutoffs. |
-| Beam criteria | Confirm whether either FWHM dimension means principal axes, define roughly nominal shapes for all arrays, and finalize the provisional strict greater-than-8 trigger. Define the role of a1400 shape, asymmetric/non-Gaussian structure, uncertain widths, and missing a1100 shape. Broadening does not uniquely diagnose deformation. |
-| Missing or unusable fits | Define usable a2000 for the override and the outcome if it fails. Decide cases with only two or one usable array, missing metadata, nonfinite results, bound-active fits, or failed source association. No fallback from an unavailable preferred fit is selected here. |
-| Output and failure behavior | Bind schema/version, required fields, QC/selection owner, partial-result publication, and machine-visible failure. Reconcile all-three ECSV publication with partial measurements and selected-use status. An unusable pointing does not erase valid maps or excuse an I/O failure. |
-| Consumer and correction eligibility | Bind TolTECA adaptation and legacy behavior, preserving sign, User/Paddle, time, and source identity. Already-corrected POINT stays held pending residual-to-measurement qualification. LMT consumption is intended capability, not a verified deployed interface. |
-| Gain monitoring | Define relative monitoring versus calibration transfer and its source, atmosphere/calibration controls, response, time comparison, and uncertainty requirements. It is not a prerequisite for initial astrometry. |
+| Initial fitter | Owner selected the current Gaussian-plus-constant method for this policy. Bind its exact source, route and configuration. Formal successor-method identity and its relationship to frozen SCI-POINT require the method/profile record. |
+| Accuracy | The 1.5 arcsec combined target applies to the adopted solution. Unavailable positional errors are allowed initially. Bias, population, statistical coverage and acceptable failure rate still need qualification criteria. |
+| Beam assessment | Principal axes and strict greater-than-8 trigger are settled. Empirical threshold qualification, other shape criteria and how to assess widths from an unusable fit remain open. |
+| Background assessment | Measured-center 30–60 arcsec region and 75%/50% coverage are settled initial settings. The scope proposes the numerical pixel-area and robust-scatter definitions. Zero RMS, missing center, malformed inputs and unusual broad wings require explicit statuses. Contrast and tuning-warning thresholds remain deferred. |
+| Product and failure behavior | Approve the proposed policy/schema identities, partial-result publication and distinction between completed reduction and unavailable automatic pointing. Preserve discoverable reasons when selection withholds. |
+| Consumer and correction eligibility | Bind the operational TolTECA adaptation to an exact source. Consumer tests must exercise the adopted solution, sign, User/Paddle composition, time and source identity. Nonzero applied offsets retain their existing hold pending residual-to-measurement qualification. |
+| Gain monitoring | Its source, calibration, time comparison and uncertainty requirements remain separate. |
 
-No defaults are assigned to these unresolved cases. The usable a2000 override's
-priority over nominal-beam disagreement failure is settled.
+## Next implementation decision
 
-## Acceptance sequence and current disposition
+Review the [bounded implementation scope](POINT_POLICY_IMPLEMENTATION_SCOPE_2026-11-05.md).
+It proposes one Citlali selection/reporting increment and an explicitly bound
+TolTECA consumer follow-up. The decision table above is the initial owner
+policy. Application implementation and operational use require their own
+evidence and acceptance.
 
-Team review is complete. Resolve the open policy cases, then bind one complete
-method/use record and the smallest implementation scope for selection, observer
-reporting, and consumer adaptation. Separate fit completeness, pointing admission,
-telescope QC, and gain/photometric use; approve/register the profiles actually needed.
+The [POINT and SCIENCE qualification plan](POINT_SCIENCE_QUALIFICATION_PLAN_2026-11-03.md)
+owns qualification sequencing. Individual POINT uses observation-local Alt/Az
+maps. SCIENCE/coadd/known-offset qualification awaits the connected successor
+SCIENCE route. Independent reference comparisons must support the eventual
+1.5 arcsec accuracy claim.
 
-Future owner-run evidence must cover threshold boundaries, override priority,
-all-array disagreement, one outlier, ambiguous groups, failed preferred fits,
-and preservation of results. Actual-consumer fixtures must establish that the
-selected displacement is used once with existing correction conventions,
-including unavailable/error states. These are pending gate requirements, not
-tests prepared or run by this documentation task.
+Current preparation disposition
 
-The [individual POINT and celestial SCIENCE qualification plan](POINT_SCIENCE_QUALIFICATION_PLAN_2026-11-03.md)
-owns the qualification sequence. Its subsequent owner clarification selects
-individual configured successor POINT now and defers SCIENCE/coadd/known-offset
-qualification until successor SCIENCE is connected. Retained-driver preparation
-is on hold and is not a prerequisite to POINT. This record does not reopen that
-choice or supply launch authority. The existing stage-3 executable cannot
-exercise the unimplemented selection/reporting policy; its qualification and a
-later policy candidate need distinct evidence bindings. POINT remains
-observation-local, with coadds in SCIENCE. Independent reference comparisons,
-rather than iteration stability or reuse of the same POINT-derived correction,
-must support an eventual accuracy claim. Selecting that evidence need not turn
-the deferred SCIENCE implementation into an automatic prerequisite to all POINT
-qualification.
-
-Current preparation disposition:
-
-- **Scientific and behavioral:** owner intent and evidence limits are recorded;
-  frozen science and behavior are unchanged. Complete method/use acceptance,
-  formal errors, and achieved accuracy remain pending.
-- **Architecture and ownership:** per-array measurement, QC, pointing-support,
-  TolTECA, and AST boundaries are preserved in the proposal. No interface or
-  sibling implementation was edited.
-- **Repository and evidence:** two new documents and navigation updates form
-  one documentation change in the existing checkout. Historical evidence,
-  runtimes, branches, worktrees, and frozen packages are preserved.
-- **Review and execution:** static editorial/source/diff review only. No builds,
-  tests, probes, reductions, or validation runners were executed. Independent
-  method review and future exact-candidate implementation review remain pending;
-  this is not a Tier 2 conformance pass.
-
-The next decision is completion of the open method/use policy, not approval to
-launch a reduction, activate production, or publish to GitHub.
+- Scientific and behavioral — owner decisions and their precedence are now
+  recorded. Formal method/profile acceptance, empirical threshold qualification
+  and achieved absolute accuracy remain open.
+- Architecture and ownership — per-array fits feed a named selection/QC owner,
+  with publication, correction construction and AST application assigned to
+  their existing owners. The proposed consumer interface awaits review.
+- Repository and evidence — this documentation preparation is based on
+  `185ed7d9098f09f2444e6cfcaa7dc9f24050315a`. The updated summary and record
+  link the bounded scope, owner decisions and exact evidence.
+- Execution — this preparation uses static source, chat, report and Git
+  inspection. Grant runs the future software and representative gates.
