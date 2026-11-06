@@ -1,5 +1,14 @@
 # Citlali refactor — current state
 
+2026-11-06 SCIENCE planning now targets one Unity node first, using Grant's
+reported 32 physical cores and roughly 370 GB per node. The
+[workload and scaling scope](SCIENCE_SCALING_SCOPE_2026-11-06.md) records roughly
+twenty available twenty-minute observations and roughly ten one-square-degree
+map cases. One hundred observations remains a capacity target; multi-node work
+is deferred until the one-node baseline is understood. These are planning
+constraints, not new runtime evidence or scientific acceptance. Grant retains
+all execution; no direct Unity access or push.
+
 2026-11-06 Grant accepted the [POINT assessment foundation](POINT_POLICY_FOUNDATION_HANDOFF_2026-11-06.md)
 as a bounded software increment. Local `codex/refactor-mainline` fast-forwarded
 from `dfe8b3ea8` to tested application `ec3a447c1`. Grant's Mac Spack software

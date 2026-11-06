@@ -1,3 +1,16 @@
+## SCIENCE single-node planning scope — 2026-11-06
+
+After accepting the POINT assessment foundation, Grant supplied the SCIENCE
+resource and data envelope: begin with one Unity node (two sixteen-core CPUs,
+roughly 370 GB), approximately twenty real twenty-minute observations, and
+approximately ten one-square-degree map cases. The
+[scope record](SCIENCE_SCALING_SCOPE_2026-11-06.md) distinguishes these estimates
+from a bound inventory and the eventual hundred-observation capacity target.
+Next is the connected SCIENCE architecture and scaling plan, carrying forward
+accepted POINT engineering and recovering applicable scientific contracts.
+Multi-node execution is deferred; no new implementation or runtime pass is
+claimed. Grant owns all builds, tests and reductions.
+
 ## POINT assessment foundation accepted locally — 2026-11-06
 
 Grant accepted application `ec3a447c1666fddb6be5c5823cee1b438f9c57c7`, tree
