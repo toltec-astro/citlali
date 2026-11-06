@@ -2,7 +2,8 @@
 
 Owner: Grant Wilson. Execution owner: Grant for every build, test, probe,
 benchmark, reduction and validation runner. Codex prepares and statically reviews
-the candidate and owner commands. All runtime gates are pending. No push, Unity
+the candidate and owner commands. Current gate status is recorded below; earlier
+preparation statements are historical. No push, Unity
 access, canonical integration, runtime replacement or cleanup is authorized.
 
 Base: `8738316bb6091706849f493b46d1f657b03f79cf`, clean local mainline.
@@ -124,3 +125,51 @@ error wording now explicitly cover both caller-bound AltAz and celestial
 tangent arcseconds. Projection arithmetic, domain and selection policy are
 unchanged. Final exact-source review follows this bounded correction; all
 runtime gates remain pending Grant.
+
+## Native admission failure and bounded repair
+
+Reassessment, 2026-11-06: Grant’s software attempt
+`owner-run-20261106T170919.329497Z` passed on exact source
+`3a3cd6d7e5db1d7ce51f1397a1067bd38d9e7eb3`, tree
+`d337f215887840057b11e2267fa4c6c2b19d7455`: 394 focused Python cases,
+1,453 enabled CTests, 207 baseline tests, and 130 configuration unit plus eight
+compatibility cases. The pre-existing disabled external map-fitter replay is
+not counted as passed. The preserved packet’s `SOFTWARE_ASSESSMENT.json` binds
+the receipts, executable and actual Mac Spack environment. This software result
+did not establish connected SCIENCE acceptance.
+
+The subsequent owner-run `reduction-152389/attempt-01` failed on that same source
+with `MAP POINT acquisition differs`. RTC/CAL completed for all eleven networks
+in 30.705828374950215 seconds; health admission then failed before M0. The full
+command exited 1 after 35.08684541704133 seconds, with no maps or completion
+receipt. The critical exception and unsuccessful observation acknowledgement
+are failure evidence, not an accepted run. Exact files and digests are in
+[FAILED_REDUCTION.json](FAILED_REDUCTION.json). The original packet, logs,
+outputs, executable, input bindings and prior reviews remain unchanged.
+
+Root cause: `load_saved_map_network` invokes `saved_map_observation_identity`
+before its configured-mode check. The shared identity helper still permitted
+only POINT or the explicitly bounded OOF acquisitions. Upstream SCIENCE scope
+and synthetic orchestration tests did not exercise this actual native handoff.
+
+Disposition: repair within the existing spine increment, from clean parent
+`3a3cd6d7e5db1d7ce51f1397a1067bd38d9e7eb3` on the same branch/worktree.
+The helper now delegates explicitly declared SCIENCE to the existing strict
+`configured_science_scope` authority. POINT and OOF branches stay unchanged.
+No new acquisition, frame, policy, schema, algorithm or ownership is introduced.
+The tests call the failing helper directly, covering valid SCIENCE identity,
+missing/mismatched acquisition and profile/mode fields, and POINT compatibility;
+existing OOF cases remain required. These tests do not replace native reduction.
+
+New gates, all owned by Grant: fresh isolated build/version; focused native
+admission/POINT/OOF tests; existing SCIENCE/POINT Python suite; full enabled
+CTest, baseline suite and required config preflight. After log assessment, bind
+a fresh six-worker 152389 M0–M5 reduction to the corrected executable. Prior
+software and review verdicts do not transfer to the corrected SHA. Obtain fresh
+read-only independent exact-source review before the owner-run handoff.
+
+Scientific/behavioral conformance: first connected reduction failed; corrected
+software and observational gates pending. Architecture/ownership: bounded
+application-admission correction, unchanged scientific owners and lifecycle.
+Repository/evidence hygiene: failed source and artifacts preserved, mainline
+unchanged; no integration, push, runtime replacement or cleanup.

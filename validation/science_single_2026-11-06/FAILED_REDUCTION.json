@@ -1,0 +1,48 @@
+{
+  "schema": "citlali-science-failed-admission-v1",
+  "date": "2026-11-06",
+  "source": "3a3cd6d7e5db1d7ce51f1397a1067bd38d9e7eb3",
+  "tree": "d337f215887840057b11e2267fa4c6c2b19d7455",
+  "execution_owner": "Grant",
+  "inspection_owner": "Codex (static file/Git inspection only)",
+  "attempt": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-science-single-20261106/reduction-152389/attempt-01",
+  "exit_code": 1,
+  "seconds": 35.08684541704133,
+  "cal_seconds": 30.705828374950215,
+  "networks": 11,
+  "status": "failed",
+  "products": [],
+  "error": "MAP POINT acquisition differs",
+  "failure_boundary": "saved_map_observation_identity during CAL-to-health admission, before health learning or M0",
+  "files": [
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-science-single-20261106/reduction-152389/attempt-01/science.json",
+      "sha256": "ebbd52bff133ee1df3daf1cdd2af6cc50270c76d3a65cf07012545658ee7b9b4"
+    },
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-science-single-20261106/reduction-152389/attempt-01/science.log",
+      "sha256": "61083419ae2ad4036f96048adb45ac89d534534bc6da9bc7b2bb32a173b98961"
+    },
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-science-single-20261106/reduction-152389/attempt-01/version.json",
+      "sha256": "4aa0b9b48fa5bc1cfec7d04f2ce8b79586ff38ddde81748cbf99bf59de16fa3d"
+    },
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-science-single-20261106/reduction-152389/attempt-01/version.log",
+      "sha256": "8138c5fb686ccd86155c506c6d173c090e475b5c43a7d861f94be90e47def2ce"
+    },
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-science-single-20261106/reduction-152389/attempt-01/output/redu00/RUN.json",
+      "sha256": "b86ed49db8e7b73d98d64c8ced131de736796bd26c1b1b450a0ed570e866bf54"
+    },
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-science-single-20261106/reduction-152389/attempt-01/output/redu00/.science-work/health/stage.json",
+      "sha256": "34464b477c95d1bff11573d315fb3a0da5cdff838ffeec200dc9a45944c21ef7"
+    },
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-science-single-20261106/reduction-152389/attempt-01/output/redu00/.science-work/health/native.log",
+      "sha256": "d8b2259439584104285c67fdc6e97f7394044dc7bfe1ffff7c9262fd3e53c1cb"
+    }
+  ],
+  "disposition": "preserve failed attempt; repair within approved single-observation SCIENCE scope; no acceptance or integration"
+}

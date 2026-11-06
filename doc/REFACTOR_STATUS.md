@@ -5,8 +5,12 @@ connects 152389 to FK5/J2000 TAN maps and iterative compact-source feedback.
 The explicit `citlali-science-compact-v1` profile reuses accepted CAL/health
 memory handoffs, deterministic workers and ordinary-mode diagnostic I/O policy.
 It emits no POINT consumer products and admits no coadds or extended fields.
-All software gates and the representative reduction await Grant; this candidate
-is not accepted or integrated, and no push or Unity access is authorized.
+Grant’s Mac Spack software gates passed for `3a3cd6d7e`, but the first native
+152389 reduction stopped before health/M0: the shared saved-MAP acquisition
+guard still rejected SCIENCE as non-POINT. The [failure reassessment and repair](../validation/science_single_2026-11-06/PLAN.md#native-admission-failure-and-bounded-repair)
+keep the explicit compact SCIENCE scope and preserve POINT/OOF behavior. The
+corrected candidate requires new owner-run software gates and a freshly bound
+reduction; it is not accepted or integrated. No push or Unity access is authorized.
 
 ## SCIENCE single-node planning scope — 2026-11-06
 

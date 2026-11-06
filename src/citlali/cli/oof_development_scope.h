@@ -3,6 +3,7 @@
 #include <string>
 #include <stdexcept>
 #include <yaml-cpp/yaml.h>
+#include "configured_point_scope.h"
 
 // Private, bounded acquisition routing only. Scientific owners do not depend on it.
 namespace citlali::cli::detail {
@@ -30,6 +31,13 @@ inline bool oof_network_scope(const YAML::Node &n, int obs, int sub, int scan, i
 }
 // Saved MAP acquisition identity follows the same validated routing as CAL/AST.
 inline std::string saved_map_observation_identity(const YAML::Node &n, int obs, int nw, int array) {
+  // The configured SCIENCE route shares CAL admission with POINT, but must
+  // retain its explicit acquisition/profile guard rather than impersonate POINT.
+  if (configured_science_request(n)) {
+    if (!configured_science_scope(n,obs,0,2))
+      throw std::invalid_argument("MAP SCIENCE acquisition differs");
+    return "obs:" + std::to_string(obs) + "_0_2";
+  }
   const bool is_oof = oof_request(n);
   if (is_oof && (!oof_network_scope(n,obs,0,1,nw) || array != oof_array(n)))
     throw std::invalid_argument("MAP OOF acquisition or array differs");

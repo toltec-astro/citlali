@@ -1,5 +1,7 @@
 #include <gtest/gtest.h>
+#include <utility>
 #include "../src/citlali/cli/configured_point_scope.h"
+#include "../src/citlali/cli/oof_development_scope.h"
 using namespace citlali::cli::detail;
 TEST(ConfiguredPointScope, AcquisitionIsDataAndOtherModesStayExcluded) {
     auto n=YAML::Load("{development_reference: configurable-point-v1, mode: POINT, observation: 152389, subobservation: 0, scan: 2}");
@@ -34,6 +36,46 @@ TEST(ConfiguredScienceScope, SingleAcquisitionAndModeRemainExplicit) {
     EXPECT_FALSE(configured_map_scope(n,152389,0,2));
     n["mode"]="SCIENCE";n["development_reference"]="configurable-point-v1";
     EXPECT_FALSE(configured_map_scope(n,152389,0,2));
+}
+TEST(ConfiguredScienceScope, SavedMapAdmissionRetainsScienceIdentity) {
+    // This is the helper used by load_saved_map_network at CAL -> health,
+    // not just the upstream configured_map_scope predicate.
+    auto n=YAML::Load("{development_reference: configurable-science-compact-v1, mode: SCIENCE, observation: 152389, subobservation: 0, scan: 2, network: 0}");
+    for (const auto [nw,array] : {std::pair{0,0},std::pair{7,1},std::pair{11,2}}) {
+        n["network"]=nw;
+        EXPECT_EQ(saved_map_observation_identity(n,152389,nw,array),"obs:152389_0_2");
+        EXPECT_EQ(n["mode"].as<std::string>(),"SCIENCE");
+    }
+    n["development_reference"]="configurable-point-v1";n["mode"]="POINT";
+    EXPECT_EQ(saved_map_observation_identity(n,152389,11,2),"obs:152389_0_2");
+    // Historical POINT inputs without explicit acquisition fields remain valid.
+    n.remove("mode");n.remove("scan");n.remove("subobservation");
+    EXPECT_EQ(saved_map_observation_identity(n,152389,11,2),"obs:152389_0_2");
+}
+TEST(ConfiguredScienceScope, SavedMapAdmissionRejectsOtherAcquisitionsAndProfiles) {
+    const auto valid=YAML::Load("{development_reference: configurable-science-compact-v1, mode: SCIENCE, observation: 152389, subobservation: 0, scan: 2, network: 0}");
+    EXPECT_THROW(saved_map_observation_identity(valid,152418,0,0),std::invalid_argument);
+    for (const char *field : {"observation","subobservation","scan","mode"}) {
+        auto n=YAML::Clone(valid);n.remove(field);
+        EXPECT_THROW(saved_map_observation_identity(n,152389,0,0),std::invalid_argument) << field;
+    }
+    for (const auto &[field,value] : {std::pair{"observation",152418},
+                                    std::pair{"subobservation",1},std::pair{"scan",1}}) {
+        auto n=YAML::Clone(valid);n[field]=value;
+        EXPECT_THROW(saved_map_observation_identity(n,152389,0,0),std::invalid_argument) << field;
+    }
+    auto other=YAML::Clone(valid);other["observation"]=152418;
+    EXPECT_THROW(saved_map_observation_identity(other,152418,0,0),std::invalid_argument);
+    for (const char *mode : {"POINT","OOF","BEAMMAP"}) {
+        auto n=YAML::Clone(valid);n["mode"]=mode;
+        EXPECT_THROW(saved_map_observation_identity(n,152389,0,0),std::invalid_argument) << mode;
+    }
+    for (const char *profile : {"configurable-point-v1","bright-point-base-v1","oof-cold-m0-v1","unknown"}) {
+        auto n=YAML::Clone(valid);n["development_reference"]=profile;
+        EXPECT_THROW(saved_map_observation_identity(n,152389,0,0),std::invalid_argument) << profile;
+    }
+    auto missing=YAML::Clone(valid);missing.remove("development_reference");
+    EXPECT_THROW(saved_map_observation_identity(missing,152389,0,0),std::invalid_argument);
 }
 TEST(ConfiguredScienceFrame, CelestialDegreesAndPointArcsecondsStayDistinct) {
     using citlali::pipeline::AstRtcTanGrid;
