@@ -1,0 +1,175 @@
+{
+  "date": "2026-11-06",
+  "owner": "Grant Wilson",
+  "directive": "I accept the POINT assessment foundation as a bounded software increment. Record the acceptance and integrate it locally into mainline. No push; I'll continue to run all builds and tests.",
+  "disposition": "accepted as a bounded software increment",
+  "execution_owner": "Grant",
+  "increment": "POINT assessment foundation",
+  "accepted_application": "ec3a447c1666fddb6be5c5823cee1b438f9c57c7",
+  "accepted_tree": "06b8c58aa415bfd347b87be751a9e0e7c966dc8a",
+  "comparison_application": "fc9c1f2935b433782ae3cfa1a79e2ac0247dd8f1",
+  "integration": {
+    "branch": "codex/refactor-mainline",
+    "repository": "/Users/gwilson/.codex/worktrees/pointing-engineering-candidate-20261030/citlali-refactor",
+    "previous_mainline": "dfe8b3ea81d874ff4196807c165b6e56493af13f",
+    "tested_application_tip": "ec3a447c1666fddb6be5c5823cee1b438f9c57c7",
+    "method": "Local fast-forward to the exact tested application, followed by a documentation/evidence-only acceptance commit.",
+    "tested_worktree": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-point-policy-foundation-20261106/source",
+    "tested_worktree_preserved": true,
+    "push_authorized": false
+  },
+  "scope": "Configured POINT final-publication assessment record, schema citlali-configured-point-assessment-v1. Bounded software acceptance using Grant's retained Mac Spack software gates and ordinary six-worker observation 152389 through M5.",
+  "behavioral_disposition": {
+    "status": "pass within the bounded software and matched-observation scope",
+    "result": "All 11 matched checks passed. Detector-health identities/reports and decisions, cycle plans/feedback decisions, all compared map and feedback planes, all three final fits, and existing pointing-table scientific values/metadata matched. Expected provenance differences are authenticated and excluded by the reviewed comparator.",
+    "assessment": "The 7,582-byte required report preserves existing final facts, is bound by product sidecars and RUN entries, and remains rule_evaluation=not_evaluated with null policy/adopted displacement and no selected arrays. Existing table behavior is unchanged.",
+    "coverage": "18 M0-M5 maps plus three published maps, all six planes and compared scientific headers; 15 feedback models; three complete final fit diagnostics.",
+    "policy_boundary": "Scientific rule design and approval remain with Assess contract compliance. This acceptance does not adopt unresolved details in the broader selection/background/consumer proposal."
+  },
+  "architecture_disposition": {
+    "status": "pass with recorded limitations; independent review found no actionable issue",
+    "result": "Observation-local final publication consumes existing in-memory map records and final fit guards. No new fit, map read, per-pass calculation, native algorithm, runtime dependency or consumer change. Serialized report bytes bind their digest; required writer failure stops publication.",
+    "handoff": "doc/POINT_POLICY_FOUNDATION_HANDOFF_2026-11-06.md",
+    "next_rule_increment": "Requires the exact owner-approved scientific design revision and explicit decision cases."
+  },
+  "repository_evidence_disposition": {
+    "status": "pass within recorded scope",
+    "result": "Clean mainline and tested worktree verified before fast-forward. Source and evidence are bound to exact revisions/digests. Original preparation, review and owner-run records remain preserved as dated history. Acceptance updates are documentation/evidence only.",
+    "codex_runtime_commands_executed": false,
+    "unity_access": false,
+    "runtime_replacement": false,
+    "cleanup": false,
+    "push_performed": false
+  },
+  "software": {
+    "environment": "Retained Mac Spack Release, Clang 20.1.8, C++23, OpenMP, CFITSIO 4.3.0",
+    "attempt": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-point-policy-foundation-20261106/owner-run-20261106T113152.029120Z",
+    "configure_build_version": "passed, executable reports -gec3a447c1",
+    "executable_sha256": "ab549e53769c442df051a13c3e2170e364489f0840e2eeab9221e55c29865f19",
+    "configured_python_packaging": {
+      "passed": 372,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "ctest": {
+      "enabled_passed": 1449,
+      "disabled": 1,
+      "disabled_case": "MapFitterLifecycle.ExactProductSequence",
+      "disabled_counted_as_pass": false
+    },
+    "baseline_tests_passed": 207,
+    "config_preflight": {
+      "unit_tests_passed": 130,
+      "mode_kits_passed": 4,
+      "compact_cases_passed": 8,
+      "compact_cases_failed": 0,
+      "compact_cases_skipped": 0,
+      "surface_coverage_percent": 100,
+      "boundary_drift": false
+    },
+    "unexpected_error_output": false,
+    "inherited_warnings": "CMP0144 configure developer warning; duplicate-rpath and duplicate-library linker warnings."
+  },
+  "matched": {
+    "attempt": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-point-policy-foundation-20261106/matched-point/attempt-01",
+    "observation": 152389,
+    "mode": "ordinary",
+    "map_passes": "M0-M5",
+    "feedback_applications": 5,
+    "native_workers": 6,
+    "array_workers": 3,
+    "numerical_library_requested_thread_limit": 1,
+    "bound_external_inputs": 39,
+    "checks_passed": 11,
+    "checks_failed": 0,
+    "report_bytes": 7582,
+    "command_wall_seconds": {
+      "baseline": 61.05734054208733,
+      "candidate": 54.06583712482825
+    },
+    "application_wall_seconds": {
+      "baseline": 58.92837791587226,
+      "candidate": 52.15492987493053
+    },
+    "sampled_summed_peak_process_tree_rss_bytes": {
+      "baseline": 6427574272,
+      "candidate": 6290735104
+    },
+    "interpretation": "No observed performance regression in this one fixed-order pair. No causal speedup claim from adding the report; native stage times were essentially unchanged. Sampled summed RSS can double-count shared pages and miss brief peaks.",
+    "transport": "Both arms used in-memory CAL/health handoffs, read no CAL channel files, removed zero replay payloads at cleanup, and completed final original/APT verification."
+  },
+  "independent_reviews": [
+    {
+      "record": "INDEPENDENT_REVIEW.md",
+      "scope": "Fresh-context read-only exact-source review",
+      "application": "ec3a447c1666fddb6be5c5823cee1b438f9c57c7",
+      "tree": "06b8c58aa415bfd347b87be751a9e0e7c966dc8a",
+      "disposition": "pass with recorded limitations; no actionable findings",
+      "runtime_executed": false
+    },
+    {
+      "record": "MATCHED_PACKET_REVIEW_2026-11-06.md",
+      "scope": "Fresh-context read-only prepared comparison packet and existing software evidence review; matched runtime was pending at that review",
+      "manifest_sha256": "e5cbf0b721fbdc68171c05cdb61e7109356fc715f6a6d3f2e77f4fd32ba783c4",
+      "disposition": "pass with recorded limitations; no actionable findings",
+      "runtime_executed": false
+    }
+  ],
+  "limitations": [
+    "Software acceptance is bounded to this foundation and recorded Mac environment; no new scientific accuracy, amplitude recovery, background/shoulder, threshold calibration or policy acceptance.",
+    "One observation and one fixed-order matched pair do not establish scaling, statistical performance or cross-platform equivalence.",
+    "No offline-array route, TolTECA consumer selection, SCIENCE/coadd, installed-wheel, Unity/V2 reproduction, deployment or production qualification follows.",
+    "The historical intermittent map-pass stalls did not recur here but remain unresolved."
+  ],
+  "evidence": [
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-point-policy-foundation-20261106/CANDIDATE.json",
+      "sha256": "9855a352852767a1d1f3415d96c5499400afab8876921d49fd6eaa01a28c84ff"
+    },
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-point-policy-foundation-20261106/INDEPENDENT_REVIEW.md",
+      "sha256": "b72761d5ceff0bbffadb0efc21ecbb4f7ffea9807cb695eab9d876aba76cda4a"
+    },
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-point-policy-foundation-20261106/SOFTWARE_GATE_ASSESSMENT_2026-11-06.md",
+      "sha256": "87b97f9fec664eaee64ac97e657a6cb1adec08998b8a0924687b8ebec1f64c30"
+    },
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-point-policy-foundation-20261106/owner-run-20261106T113152.029120Z/COMMANDS_COMPLETED.json",
+      "sha256": "c36bc523840cfc6ebb42038199a1a5fbdb2f1631bd9a06f2f302c29f404f3051"
+    },
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-point-policy-foundation-20261106/MATCHED_PACKET_REVIEW_2026-11-06.md",
+      "sha256": "20872e70ae2b611a546700ff9bcbddca73fe1e3044f681365434f67e4066b168"
+    },
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-point-policy-foundation-20261106/MATCHED_RESULT_ASSESSMENT_2026-11-06.md",
+      "sha256": "a0a77f091798c81d2674c270af62f0938905695900fba6b8ec63c9f73af2def8"
+    },
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-point-policy-foundation-20261106/matched-point/FILES.sha256",
+      "sha256": "e5cbf0b721fbdc68171c05cdb61e7109356fc715f6a6d3f2e77f4fd32ba783c4"
+    },
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-point-policy-foundation-20261106/matched-point/attempt-01/COMPARISON.json",
+      "sha256": "8a086019ef2def0fefa0a5432a02674296b1153bc119308cd4f564d20f5e1b73"
+    },
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-point-policy-foundation-20261106/matched-point/attempt-01/COMPLETED.json",
+      "sha256": "c66b7f94fd4a976ab83d49b49db602b822da1768002264a8d76bee6fef9a7f63"
+    },
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-point-policy-foundation-20261106/matched-point/attempt-01/baseline/output/redu00/RUN.json",
+      "sha256": "c5c79ccc373730c44e88c3f872600c6bce809ad4ecff17df7da8026df7400f84"
+    },
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-point-policy-foundation-20261106/matched-point/attempt-01/candidate/output/redu00/RUN.json",
+      "sha256": "99105f6f2930e6cb3239eaa948e34dc709229631f4d26c1f218246557d1c8204"
+    },
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-point-policy-foundation-20261106/matched-point/attempt-01/candidate/output/redu00/152389/raw/point-assessment.json",
+      "sha256": "fc290c14b6a8f13228824ede1e6d5c71ad4baab03fd34267c304646eec952b92"
+    }
+  ]
+}

@@ -1,9 +1,10 @@
 # POINT assessment foundation and design handoff
 
-Prepared November 6, 2026. Status: implementation candidate; owner-run gates
-and acceptance pending. Grant executes all builds, tests, probes, benchmarks,
-reductions and validation runners. No push, activation or local integration is
-part of this increment.
+Updated November 6, 2026. Status: accepted as a bounded software increment and
+integrated locally at application `ec3a447c1666fddb6be5c5823cee1b438f9c57c7`.
+The [owner acceptance](../validation/point_policy_foundation_2026-11-06/OWNER_ACCEPTANCE.json)
+binds the tested source and evidence. Grant executes all builds, tests, probes,
+benchmarks, reductions and validation runners. No push or activation is included.
 
 Grant authorized this split: this chat builds the first code increment that
 collects existing POINT measurements into a versioned assessment record;
@@ -16,14 +17,15 @@ The approval does not adopt the unresolved details in the
 | Owner | Work and deliverable |
 | --- | --- |
 | Grant and “Assess contract compliance” | Develop the scientific and use rules; update the [decision table and acceptance record](POINT_METHOD_AND_USE_ACCEPTANCE_2026-11-04.md) and [team summary](POINT_TEAM_SUMMARY_2026-11-04.md). Record each unresolved choice, then each explicit owner disposition. |
-| This implementation chat | Maintain the bounded code candidate, schema, tests and owner commands; implement rules after receiving their exact approved revision. Report source/evidence bindings and implementation limitations. |
+| This implementation chat | Maintain the accepted foundation, schema and evidence; prepare the next bounded rule implementation after receiving its exact approved design revision. Report source/evidence bindings and implementation limitations. |
 | Grant | Execute all checks and reductions; decide software acceptance, integration and operational use separately. Perform any GitHub push. |
 
-The design chat should use canonical `codex/refactor-mainline` for its design
-documents. The implementation chat owns the isolated
-`codex/point-policy-foundation-20261106` checkout. Do not edit the other's
-checkout. Preserve the other chat's changes when reconciling the eventual
-integration. No automatic cross-chat messages or unattended rule adoption.
+The design chat should use canonical `codex/refactor-mainline`, which now
+contains the accepted foundation, for its design documents. The isolated
+`codex/point-policy-foundation-20261106` checkout remains preserved at the exact
+tested application. Coordinate checkout ownership for each subsequent increment;
+do not edit the other chat's checkout or disturb its changes. No automatic
+cross-chat messages or unattended rule adoption.
 
 Design and code can progress separately. Return a full design commit SHA with
 the owner-approved rule identity, decision-table changes, unresolved items and
@@ -106,14 +108,24 @@ data, exact output binding, no overwrite, normal publication and required-output
 failure through the CLI. Existing worker tests cover final-fit equivalence;
 packaging checks cover the new module in bundles and wheels.
 
-All runtime results are pending Grant. Software checks precede a matched
-152389 M0–M5 publication check against the accepted application: maps, fits,
-table and detector decisions should remain identical; the new report should
-recover the existing final guards. Record elapsed time and memory to check that
-this final-publication addition preserves the accepted performance improvement.
-Prepare that matched command only after the software evidence is reviewed.
+Grant's software checks passed: 372 configured Python/package tests, 1,449
+enabled CTests, 207 baseline tests, 130 config unit tests, all four mode kits
+and eight required compact cases. One pre-existing disabled CTest is excluded.
+Independent exact-source and prepared-packet static reviews found no actionable
+issue; neither review executed runtime commands.
 
-The design handoff is usable now; it is not software acceptance. Exact candidate,
-review and owner-command bindings accompany this document in the external
-`citlali-point-policy-foundation-20261106` packet. Mainline and GitHub remain
-unchanged by this candidate.
+Grant then completed the ordinary six-worker 152389 M0–M5 pair against accepted
+application `fc9c1f2935b433782ae3cfa1a79e2ac0247dd8f1`. All 11 comparison checks
+passed. Detector reports/decisions, map and feedback planes, final fits and the
+existing table's scientific values/metadata matched. The new 7,582-byte report
+matches the final facts and retains `not_evaluated` with no selected arrays or
+adopted displacement. Command times were 61.06 and 54.07 seconds; sampled summed
+peak RSS was 5.99 and 5.86 GiB. This pair showed no performance regression; it
+does not establish a causal speedup from adding the report.
+
+The acceptance receipt binds the preserved external packet, review records and
+owner-produced evidence. Mainline contains the exact application followed by
+documentation-only acceptance updates. No GitHub push occurred in this action.
+The foundation is ready for design use. Return the exact owner-approved rule
+revision and decision cases before a subsequent implementation increment;
+accuracy, SCIENCE/coadd, Unity/V2 and deployment qualification remain separate.

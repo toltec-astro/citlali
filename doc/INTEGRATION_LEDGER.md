@@ -1,3 +1,22 @@
+## POINT assessment foundation acceptance — 2026-11-06
+
+Grant accepted application `ec3a447c1666fddb6be5c5823cee1b438f9c57c7`, tree
+`06b8c58aa415bfd347b87be751a9e0e7c966dc8a`, as a bounded software increment.
+Clean local `codex/refactor-mainline` fast-forwarded from
+`dfe8b3ea81d874ff4196807c165b6e56493af13f` to the exact tested application.
+The [owner acceptance and evidence](../validation/point_policy_foundation_2026-11-06/OWNER_ACCEPTANCE.json)
+bind passing Mac Spack software gates, independent read-only source/packet
+reviews and all 11 matched six-worker 152389 M0–M5 checks. Existing detector
+decisions, maps, feedback, fits and pointing-table measurements were preserved.
+The required assessment record snapshots final facts; future rule evaluation
+remains explicitly unevaluated. Scientific rule design and approval stay with
+“Assess contract compliance”.
+
+This following documentation-only acceptance commit does not create a newly
+tested application. The tested worktree and all original evidence remain
+preserved. Grant performed all runtime execution and retains that ownership.
+No push, Unity access, runtime replacement, cleanup or production qualification.
+
 ## Configured POINT CAL/APT handoff and diagnostic I/O acceptances — 2026-11-05
 
 Grant accepted two bounded software repairs and authorized one fast-forward

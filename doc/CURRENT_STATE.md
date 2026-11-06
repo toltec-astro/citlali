@@ -1,10 +1,14 @@
 # Citlali refactor — current state
 
-2026-11-06 Grant authorized the narrow [POINT assessment foundation](POINT_POLICY_FOUNDATION_HANDOFF_2026-11-06.md).
-This isolated candidate collects existing final measurements and preserves the
-current table behavior. “Assess contract compliance” owns further rule choices;
-the broader selection/background/consumer proposal remains pending. Software
-and representative gates await Grant. No integration or push is authorized here.
+2026-11-06 Grant accepted the [POINT assessment foundation](POINT_POLICY_FOUNDATION_HANDOFF_2026-11-06.md)
+as a bounded software increment. Local `codex/refactor-mainline` fast-forwarded
+from `dfe8b3ea8` to tested application `ec3a447c1`. Grant's Mac Spack software
+gates and all 11 matched six-worker 152389 M0–M5 checks passed; existing detector
+decisions, maps, feedback, fits and pointing-table measurements were preserved.
+The [owner acceptance](../validation/point_policy_foundation_2026-11-06/OWNER_ACCEPTANCE.json)
+binds the exact source, reviews and evidence. “Assess contract compliance” owns
+further rule choices; the new report explicitly leaves rule evaluation pending.
+The following acceptance record changes documentation only. No push is authorized.
 
 2026-11-05 POINT policy reconciliation is prepared for scope review. Grant's
 later decisions in “Assess contract compliance” are now in the

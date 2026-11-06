@@ -1,12 +1,21 @@
-## POINT assessment foundation authorized — 2026-11-06
+## POINT assessment foundation accepted locally — 2026-11-06
 
-Grant approved a first code increment collecting existing measurements into a
-versioned record, with the design chat owning scientific rule development and
-approvals. The [handoff](POINT_POLICY_FOUNDATION_HANDOFF_2026-11-06.md) and
-[work order](../validation/point_policy_foundation_2026-11-06/PLAN.md) delimit
-the isolated candidate. Rule evaluation remains pending; the current fit,
-table and consumer behavior is preserved. Grant owns all runtime gates, which
-remain pending. This is preparation, not integration or acceptance.
+Grant accepted application `ec3a447c1666fddb6be5c5823cee1b438f9c57c7`, tree
+`06b8c58aa415bfd347b87be751a9e0e7c966dc8a`, as a bounded software increment.
+Local mainline fast-forwarded from `dfe8b3ea8` to that exact tested application.
+The [owner acceptance](../validation/point_policy_foundation_2026-11-06/OWNER_ACCEPTANCE.json)
+binds the passing Mac Spack software gates, independent source and packet
+reviews, and all 11 matched six-worker 152389 M0–M5 checks. Existing detector
+decisions, maps, feedback, fits and pointing-table measurements matched exactly
+within the comparator's declared scientific scope. The new report preserves
+the final facts and leaves rule evaluation explicitly `not_evaluated`.
+
+The [handoff](POINT_POLICY_FOUNDATION_HANDOFF_2026-11-06.md) identifies the
+available interface. “Assess contract compliance” owns scientific rule design
+and approval; the next implementation increment needs its exact approved
+revision. No new selection, background, consumer or accuracy claim is accepted.
+Grant retains all execution. The following acceptance commit changes only
+documentation/evidence; no push, runtime replacement or deployment is included.
 
 ## POINT selection and reporting scope prepared — 2026-11-05
 

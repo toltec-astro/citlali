@@ -1,6 +1,16 @@
 # POINT assessment foundation work order
 
-Status: prepared candidate, runtime gates pending. Date: 2026-11-06.
+Current disposition, 2026-11-06: Grant accepted application
+`ec3a447c1666fddb6be5c5823cee1b438f9c57c7` as a bounded software increment and
+authorized local integration. The [owner acceptance](OWNER_ACCEPTANCE.json)
+records the passing software and matched 152389 gates and independent reviews.
+The original preflight and planned gate states below are preserved as history;
+their pending/integration restrictions are superseded only for this accepted
+increment. Scientific rule development and future integrations remain separate.
+
+## Original work order and preflight
+
+Original status: prepared candidate, runtime gates pending. Date: 2026-11-06.
 Execution owner: Grant, for every build, test, probe, benchmark, reduction and
 validation runner. Codex is limited to preparation, static review and authorized
 local commits. No Unity access, push, integration, runtime replacement or cleanup.

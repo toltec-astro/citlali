@@ -108,7 +108,7 @@ MAP / BASE-POINT development checkpoint. Later configured POINT workflow and
 qualification are routed through [current state](CURRENT_STATE.md). Scientific
 admission, unavailable products and production limits retain their named owners.
 
-The candidate `configured_point_assessment` adapter snapshots existing final
+The accepted `configured_point_assessment` adapter snapshots existing final
 POINT map/fit facts once at observation publication. It owns the versioned
 `point-assessment.json` diagnostic and its serialized-byte binding; map and fit
 producers retain scientific authority. The existing table handoff stays separate
