@@ -8,6 +8,9 @@ approximately ten one-square-degree map cases. The
 from a bound inventory and the eventual hundred-observation capacity target.
 Next is the connected SCIENCE architecture and scaling plan, carrying forward
 accepted POINT engineering and recovering applicable scientific contracts.
+Grant selected the existing **152389** POINT fixture for the first connected
+SCIENCE milestone: a single observation in RA/Dec, coaddition disabled. Real
+coadd and scaling qualification follow that small end-to-end case.
 Multi-node execution is deferred; no new implementation or runtime pass is
 claimed. Grant owns all builds, tests and reductions.
 

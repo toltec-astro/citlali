@@ -63,11 +63,31 @@ selected or launched by this record.
 
 ## Proposed qualification sequence
 
-First connect and qualify one SCIENCE observation and a genuine two-observation
-coadd, including the known-offset check. Then use the available twenty-minute
-inputs and progressively larger compatible subsets up to the real collection
-limit. Exercise the wide-field cases separately before selecting any combined
-long-duration, large-population, large-map case the inventory supports.
+Grant selected **152389**, the existing small POINT fixture, as the first
+SCIENCE case. Connect the successor route for this one observation in RA/Dec
+with coaddition disabled. Recover the bound original raw/telescope, APT and
+calibration inputs from the accepted POINT evidence; record all required
+mode/configuration differences rather than silently selecting new inputs or
+treating POINT-derived flux calibration as qualified.
+
+Use this small case to establish successful end-to-end publication, celestial
+coordinates, units, validity and required product metadata. Compare shared
+upstream behavior where its inputs and contracts remain identical. Alt/Az and
+RA/Dec maps are not expected to be pixel-identical; any positional or map
+comparison must account for the declared frame and gridding, and bind the
+source reference/epoch as appropriate. Exact scientific criteria and a later
+known-offset treatment still belong in the owner-run packet.
+
+This fixture selection does not make the configured SCIENCE route executable:
+the current POINT parser admits only POINT and disables coadd. The first
+implementation milestone is the missing connected single-observation SCIENCE
+route, using recovered accepted contracts and reusable POINT services.
+
+After that small case, qualify a genuine two-observation coadd and the
+known-offset check, then use the available twenty-minute inputs and progressively
+larger compatible subsets up to the real collection limit. No second observation
+is selected here. Exercise the wide-field cases separately before selecting any
+combined long-duration, large-population, large-map case the inventory supports.
 
 Measure stage wall/CPU time, peak memory, allocation failures, input/intermediate
 I/O and scientific product equivalence. Compare within-node worker counts,
@@ -85,6 +105,9 @@ SCIENCE qualification without treating them as accepted or inventing thresholds.
 
 Documentation base: `ae57f9b991efac5e4f15300b85cecf442d194958`, clean
 `codex/refactor-mainline` in the pointing-engineering-candidate checkout.
+The subsequent owner selection of 152389 is recorded from clean documentation
+base `4e139f48a4af50018f6c3915e6a364a890e90a99` on the same branch. The same
+engineering, successor and review governance applies to this text-only update.
 Risk Tier 1: durable owner direction and planning scope only. No application,
 scientific contract, active runtime, architecture implementation or dependency
 is changed; no runtime gate is needed for this text-only record.

@@ -1,5 +1,11 @@
 # Citlali refactor — current state
 
+2026-11-06 Grant selected **152389**, the existing small POINT observation, as
+the first [connected SCIENCE fixture](SCIENCE_SCALING_SCOPE_2026-11-06.md#proposed-qualification-sequence):
+one observation in RA/Dec with coaddition disabled. Reuse the bound original
+inputs and record required mode differences. Route implementation and owner-run
+qualification remain pending; real coadds and scaling follow this small case.
+
 2026-11-06 SCIENCE planning now targets one Unity node first, using Grant's
 reported 32 physical cores and roughly 370 GB per node. The
 [workload and scaling scope](SCIENCE_SCALING_SCOPE_2026-11-06.md) records roughly
