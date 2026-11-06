@@ -13,6 +13,7 @@ import configured_science_products as products
 from configured_map_frames import SCIENCE_FRAME, grid_keys
 from configured_point_config import REPO, SCIENCE_SCHEMA, load_request
 from inspect_forward_map import digest
+from point_empirical_io import exact_header
 from test_configured_point_config import config
 from test_configured_point_weighted import weighted_map, orchestration
 
@@ -36,6 +37,7 @@ def celestial_map(root, array='a2000', *, cycle=0, health='sha256:'+'1'*64,
             hdu.header['CRVAL1'], hdu.header['CRVAL2'] = center
             hdu.header['CDELT1'] /= 3600.
             hdu.header['CDELT2'] /= 3600.
+            hdu.header = exact_header(hdu.header)
         bundle['WCS'] = {k: hdus[0].header[k] for k in grid_keys(hdus[0].header)}
     plan_path = root / 'plan.yaml'
     plan = yaml.safe_load(plan_path.read_text())
@@ -197,6 +199,7 @@ def test_science_iterations_reuse_original_memory_cal_and_health(orchestration):
                         hdu.header['CRVAL1'], hdu.header['CRVAL2'] = 180., 30.
                         hdu.header['CDELT1'] /= 3600.
                         hdu.header['CDELT2'] /= 3600.
+                        hdu.header = exact_header(hdu.header)
                     wcs = {k: hdus[0].header[k] for k in grid_keys(hdus[0].header)}
                 bundle = cycle['arrays'][array]
                 bundle['WCS'] = wcs

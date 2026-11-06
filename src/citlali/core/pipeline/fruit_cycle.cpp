@@ -34,19 +34,19 @@ FruitOffsetModel::FruitOffsetModel(std::string id, mapmaking::ForwardMapGrid g,
         values_.size()!=grid_.rows*grid_.columns || valid_.size()!=values_.size() ||
         !std::isfinite(cx_) || !std::isfinite(cy_) || !std::isfinite(dx_) ||
         !std::isfinite(dy_) || dx_>=0 || dy_<=0)
-        throw std::invalid_argument("FRUIT invalid AltAz offset model");
+        throw std::invalid_argument("FRUIT invalid tangent-offset model");
     if (radius_ && (!std::isfinite(*radius_) || *radius_<=0 ||
         (cx_-.5)*-dx_<*radius_ || (grid_.columns+.5-cx_)*-dx_<*radius_ ||
         (cy_-.5)*dy_<*radius_ || (grid_.rows+.5-cy_)*dy_<*radius_))
-        throw std::invalid_argument("FRUIT invalid or truncated AltAz model disk");
+        throw std::invalid_argument("FRUIT invalid or truncated tangent model disk");
     for (std::size_t p=0; p<values_.size(); ++p)
         if (valid_[p]>1 || (valid_[p] && !std::isfinite(values_[p])))
-            throw std::invalid_argument("FRUIT invalid AltAz model support/value");
+            throw std::invalid_argument("FRUIT invalid tangent model support/value");
 }
-FruitOperand FruitOffsetModel::at(double az, double el) const {
-    if (!std::isfinite(az) || !std::isfinite(el))
+FruitOperand FruitOffsetModel::at(double lon, double lat) const {
+    if (!std::isfinite(lon) || !std::isfinite(lat))
         return {0, FruitModelSupport::unavailable};
-    const auto pixel=mapmaking::containing_pixel(grid_,cx_+az/dx_,cy_+el/dy_);
+    const auto pixel=mapmaking::containing_pixel(grid_,cx_+lon/dx_,cy_+lat/dy_);
     if (!pixel) return {0, FruitModelSupport::outside};
     if (radius_) {
         const double x=(double(*pixel%grid_.columns)+1-cx_)*dx_;

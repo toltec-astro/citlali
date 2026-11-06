@@ -112,3 +112,15 @@ This is a fixed budget, not a convergence claim.
 Disposition before runtime evidence: scientific/behavioral conformance pending;
 architecture/ownership prepared for independent exact-source review; repository
 scope isolated from unchanged mainline. No integration, deployment or push.
+
+## Independent-review repair within scope
+
+Read-only review of initial candidate 38923418d33df6c4f9aa699f944ff98cc4fc4a38
+identified degree-valued synthetic FITS headers using Astropy's ordinary
+formatting before exact bundle comparison. Both fixture paths now use the
+existing full-precision header serializer; exact equality checks remain.
+The shared FRUIT tangent projector's interface comments, parameter names and
+error wording now explicitly cover both caller-bound AltAz and celestial
+tangent arcseconds. Projection arithmetic, domain and selection policy are
+unchanged. Final exact-source review follows this bounded correction; all
+runtime gates remain pending Grant.
