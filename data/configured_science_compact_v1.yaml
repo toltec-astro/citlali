@@ -1,0 +1,33 @@
+# Single-observation 152389 SCIENCE pilot. Existing compact-source processing
+# recipe, with native FK5/J2000 TAN coordinates and iterative map feedback.
+# The AltAz source exclusions still protect health/noise learning. This is not
+# an extended-field mask policy or multi-observation coadd profile.
+runtime:
+  reduction_type: science
+  verbose: false
+coadd:
+  enabled: false
+successor:
+  schema: citlali-science-compact-v1
+  migration: replace-legacy-science-controls-compact-v1
+  arrays: [a1100, a1400, a2000]
+  cleaning:
+    method: noise-weighted-observed-als-v1
+    ranks: {a1100: 3, a1400: 4, a2000: 6}
+  detector_response:
+    min_relative_response: 0.10
+  rtc:
+    profile: existing-array-lowpass-v1
+    disturbance_exclusion: repeated-level-shifts-unassessable-remainder-v1
+  map:
+    method: containing-pixel
+    frame: J2000-radec-gnomonic-tangent
+    pixel_size_arcsec: 2.0
+    coverage_cut: 0.15
+  feedback:
+    enabled: true
+    max_iters: 5
+  products:
+    fits: true
+    fit_diagnostics: false
+    retain_intermediates: false

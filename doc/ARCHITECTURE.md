@@ -30,6 +30,26 @@ authoritative for individual decisions.
 
 ## Current application entry points
 
+The isolated [SCIENCE compact-source increment](../validation/science_single_2026-11-06/PLAN.md)
+adds `configured_science_cli.py` as an explicit mode entry to the shared
+configured coordinator. It currently admits only 152389_0_2. The new profile
+uses existing AST FK5/J2000 TAN coordinates at exact RTC times; health/noise
+source exclusion continues to use AST's corrected source-offset AltAz domain.
+FITS and feedback carry the celestial center, degree axes and reference system.
+The existing compact-source learner consumes tangent arcseconds through its
+established unit adapter; native FRUIT still subtracts and restores the exact
+sampled operand. This is not extended-field or coadd policy.
+
+CAL and health lifetimes, APT admission, deterministic native worker pools and
+the persistent array pool are shared with POINT. SCIENCE may request up to
+32 native workers, bounded by discovered availability; POINT keeps its existing
+twelve-worker ceiling. Ordinary mode retains in-memory transfers and detective
+exports remain opt-in. `configured_science_products.py` publishes three required
+maps and explicit metadata without POINT fits, table or assessment. Native
+session names retain their historical POINT spelling as a shared transport
+interface; no scientific decisions move into orchestration or Engine.
+Candidate software and observational gates remain pending owner execution.
+
 The configured POINT parallel candidate uses `runtime.n_threads` as the CPU
 worker budget. Native setup resolves the existing Slurm/affinity/hardware cap;
 the Python array executor consumes that realized budget. Native health workers

@@ -29,6 +29,7 @@ DATA_FILES = (
     Path("data/config.yaml"),
     Path("data/configured_point_v1.yaml"),
     Path("data/configured_point_v2.yaml"),
+    Path("data/configured_science_compact_v1.yaml"),
     *(
         Path("data/development/bright_point_base_v1") / f"{a}-rtc.json"
         for a in ("a1100", "a1400", "a2000")

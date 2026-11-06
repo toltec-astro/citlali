@@ -108,6 +108,8 @@ def execute(
         and (not request.weight_comparison or shared_health is None)
     ):
         raise ValueError("equal control requires explicit comparison and shared health")
+    science = getattr(request, "reduction_type", "pointing") == "science"
+    label = "SCIENCE" if science else "POINT"
     upstream_work = work if shared_work is None else shared_work
     if memory_handoff:
         if shared_work is not None or shared_health is not None or request.weight_comparison:
@@ -135,7 +137,7 @@ def execute(
                 )
             )
     base = dict(
-        schema="citlali-configured-weighted-point-v1",
+        schema="citlali-configured-weighted-science-v1" if science else "citlali-configured-weighted-point-v1",
         effective_config=bind(prepared["effective_config"]),
         networks=networks,
         verbose=request.verbose,
@@ -206,6 +208,8 @@ def execute(
         )
         products = stage_dir / "products"
         result = yaml.safe_load((products / "cycle.yaml").read_text())
+        if science and result.get("schema") != "citlali-weighted-science-cycle-v1":
+            raise ValueError("SCIENCE cycle publication mode differs")
         from configured_point_products import EMPIRICAL_FAMILY, CONTROL_FAMILY
 
         family = CONTROL_FAMILY if weighting_control == "equal-control" else EMPIRICAL_FAMILY
@@ -239,7 +243,7 @@ def execute(
         trajectory["cycles"].append(entry)
         trajectory["applied_feedback_applications"] = cycle
         print(
-            f"POINT {weighting_control} map {cycle}/{budget}: all three arrays complete", flush=True
+            f"{label} {weighting_control} map {cycle}/{budget}: all three arrays complete", flush=True
         )
         if cycle == budget:
             trajectory["stopping_reason"] = (
@@ -278,7 +282,8 @@ def execute(
             )
             break
         write_json(reduction / "RUN.json", record)
-    write_json(reduction / "weighted-point.json", trajectory)
-    record["weighted_point_diagnostic"] = bind(reduction / "weighted-point.json")
+    diagnostic = "weighted-science.json" if science else "weighted-point.json"
+    write_json(reduction / diagnostic, trajectory)
+    record["weighted_science_diagnostic" if science else "weighted_point_diagnostic"] = bind(reduction / diagnostic)
     record["final_cycle"] = trajectory["applied_feedback_applications"]
     return products

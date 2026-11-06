@@ -277,12 +277,12 @@ static int execute_successor_network(const fs::path &input_path, const fs::path 
         read_netcdf_scalar<int>(raw_file, "Header.Toltec.ScanNum");
     require(cfg["network"].as<int>()==nw && cfg["observation"].as<int>()==obs,"requested raw scope mismatch");
     const bool reference=cfg["development_reference"] && cfg["development_reference"].as<std::string>()=="bright-point-base-v1";
-    const bool configured=citlali::cli::detail::configured_point_scope(cfg,obs,sub,scan);
+    const bool configured=citlali::cli::detail::configured_map_scope(cfg,obs,sub,scan);
     if(cfg["disturbance_exclusion"])require(configured && development &&
         cfg["disturbance_exclusion"].as<std::string>()==RtcDisturbanceExclusionPlan::identity &&
         !cfg["point_transfer_runtime_profile"] && !cfg["rtc_whole_run_quarantine"] && !cfg["rtc_source_probe"],
         "unsupported disturbance policy or invocation scope");
-    require(!citlali::cli::detail::configured_point_request(cfg) || configured,"configured POINT acquisition differs");
+    require(!citlali::cli::detail::configured_map_request(cfg) || configured,"configured POINT acquisition differs");
     const bool oof=citlali::cli::detail::oof_network_scope(cfg,obs,sub,scan,nw);
     require(!citlali::cli::detail::oof_request(cfg) || oof,"OOF network identity outside bounded scan-1 scope");
     if(oof) require(!cfg["rtc_source_probe"] && !cfg["point_transfer_runtime_profile"] && !cfg["rtc_whole_run_quarantine"] && !cfg["rtc_point_run_selection"],"POINT-only experiment field in OOF");
@@ -1499,11 +1499,12 @@ int execute_successor_observation(const YAML::Node &request,const fs::path &outp
     citlali::cli::DevelopmentTerminal terminal,citlali::cli::DevelopmentPtcRequest ptc,unsigned workers,
     PreparedPointCal *point_cal=nullptr) {
   const bool reference=request["development_reference"] && request["development_reference"].as<std::string>()=="bright-point-base-v1";
-  const bool configured=citlali::cli::detail::configured_point_scope(request,request["observation"].as<int>(),request["subobservation"].as<int>(),request["scan"].as<int>());
-  require(!citlali::cli::detail::configured_point_request(request) || configured,"configured POINT acquisition differs");
+  const bool configured=citlali::cli::detail::configured_map_scope(request,request["observation"].as<int>(),request["subobservation"].as<int>(),request["scan"].as<int>());
+  require(!citlali::cli::detail::configured_map_request(request) || configured,"configured POINT acquisition differs");
   const bool oof=citlali::cli::detail::oof_scope(request,request["observation"].as<int>(),request["subobservation"].as<int>(),request["scan"].as<int>());
   require(!citlali::cli::detail::oof_request(request) || oof,"OOF observation identity outside bounded scan-1 scope");
-  require(workers>=1 && workers<=12,"successor.network_workers_must_be_1_to_12");
+  const bool science=citlali::cli::detail::configured_science_request(request);
+  require(workers>=1 && workers<=(science?32u:12u),"successor.network_worker_budget_outside_profile");
   require(request["schema"].as<std::string>()=="citlali-observation-networks-v1" &&
           (oof || ((reference || configured || request["observation"].as<int>()==152390 || request["observation"].as<int>()==152389 || request["observation"].as<int>()==152430) && request["subobservation"].as<int>()==0 &&
           request["scan"].as<int>()==2)),"successor.observation_scope_unsupported");
@@ -1519,7 +1520,8 @@ int execute_successor_observation(const YAML::Node &request,const fs::path &outp
     require(!oof || (citlali::cli::detail::oof_network_scope(cfg,request["observation"].as<int>(),0,1,nw) &&
         cfg["development_reference"].as<std::string>()==request["development_reference"].as<std::string>()),"OOF observation/network identity differs");
     require(!reference || (cfg["development_reference"] && cfg["development_reference"].as<std::string>()=="bright-point-base-v1"),"reference network scope differs");
-    require(!configured || citlali::cli::detail::configured_point_scope(cfg,request["observation"].as<int>(),0,2),"configured POINT network scope differs");
+    require(!configured || (citlali::cli::detail::configured_map_scope(cfg,request["observation"].as<int>(),0,2) &&
+            cfg["development_reference"].as<std::string>()==request["development_reference"].as<std::string>()),"configured POINT network scope differs");
     require(cfg["network"].as<int>()==nw && cfg["observation"].as<int>()==request["observation"].as<int>() &&
             cfg["decision_apply"] && cfg["filter_plan"],"successor.network_binding_incomplete");
     if(!configs.empty()) {
@@ -1536,14 +1538,14 @@ int execute_successor_observation(const YAML::Node &request,const fs::path &outp
     const auto effective=admission.read_yaml(cfg["path"].as<std::string>(),cfg["sha256"].as<std::string>()).second;
     const auto profile=effective["successor"];
     require(configured && terminal==citlali::cli::DevelopmentTerminal::cal && point_cal->producer_networks().empty() &&
-            profile["schema"].as<std::string>()=="citlali-point-v2" &&
+            profile["schema"].as<std::string>()==(science?"citlali-science-compact-v1":"citlali-point-v2") &&
             !profile["products"]["retain_intermediates"].as<bool>() &&
             !profile["weight_comparison"].as<bool>(false) && effective["runtime"]["n_threads"].as<unsigned>()==workers,
             "POINT memory handoff requires ordinary weighted CAL without retained intermediates");
   }
   if(terminal==citlali::cli::DevelopmentTerminal::ptc)
     ptc_config.emplace(YAML::LoadFile(checked_file(configs.front()["effective_config"]).string()),ptc);
-  const auto budget=citlali::cli::detail::point_execution_budget(workers);
+  const auto budget=citlali::cli::detail::point_execution_budget(workers,science?32u:12u);
   const auto effective_workers=configured?budget.execution.workers:workers;
   const citlali::cli::NativeRtcOutputLayout output_layout(output,ids,true,false,terminal);
   std::cout<<"Native observation setup: requested_workers="<<workers
@@ -1850,7 +1852,7 @@ int run_successor_saved_fruit(const std::filesystem::path &input,const std::file
 }
 int run_successor_saved_map(const std::filesystem::path &input,const std::filesystem::path &output,unsigned workers) {
     const auto request=YAML::LoadFile(input.string());
-    if(request["schema"] && request["schema"].as<std::string>()=="citlali-configured-weighted-point-v1")return execute_weighted_point(input,output,workers);
+    if(request["schema"] && (request["schema"].as<std::string>()=="citlali-configured-weighted-point-v1" || request["schema"].as<std::string>()=="citlali-configured-weighted-science-v1"))return execute_weighted_point(input,output,workers);
     require(workers==1,"successor.saved_MAP_requires_serial_execution_for_this_profile");
     if(request["schema"] && (request["schema"].as<std::string>()=="point-152389-jinc-ast-v1" || request["schema"].as<std::string>()=="oof-a2000-altaz-ast-v1"))return execute_jinc_ast(input,output);
     return execute_saved_map(input,output);

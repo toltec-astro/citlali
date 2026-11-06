@@ -75,9 +75,9 @@ class PointArrayExecutor:
     change the numerical-library thread limit or serial/parallel comparison.
     """
 
-    def __init__(self, requested, native_execution):
+    def __init__(self, requested, native_execution, *, maximum=12):
         effective = native_execution.get("effective_workers")
-        if (type(effective) is not int or not 1 <= effective <= requested <= 12
+        if (type(effective) is not int or not 1 <= effective <= requested <= maximum <= 32
                 or native_execution.get("requested_workers") != requested):
             raise ValueError("native POINT execution budget is missing or inconsistent")
         self.budget = dict(native_execution)

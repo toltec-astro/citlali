@@ -34,6 +34,8 @@ struct PointFeedbackBinding {
     std::string candidate_sha256, bundle_sha256, map_sha256;
     std::string observation, health_identity, array;
     int previous_cycle=-1;
+    bool celestial=false;
+    double center_ra_deg=0.,center_dec_deg=0.;
 };
 
 inline void validate_point_feedback_provenance(const YAML::Node &feedback,
@@ -45,7 +47,7 @@ inline void validate_point_feedback_provenance(const YAML::Node &feedback,
             expected.health_identity.starts_with("sha256:") && sha256(expected.health_identity.substr(7)) &&
             (expected.array=="a1100" || expected.array=="a1400" || expected.array=="a2000") &&
             expected.previous_cycle>=0,"invalid expected feedback binding");
-        require(feedback["schema"].as<std::string>()=="configured-point-base-feedback-v1" &&
+        require(feedback["schema"].as<std::string>()==(expected.celestial?"configured-science-compact-feedback-v1":"configured-point-base-feedback-v1") &&
             feedback["status"].as<std::string>()=="ready","feedback producer is not a ready configured POINT publication");
         require(feedback["model_sha256"].as<std::string>()==expected.candidate_sha256,
             "feedback candidate digest differs from its producer");
@@ -59,7 +61,7 @@ inline void validate_point_feedback_provenance(const YAML::Node &feedback,
             "feedback observation, frozen health or array differs");
         require(feedback["replacement"].as<bool>() && feedback["gain"].as<double>()==1. &&
             feedback["feedback_domain_radius_arcsec"].as<double>()==40. &&
-            feedback["frame"].as<std::string>()=="delta-source-AltAz" &&
+            feedback["frame"].as<std::string>()==(expected.celestial?"J2000-radec-gnomonic-tangent":"delta-source-AltAz") &&
             feedback["coordinate_units"].as<std::string>()=="arcsec" &&
             feedback["signal_units"].as<std::string>()=="mJy/nominal beam",
             "feedback replacement, frame or units differ");
@@ -71,6 +73,13 @@ inline void validate_point_feedback_provenance(const YAML::Node &feedback,
             bundle["frozen_health_identity"].as<std::string>()==expected.health_identity &&
             bundle["array"].as<std::string>()==expected.array,
             "feedback source map observation, frozen health or array differs");
+        if(expected.celestial) require(
+            bundle["WCS"]["ASTFRAME"].as<std::string>()=="J2000-radec-gnomonic-tangent" &&
+            bundle["WCS"]["RADESYS"].as<std::string>()=="FK5" && bundle["WCS"]["EQUINOX"].as<double>()==2000. &&
+            bundle["WCS"]["CRVAL1"].as<double>()==expected.center_ra_deg && bundle["WCS"]["CRVAL2"].as<double>()==expected.center_dec_deg &&
+            feedback["expected_origin_sky"]["ra_deg"].as<double>()==expected.center_ra_deg &&
+            feedback["expected_origin_sky"]["dec_deg"].as<double>()==expected.center_dec_deg,
+            "SCIENCE feedback celestial reference differs");
         require(bundle["cycle_index"].as<int>()==expected.previous_cycle,
             "feedback source map is not the preceding cycle");
         require(bundle["files"]["map.fits"].as<std::string>()==expected.map_sha256,

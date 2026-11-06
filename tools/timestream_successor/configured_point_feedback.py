@@ -1,4 +1,4 @@
-"""Configured AltAz POINT feedback using the existing POINT and BASE owners.
+"""Compact-source feedback in declared POINT or celestial SCIENCE map axes.
 
 The source selector is conditional on the initial map's frozen C0 covariance
 and BASE scale. These are selection diagnostics, never detector noise weights
@@ -7,6 +7,8 @@ Native timestream processing and exact subtraction/restoration live elsewhere.
 """
 
 from dataclasses import dataclass
+from configured_map_frames import (frame_spec, grid_keys, validate_frame, learner_header,
+                                   is_celestial, guard_frame)
 from pathlib import Path
 import re
 from types import SimpleNamespace
@@ -54,7 +56,7 @@ class FeedbackContext:
 
     Arrays are read-only. Their pixel axes are the dynamic 40 arcsecond source
     crop; the internal learner header uses degrees only as a unit adapter.
-    The full native AltAz grid identity remains explicit and unchanged.
+    The full native map frame and grid identity remain explicit and unchanged.
     """
 
     grid: tuple
@@ -103,9 +105,11 @@ def _read_map(path):
     )
     with fits.open(path, memmap=False) as hdus:
         header = hdus[0].header.copy()
+        validate_frame(header)
+        keys = grid_keys(header, array=True)
         require(
-            all(header.get(key) == value for key, value in FRAME.items()),
-            "configured feedback requires source-offset AltAz arcsecond axes",
+            all(header.get(key) == value for key, value in frame_spec(header).items()),
+            "configured feedback map frame or axis units differ",
         )
         require(
             header.get("ARRAY") in ("a1100", "a1400", "a2000"),
@@ -116,19 +120,19 @@ def _read_map(path):
             and header["NOMBFWHM"] == bundle["nominal_beam_fwhm_arcsec"]
             and all(
                 bundle["WCS"].get(key) == header[key]
-                for key in GRID_KEYS
+                for key in keys
                 if key not in ("ARRAY", "NOMBFWHM")
             ),
             "feedback MAP bundle array or grid differs",
         )
         require(
             all(
-                np.isfinite(header[key]) for key in GRID_KEYS if key not in FRAME and key != "ARRAY"
+                np.isfinite(header[key]) for key in keys if key not in frame_spec(header) and key != "ARRAY"
             ),
             "configured feedback requires a finite grid and beam",
         )
         require(
-            header["CRVAL1"] == header["CRVAL2"] == 0.0
+            (is_celestial(header) or header["CRVAL1"] == header["CRVAL2"] == 0.0)
             and header["CDELT1"] < 0.0 < header["CDELT2"]
             and header["NOMBFWHM"] > 0.0,
             "configured feedback grid differs",
@@ -149,7 +153,7 @@ def _read_map(path):
             hdu = hdus[name]
             require(
                 hdu.data.shape == shape
-                and all(hdu.header.get(key) == header[key] for key in GRID_KEYS),
+                and all(hdu.header.get(key) == header[key] for key in keys),
                 "configured feedback plane geometry differs",
             )
             require(
@@ -170,19 +174,12 @@ def _read_map(path):
         "configured feedback invalid normalization",
     )
     # Existing empirical owners use degree increments to express arcsecond
-    # offsets. This local conversion changes units, never the AltAz frame.
-    learner_header = header.copy()
-    for axis in (1, 2):
-        learner_header[f"CDELT{axis}"] /= 3600.0
-        learner_header[f"CRVAL{axis}"] /= 3600.0
-        learner_header[f"CUNIT{axis}"] = "deg"
-    return signal, support, coverage, header, learner_header, bundle
+    # offsets. POINT converts units; celestial TAN retains its degree-valued WCS.
+    return signal, support, coverage, header, learner_header(header), bundle
 
 
-def _guard_frame(guard):
-    guard.pop("expected_origin_sky", None)
-    guard.update(frame="delta-source-AltAz", centroid_axes=["azimuth_offset", "elevation_offset"])
-    return guard
+def _guard_frame(guard, header=None):
+    return guard_frame(guard, FRAME if header is None else header)
 
 
 def _unavailable(cause):
@@ -213,10 +210,10 @@ def _publish(
     require(not destination.exists(), "feedback destination must be fresh")
     destination.mkdir(parents=True, exist_ok=False)
     record = dict(
-        schema=METHOD,
+        schema="configured-science-compact-feedback-v1" if is_celestial(native_header) else METHOD,
         status="stopped",
         cause=guard.get("cause"),
-        guard=_guard_frame(guard),
+        guard=_guard_frame(guard, native_header),
         candidate_summary=None,
         model_path=None,
         model_sha256=None,
@@ -227,7 +224,7 @@ def _publish(
         frozen_health_identity=bundle.get("frozen_health_identity"),
         input_bundle_sha256=digest(Path(path).parent / "bundle.yaml"),
         array=native_header["ARRAY"],
-        frame="delta-source-AltAz",
+        frame=native_header["ASTFRAME"],
         coordinate_units="arcsec",
         signal_units="mJy/nominal beam",
         selection_scope=SCOPE,
@@ -237,6 +234,9 @@ def _publish(
         threshold=3.0,
         noise_weight_relearning_owned_by="native current-residual PTC",
     )
+    if is_celestial(native_header):
+        record["expected_origin_sky"] = dict(ra_deg=native_header["CRVAL1"], dec_deg=native_header["CRVAL2"], frame="FK5", equinox=2000.0)
+        record["fits_axis_units"] = "deg"
     if guard["accepted"] and selected is not None:
         record["candidate_summary"] = selected["summary"]
         try:
@@ -265,7 +265,7 @@ def _publish(
             if verbose:
                 planes.append(("RATIO", selected["z"], "1"))
             model = destination / "candidate.fits"
-            write_fits(model, header, planes, companion="CONFIGURED-POINT-BASE")
+            write_fits(model, header, planes, companion="CONFIGURED-SCIENCE-BASE" if is_celestial(native_header) else "CONFIGURED-POINT-BASE")
             record.update(
                 status="ready",
                 cause=None,
@@ -321,10 +321,10 @@ def initialize(map_path, destination, verbose=False):
     context, selected = None, None
     if guard["accepted"]:
         context = FeedbackContext(
-            grid=tuple((key, native[key]) for key in GRID_KEYS),
+            grid=tuple((key, native[key]) for key in grid_keys(native, array=True)),
             full_shape=signal.shape,
             half=half,
-            header=tuple((key, stamp_header[key]) for key in GRID_KEYS),
+            header=tuple((key, stamp_header[key]) for key in grid_keys(native, array=True)),
             beam=fixed.beam,
             scale=_frozen(patch(models["C0"]["scale"], row, column, half)),
             psd=_frozen(models["C0"]["psd"]),
@@ -386,14 +386,14 @@ def update(map_path, context, destination, verbose=False):
         "feedback observation or frozen health identity differs",
     )
     require(
-        tuple((key, native[key]) for key in GRID_KEYS) == context.grid
+        tuple((key, native[key]) for key in grid_keys(native, array=True)) == context.grid
         and signal.shape == context.full_shape,
         "feedback frozen grid or array differs",
     )
     s, valid, _, stamp_header, half = source_patch(signal, support, coverage, header)
     require(
         half == context.half
-        and tuple((key, stamp_header[key]) for key in GRID_KEYS) == context.header,
+        and tuple((key, stamp_header[key]) for key in grid_keys(native, array=True)) == context.header,
         "feedback source crop differs",
     )
     fixed = SimpleNamespace(
@@ -427,7 +427,7 @@ def measure_only(map_path, context, additive=None):
     require(isinstance(context, FeedbackContext), "feedback context unavailable")
     signal, support, coverage, native, header, bundle = _read_map(map_path)
     require(
-        tuple((key, native[key]) for key in GRID_KEYS) == context.grid
+        tuple((key, native[key]) for key in grid_keys(native, array=True)) == context.grid
         and signal.shape == context.full_shape
         and bundle["observation"] == context.observation
         and bundle.get("frozen_health_identity") == context.frozen_health_identity,
@@ -443,8 +443,8 @@ def measure_only(map_path, context, additive=None):
     s, valid, _, stamp_header, half = source_patch(signal, support, coverage, header)
     require(
         half == context.half
-        and tuple((key, stamp_header[key]) for key in GRID_KEYS) == context.header,
+        and tuple((key, stamp_header[key]) for key in grid_keys(native, array=True)) == context.header,
         "measurement source crop differs",
     )
     fixed = SimpleNamespace(header=stamp_header, beam=context.beam)
-    return _guard_frame(measure_expected(s, valid, fixed, context.scale, context.psd))
+    return _guard_frame(measure_expected(s, valid, fixed, context.scale, context.psd), native)

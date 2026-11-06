@@ -147,6 +147,28 @@ struct FeedbackFixture {
     void validate() const {validate_point_feedback_provenance(feedback,bundle,expected);}
 };
 
+TEST(PointWeightedBindings, ScienceFeedbackBindsCelestialOriginAndMode) {
+    FeedbackFixture x;
+    x.expected.celestial=true;x.expected.center_ra_deg=180.;x.expected.center_dec_deg=30.;
+    x.feedback["schema"]="configured-science-compact-feedback-v1";
+    x.feedback["frame"]="J2000-radec-gnomonic-tangent";
+    x.feedback["expected_origin_sky"]["ra_deg"]=180.;
+    x.feedback["expected_origin_sky"]["dec_deg"]=30.;
+    x.bundle["WCS"]=YAML::Load("{ASTFRAME: J2000-radec-gnomonic-tangent, RADESYS: FK5, EQUINOX: 2000, CRVAL1: 180, CRVAL2: 30}");
+    EXPECT_NO_THROW(x.validate());
+    x.expected.celestial=false;EXPECT_THROW(x.validate(),std::invalid_argument);
+    x.expected.celestial=true;
+    x.feedback["expected_origin_sky"]["ra_deg"]=181.;EXPECT_THROW(x.validate(),std::invalid_argument);
+    x.feedback["expected_origin_sky"]["ra_deg"]=180.;
+    for(const auto *key:{"CRVAL1","CRVAL2","EQUINOX"}) {
+        const auto original=x.bundle["WCS"][key].as<double>();
+        x.bundle["WCS"][key]=original+1.;
+        EXPECT_THROW(x.validate(),std::invalid_argument);
+        x.bundle["WCS"][key]=original;
+    }
+    x.bundle["cycle_index"]=0;EXPECT_THROW(x.validate(),std::invalid_argument);
+}
+
 TEST(PointWeightedBindings, FeedbackRequiresExactObservationAndFrozenHealth) {
     FeedbackFixture valid;EXPECT_NO_THROW(valid.validate());
     for (const auto *key:{"observation","frozen_health_identity","array"}) {

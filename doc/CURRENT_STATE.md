@@ -1,5 +1,13 @@
 # Citlali refactor — current state
 
+2026-11-06 the isolated [single-observation SCIENCE candidate](../validation/science_single_2026-11-06/PLAN.md)
+connects 152389 to FK5/J2000 TAN maps and iterative compact-source feedback.
+The explicit `citlali-science-compact-v1` profile reuses accepted CAL/health
+memory handoffs, deterministic workers and ordinary-mode diagnostic I/O policy.
+It emits no POINT consumer products and admits no coadds or extended fields.
+All software gates and the representative reduction await Grant; this candidate
+is not accepted or integrated, and no push or Unity access is authorized.
+
 2026-11-06 Grant selected **152389**, the existing small POINT observation, as
 the first [connected SCIENCE fixture](SCIENCE_SCALING_SCOPE_2026-11-06.md#proposed-qualification-sequence):
 one observation in RA/Dec with coaddition disabled. Reuse the bound original

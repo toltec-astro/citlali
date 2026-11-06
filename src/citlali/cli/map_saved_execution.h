@@ -10,6 +10,7 @@
 #include <fitsio.h>
 #include <citlali/core/pipeline/staged_output_directory.h>
 #include <citlali/core/utils/fits_handle.h>
+#include "configured_map_frame.h"
 namespace {
 namespace mapmaking=citlali::mapmaking;
 using citlali::cli::detail::MapFileLedger;
@@ -132,7 +133,7 @@ SavedMapNetwork load_saved_map_network(const YAML::Node &request,MapFileLedger &
     const bool oof=citlali::cli::detail::oof_network_scope(out.input,out.obsnum,0,1,out.network);
     out.observation_identity=citlali::cli::detail::saved_map_observation_identity(out.input,out.obsnum,out.network,out.array);
     require(!citlali::cli::detail::oof_request(out.input) || (oof && out.array==citlali::cli::detail::oof_array(out.input)),"MAP OOF acquisition or array differs");
-    require((oof || citlali::cli::detail::configured_point_scope(out.input,out.obsnum,0,2) || (out.input["development_reference"] && out.input["development_reference"].as<std::string>()=="bright-point-base-v1") || out.obsnum==152389 || out.obsnum==152390 || (out.obsnum==152430 && out.array==2 && (out.network==11 || out.network==12))) && out.input["observation"].as<int>()==out.obsnum &&
+    require((oof || citlali::cli::detail::configured_map_scope(out.input,out.obsnum,0,2) || (out.input["development_reference"] && out.input["development_reference"].as<std::string>()=="bright-point-base-v1") || out.obsnum==152389 || out.obsnum==152390 || (out.obsnum==152430 && out.array==2 && (out.network==11 || out.network==12))) && out.input["observation"].as<int>()==out.obsnum &&
         out.array>=0 && out.array<3,"MAP owner binding requires selected observation and known array");
     const auto telescope=checked_file(out.input["telescope"]),effective=checked_file(out.input["effective_config"]);
     const fs::path manifest=out.input["manifest"]["path"].as<std::string>();
@@ -244,7 +245,7 @@ std::shared_ptr<const PtcMapPublication> load_map_segment(const SavedMapNetwork 
 }
 void map_fits(const fs::path &path,const AstRtcTanGrid &wcs,const mapmaking::ForwardMapOperator &op,
     const mapmaking::ForwardMapValues &result,const std::string &array,double beam,
-    bool empirical_inverse_noise=false) {
+    bool empirical_inverse_noise=false,bool science=false) {
     citlali::utils::FitsHandle handle;int status=0;
     fits_create_file(handle.address(),path.c_str(),&status);require(!status,"MAP required FITS create failed");
     auto *f=handle.get();
@@ -254,10 +255,11 @@ void map_fits(const fs::path &path,const AstRtcTanGrid &wcs,const mapmaking::For
         long axes[2]{static_cast<long>(wcs.columns),static_cast<long>(wcs.rows)};
         fits_create_img(f,bitpix,2,axes,&status);
         if(*name)fits_update_key_str(f,"EXTNAME",name,nullptr,&status);
-        fits_update_key_str(f,"CTYPE1","AZOFFSET",nullptr,&status);fits_update_key_str(f,"CTYPE2","ELOFFSET",nullptr,&status);
-        fits_update_key_str(f,"CUNIT1","arcsec",nullptr,&status);fits_update_key_str(f,"CUNIT2","arcsec",nullptr,&status);
-        fits_update_key_str(f,"ASTFRAME","delta-source-AltAz",nullptr,&status);
-        for(const auto &[key,value]:std::array<std::pair<const char*,double>,6>{{{"CRPIX1",wcs.crpix1},{"CRPIX2",wcs.crpix2},{"CRVAL1",wcs.crval1_deg},{"CRVAL2",wcs.crval2_deg},{"CDELT1",3600*wcs.cdelt1_deg},{"CDELT2",3600*wcs.cdelt2_deg}}})
+        fits_update_key_str(f,"CTYPE1",science?"RA---TAN":"AZOFFSET",nullptr,&status);fits_update_key_str(f,"CTYPE2",science?"DEC--TAN":"ELOFFSET",nullptr,&status);
+        fits_update_key_str(f,"CUNIT1",science?"deg":"arcsec",nullptr,&status);fits_update_key_str(f,"CUNIT2",science?"deg":"arcsec",nullptr,&status);
+        fits_update_key_str(f,"ASTFRAME",citlali::cli::detail::configured_frame_name(science),nullptr,&status);
+        if(science) { fits_update_key_str(f,"RADESYS","FK5",nullptr,&status);fits_update_key_dbl(f,"EQUINOX",2000.,17,nullptr,&status); }
+        for(const auto &[key,value]:std::array<std::pair<const char*,double>,6>{{{"CRPIX1",wcs.crpix1},{"CRPIX2",wcs.crpix2},{"CRVAL1",wcs.crval1_deg},{"CRVAL2",wcs.crval2_deg},{"CDELT1",(science?1.:3600.)*wcs.cdelt1_deg},{"CDELT2",(science?1.:3600.)*wcs.cdelt2_deg}}})
             fits_update_key_dbl(f,key,value,17,nullptr,&status);
         fits_update_key_str(f,"BUNIT",unit,nullptr,&status);fits_update_key_str(f,"ARRAY",array.c_str(),nullptr,&status);
         fits_update_key_dbl(f,"NOMBFWHM",beam,17,"Fixed nominal calibration FWHM, arcsec; not measured PSF",&status);

@@ -12,8 +12,8 @@ struct PointExecutionBudget {
     citlali::config::RuntimeResourceAvailability available;
     citlali::utils::ParallelExecution execution;
 };
-inline PointExecutionBudget point_execution_budget(unsigned requested) {
-    if(requested<1 || requested>12)throw std::invalid_argument("POINT workers must be 1 to 12");
+inline PointExecutionBudget point_execution_budget(unsigned requested,unsigned maximum=12) {
+    if(requested<1 || requested>maximum || maximum>32)throw std::invalid_argument("configured worker budget outside profile");
     auto available=citlali::cli::discover_runtime_resource_availability();
     const auto plan=citlali::config::make_runtime_thread_plan(static_cast<int>(requested),false,available);
     return {requested,available,{static_cast<unsigned>(plan.effective_threads)}};

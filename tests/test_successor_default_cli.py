@@ -263,12 +263,24 @@ class SuccessorDefaultCli(unittest.TestCase):
 
     def test_network_worker_bounds_and_single_network_misuse(self):
         config = self.request({})
-        for workers in (0, -1, 13):
+        for workers in (0, -1, 33):
             config['network_workers'] = workers
-            self.rejected(self.invoke(config), 'successor.network_workers_must_be_1_to_12')
-        for workers in (2, 8, 12):
+            self.rejected(self.invoke(config), 'successor.network_workers_must_be_1_to_32')
+        for workers in (2, 8, 12, 13, 32):
             config['network_workers'] = workers
             self.rejected(self.invoke(config), 'successor.network_workers_require_observation_request')
+
+    def test_science_observation_budget_is_explicit_and_point_stays_bounded(self):
+        config = self.request(dict(schema='citlali-observation-networks-v1',
+            development_reference='configurable-point-v1', mode='POINT',
+            observation=152389, subobservation=0, scan=2, networks=[]))
+        config['network_workers'] = 13
+        self.rejected(self.invoke(config), 'successor.network_worker_budget_outside_profile')
+        config = self.request(dict(schema='citlali-observation-networks-v1',
+            development_reference='configurable-science-compact-v1', mode='SCIENCE',
+            observation=152389, subobservation=0, scan=2, networks=[]))
+        config['network_workers'] = 32
+        self.rejected(self.invoke(config), 'successor.empty_network_request')
 
     def test_observation_inventory_rejects_duplicate_network_before_preparation(self):
         network = self.root / 'network.json'

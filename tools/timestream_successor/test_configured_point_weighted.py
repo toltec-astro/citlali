@@ -399,7 +399,7 @@ def test_default_cal_handoff_verifies_after_fits_before_publication(tmp_path, we
     _weighted_cli_handoff_case(tmp_path, weighted_config, monkeypatch, retain=False, changed=changed)
 
 
-def _weighted_cli_handoff_case(tmp_path, weighted_config, monkeypatch, *, retain, changed=False):
+def _weighted_cli_handoff_case(tmp_path, weighted_config, monkeypatch, *, retain, changed=False, science=False):
     weighted_config['runtime']['output_dir'] = str(tmp_path / 'reduced')
     weighted_config['successor']['rtc']['disturbance_exclusion'] = 'disabled'
     weighted_config['successor']['products'].update(fit_diagnostics=False, retain_intermediates=retain)
@@ -453,7 +453,11 @@ def _weighted_cli_handoff_case(tmp_path, weighted_config, monkeypatch, *, retain
         assert request.weighted
         assert kwargs['array_executor'].workers == 2
         for array in products.ARRAYS:
-            weighted_map(work / 'weighted-00/products' / array, array)
+            if science:
+                from test_configured_science import celestial_map
+                celestial_map(work / 'weighted-00/products' / array, array)
+            else:
+                weighted_map(work / 'weighted-00/products' / array, array)
         record['final_cycle'] = 0
         return work / 'weighted-00/products'
 
@@ -464,12 +468,12 @@ def _weighted_cli_handoff_case(tmp_path, weighted_config, monkeypatch, *, retain
     monkeypatch.setattr(cli, 'map_request', lambda *a, **kw: pytest.fail('legacy PTC MAP route used'))
     if changed:
         with pytest.raises(RuntimeError, match='material input changed'):
-            cli.execute(config_path, binary, launch_dir=tmp_path)
+            cli.execute(config_path, binary, launch_dir=tmp_path, mode="science" if science else "pointing")
         reduction = tmp_path/'reduced/redu00'
         assert json.loads((reduction/'RUN.json').read_text())['status'] == 'failed'
         assert not (reduction/'152389').exists()
         return
-    reduction = cli.execute(config_path, binary, launch_dir=tmp_path)
+    reduction = cli.execute(config_path, binary, launch_dir=tmp_path, mode="science" if science else "pointing")
     record = json.loads((reduction / 'RUN.json').read_text())
     assert record['status'] == 'completed' and record['final_cycle'] == 0
     assert ('final_original_inputs' in record) == (not retain)

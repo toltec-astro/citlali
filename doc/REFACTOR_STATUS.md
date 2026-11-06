@@ -1,3 +1,13 @@
+## SCIENCE single-observation candidate — 2026-11-06
+
+2026-11-06 the isolated [single-observation SCIENCE candidate](../validation/science_single_2026-11-06/PLAN.md)
+connects 152389 to FK5/J2000 TAN maps and iterative compact-source feedback.
+The explicit `citlali-science-compact-v1` profile reuses accepted CAL/health
+memory handoffs, deterministic workers and ordinary-mode diagnostic I/O policy.
+It emits no POINT consumer products and admits no coadds or extended fields.
+All software gates and the representative reduction await Grant; this candidate
+is not accepted or integrated, and no push or Unity access is authorized.
+
 ## SCIENCE single-node planning scope — 2026-11-06
 
 After accepting the POINT assessment foundation, Grant supplied the SCIENCE

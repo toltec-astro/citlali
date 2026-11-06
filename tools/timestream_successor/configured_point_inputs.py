@@ -275,10 +275,12 @@ def prepare(
     launch_dir = Path(launch_dir).resolve(strict=True)
     _require(not out.exists(), "fresh inputs directory required: " + str(out))
     effective = copy.deepcopy(config)
-    _require(
-        effective.get("runtime", {}).get("reduction_type") == "pointing",
-        "one POINT reduction required",
-    )
+    science = effective.get("runtime", {}).get("reduction_type") == "science"
+    _require(effective.get("runtime", {}).get("reduction_type") in ("pointing", "science"),
+             "one POINT or compact SCIENCE reduction required")
+    if science:
+        _require(effective.get("successor", {}).get("schema") == "citlali-science-compact-v1",
+                 "SCIENCE requires its explicit compact-source profile")
     acquisitions = effective.get("inputs", [])
     _require(isinstance(acquisitions, list) and len(acquisitions) == 1, "one acquisition required")
     acquisition = acquisitions[0]
@@ -289,6 +291,7 @@ def prepare(
         )
     obs, sub, scan = int(match[1]), 0, 2
     _require(obs > 0, "positive observation number required")
+    _require(not science or obs == 152389, "SCIENCE pilot requires 152389")
     scope = (obs, sub, scan)
     _require(acquisition["meta"]["name"] == f"{obs}_0_2", "noncanonical acquisition name")
     data = acquisition.get("data_items", [])
@@ -472,8 +475,8 @@ def prepare(
         path = out / f"network{row['network']}-input.json"
         request = dict(
             schema="rtc-multidetector-experiment-v1",
-            development_reference=DEVELOPMENT_REFERENCE,
-            mode="POINT",
+            development_reference="configurable-science-compact-v1" if science else DEVELOPMENT_REFERENCE,
+            mode="SCIENCE" if science else "POINT",
             observation=obs,
             subobservation=sub,
             scan=scan,
@@ -517,8 +520,8 @@ def prepare(
         observation_request,
         dict(
             schema="citlali-observation-networks-v1",
-            development_reference=DEVELOPMENT_REFERENCE,
-            mode="POINT",
+            development_reference="configurable-science-compact-v1" if science else DEVELOPMENT_REFERENCE,
+            mode="SCIENCE" if science else "POINT",
             observation=obs,
             subobservation=sub,
             scan=scan,

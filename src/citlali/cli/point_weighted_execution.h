@@ -73,14 +73,16 @@ struct WeightedCalDomain {
     std::vector<std::vector<std::uint16_t>> cal_causes;
 };
 struct WeightedPointNetwork {
-    WeightedCalDomain saved;PtcMatrix coordinates;
+    WeightedCalDomain saved;PtcMatrix coordinates;double center_ra=0.,center_dec=0.;
     std::vector<WeightedPointSegment> segments;std::string processing_identity;
 };
 WeightedPointNetwork point_load_cal(const YAML::Node &binding,MapFileLedger &ledger,const std::string &config_sha,
                                     citlali::cli::detail::PointStageApt &stage_apt, PointOpticalNetwork &o,
-                                    const citlali::cli::detail::PointCalNetwork *point_cal=nullptr) {
+                                    const citlali::cli::detail::PointCalNetwork *point_cal=nullptr,bool science=false) {
     WeightedPointNetwork n;
     auto s=load_saved_map_network(binding,ledger,true,true,&stage_apt,point_cal);
+    require(science ? citlali::cli::detail::configured_science_scope(s.input,s.obsnum,0,2) :
+            !citlali::cli::detail::configured_science_request(s.input),"configured map/network mode differs");
     require(s.input["effective_config"]["sha256"].as<std::string>()==config_sha,"POINT network effective config differs");
     std::string processing_sha;
     YAML::Node scans,published;
@@ -109,6 +111,9 @@ WeightedPointNetwork point_load_cal(const YAML::Node &binding,MapFileLedger &led
     require(!n.segments.empty(),"POINT no processing science support");
     o.values=PtcMatrix::Zero(s.scheduled,s.detectors.size());o.eligible=PtcMask::Zero(o.values.rows(),o.values.cols());o.source_free=o.eligible;
     const auto ast=evaluate_ast_rtc_schedule(*s.observation.trajectory,*s.observation.offsets,s.observation.ra0,s.observation.dec0,times,AstRtcMapFrame::delta_source_altaz);
+    n.center_ra=s.observation.ra0;n.center_dec=s.observation.dec0;
+    const auto celestial=science ? std::optional<AstRtcScheduleEvaluation>{evaluate_ast_rtc_schedule(
+        *s.observation.trajectory,*s.observation.offsets,n.center_ra,n.center_dec,times,AstRtcMapFrame::fk5_tan)} : std::nullopt;
     n.coordinates.resize(s.scheduled,2*s.detectors.size());
     for(std::size_t d=0;d<s.detectors.size();++d) {
         const auto &record=s.cal["detectors"][d];const auto count=record["available"].as<std::size_t>();
@@ -127,7 +132,7 @@ WeightedPointNetwork point_load_cal(const YAML::Node &binding,MapFileLedger &led
             require(seen<count && slots[seen]==static_cast<std::int64_t>(t) && std::isfinite(values[seen]),"POINT CAL values/support join differs");
             o.values(t,d)=values[seen++];o.eligible(t,d)=o.science_blocks[t]>=0;
         }
-        require(seen==count,"POINT excess CAL values");const auto [gx,gy]=s.geometry[d];const auto xy=ast.detector_tangent_deg(gx,gy);
+        require(seen==count,"POINT excess CAL values");const auto [gx,gy]=s.geometry[d];const auto xy=(celestial?*celestial:ast).detector_tangent_deg(gx,gy);
         n.coordinates.col(2*d)=xy.col(0);n.coordinates.col(2*d+1)=xy.col(1);
         const auto mask=ast.outside_source_radius(gx,gy,weighted_source_radii[s.array]);
         for(std::size_t t=0;t<s.scheduled;++t)o.source_free(t,d)=mask[t] && o.eligible(t,d);
@@ -163,7 +168,7 @@ public:
     const auto &health_plan() const { return health_plan_; }
     const std::string &first_request_sha() const { return first_request_sha_; }
     void set_first_request_sha(const std::string &sha) { first_request_sha_=sha; }
-    void prepare_or_recheck(const YAML::Node &request,const std::string &config_sha) {
+    void prepare_or_recheck(const YAML::Node &request,const std::string &config_sha,bool science) {
         if(ready()) {
             sources_.verify_reuse(request,config_sha);
             return;
@@ -179,16 +184,18 @@ public:
                 auto it=handoff_.begin();
                 require(it!=handoff_.end() && it->second.root==root,
                         "POINT CAL handoff missing, repeated or reordered network");
-                network=point_load_cal(binding_row,sources_.files,config_sha,sources_.apt,signal,&it->second);
+                network=point_load_cal(binding_row,sources_.files,config_sha,sources_.apt,signal,&it->second,science);
                 require(network.saved.network==it->first,"POINT CAL handoff network differs");
                 admitted_channels_+=it->second.channels.size();
                 handoff_.erase(it); // This network now lives in the immutable prepared domain.
             } else {
-                network=point_load_cal(binding_row,sources_.files,config_sha,sources_.apt,signal);
+                network=point_load_cal(binding_row,sources_.files,config_sha,sources_.apt,signal,nullptr,science);
             }
             require(seen.insert(network.saved.network).second &&
                     network.saved.observation_identity==loaded.front().first.saved.observation_identity,
                     "weighted POINT network/observation domain differs");
+            require(network.center_ra==loaded.front().first.center_ra && network.center_dec==loaded.front().first.center_dec,
+                    "configured observation celestial centers differ");
             arrays.at(network.saved.array)=true;
         }
         require(std::all_of(arrays.begin(),arrays.end(),[](bool v){return v;}),"weighted POINT requires all three arrays");
@@ -213,7 +220,8 @@ private:
     std::vector<PointOpticalNetwork> optical_;
 };
 FruitOffsetModel point_read_model(const YAML::Node &binding,MapFileLedger &ledger,int array,double pixel,
-    const std::string &observation,const std::string &health_sha,int cycle,PointWeighting weighting) {
+    const std::string &observation,const std::string &health_sha,int cycle,PointWeighting weighting,
+    const AstRtcTanGrid &wcs,bool science) {
     const fs::path path=binding["candidate"]["path"].as<std::string>();
     auto [sha,bytes]=ledger.read_bytes(path,binding["candidate"]["sha256"].as<std::string>());
     const fs::path feedback_path=binding["feedback"]["path"].as<std::string>();
@@ -223,7 +231,7 @@ FruitOffsetModel point_read_model(const YAML::Node &binding,MapFileLedger &ledge
     require(bundle["coefficient_family"].as<std::string>()==PtcEmpiricalCoefficients::family_for(weighting),
         "POINT feedback belongs to a different weighting arm");
     const auto map_sha=ledger.bind(bundle_path.parent_path()/"map.fits",feedback["map_sha256"].as<std::string>());
-    citlali::cli::detail::validate_point_feedback_provenance(feedback,bundle,{sha,bundle_sha,map_sha,observation,"sha256:"+health_sha,weighted_arrays[array],cycle-1});
+    citlali::cli::detail::validate_point_feedback_provenance(feedback,bundle,{sha,bundle_sha,map_sha,observation,"sha256:"+health_sha,weighted_arrays[array],cycle-1,science,wcs.crval1_deg,wcs.crval2_deg});
     void *buffer=bytes.data();
     std::size_t buffer_size=bytes.size();
     citlali::utils::FitsHandle handle;
@@ -234,18 +242,20 @@ FruitOffsetModel point_read_model(const YAML::Node &binding,MapFileLedger &ledge
     auto number=[&](const char *k){double v=NAN;fits_read_key(f,TDOUBLE,k,&v,nullptr,&status);return v;};
     auto string=[&](const char *k){char v[FLEN_VALUE]{};fits_read_key(f,TSTRING,k,v,nullptr,&status);return std::string(v);};
     const double cx=number("CRPIX1"),cy=number("CRPIX2"),dx=number("CDELT1"),dy=number("CDELT2"),ox=number("CRVAL1"),oy=number("CRVAL2");
-    const bool header=string("ASTFRAME")=="delta-source-AltAz" && string("CTYPE1")=="AZOFFSET" && string("CTYPE2")=="ELOFFSET" &&
-        string("CUNIT1")=="arcsec" && string("CUNIT2")=="arcsec" && string("ARRAY")==weighted_arrays[array] && string("BUNIT")=="mJy/beam" && number("NOMBFWHM")==weighted_beams[array];
-    require(!status && ndim==2 && axes[0]>0 && axes[1]>0 && header && dx==-pixel && dy==pixel && ox==0 && oy==0,"POINT feedback grid/frame/unit differs");
+    const auto frame_matches=[&] { return string("ASTFRAME")==citlali::cli::detail::configured_frame_name(science) &&
+        string("CTYPE1")==(science?"RA---TAN":"AZOFFSET") && string("CTYPE2")==(science?"DEC--TAN":"ELOFFSET") &&
+        string("CUNIT1")==(science?"deg":"arcsec") && string("CUNIT2")==(science?"deg":"arcsec") &&
+        (!science || (string("RADESYS")=="FK5" && number("EQUINOX")==2000.)); };
+    const bool header=frame_matches() && string("ARRAY")==weighted_arrays[array] && string("BUNIT")=="mJy/beam" && number("NOMBFWHM")==weighted_beams[array];
+    require(!status && ndim==2 && axes[0]>0 && axes[1]>0 && header && dx==(science?wcs.cdelt1_deg:-pixel) && dy==(science?wcs.cdelt2_deg:pixel) && ox==wcs.crval1_deg && oy==wcs.crval2_deg,"POINT feedback grid/frame/unit differs");
     require(static_cast<std::size_t>(axes[0])<=std::numeric_limits<std::size_t>::max()/static_cast<std::size_t>(axes[1]),"POINT feedback plane size overflow");
     const std::size_t size=static_cast<std::size_t>(axes[0])*static_cast<std::size_t>(axes[1]);std::vector<double> values(size);std::vector<std::uint8_t> valid(size),admitted(size);
     auto check=[&](){int data=0,hdu=0;fits_verify_chksum(f,&data,&hdu,&status);require(!status && data==1 && hdu==1,"POINT feedback FITS checksum differs");};
     check();fits_read_img(f,TDOUBLE,1,size,nullptr,values.data(),&any,&status);
     auto mask=[&](const char *name,std::vector<std::uint8_t> &v){fits_movnam_hdu(f,IMAGE_HDU,const_cast<char*>(name),0,&status);long shape[2]{};int dimensions=0;fits_get_img_dim(f,&dimensions,&status);fits_get_img_size(f,2,shape,&status);
         require(!status && dimensions==2 && shape[0]==axes[0] && shape[1]==axes[1] && string("BUNIT")=="1" && string("ARRAY")==weighted_arrays[array] &&
-            string("ASTFRAME")=="delta-source-AltAz" && string("CTYPE1")=="AZOFFSET" && string("CTYPE2")=="ELOFFSET" &&
-            string("CUNIT1")=="arcsec" && string("CUNIT2")=="arcsec" && number("CRPIX1")==cx && number("CRPIX2")==cy &&
-            number("CDELT1")==dx && number("CDELT2")==dy && number("CRVAL1")==0 && number("CRVAL2")==0,"POINT feedback plane shape/frame differs");
+            frame_matches() && number("CRPIX1")==cx && number("CRPIX2")==cy &&
+            number("CDELT1")==dx && number("CDELT2")==dy && number("CRVAL1")==ox && number("CRVAL2")==oy,"POINT feedback plane shape/frame differs");
         check();fits_read_img(f,TBYTE,1,size,nullptr,v.data(),&any,&status);};
     // The authenticated configured-feedback producer creates unique named
     // planes. Check that invariant here as well as the complete payload digest.
@@ -256,7 +266,7 @@ FruitOffsetModel point_read_model(const YAML::Node &binding,MapFileLedger &ledge
     const int close_status=handle.close();require(!status && !close_status,"POINT feedback read failed");
     for(std::size_t i=0;i<size;++i)require(valid[i]<=1 && admitted[i]<=1 && (!admitted[i] || valid[i]) &&
         (!valid[i] || std::isfinite(values[i])) && (admitted[i] || !valid[i] || values[i]==0),"POINT feedback support/value mismatch");
-    return FruitOffsetModel("sha256:"+sha,{std::size_t(axes[1]),std::size_t(axes[0]),"sha256:"+sha+":grid"},cx,cy,dx,dy,std::move(values),std::move(valid),40.);
+    return FruitOffsetModel("sha256:"+sha,{std::size_t(axes[1]),std::size_t(axes[0]),"sha256:"+sha+":grid"},cx,cy,dx*(science?3600.:1.),dy*(science?3600.:1.),std::move(values),std::move(valid),40.);
 }
 YAML::Node point_noise_record(const PtcDetectorNoiseEvidence &e) {
     YAML::Node n;n["eligible_samples"]=e.eligible_count;n["source_free_samples"]=e.source_free_count;n["reference_samples"]=e.reference_count;n["remaining_samples"]=e.remaining_count;
@@ -287,7 +297,7 @@ FruitOffsetModel point_recovery_raster(const YAML::Node &binding,MapFileLedger &
 int execute_weighted_point(const fs::path &input,const fs::path &output,unsigned workers,
                            PreparedPointCal *observation=nullptr,int pass=-1,
                            const std::optional<std::string> &expected_request_sha=std::nullopt) {
-    const auto budget=citlali::cli::detail::point_execution_budget(workers);
+    const auto budget=citlali::cli::detail::point_execution_budget(workers,32);
     const auto execution=budget.execution;
     Eigen::setNbThreads(1);
 #ifdef _OPENMP
@@ -348,7 +358,9 @@ int execute_weighted_point(const fs::path &input,const fs::path &output,unsigned
     };
     const std::set<std::string> fields{"schema","stage","effective_config","networks","health","cycle_index","models","verbose","weighting_control","recovery"};
     for(const auto &e:request)require(fields.contains(e.first.as<std::string>()),"weighted POINT unknown request field");
-    require(request["schema"].as<std::string>()=="citlali-configured-weighted-point-v1","weighted POINT schema differs");
+    const bool science=request["schema"].as<std::string>()=="citlali-configured-weighted-science-v1";
+    require(science || request["schema"].as<std::string>()=="citlali-configured-weighted-point-v1","configured MAP schema differs");
+    require(science || workers<=12,"POINT worker budget exceeds profile");
     require(!request["recovery"] || request["stage"].as<std::string>()=="cycle","recovery cannot change health");
     const auto stage=request["stage"].as<std::string>();require(stage=="health" || stage=="cycle","weighted POINT unknown stage");
     if(observation) {
@@ -363,7 +375,9 @@ int execute_weighted_point(const fs::path &input,const fs::path &output,unsigned
     }
     const fs::path config_path=request["effective_config"]["path"].as<std::string>();
     const auto [config_sha,config]=ledger.read_yaml(config_path,request["effective_config"]["sha256"].as<std::string>());
-    const auto cfg=config["successor"];require(cfg["schema"].as<std::string>()=="citlali-point-v2" && cfg["migration"].as<std::string>()=="replace-legacy-point-controls-v2" &&
+    const auto cfg=config["successor"];require(cfg["schema"].as<std::string>()==(science?"citlali-science-compact-v1":"citlali-point-v2") && cfg["migration"].as<std::string>()==(science?"replace-legacy-science-controls-compact-v1":"replace-legacy-point-controls-v2") &&
+        config["runtime"]["reduction_type"].as<std::string>()==(science?"science":"pointing") &&
+        cfg["map"]["frame"].as<std::string>()==citlali::cli::detail::configured_frame_name(science) &&
         cfg["cleaning"]["method"].as<std::string>()=="noise-weighted-observed-als-v1","weighted POINT requires explicit configured profile");
     const bool comparison=cfg["weight_comparison"] && cfg["weight_comparison"].as<bool>();
     const auto control=request["weighting_control"]?request["weighting_control"].as<std::string>():"inverse-noise";
@@ -375,7 +389,9 @@ int execute_weighted_point(const fs::path &input,const fs::path &output,unsigned
     require(std::isfinite(pixel) && pixel>0 && std::isfinite(cut) && cut>=0 && cut<=1,"weighted POINT grid request invalid");
     if(observation)require(!comparison && config["runtime"]["n_threads"].as<unsigned>()==workers,
         "POINT observation session requires the configured ordinary worker budget");
-    cal.prepare_or_recheck(request,config_sha);
+    require(!science || (!comparison && !request["recovery"] && !cfg["products"]["fit_diagnostics"].as<bool>() && !config["coadd"]["enabled"].as<bool>()),
+            "SCIENCE compact route excludes POINT diagnostics, recovery and coadds");
+    cal.prepare_or_recheck(request,config_sha,science);
     if(!reused)cal.set_first_request_sha(request_sha);
     const auto &networks=cal.networks();
     const auto &optical=cal.optical();
@@ -465,7 +481,7 @@ int execute_weighted_point(const fs::path &input,const fs::path &output,unsigned
             cfg["cleaning"]["ranks"]["a2000"].as<int>()==6,"recovery recipe differs");
         recovery_role=recovery["case"].as<std::string>();
     }
-    YAML::Node diagnostics;diagnostics["schema"]="citlali-weighted-point-cycle-v1";diagnostics["cycle_index"]=cycle;
+    YAML::Node diagnostics;diagnostics["schema"]=(science?"citlali-weighted-science-cycle-v1":"citlali-weighted-point-cycle-v1");diagnostics["cycle_index"]=cycle;
     diagnostics["frozen_health_identity"]="sha256:"+health_sha;diagnostics["coefficient_family"]=std::string(PtcEmpiricalCoefficients::family_for(weighting));
     diagnostics["normalization_interpretation"]=std::string(PtcEmpiricalCoefficients::interpretation);diagnostics["request_sha256"]=request_sha;
     const bool verbose=request["verbose"].as<bool>();
@@ -479,10 +495,10 @@ int execute_weighted_point(const fs::path &input,const fs::path &output,unsigned
                 const auto x=networks[i].coordinates(t,2*d),y=networks[i].coordinates(t,2*d+1);if(std::isfinite(x)&&std::isfinite(y)){ex=std::max(ex,std::abs(x));ey=std::max(ey,std::abs(y));}
             }
         }
-        const auto wcs=AstRtcTanGrid::source_offset(pixel,ex,ey);mapmaking::ForwardMapGrid grid{wcs.rows,wcs.columns,"CAL-health-independent-grid:"+config_sha+":"+weighted_arrays[array]};
-        std::optional<FruitOffsetModel> model;if(cycle)model.emplace(point_read_model(request["models"][weighted_arrays[array]],ledger,array,3600*wcs.cdelt2_deg,networks.front().saved.observation_identity,health_sha,cycle,weighting));
+        const auto wcs=science ? AstRtcTanGrid::centered(networks.front().center_ra,networks.front().center_dec,pixel,ex,ey) : AstRtcTanGrid::source_offset(pixel,ex,ey);mapmaking::ForwardMapGrid grid{wcs.rows,wcs.columns,"CAL-health-independent-grid:"+config_sha+":"+weighted_arrays[array]};
+        std::optional<FruitOffsetModel> model;if(cycle)model.emplace(point_read_model(request["models"][weighted_arrays[array]],ledger,array,3600*wcs.cdelt2_deg,networks.front().saved.observation_identity,health_sha,cycle,weighting,wcs,science));
         std::vector<double> values;std::vector<mapmaking::ForwardMapMember> members;std::size_t contributors=0;
-        YAML::Node plan;plan["schema"]="citlali-weighted-point-map-plan-v1";plan["request_sha256"]=request_sha;plan["cycle_index"]=cycle;
+        YAML::Node plan;plan["schema"]=(science?"citlali-weighted-science-map-plan-v1":"citlali-weighted-point-map-plan-v1");plan["request_sha256"]=request_sha;plan["cycle_index"]=cycle;
         plan["frozen_health_identity"]="sha256:"+health_sha;plan["array"]=weighted_arrays[array];plan["observation"]=networks.front().saved.observation_identity;
         if(comparison)plan["weighting_control"]=control;
         plan["target_grid_policy"]="all science-supported original CAL coordinates, frozen before optical and noise exclusions";
@@ -501,8 +517,8 @@ int execute_weighted_point(const fs::path &input,const fs::path &output,unsigned
             }
         }
         if(model)plan["source_model"]=model->identity();else plan["source_model"]="M0:zero-operand";
-        auto frame=plan["WCS"];frame["ASTFRAME"]="delta-source-AltAz";frame["CTYPE1"]="AZOFFSET";frame["CTYPE2"]="ELOFFSET";frame["CUNIT1"]="arcsec";frame["CUNIT2"]="arcsec";
-        frame["CRPIX1"]=wcs.crpix1;frame["CRPIX2"]=wcs.crpix2;frame["CDELT1"]=3600*wcs.cdelt1_deg;frame["CDELT2"]=3600*wcs.cdelt2_deg;frame["CRVAL1"]=0.;frame["CRVAL2"]=0.;frame["rows"]=wcs.rows;frame["columns"]=wcs.columns;
+        plan["WCS"]=citlali::cli::detail::configured_frame_record(wcs,science);
+        auto frame=plan["WCS"];
         struct SegmentOutput {
             std::vector<double> values;
             std::vector<mapmaking::ForwardMapMember> members;
@@ -650,14 +666,14 @@ int execute_weighted_point(const fs::path &input,const fs::path &output,unsigned
             verified["max_absolute_error"]=error;verified["numerical_rtol_floor_one"]=1e-10;
             plan["diagnostic_recovery"]["weighted_references"].push_back(verified);
         }
-        write_yaml(directory/"plan.yaml",plan);map_fits(directory/"map.fits",wcs,op,result,weighted_arrays[array],weighted_beams[array],true);
+        write_yaml(directory/"plan.yaml",plan);map_fits(directory/"map.fits",wcs,op,result,weighted_arrays[array],weighted_beams[array],true,science);
         YAML::Node bundle;bundle["schema"]="citlali-forward-map-bundle-v1";bundle["role"]="SCI-MAP:base_observation_map@1";bundle["outcome"]="success";
         bundle["array"]=weighted_arrays[array];bundle["observation"]=networks.front().saved.observation_identity;bundle["WCS"]=frame;
         bundle["nominal_beam_fwhm_arcsec"]=weighted_beams[array];bundle["signal_unit"]="mJy/beam";bundle["measured_beam_or_full_response_inferred"]=false;
         bundle["coefficient_family"]=std::string(PtcEmpiricalCoefficients::family_for(weighting));bundle["normalization_interpretation"]=std::string(PtcEmpiricalCoefficients::interpretation);
         bundle["cycle_index"]=cycle;bundle["frozen_health_identity"]="sha256:"+health_sha;bundle["contributing_detectors"]=contributors;bundle["contributing_samples"]=values.size();
         for(const auto *name:{"map.fits","plan.yaml"})bundle["files"][name]=citlali::utils::sha256_file(directory/name);
-        bundle["product_identity"]="weighted-POINT:"+request_sha+":"+bundle["files"]["map.fits"].as<std::string>();
+        bundle["product_identity"]=std::string(science?"weighted-SCIENCE:":"weighted-POINT:")+request_sha+":"+bundle["files"]["map.fits"].as<std::string>();
         write_yaml(directory/"bundle.yaml",bundle);diagnostics["arrays"][weighted_arrays[array]]=bundle;
         record_phase("map_and_publish_"+weighted_arrays[array],map_clock,{1,1,1});
     }

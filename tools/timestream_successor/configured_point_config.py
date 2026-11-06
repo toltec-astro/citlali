@@ -21,6 +21,9 @@ SCHEMA = "citlali-point-v1"
 MIGRATION = "replace-legacy-point-controls-v1"
 SCHEMA_V2 = "citlali-point-v2"
 MIGRATION_V2 = "replace-legacy-point-controls-v2"
+SCIENCE_SCHEMA = "citlali-science-compact-v1"
+SCIENCE_MIGRATION = "replace-legacy-science-controls-compact-v1"
+SCIENCE_FRAME = "J2000-radec-gnomonic-tangent"
 WEIGHTED_CLEANING = "noise-weighted-observed-als-v1"
 RTC_PROFILE = "existing-array-lowpass-v1"
 DISTURBANCE_POLICY = "repeated-level-shifts-unassessable-remainder-v1"
@@ -47,6 +50,7 @@ class PointRequest:
     feedback_enabled: bool = False
     feedback_iterations: int = 0
     weight_comparison: bool = False
+    reduction_type: str = "pointing"
 
 
 def _mapping(value, path, allowed=None, required=()):
@@ -289,10 +293,13 @@ def load_request(config: dict, launch_dir: Path) -> PointRequest:
         required=("schema", "migration", "cleaning", "rtc", "map", "feedback"),
     )
     schema = successor["schema"]
-    if type(schema) is not str or schema not in (SCHEMA, SCHEMA_V2):
-        raise ValueError(f"successor.schema supports only {SCHEMA!r} or {SCHEMA_V2!r}")
-    weighted = schema == SCHEMA_V2
-    migration = MIGRATION_V2 if weighted else MIGRATION
+    if type(schema) is not str or schema not in (SCHEMA, SCHEMA_V2, SCIENCE_SCHEMA):
+        raise ValueError(f"successor.schema supports {SCHEMA!r}, {SCHEMA_V2!r} or {SCIENCE_SCHEMA!r}")
+    science = schema == SCIENCE_SCHEMA
+    weighted = schema in (SCHEMA_V2, SCIENCE_SCHEMA)
+    migration = SCIENCE_MIGRATION if science else MIGRATION_V2 if weighted else MIGRATION
+    mode = "science" if science else "pointing"
+    frame = SCIENCE_FRAME if science else "delta-source-AltAz"
     _enum(successor["migration"], migration, "successor.migration")
     _mapping(
         successor,
@@ -354,7 +361,7 @@ def load_request(config: dict, launch_dir: Path) -> PointRequest:
         ("method", "frame", "pixel_size_arcsec", "coverage_cut"),
     )
     _enum(mapping["method"], "containing-pixel", "successor.map.method")
-    _enum(mapping["frame"], "delta-source-AltAz", "successor.map.frame")
+    _enum(mapping["frame"], frame, "successor.map.frame")
     pixel = _number(
         mapping["pixel_size_arcsec"],
         "successor.map.pixel_size_arcsec",
@@ -399,8 +406,10 @@ def load_request(config: dict, launch_dir: Path) -> PointRequest:
     if not _bool(products.get("fits", True), "successor.products.fits"):
         raise ValueError("successor.products.fits is required for all three arrays")
     fit_diagnostics = _bool(
-        products.get("fit_diagnostics", True), "successor.products.fit_diagnostics"
+        products.get("fit_diagnostics", not science), "successor.products.fit_diagnostics"
     )
+    if science and (fit_diagnostics or weight_comparison):
+        raise ValueError("SCIENCE compact profile does not publish POINT fits or weighting comparison")
     retain = _bool(
         products.get("retain_intermediates", False), "successor.products.retain_intermediates"
     )
@@ -408,12 +417,16 @@ def load_request(config: dict, launch_dir: Path) -> PointRequest:
     runtime = _mapping(
         config.get("runtime"), "runtime", required=("reduction_type", "output_dir", "n_threads")
     )
-    _enum(runtime["reduction_type"], "pointing", "runtime.reduction_type")
-    workers = _integer(runtime["n_threads"], "runtime.n_threads", maximum=12)
+    _enum(runtime["reduction_type"], mode, "runtime.reduction_type")
+    workers = _integer(runtime["n_threads"], "runtime.n_threads", maximum=32 if science else 12)
     verbose = _bool(runtime.get("verbose", False), "runtime.verbose")
     output_dir = _path(runtime["output_dir"], "runtime.output_dir", launch_dir)
     effective = deepcopy(config)
     _inputs(effective, launch_dir)
+    if science and effective["inputs"][0]["meta"]["name"] != "152389_0_2":
+        raise ValueError("SCIENCE compact pilot currently admits only acquisition 152389_0_2")
+    if science and _bool(_mapping(config.get("coadd", {}), "coadd").get("enabled", False), "coadd.enabled"):
+        raise ValueError("single-observation SCIENCE does not support coaddition")
     _timing(effective)
     calibration_dispositions = _calibration(effective)
     kids = _mapping(effective.get("kids"), "kids", required=("fitter", "solver"))
@@ -447,6 +460,14 @@ def load_request(config: dict, launch_dir: Path) -> PointRequest:
             mapmaking="containing-pixel map in delta-source-AltAz; empirical inverse-noise coefficients from max(reference variance, remaining variance); configured pixels and coverage; normalization is not map precision",
             noise_maps="not produced; empirical detector coefficients do not establish full cleaned-data covariance or map uncertainty",
             post_processing="POINT-EXPECTED and BASE conditional source selection for requested feedback; optional qualified fit diagnostics; no legacy source finder or map filter",
+        )
+    if science:
+        replacements.update(
+            mapmaking="containing-pixel FK5/J2000 RA/Dec TAN map on exact RTC coordinates; empirical analysis coefficients, not precision",
+            coadd="single-observation SCIENCE pilot; coadd disabled",
+            pointing="no pointing table, assessment or telescope correction",
+            source="compact-source 152389 pilot; inherited source-offset health/noise protection; no extended-field qualification",
+            post_processing="existing compact-source POINT-EXPECTED/BASE feedback in celestial tangent axes; no final POINT diagnostic or consumer",
         )
     dispositions = tuple(
         dict(
@@ -494,7 +515,7 @@ def load_request(config: dict, launch_dir: Path) -> PointRequest:
     effective["mapmaking"] = dict(
         enabled=True,
         method="containing-pixel",
-        pixel_axes="altaz",
+        pixel_axes="radec" if science else "altaz",
         pixel_size_arcsec=pixel,
         coverage_cut=coverage,
         cunit="mJy/beam",
@@ -505,7 +526,7 @@ def load_request(config: dict, launch_dir: Path) -> PointRequest:
     # V2 stops upstream at CAL and its own native cycle consumes the separately
     # requested weights/ranks/feedback; v1 PTC reads the standard_pca rank path.
     effective["runtime"] = dict(
-        reduction_type="pointing",
+        reduction_type=mode,
         output_dir=str(output_dir),
         n_threads=workers,
         verbose=verbose,
@@ -519,7 +540,7 @@ def load_request(config: dict, launch_dir: Path) -> PointRequest:
         rtc=dict(profile=RTC_PROFILE, disturbance_exclusion=disturbance),
         map=dict(
             method="containing-pixel",
-            frame="delta-source-AltAz",
+            frame=frame,
             pixel_size_arcsec=pixel,
             coverage_cut=coverage,
         ),
@@ -533,7 +554,7 @@ def load_request(config: dict, launch_dir: Path) -> PointRequest:
         effective_successor["detector_response"] = dict(min_relative_response=min_response)
         effective_successor["feedback"]["max_iters"] = feedback_iterations
         effective["successor_effective"] = dict(
-            schema="citlali-point-v2-effective-semantics-v1",
+            schema="citlali-science-compact-effective-semantics-v1" if science else "citlali-point-v2-effective-semantics-v1",
             optical_eligibility="observation-local preclean CAL decision, frozen before all cleaner passes; no APT mutation or response-gain rescaling",
             cleaning_weight="1 / source-protected empirical reference residual variance",
             map_weight="1 / max(reference residual variance, remaining cleaned residual variance)",
@@ -574,4 +595,5 @@ def load_request(config: dict, launch_dir: Path) -> PointRequest:
         feedback_enabled,
         feedback_iterations,
         weight_comparison,
+        mode,
     )

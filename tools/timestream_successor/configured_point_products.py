@@ -7,6 +7,7 @@ adapter supports the established astrometry handoff with unavailable errors.
 """
 
 from pathlib import Path
+from configured_map_frames import frame_spec, grid_keys, validate_frame
 import re
 import shutil
 
@@ -36,7 +37,7 @@ FRAME = dict(
 GRID_KEYS = tuple(FRAME) + ("CRPIX1", "CRPIX2", "CRVAL1", "CRVAL2", "CDELT1", "CDELT2", "NOMBFWHM")
 
 
-def _inspect_map(root, observation, array):
+def _inspect_map(root, observation, array, *, celestial=False):
     """Check the native publication, without replaying expensive upstream data."""
     path = root / "map.fits"
     bundle_path = root / "bundle.yaml"
@@ -94,7 +95,7 @@ def _inspect_map(root, observation, array):
         require(bundle["files"].get("plan.yaml") == plan_sha, "empirical MAP plan digest mismatch")
         plan = read_yaml(plan_path)
         require(
-            plan["schema"] == "citlali-weighted-point-map-plan-v1"
+            plan["schema"] == ("citlali-weighted-science-map-plan-v1" if celestial else "citlali-weighted-point-map-plan-v1")
             and plan["array"] == array
             and plan["observation"] == bundle["observation"]
             and type(plan["cycle_index"]) is int
@@ -117,16 +118,19 @@ def _inspect_map(root, observation, array):
             "MAP requires its six genuine signal/support planes",
         )
         header = hdus[0].header
+        validate_frame(header, celestial=celestial)
+        frame = frame_spec(header)
+        keys = grid_keys(header)
         require(
-            all(header.get(key) == value for key, value in FRAME.items()),
-            "MAP requires source-offset AltAz with arcsecond axes",
+            all(header.get(key) == value for key, value in frame.items()),
+            "MAP frame or axis units differ from its declared mode",
         )
         require(
-            all(np.isfinite(header[key]) for key in GRID_KEYS if key not in FRAME),
+            all(np.isfinite(header[key]) for key in keys if key not in frame),
             "MAP grid/nominal beam must be finite",
         )
         require(
-            header["CRVAL1"] == header["CRVAL2"] == 0.0
+            (celestial or header["CRVAL1"] == header["CRVAL2"] == 0.0)
             and header["CDELT1"] < 0.0 < header["CDELT2"]
             and header["NOMBFWHM"] > 0.0,
             "MAP offset origin, axes or beam differs",
@@ -137,7 +141,7 @@ def _inspect_map(root, observation, array):
         )
         require(
             all(
-                bundle["WCS"].get(key) == header[key] for key in tuple(FRAME) + ("CRVAL1", "CRVAL2")
+                bundle["WCS"].get(key) == header[key] for key in tuple(frame) + ("CRVAL1", "CRVAL2")
             ),
             "MAP frame differs from native bundle",
         )
@@ -146,7 +150,7 @@ def _inspect_map(root, observation, array):
         if empirical:
             require(
                 all(
-                    bundle["WCS"].get(key) == header[key] for key in GRID_KEYS if key != "NOMBFWHM"
+                    bundle["WCS"].get(key) == header[key] for key in keys if key != "NOMBFWHM"
                 ),
                 "empirical MAP grid differs from native bundle",
             )
@@ -157,7 +161,7 @@ def _inspect_map(root, observation, array):
                 "MAP plane units or array differ",
             )
             require(
-                all(hdu.header.get(key) == header[key] for key in GRID_KEYS),
+                all(hdu.header.get(key) == header[key] for key in keys),
                 "MAP plane frames differ",
             )
             require(
@@ -192,6 +196,8 @@ def _inspect_map(root, observation, array):
         require(
             np.issubdtype(hits.dtype, np.integer) and (hits >= 0).all(), "invalid MAP hit counts"
         )
+    if celestial:
+        extra["WCS"] = {key: header[key] for key in keys if key != "NOMBFWHM"}
     return dict(
         source=path,
         sha256=sha,

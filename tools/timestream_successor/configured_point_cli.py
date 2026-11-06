@@ -202,24 +202,31 @@ def release_transport(work):
     }
 
 
-def execute(config_path, native, *, launch_dir=None):
+def execute(config_path, native, *, launch_dir=None, mode="pointing"):
     with ExitStack() as lifetime:
-        return _execute(config_path, native, launch_dir, lifetime)
+        return _execute(config_path, native, launch_dir, lifetime, mode)
 
 
-def _execute(config_path, native, launch_dir, lifetime):
+def _execute(config_path, native, launch_dir, lifetime, mode="pointing"):
     launch_dir = Path.cwd() if launch_dir is None else launch_dir
     config_path = config_path.resolve()
     native = native.resolve()
     received = yaml.safe_load(config_path.read_text())
     request = load_request(received, launch_dir)
+    if mode not in ("pointing", "science") or request.reduction_type != mode:
+        raise ValueError("configured entry and requested reduction mode differ")
+    science = mode == "science"
+    label = "SCIENCE" if science else "POINT"
+    publisher = publish_maps
+    if science:
+        from configured_science_products import publish_maps as publisher
     # Reject unsupported requests before creating any reduction output.
     version = subprocess.check_output([str(native), "--version"], text=True).strip()
     reduction = reserve_reduction(request.output_dir)
-    work = reduction / ".point-work"
+    work = reduction / (".science-work" if science else ".point-work")
     work.mkdir()
     record = {
-        "schema": "citlali-configured-point-run-v1",
+        "schema": "citlali-configured-science-run-v1" if science else "citlali-configured-point-run-v1",
         "status": "running",
         "received_config": bind(config_path),
         "executable": bind(native),
@@ -264,7 +271,7 @@ def _execute(config_path, native, launch_dir, lifetime):
         record["inputs"] = {k: v for k, v in prepared.items() if k != "bindings"}
         write_json(work / "input-bindings.json", prepared["bindings"])
         print(
-            f"POINT {prepared['observation']}: {len(prepared['networks'])} networks, "
+            f"{label} {prepared['observation']}: {len(prepared['networks'])} networks, "
             f"all three arrays, {request.workers} workers",
             flush=True,
         )
@@ -299,10 +306,10 @@ def _execute(config_path, native, launch_dir, lifetime):
             raise RuntimeError("required detector-drop evaluation/application is incomplete")
         # Native setup is the single authority for CPU availability. Array
         # workers inherit that effective budget; the requested YAML stays intact.
-        array_executor = PointArrayExecutor(request.workers, record["stages"][0].get("execution", {}))
+        array_executor = PointArrayExecutor(request.workers, record["stages"][0].get("execution", {}), maximum=32 if science else 12)
         record["array_execution_budget"] = array_executor.budget
         record["array_execution"] = array_executor.reports
-        print(f"POINT CPU budget: requested {request.workers}, effective "
+        print(f"{label} CPU budget: requested {request.workers}, effective "
               f"{array_executor.budget['effective_workers']} "
               f"({array_executor.budget.get('availability_source', 'native setup')}); "
               f"up to {array_executor.workers} array workers, numerical-library threads limited to 1",
@@ -347,7 +354,7 @@ def _execute(config_path, native, launch_dir, lifetime):
         # leaves a discoverable, apparently complete observation directory.
         staged = work / "publish"
         raw = staged / "raw"
-        record["products"] = publish_maps(
+        record["products"] = publisher(
             map_products,
             raw,
             prepared["observation"],
@@ -384,8 +391,11 @@ def _execute(config_path, native, launch_dir, lifetime):
             )
             + " and qualified diagnostics; astrometry table when eligible, flux calibration held",
         )
+        if science:
+            record["scientific_scope"] = ("single-observation compact-source SCIENCE in FK5/J2000 TAN; "
+                                          "explicit feedback outcome; no coadd, POINT consumer or flux-calibration qualification")
         write_json(reduction / "RUN.json", record)
-        print(f"POINT complete: {published}", flush=True)
+        print(f"{label} complete: {published}", flush=True)
         return reduction
     except Exception as exc:
         record.update(status="failed", seconds=time.monotonic() - started, error=str(exc))
@@ -396,11 +406,11 @@ def _execute(config_path, native, launch_dir, lifetime):
             array_executor.close()
 
 
-def default_config():
+def default_config(mode="pointing"):
     # TolTECA supports a fully specified low_level dictionary. The explicit
     # profile migrates the old default tree into the new native request shape.
     result = yaml.safe_load((REPO / "data/config.yaml").read_text())
-    overlay = yaml.safe_load((REPO / "data/configured_point_v1.yaml").read_text())
+    overlay = yaml.safe_load((REPO / ("data/configured_science_compact_v1.yaml" if mode == "science" else "data/configured_point_v1.yaml")).read_text())
 
     def merge(dst, src):
         for k, value in src.items():
@@ -413,7 +423,7 @@ def default_config():
     return result
 
 
-def main(argv=None):
+def main(argv=None, *, mode="pointing"):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--native", required=True, type=Path)
     parser.add_argument("-l", "--log-level", default="info")
@@ -430,14 +440,14 @@ def main(argv=None):
     if args.version:
         return subprocess.call([str(args.native), "--version"])
     if args.dump_config:
-        print(yaml.safe_dump(default_config(), sort_keys=False), end="")
+        print(yaml.safe_dump(default_config(mode), sort_keys=False), end="")
         return 0
     if args.config is None:
         parser.error("a merged TolTECA YAML is required")
     try:
-        execute(args.config, args.native)
+        execute(args.config, args.native, mode=mode)
     except Exception as exc:
-        print(f"POINT failed: {exc}", file=sys.stderr)
+        print(f"{'SCIENCE' if mode == 'science' else 'POINT'} failed: {exc}", file=sys.stderr)
         return 1
     return 0
 
