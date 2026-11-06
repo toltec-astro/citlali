@@ -1,5 +1,11 @@
 # Citlali refactor — current state
 
+2026-11-06 Grant authorized the narrow [POINT assessment foundation](POINT_POLICY_FOUNDATION_HANDOFF_2026-11-06.md).
+This isolated candidate collects existing final measurements and preserves the
+current table behavior. “Assess contract compliance” owns further rule choices;
+the broader selection/background/consumer proposal remains pending. Software
+and representative gates await Grant. No integration or push is authorized here.
+
 2026-11-05 POINT policy reconciliation is prepared for scope review. Grant's
 later decisions in “Assess contract compliance” are now in the
 [decision table](POINT_METHOD_AND_USE_ACCEPTANCE_2026-11-04.md#agreed-decision-table)

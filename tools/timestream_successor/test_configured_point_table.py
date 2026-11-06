@@ -32,6 +32,7 @@ def metadata(observation=152389):
 def measurements():
     return {
         array: dict(
+            method="POINT-EXPECTED-v1",
             accepted=True,
             status="accepted",
             complete=True,
@@ -175,9 +176,16 @@ def test_publication_reuses_its_final_guards_and_links_the_handoff(tmp_path, mon
                                  fit_diagnostics=True, verbose=False,
                                  pointing_metadata=metadata())
     assert calls == list(ARRAYS)
+    assessment = json.loads((destination / "point-assessment.json").read_text())
+    assert assessment["rule_evaluation"]["status"] == "not_evaluated"
+    assert assessment["existing_table"]["pointing_eligible"] is True
+    for item in assessment["arrays"]:
+        assert item["fit_guard"]["accepted_parameters"] == guards[item["array"]]["accepted_parameters"]
     table = Table.read(destination / rows[0]["pointing_table"], format="ascii.ecsv")
     assert list(table["x_t"]) == [2.0, 3.0, 4.0]
     for row in rows:
+        assert row["assessment"]["file"] == "point-assessment.json"
+        assert row["assessment"]["sha256"] == digest(destination / "point-assessment.json")
         assert row["pointing_eligible"] is True
         assert row["calibration_eligible"] is False
         assert row["legacy_analysis_compatible"] is False

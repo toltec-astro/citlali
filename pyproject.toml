@@ -23,6 +23,7 @@ citlali-package-point = "package_configured_point:main"
 [tool.setuptools]
 package-dir = {"" = "tools/timestream_successor"}
 py-modules = [
+  "configured_point_assessment",
   "configured_point_cli",
   "configured_point_comparison",
   "configured_point_config",

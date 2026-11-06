@@ -168,6 +168,9 @@ def test_preserves_existing_reductions_and_releases_only_consumed_transport(appl
     assert len(list((work / 'map/products').rglob('map.fits'))) == 3
     record = json.loads((output / 'RUN.json').read_text())
     assert record['status'] == 'completed'
+    for product in record['products']:
+        binding = product['assessment']
+        assert binding['sha256'] == cli.digest(output / '152389/raw' / binding['file'])
     assert record['array_execution_budget']['effective_workers'] == 2
     assert record['stages'][0]['execution_receipt']['sha256'] == cli.digest(
         work / 'upstream/products/observation-receipt.yaml')
@@ -215,6 +218,24 @@ def test_late_publication_failure_keeps_partial_products_hidden(application, mon
     assert not (reduction / '152389').exists()
     assert (reduction / '.point-work/publish/raw/partial-product.fits').exists()
     assert 'released' not in app.events
+    assert json.loads((reduction / 'RUN.json').read_text())['status'] == 'failed'
+
+
+def test_required_assessment_write_failure_prevents_observation_publication(application, monkeypatch):
+    original_open = Path.open
+
+    def fail_report(path, *args, **kwargs):
+        if path.name == 'point-assessment.json' and args == ('xb',):
+            raise OSError('required assessment write failed')
+        return original_open(path, *args, **kwargs)
+
+    monkeypatch.setattr(Path, 'open', fail_report)
+    with pytest.raises(OSError, match='required assessment write failed'):
+        application.execute()
+    reduction = application.launch / 'reduced/redu00'
+    assert not (reduction / '152389').exists()
+    assert len(list((reduction / '.point-work/publish/raw').glob('toltec_*.fits'))) == 3
+    assert 'released' not in application.events
     assert json.loads((reduction / 'RUN.json').read_text())['status'] == 'failed'
 
 

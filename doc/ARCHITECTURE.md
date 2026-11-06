@@ -108,6 +108,14 @@ MAP / BASE-POINT development checkpoint. Later configured POINT workflow and
 qualification are routed through [current state](CURRENT_STATE.md). Scientific
 admission, unavailable products and production limits retain their named owners.
 
+The candidate `configured_point_assessment` adapter snapshots existing final
+POINT map/fit facts once at observation publication. It owns the versioned
+`point-assessment.json` diagnostic and its serialized-byte binding; map and fit
+producers retain scientific authority. The existing table handoff stays separate
+from the explicitly unevaluated future rule result. Its
+[interface and design handoff](POINT_POLICY_FOUNDATION_HANDOFF_2026-11-06.md)
+do not authorize new rules or downstream correction behavior.
+
 
 ## Current development entry — owner direction 2026-09-17
 

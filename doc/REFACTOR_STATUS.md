@@ -1,3 +1,13 @@
+## POINT assessment foundation authorized — 2026-11-06
+
+Grant approved a first code increment collecting existing measurements into a
+versioned record, with the design chat owning scientific rule development and
+approvals. The [handoff](POINT_POLICY_FOUNDATION_HANDOFF_2026-11-06.md) and
+[work order](../validation/point_policy_foundation_2026-11-06/PLAN.md) delimit
+the isolated candidate. Rule evaluation remains pending; the current fit,
+table and consumer behavior is preserved. Grant owns all runtime gates, which
+remain pending. This is preparation, not integration or acceptance.
+
 ## POINT selection and reporting scope prepared — 2026-11-05
 
 The [initial decision table](POINT_METHOD_AND_USE_ACCEPTANCE_2026-11-04.md#agreed-decision-table)

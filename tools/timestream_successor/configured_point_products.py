@@ -15,6 +15,7 @@ from astropy.io import fits
 
 from inspect_forward_map import digest, read_yaml, require
 from point_additive_diagnostics import save_json
+from configured_point_assessment import PARAMETER_NAMES, PARAMETER_UNITS, publish_assessment
 
 
 ARRAYS = ("a1100", "a1400", "a2000")
@@ -304,24 +305,8 @@ def publish_maps(
                     map_sha256=source["sha256"],
                     frame="delta-source-AltAz",
                     centroid_axes=["azimuth_offset", "elevation_offset"],
-                    parameter_names=[
-                        "amplitude",
-                        "cx",
-                        "cy",
-                        "sigma_x",
-                        "sigma_y",
-                        "angle",
-                        "constant",
-                    ],
-                    parameter_units=[
-                        "mJy/nominal beam",
-                        "arcsec",
-                        "arcsec",
-                        "arcsec",
-                        "arcsec",
-                        "rad",
-                        "mJy/nominal beam",
-                    ],
+                    parameter_names=list(PARAMETER_NAMES),
+                    parameter_units=list(PARAMETER_UNITS),
                     sigma_A_units="mJy/nominal beam",
                     uncertainty_scope="conditional full frozen C0 reference-scale sigma_A; "
                     "not endpoint empirical uncertainty or full adaptive error",
@@ -336,8 +321,10 @@ def publish_maps(
     from configured_point_table import publish_pointing_table
 
     table = publish_pointing_table(destination, observation, guards, records, pointing_metadata)
+    assessment = publish_assessment(destination, observation, records, guards, table)
     for record in records:
         record.update(
+            assessment=dict(assessment),
             pointing_table_diagnostic="point-table.json",
             pointing_table=table["table"],
             pointing_eligible=table["pointing_eligible"],

@@ -8,6 +8,7 @@ from pathlib import Path
 import sys
 
 RUNTIME_MODULES = (
+    "configured_point_assessment",
     "configured_point_cli",
     "configured_point_comparison",
     "configured_point_config",
