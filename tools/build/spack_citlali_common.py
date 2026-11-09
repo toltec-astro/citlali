@@ -265,6 +265,45 @@ def managed_deployment_environment(
     return result
 
 
+def _validate_fits_graph(nodes: dict, root_hash: str) -> None:
+    """Bind both FITS interfaces to the same qualified library below the active root."""
+    root = nodes.get(root_hash, {})
+    if root.get("name") != "citlali":
+        raise RuntimeError("concrete Citlali root is missing")
+
+    hashes = {}
+    for name in ("cfitsio", "ccfits", "tula-ccfits"):
+        matches = [h for h, node in nodes.items() if node["name"] == name]
+        if len(matches) != 1:
+            raise RuntimeError(f"expected exactly one concrete {name} node")
+        hashes[name] = matches[0]
+
+    fits = nodes[hashes["cfitsio"]]
+    if fits.get("external") or fits.get("parameters", {}).get("fortran") is not False:
+        raise RuntimeError("CFITSIO must be built by Spack without Fortran")
+    providers = [
+        edge for edge in fits.get("dependencies", [])
+        if "zlib-api" in edge["parameters"].get("virtuals", [])
+    ]
+    if len(providers) != 1:
+        raise RuntimeError("CFITSIO requires one zlib provider")
+    zlib = providers[0]
+    if (nodes.get(zlib["hash"], {}).get("name") != zlib["name"]
+            or not {"build", "link"}.issubset(zlib["parameters"]["deptypes"])):
+        raise RuntimeError("CFITSIO zlib provider must be bound at build and link time")
+
+    hashes["citlali"] = root_hash
+    for consumer, library in (
+        ("citlali", "tula-ccfits"), ("tula-ccfits", "ccfits"),
+        ("tula-ccfits", "cfitsio"), ("ccfits", "cfitsio"),
+    ):
+        edges = nodes[hashes[consumer]].get("dependencies", [])
+        linked = [e["hash"] for e in edges
+                  if e["name"] == library and "link" in e["parameters"]["deptypes"]]
+        if linked != [hashes[library]]:
+            raise RuntimeError(f"{consumer} must link the qualified {library} node")
+
+
 def validate_concrete_graph(
     environment_path: Path,
     *,
@@ -311,18 +350,7 @@ def validate_concrete_graph(
                 f"unexpected {name} identity: {actual}; "
                 f"expected {(version, namespace)}"
             )
-    # CCfits and the adapter must resolve the same C library as the native writer.
-    fits_hashes = {}
-    for name in ("cfitsio", "ccfits", "tula-ccfits"):
-        matches = [h for h, node in lock["concrete_specs"].items() if node.get("name") == name]
-        if len(matches) != 1:
-            raise RuntimeError(f"expected exactly one concrete {name} node")
-        fits_hashes[name] = matches[0]
-    for consumer, dependency in (("ccfits", "cfitsio"), ("tula-ccfits", "cfitsio"), ("tula-ccfits", "ccfits")):
-        edges = packages[consumer].get("dependencies", [])
-        linked = [e["hash"] for e in edges if e["name"] == dependency and "link" in e["parameters"]["deptypes"]]
-        if linked != [fits_hashes[dependency]]:
-            raise RuntimeError(f"{consumer} must link the qualified {dependency} node")
+    _validate_fits_graph(lock["concrete_specs"], root_hash)
     for name in required_graph_packages:
         if name not in packages:
             raise RuntimeError(f"concrete graph is missing {name}")

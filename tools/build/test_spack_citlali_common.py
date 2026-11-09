@@ -36,13 +36,23 @@ class SpackCitlaliGraphTest(unittest.TestCase):
         for index, (name, (version, namespace)) in enumerate(
             EXPECTED_PACKAGES.items()
         ):
-            concrete_specs[str(index)] = {
+            key = "a" * 32 if name == "citlali" else str(index)
+            concrete_specs[key] = {
                 "name": name,
                 "version": version,
                 "namespace": namespace,
             }
         hashes = {node["name"]: h for h, node in concrete_specs.items()}
-        for consumer, dependencies in (("ccfits", ["cfitsio"]), ("tula-ccfits", ["ccfits", "cfitsio"])):
+        concrete_specs["zlib-hash"] = {"name": "zlib-ng", "version": "2.3.3"}
+        fits = concrete_specs[hashes["cfitsio"]]
+        fits["parameters"] = {"fortran": False}
+        fits["dependencies"] = [{
+            "name": "zlib-ng", "hash": "zlib-hash",
+            "parameters": {"deptypes": ["build", "link"], "virtuals": ["zlib-api"]},
+        }]
+        for consumer, dependencies in (
+            ("citlali", ["tula-ccfits"]), ("ccfits", ["cfitsio"]), ("tula-ccfits", ["ccfits", "cfitsio"]),
+        ):
             concrete_specs[hashes[consumer]]["dependencies"] = [
                 {"name": dep, "hash": hashes[dep], "parameters": {"deptypes": ["build", "link"]}}
                 for dep in dependencies
@@ -69,6 +79,24 @@ class SpackCitlaliGraphTest(unittest.TestCase):
         self._write_lock()
         root_hash, _ = validate_concrete_graph(self.environment)
         self.assertEqual(root_hash, "a" * 32)
+
+    def test_rejects_disconnected_fits_stack(self) -> None:
+        self._write_lock()
+        path = self.environment / "spack.lock"
+        lock = json.loads(path.read_text())
+        lock["concrete_specs"][lock["roots"][0]["hash"]]["dependencies"] = []
+        path.write_text(json.dumps(lock))
+        with self.assertRaisesRegex(RuntimeError, "citlali must link"):
+            validate_concrete_graph(self.environment)
+
+    def test_rejects_fits_without_a_linked_zlib_provider(self) -> None:
+        self._write_lock()
+        path = self.environment / "spack.lock"
+        lock = json.loads(path.read_text())
+        del lock["concrete_specs"]["zlib-hash"]
+        path.write_text(json.dumps(lock))
+        with self.assertRaisesRegex(RuntimeError, "zlib provider"):
+            validate_concrete_graph(self.environment)
 
     def test_rejects_a_second_fits_library(self) -> None:
         self._write_lock()
