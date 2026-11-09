@@ -7,8 +7,14 @@ Native timestream processing and exact subtraction/restoration live elsewhere.
 """
 
 from dataclasses import dataclass
-from configured_map_frames import (frame_spec, grid_keys, validate_frame, learner_header,
-                                   is_celestial, guard_frame)
+from configured_map_frames import (
+    frame_spec,
+    grid_keys,
+    validate_frame,
+    learner_header,
+    is_celestial,
+    guard_frame,
+)
 from pathlib import Path
 import re
 from types import SimpleNamespace
@@ -127,7 +133,9 @@ def _read_map(path):
         )
         require(
             all(
-                np.isfinite(header[key]) for key in keys if key not in frame_spec(header) and key != "ARRAY"
+                np.isfinite(header[key])
+                for key in keys
+                if key not in frame_spec(header) and key != "ARRAY"
             ),
             "configured feedback requires a finite grid and beam",
         )
@@ -152,8 +160,7 @@ def _read_map(path):
         for name in names:
             hdu = hdus[name]
             require(
-                hdu.data.shape == shape
-                and all(hdu.header.get(key) == header[key] for key in keys),
+                hdu.data.shape == shape and all(hdu.header.get(key) == header[key] for key in keys),
                 "configured feedback plane geometry differs",
             )
             require(
@@ -235,7 +242,12 @@ def _publish(
         noise_weight_relearning_owned_by="native current-residual PTC",
     )
     if is_celestial(native_header):
-        record["expected_origin_sky"] = dict(ra_deg=native_header["CRVAL1"], dec_deg=native_header["CRVAL2"], frame="FK5", equinox=2000.0)
+        record["expected_origin_sky"] = dict(
+            ra_deg=native_header["CRVAL1"],
+            dec_deg=native_header["CRVAL2"],
+            frame="FK5",
+            equinox=2000.0,
+        )
         record["fits_axis_units"] = "deg"
     if guard["accepted"] and selected is not None:
         record["candidate_summary"] = selected["summary"]
@@ -265,7 +277,14 @@ def _publish(
             if verbose:
                 planes.append(("RATIO", selected["z"], "1"))
             model = destination / "candidate.fits"
-            write_fits(model, header, planes, companion="CONFIGURED-SCIENCE-BASE" if is_celestial(native_header) else "CONFIGURED-POINT-BASE")
+            write_fits(
+                model,
+                header,
+                planes,
+                companion="CONFIGURED-SCIENCE-BASE"
+                if is_celestial(native_header)
+                else "CONFIGURED-POINT-BASE",
+            )
             record.update(
                 status="ready",
                 cause=None,
@@ -393,7 +412,8 @@ def update(map_path, context, destination, verbose=False):
     s, valid, _, stamp_header, half = source_patch(signal, support, coverage, header)
     require(
         half == context.half
-        and tuple((key, stamp_header[key]) for key in grid_keys(native, array=True)) == context.header,
+        and tuple((key, stamp_header[key]) for key in grid_keys(native, array=True))
+        == context.header,
         "feedback source crop differs",
     )
     fixed = SimpleNamespace(
@@ -443,7 +463,8 @@ def measure_only(map_path, context, additive=None):
     s, valid, _, stamp_header, half = source_patch(signal, support, coverage, header)
     require(
         half == context.half
-        and tuple((key, stamp_header[key]) for key in grid_keys(native, array=True)) == context.header,
+        and tuple((key, stamp_header[key]) for key in grid_keys(native, array=True))
+        == context.header,
         "measurement source crop differs",
     )
     fixed = SimpleNamespace(header=stamp_header, beam=context.beam)

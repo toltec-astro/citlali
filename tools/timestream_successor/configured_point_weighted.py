@@ -19,7 +19,9 @@ STATES = ("prior_unavailable", "retained", "weak_response", "sign_mismatch", "un
 
 
 def health_summary(path):
-    return detector_summary(yaml.safe_load(Path(path).read_text()), "citlali-point-optical-health-v2")
+    return detector_summary(
+        yaml.safe_load(Path(path).read_text()), "citlali-point-optical-health-v2"
+    )
 
 
 def detector_summary(health, schema):
@@ -119,9 +121,13 @@ def execute(
             raise ValueError("incomplete live POINT network cohort")
         for nw, row in zip(prepared["networks"], networks):
             root = work / "upstream/products" / f"network{nw}"
-            if (row["root"] != str(root) or row["transport"] != "observation-memory"
-                    or row["input"] != bind(prepared["effective_config"].parent / f"network{nw}-input.json")
-                    or not re.fullmatch("[0-9a-f]{64}", row["handoff_sha256"])):
+            if (
+                row["root"] != str(root)
+                or row["transport"] != "observation-memory"
+                or row["input"]
+                != bind(prepared["effective_config"].parent / f"network{nw}-input.json")
+                or not re.fullmatch("[0-9a-f]{64}", row["handoff_sha256"])
+            ):
                 raise ValueError("live POINT network/input generation differs")
     else:
         networks = []
@@ -137,7 +143,9 @@ def execute(
                 )
             )
     base = dict(
-        schema="citlali-configured-weighted-science-v1" if science else "citlali-configured-weighted-point-v1",
+        schema="citlali-configured-weighted-science-v1"
+        if science
+        else "citlali-configured-weighted-point-v1",
         effective_config=bind(prepared["effective_config"]),
         networks=networks,
         verbose=request.verbose,
@@ -147,7 +155,12 @@ def execute(
         write_json(health_request, dict(base, stage="health"))
         record["stages"].append(
             native_call(
-                native, health_request, work / "health", terminal="map", workers=request.workers, verbose=request.verbose
+                native,
+                health_request,
+                work / "health",
+                terminal="map",
+                workers=request.workers,
+                verbose=request.verbose,
             )
         )
         health = None if memory_handoff else work / "health/products/health.yaml"
@@ -204,7 +217,14 @@ def execute(
             dict(base, stage="cycle", health=frozen_health, cycle_index=cycle, models=models),
         )
         record["stages"].append(
-            native_call(native, native_request, stage_dir, terminal="map", workers=request.workers, verbose=request.verbose)
+            native_call(
+                native,
+                native_request,
+                stage_dir,
+                terminal="map",
+                workers=request.workers,
+                verbose=request.verbose,
+            )
         )
         products = stage_dir / "products"
         result = yaml.safe_load((products / "cycle.yaml").read_text())
@@ -215,7 +235,11 @@ def execute(
         family = CONTROL_FAMILY if weighting_control == "equal-control" else EMPIRICAL_FAMILY
         if (
             (not memory_handoff and bind(health) != frozen_health)
-            or (memory_handoff and record["stages"][-1]["execution"].get("health_generation_sha256") != frozen_health["sha256"])
+            or (
+                memory_handoff
+                and record["stages"][-1]["execution"].get("health_generation_sha256")
+                != frozen_health["sha256"]
+            )
             or result["cycle_index"] != cycle
             or result["frozen_health_identity"] != "sha256:" + frozen_health["sha256"]
             or result["coefficient_family"] != family
@@ -243,7 +267,8 @@ def execute(
         trajectory["cycles"].append(entry)
         trajectory["applied_feedback_applications"] = cycle
         print(
-            f"{label} {weighting_control} map {cycle}/{budget}: all three arrays complete", flush=True
+            f"{label} {weighting_control} map {cycle}/{budget}: all three arrays complete",
+            flush=True,
         )
         if cycle == budget:
             trajectory["stopping_reason"] = (
@@ -251,8 +276,15 @@ def execute(
             )
             break
         models, selections = {}, {}
-        jobs = [(products / array / "map.fits", stage_dir / f"feedback-{array}",
-                 request.verbose, contexts.get(array)) for array in ARRAYS]
+        jobs = [
+            (
+                products / array / "map.fits",
+                stage_dir / f"feedback-{array}",
+                request.verbose,
+                contexts.get(array),
+            )
+            for array in ARRAYS
+        ]
         if array_executor is None:
             # Direct library callers retain their explicit serial execution.
             results = []
@@ -284,6 +316,8 @@ def execute(
         write_json(reduction / "RUN.json", record)
     diagnostic = "weighted-science.json" if science else "weighted-point.json"
     write_json(reduction / diagnostic, trajectory)
-    record["weighted_science_diagnostic" if science else "weighted_point_diagnostic"] = bind(reduction / diagnostic)
+    record["weighted_science_diagnostic" if science else "weighted_point_diagnostic"] = bind(
+        reduction / diagnostic
+    )
     record["final_cycle"] = trajectory["applied_feedback_applications"]
     return products

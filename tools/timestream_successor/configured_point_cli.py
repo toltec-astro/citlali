@@ -74,8 +74,16 @@ def reserve_reduction(output):
 
 
 def native_call(
-    binary, request, dest, *, terminal, workers=1, method=None, verbose=False, timeout=None,
-    session=None
+    binary,
+    request,
+    dest,
+    *,
+    terminal,
+    workers=1,
+    method=None,
+    verbose=False,
+    timeout=None,
+    session=None,
 ):
     dest.mkdir()
     config = {
@@ -98,11 +106,17 @@ def native_call(
         if session is None:
             code = subprocess.run(
                 native_command(binary, path, verbose),
-                env=env, stdout=log, stderr=subprocess.STDOUT,
+                env=env,
+                stdout=log,
+                stderr=subprocess.STDOUT,
                 **({"timeout": timeout} if timeout is not None else {}),
             ).returncode
         else:
-            if (terminal != "map" and not (terminal == "cal" and session.start_at_cal)) or method is not None or timeout is not None:
+            if (
+                (terminal != "map" and not (terminal == "cal" and session.start_at_cal))
+                or method is not None
+                or timeout is not None
+            ):
                 raise ValueError("Invalid configured POINT observation stage")
             code = session.run(binary, path, log, env, verbose)
     elapsed = time.monotonic() - started
@@ -136,7 +150,9 @@ def native_call(
             record["execution"] = receipt["execution"]
             record["execution_receipt"] = bind(observation_path)
             if session is not None and session.start_at_cal:
-                record["point_handoff"] = [row["point_handoff"] for row in receipt["networks"]] if code == 0 else []
+                record["point_handoff"] = (
+                    [row["point_handoff"] for row in receipt["networks"]] if code == 0 else []
+                )
     write_json(dest / "stage.json", record)
     if code or error_lines:
         raise RuntimeError(f"{terminal} failed; see {log_path}\n" + "\n".join(tail))
@@ -226,7 +242,9 @@ def _execute(config_path, native, launch_dir, lifetime, mode="pointing"):
     work = reduction / (".science-work" if science else ".point-work")
     work.mkdir()
     record = {
-        "schema": "citlali-configured-science-run-v1" if science else "citlali-configured-point-run-v1",
+        "schema": "citlali-configured-science-run-v1"
+        if science
+        else "citlali-configured-point-run-v1",
         "status": "running",
         "received_config": bind(config_path),
         "executable": bind(native),
@@ -306,25 +324,41 @@ def _execute(config_path, native, launch_dir, lifetime, mode="pointing"):
             raise RuntimeError("required detector-drop evaluation/application is incomplete")
         # Native setup is the single authority for CPU availability. Array
         # workers inherit that effective budget; the requested YAML stays intact.
-        array_executor = PointArrayExecutor(request.workers, record["stages"][0].get("execution", {}), maximum=32 if science else 12)
+        array_executor = PointArrayExecutor(
+            request.workers, record["stages"][0].get("execution", {}), maximum=32 if science else 12
+        )
         record["array_execution_budget"] = array_executor.budget
         record["array_execution"] = array_executor.reports
-        print(f"{label} CPU budget: requested {request.workers}, effective "
-              f"{array_executor.budget['effective_workers']} "
-              f"({array_executor.budget.get('availability_source', 'native setup')}); "
-              f"up to {array_executor.workers} array workers, numerical-library threads limited to 1",
-              flush=True)
+        print(
+            f"{label} CPU budget: requested {request.workers}, effective "
+            f"{array_executor.budget['effective_workers']} "
+            f"({array_executor.budget.get('availability_source', 'native setup')}); "
+            f"up to {array_executor.workers} array workers, numerical-library threads limited to 1",
+            flush=True,
+        )
         if request.weighted:
             from configured_point_weighted import execute as weighted_point
 
             # Diagnostic comparison arms retain standalone replay semantics.
-            session_context = (nullcontext(cal_session) if cal_session is not None or request.weight_comparison
-                               else PointObservationSession(work))
+            session_context = (
+                nullcontext(cal_session)
+                if cal_session is not None or request.weight_comparison
+                else PointObservationSession(work)
+            )
             with session_context as session:
                 map_products = weighted_point(
-                    prepared, work, reduction, native, request, record,
-                    native_call=native_call if session is None else partial(native_call, session=session),
-                    bind=bind, write_json=write_json, array_executor=array_executor,
+                    prepared,
+                    work,
+                    reduction,
+                    native,
+                    request,
+                    record,
+                    native_call=native_call
+                    if session is None
+                    else partial(native_call, session=session),
+                    bind=bind,
+                    write_json=write_json,
+                    array_executor=array_executor,
                     memory_handoff=cal_session is not None,
                 )
         else:
@@ -369,7 +403,9 @@ def _execute(config_path, native, launch_dir, lifetime, mode="pointing"):
         lifetime.close()
         if cal_session is not None:
             if cal_session.final_binding is None:
-                raise RuntimeError("POINT observation closed without an authenticated final receipt")
+                raise RuntimeError(
+                    "POINT observation closed without an authenticated final receipt"
+                )
             record["final_original_inputs"] = cal_session.final_binding
         if not request.retain_intermediates:
             record["transport_retention"] = release_transport(work)
@@ -392,8 +428,10 @@ def _execute(config_path, native, launch_dir, lifetime, mode="pointing"):
             + " and qualified diagnostics; astrometry table when eligible, flux calibration held",
         )
         if science:
-            record["scientific_scope"] = ("single-observation compact-source SCIENCE in FK5/J2000 TAN; "
-                                          "explicit feedback outcome; no coadd, POINT consumer or flux-calibration qualification")
+            record["scientific_scope"] = (
+                "single-observation compact-source SCIENCE in FK5/J2000 TAN; "
+                "explicit feedback outcome; no coadd, POINT consumer or flux-calibration qualification"
+            )
         write_json(reduction / "RUN.json", record)
         print(f"{label} complete: {published}", flush=True)
         return reduction
@@ -410,7 +448,16 @@ def default_config(mode="pointing"):
     # TolTECA supports a fully specified low_level dictionary. The explicit
     # profile migrates the old default tree into the new native request shape.
     result = yaml.safe_load((REPO / "data/config.yaml").read_text())
-    overlay = yaml.safe_load((REPO / ("data/configured_science_compact_v1.yaml" if mode == "science" else "data/configured_point_v1.yaml")).read_text())
+    overlay = yaml.safe_load(
+        (
+            REPO
+            / (
+                "data/configured_science_compact_v1.yaml"
+                if mode == "science"
+                else "data/configured_point_v1.yaml"
+            )
+        ).read_text()
+    )
 
     def merge(dst, src):
         for k, value in src.items():

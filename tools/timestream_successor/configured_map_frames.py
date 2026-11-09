@@ -7,11 +7,22 @@ Celestial coordinates remain FK5/J2000 TAN in degrees, without reprojection.
 
 import math
 
-POINT_FRAME = dict(ASTFRAME="delta-source-AltAz", CTYPE1="AZOFFSET", CTYPE2="ELOFFSET",
-                   CUNIT1="arcsec", CUNIT2="arcsec")
-SCIENCE_FRAME = dict(ASTFRAME="J2000-radec-gnomonic-tangent", CTYPE1="RA---TAN",
-                     CTYPE2="DEC--TAN", CUNIT1="deg", CUNIT2="deg",
-                     RADESYS="FK5", EQUINOX=2000.0)
+POINT_FRAME = dict(
+    ASTFRAME="delta-source-AltAz",
+    CTYPE1="AZOFFSET",
+    CTYPE2="ELOFFSET",
+    CUNIT1="arcsec",
+    CUNIT2="arcsec",
+)
+SCIENCE_FRAME = dict(
+    ASTFRAME="J2000-radec-gnomonic-tangent",
+    CTYPE1="RA---TAN",
+    CTYPE2="DEC--TAN",
+    CUNIT1="deg",
+    CUNIT2="deg",
+    RADESYS="FK5",
+    EQUINOX=2000.0,
+)
 NUMERIC_GRID_KEYS = ("CRPIX1", "CRPIX2", "CRVAL1", "CRVAL2", "CDELT1", "CDELT2", "NOMBFWHM")
 
 
@@ -59,5 +70,7 @@ def guard_frame(guard, header):
         guard.update(frame=SCIENCE_FRAME["ASTFRAME"], centroid_axes=["tangent_ra", "tangent_dec"])
     else:
         guard.pop("expected_origin_sky", None)
-        guard.update(frame=POINT_FRAME["ASTFRAME"], centroid_axes=["azimuth_offset", "elevation_offset"])
+        guard.update(
+            frame=POINT_FRAME["ASTFRAME"], centroid_axes=["azimuth_offset", "elevation_offset"]
+        )
     return guard

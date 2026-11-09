@@ -15,8 +15,14 @@ import sys
 import time
 
 
-THREAD_LIMITS = dict(OMP_NUM_THREADS="1", OPENBLAS_NUM_THREADS="1", MKL_NUM_THREADS="1",
-                     VECLIB_MAXIMUM_THREADS="1", BLIS_NUM_THREADS="1", OMP_DYNAMIC="FALSE")
+THREAD_LIMITS = dict(
+    OMP_NUM_THREADS="1",
+    OPENBLAS_NUM_THREADS="1",
+    MKL_NUM_THREADS="1",
+    VECLIB_MAXIMUM_THREADS="1",
+    BLIS_NUM_THREADS="1",
+    OMP_DYNAMIC="FALSE",
+)
 
 
 @contextmanager
@@ -55,9 +61,12 @@ def _array_job(kind, job):
     else:
         raise ValueError("unknown POINT array task")
     rss = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
-    return value, dict(pid=os.getpid(), wall_seconds=time.monotonic() - wall,
-                      cpu_seconds=time.process_time() - cpu,
-                      process_lifetime_peak_rss_bytes=rss if sys.platform == "darwin" else rss * 1024)
+    return value, dict(
+        pid=os.getpid(),
+        wall_seconds=time.monotonic() - wall,
+        cpu_seconds=time.process_time() - cpu,
+        process_lifetime_peak_rss_bytes=rss if sys.platform == "darwin" else rss * 1024,
+    )
 
 
 def _freeze_context(context):
@@ -77,8 +86,11 @@ class PointArrayExecutor:
 
     def __init__(self, requested, native_execution, *, maximum=12):
         effective = native_execution.get("effective_workers")
-        if (type(effective) is not int or not 1 <= effective <= requested <= maximum <= 32
-                or native_execution.get("requested_workers") != requested):
+        if (
+            type(effective) is not int
+            or not 1 <= effective <= requested <= maximum <= 32
+            or native_execution.get("requested_workers") != requested
+        ):
             raise ValueError("native POINT execution budget is missing or inconsistent")
         self.budget = dict(native_execution)
         self.workers = min(effective, 3)
@@ -91,8 +103,9 @@ class PointArrayExecutor:
             raise ValueError("POINT array phase requires one to three jobs")
         started = time.monotonic()
         if self._pool is None:
-            self._pool = ProcessPoolExecutor(max_workers=self.workers,
-                                            mp_context=multiprocessing.get_context("spawn"))
+            self._pool = ProcessPoolExecutor(
+                max_workers=self.workers, mp_context=multiprocessing.get_context("spawn")
+            )
         futures = []
         try:
             with _spawn_environment():
@@ -101,10 +114,15 @@ class PointArrayExecutor:
         finally:
             # Also join submitted work if pool startup/submission fails.
             wait(futures)
-        report = dict(phase=phase, jobs=len(jobs), worker_budget=self.workers,
-                      wall_seconds=time.monotonic() - started, status="failed",
-                      numerical_library_threads_requested=1,
-                      process_start_method="spawn")
+        report = dict(
+            phase=phase,
+            jobs=len(jobs),
+            worker_budget=self.workers,
+            wall_seconds=time.monotonic() - started,
+            status="failed",
+            numerical_library_threads_requested=1,
+            process_start_method="spawn",
+        )
         self.reports.append(report)
         # Input order determines both output order and the first raised failure.
         # There is no partially successful return from a failed array phase.
@@ -112,9 +130,12 @@ class PointArrayExecutor:
         if kind == "feedback":
             for (context, _), _metrics in results:
                 _freeze_context(context)
-        report.update(status="completed", jobs_detail=[item[1] for item in results],
-                      workers_used=len({item[1]["pid"] for item in results}),
-                      cpu_seconds=sum(item[1]["cpu_seconds"] for item in results))
+        report.update(
+            status="completed",
+            jobs_detail=[item[1] for item in results],
+            workers_used=len({item[1]["pid"] for item in results}),
+            cpu_seconds=sum(item[1]["cpu_seconds"] for item in results),
+        )
         return [item[0] for item in results]
 
     def close(self):

@@ -18,7 +18,9 @@ def native_command(binary, descriptor, verbose):
 class PointObservationSession:
     """One sequential request stream, one private acknowledgement pipe and log."""
 
-    finish_timeout = 30  # Only teardown is bounded; the final scientific pass has already acknowledged.
+    finish_timeout = (
+        30  # Only teardown is bounded; the final scientific pass has already acknowledged.
+    )
 
     def __init__(self, work, *, start_at_cal=False):
         self.work = Path(work)
@@ -47,8 +49,11 @@ class PointObservationSession:
             with self.log_path.open("xb") as log:
                 self.process = subprocess.Popen(
                     native_command(binary, launch, verbose),
-                    stdin=subprocess.PIPE, stdout=log, stderr=subprocess.STDOUT,
-                    pass_fds=(write_fd,), env=dict(env, CITLALI_POINT_REPLY_FD=str(write_fd)),
+                    stdin=subprocess.PIPE,
+                    stdout=log,
+                    stderr=subprocess.STDOUT,
+                    pass_fds=(write_fd,),
+                    env=dict(env, CITLALI_POINT_REPLY_FD=str(write_fd)),
                 )
         finally:
             os.close(write_fd)
@@ -82,7 +87,10 @@ class PointObservationSession:
         if self.process is None:
             self._start(binary, descriptor, env, verbose)
         digest = hashlib.sha256(descriptor.read_bytes()).hexdigest().encode() + b"\n"
-        if self._request(digest) != digest or hashlib.sha256(descriptor.read_bytes()).hexdigest().encode() != digest[:-1]:
+        if (
+            self._request(digest) != digest
+            or hashlib.sha256(descriptor.read_bytes()).hexdigest().encode() != digest[:-1]
+        ):
             self._abort()
             log.write(self._new_log_text())
             log.write("POINT observation ended without a bound success acknowledgement\n")
@@ -96,16 +104,22 @@ class PointObservationSession:
             # This is scientific work, outside the post-acknowledgement timeout.
             final_digest = self._request(b"verify-originals\n")
             if not re.fullmatch(b"[0-9a-f]{64}\n", final_digest):
-                raise RuntimeError(f"POINT observation final input verification failed; see {self.log_path}")
+                raise RuntimeError(
+                    f"POINT observation final input verification failed; see {self.log_path}"
+                )
         try:
             self.process.stdin.write(b"finish\n")
             self.process.stdin.flush()
             self.process.stdin.close()
             code = self.process.wait(timeout=self.finish_timeout)
         except BrokenPipeError as error:
-            raise RuntimeError(f"POINT observation closed during finish; see {self.log_path}") from error
+            raise RuntimeError(
+                f"POINT observation closed during finish; see {self.log_path}"
+            ) from error
         except subprocess.TimeoutExpired as error:
-            raise RuntimeError(f"POINT observation finish timed out; see {self.log_path}") from error
+            raise RuntimeError(
+                f"POINT observation finish timed out; see {self.log_path}"
+            ) from error
         tail = self._new_log_text()
         if code or re.search(r"\[(?:error|critical)\]", tail, re.I):
             raise RuntimeError(f"POINT observation finish failed ({code}); see {self.log_path}")
@@ -113,7 +127,9 @@ class PointObservationSession:
             receipt = self.work / "final-originals.yaml"
             sha = hashlib.sha256(receipt.read_bytes()).hexdigest()
             if sha.encode() != final_digest[:-1]:
-                raise RuntimeError(f"POINT final verification receipt differs from native acknowledgement: {receipt}")
+                raise RuntimeError(
+                    f"POINT final verification receipt differs from native acknowledgement: {receipt}"
+                )
             self.final_binding = dict(path=str(receipt), sha256=sha)
 
     def _dispose(self):

@@ -276,11 +276,15 @@ def prepare(
     _require(not out.exists(), "fresh inputs directory required: " + str(out))
     effective = copy.deepcopy(config)
     science = effective.get("runtime", {}).get("reduction_type") == "science"
-    _require(effective.get("runtime", {}).get("reduction_type") in ("pointing", "science"),
-             "one POINT or compact SCIENCE reduction required")
+    _require(
+        effective.get("runtime", {}).get("reduction_type") in ("pointing", "science"),
+        "one POINT or compact SCIENCE reduction required",
+    )
     if science:
-        _require(effective.get("successor", {}).get("schema") == "citlali-science-compact-v1",
-                 "SCIENCE requires its explicit compact-source profile")
+        _require(
+            effective.get("successor", {}).get("schema") == "citlali-science-compact-v1",
+            "SCIENCE requires its explicit compact-source profile",
+        )
     acquisitions = effective.get("inputs", [])
     _require(isinstance(acquisitions, list) and len(acquisitions) == 1, "one acquisition required")
     acquisition = acquisitions[0]
@@ -475,7 +479,9 @@ def prepare(
         path = out / f"network{row['network']}-input.json"
         request = dict(
             schema="rtc-multidetector-experiment-v1",
-            development_reference="configurable-science-compact-v1" if science else DEVELOPMENT_REFERENCE,
+            development_reference="configurable-science-compact-v1"
+            if science
+            else DEVELOPMENT_REFERENCE,
             mode="SCIENCE" if science else "POINT",
             observation=obs,
             subobservation=sub,
@@ -520,7 +526,9 @@ def prepare(
         observation_request,
         dict(
             schema="citlali-observation-networks-v1",
-            development_reference="configurable-science-compact-v1" if science else DEVELOPMENT_REFERENCE,
+            development_reference="configurable-science-compact-v1"
+            if science
+            else DEVELOPMENT_REFERENCE,
             mode="SCIENCE" if science else "POINT",
             observation=obs,
             subobservation=sub,

@@ -294,7 +294,9 @@ def load_request(config: dict, launch_dir: Path) -> PointRequest:
     )
     schema = successor["schema"]
     if type(schema) is not str or schema not in (SCHEMA, SCHEMA_V2, SCIENCE_SCHEMA):
-        raise ValueError(f"successor.schema supports {SCHEMA!r}, {SCHEMA_V2!r} or {SCIENCE_SCHEMA!r}")
+        raise ValueError(
+            f"successor.schema supports {SCHEMA!r}, {SCHEMA_V2!r} or {SCIENCE_SCHEMA!r}"
+        )
     science = schema == SCIENCE_SCHEMA
     weighted = schema in (SCHEMA_V2, SCIENCE_SCHEMA)
     migration = SCIENCE_MIGRATION if science else MIGRATION_V2 if weighted else MIGRATION
@@ -409,7 +411,9 @@ def load_request(config: dict, launch_dir: Path) -> PointRequest:
         products.get("fit_diagnostics", not science), "successor.products.fit_diagnostics"
     )
     if science and (fit_diagnostics or weight_comparison):
-        raise ValueError("SCIENCE compact profile does not publish POINT fits or weighting comparison")
+        raise ValueError(
+            "SCIENCE compact profile does not publish POINT fits or weighting comparison"
+        )
     retain = _bool(
         products.get("retain_intermediates", False), "successor.products.retain_intermediates"
     )
@@ -425,7 +429,9 @@ def load_request(config: dict, launch_dir: Path) -> PointRequest:
     _inputs(effective, launch_dir)
     if science and effective["inputs"][0]["meta"]["name"] != "152389_0_2":
         raise ValueError("SCIENCE compact pilot currently admits only acquisition 152389_0_2")
-    if science and _bool(_mapping(config.get("coadd", {}), "coadd").get("enabled", False), "coadd.enabled"):
+    if science and _bool(
+        _mapping(config.get("coadd", {}), "coadd").get("enabled", False), "coadd.enabled"
+    ):
         raise ValueError("single-observation SCIENCE does not support coaddition")
     _timing(effective)
     calibration_dispositions = _calibration(effective)
@@ -554,7 +560,9 @@ def load_request(config: dict, launch_dir: Path) -> PointRequest:
         effective_successor["detector_response"] = dict(min_relative_response=min_response)
         effective_successor["feedback"]["max_iters"] = feedback_iterations
         effective["successor_effective"] = dict(
-            schema="citlali-science-compact-effective-semantics-v1" if science else "citlali-point-v2-effective-semantics-v1",
+            schema="citlali-science-compact-effective-semantics-v1"
+            if science
+            else "citlali-point-v2-effective-semantics-v1",
             optical_eligibility="observation-local preclean CAL decision, frozen before all cleaner passes; no APT mutation or response-gain rescaling",
             cleaning_weight="1 / source-protected empirical reference residual variance",
             map_weight="1 / max(reference residual variance, remaining cleaned residual variance)",

@@ -95,7 +95,12 @@ def _inspect_map(root, observation, array, *, celestial=False):
         require(bundle["files"].get("plan.yaml") == plan_sha, "empirical MAP plan digest mismatch")
         plan = read_yaml(plan_path)
         require(
-            plan["schema"] == ("citlali-weighted-science-map-plan-v1" if celestial else "citlali-weighted-point-map-plan-v1")
+            plan["schema"]
+            == (
+                "citlali-weighted-science-map-plan-v1"
+                if celestial
+                else "citlali-weighted-point-map-plan-v1"
+            )
             and plan["array"] == array
             and plan["observation"] == bundle["observation"]
             and type(plan["cycle_index"]) is int
@@ -149,9 +154,7 @@ def _inspect_map(root, observation, array, *, celestial=False):
         require(len(shape) == 2 and min(shape) > 0, "MAP must be a nonempty image")
         if empirical:
             require(
-                all(
-                    bundle["WCS"].get(key) == header[key] for key in keys if key != "NOMBFWHM"
-                ),
+                all(bundle["WCS"].get(key) == header[key] for key in keys if key != "NOMBFWHM"),
                 "empirical MAP grid differs from native bundle",
             )
         for hdu, unit in zip(hdus, units):
@@ -261,9 +264,13 @@ def publish_maps(
         require(digest(output) == source["sha256"], "required MAP copy differs")
     guards = {}
     if fit_diagnostics and array_executor is not None:
-        jobs = [(destination / f"toltec_point_{observation:06d}_{array}_successor.fits",
-                 destination / f"point-fit-{array}-details" if verbose else None)
-                for array in arrays]
+        jobs = [
+            (
+                destination / f"toltec_point_{observation:06d}_{array}_successor.fits",
+                destination / f"point-fit-{array}-details" if verbose else None,
+            )
+            for array in arrays
+        ]
         guards = dict(zip(arrays, array_executor.run("fit", jobs, phase="final-fits"), strict=True))
     records = []
     for array, source in zip(arrays, sources):
@@ -297,8 +304,12 @@ def publish_maps(
         if fit_diagnostics:
             from point_reference import measure_forward
 
-            guard = guards[array] if array_executor is not None else measure_forward(
-                output, details=destination / f"point-fit-{array}-details" if verbose else None
+            guard = (
+                guards[array]
+                if array_executor is not None
+                else measure_forward(
+                    output, details=destination / f"point-fit-{array}-details" if verbose else None
+                )
             )
             fit_name = f"point-fit-{array}.json"
             save_json(
