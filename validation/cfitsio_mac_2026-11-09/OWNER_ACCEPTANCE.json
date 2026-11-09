@@ -1,0 +1,76 @@
+{
+  "date": "2026-11-09",
+  "owner": "Grant Wilson",
+  "directive": "I accept CFITSIO 4.7.0 at `5a041bcdb` as a bounded Mac upgrade. Record the acceptance and integrate it locally into mainline. Please provide a github push command.",
+  "disposition": "Accepted and integrated locally as a bounded Mac dependency upgrade",
+  "accepted_candidate": "5a041bcdbf9a97398177ea2eaaf17e3ab38d22e7",
+  "accepted_tree": "58ef1390fec3ae28386864d4cfccda3b8ef483da",
+  "execution_owner": "Grant",
+  "integration": {
+    "branch": "codex/refactor-mainline",
+    "previous_mainline": "302f32e5b193ffd33bce030a5011d0ff2d3f77ee",
+    "method": "Fast-forward to the exact tested candidate followed by a documentation and evidence commit."
+  },
+  "scope": "Mac Spack development build, FITS software checks and configured single-observation POINT and zero-offset SCIENCE on 152389 through M5.",
+  "control": {
+    "application": "3b816fbee2a13053e072afac4b4ede50ce6a7423",
+    "cfitsio": "4.3.0",
+    "lock_sha256": "00964e0c57c1df96b0ddc3f6d214bef1c1ab8f59cc4e5c4da653cefbcb915238"
+  },
+  "environment": {
+    "profile": "macos-llvm20",
+    "compiler": "Clang 20.1.8",
+    "root_dag": "fovg27yvoovinkobsgyddpu4xgv3u5gq",
+    "spack_lock_sha256": "67d741167f762186ced92e1c14d9ab215cc7ef25c11b37c7c15e4cbe871e45dd",
+    "cli_sha256": "e68eb653b92150b40bfba600c94eb93ca8d9af885c8871322f86b5cf8e7beb19",
+    "cfitsio": "4.7.0",
+    "release_archive_sha256": "ce573bbea8e75b429f8c3d3e86498741ba3dc9628a1530d2f65268397ad059e8",
+    "ccfits": "2.6",
+    "tula_ccfits": "1.0.0",
+    "astropy": "7.0.1"
+  },
+  "software": {
+    "graph_tests_passed": 26,
+    "software_commands_passed": 8,
+    "focused_fits_passed": 41,
+    "enabled_ctest_passed": 1455,
+    "historical_disabled_ctest": "citlali::MapFitterLifecycle.ExactProductSequence",
+    "configured_python_passed": 394,
+    "baseline_passed": 207,
+    "config_unit_passed": 130,
+    "config_compatibility_passed": 8
+  },
+  "scientific_behavioral": {
+    "observation": 152389,
+    "workers": 6,
+    "external_inputs_checked_before_and_after_per_mode": 39,
+    "point_checks_passed": 51,
+    "science_checks_passed": 46,
+    "comparison": "In each mode, all 18 cycle maps, three published M5 maps and 15 feedback models matched the control in pixel data, WCS, units and other scientific metadata. Each HDU passed CHECKSUM and DATASUM. Only the checksum update timestamps and the encoded CHECKSUM values differed in the FITS bytes. All three POINT fits and pointing-table measurements matched."
+  },
+  "architecture_ownership": "The Spack profiles, CFITSIO recipe and resolved graph checks own the dependency change. Build and loader records identify the private CFITSIO 4.7.0 headers and library with CCfits 2.6. Application algorithms were unchanged.",
+  "repository_evidence": "Independent read-only source, packet and result reviews are bound below. The candidate checkout and original control and candidate artifacts are preserved.",
+  "timing": "One pair per mode. Command wall time was 67.47 to 64.63 s for POINT and 60.59 to 54.84 s for SCIENCE. Sampled peak process-tree RSS was 5.748 to 5.733 GiB and 6.178 to 6.009 GiB, respectively. These observations carry no performance guarantee.",
+  "outside_acceptance": [
+    "End-to-end retained standard reduction replay",
+    "Unity build and representative reduction qualification",
+    "Production deployment and runtime replacement"
+  ],
+  "external_evidence_root": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-cfitsio-upgrade-20261109",
+  "external_evidence_sha256": {
+    "BINDING.json": "3f893c4f052a4e80861ea2d4e2f245e9dd2594fb675872d342d27f5f8c4e3914",
+    "INDEPENDENT_REVIEW.json": "5aceef9d35310af4f212e760525ec500eb8d09c4fae530d86a986cb808b65b62",
+    "RESOLVE_REVIEW.json": "33dd86956160516c31c346072fbad56a4ce3ade80af37a1334a9f69611095de5",
+    "BUILD_REVIEW.json": "53c9090bf50c5717a7eeabde7464b428ef3fbaab47eb76c78ea1b27c395d28c5",
+    "SOFTWARE_REVIEW.json": "de14f6edeb057b26663699e186a4dd89e9735041f3d55f7689dcb19c9aa2d02d",
+    "resolve-01/COMPLETED.json": "5971269c8208c7588b11a0d3e4a00eee20c41b45e420833c4c8c6c5b05b4f92d",
+    "build-01/COMPLETED.json": "409ac99471b541ec3fde2150d85e3f2f15e84791527976464e09e06e4951f566",
+    "software-01/COMPLETED.json": "5a0ec6a93d43275f8b37aae251adb03171e08017cfec114f4a39077547f3014e",
+    "matched-152389/PACKET_REVIEW.json": "ed74086b0faa24411fac23cfd4ce5aedb1b338ba736a0c0a02db6e72727a19b8",
+    "matched-152389/RESULT_REVIEW.json": "da667259c3dc69070bced92859fb9530a0ea54169991896a1da2f2488c534306",
+    "matched-152389/point/attempt-01/COMPLETED.json": "8c08bce6249762ced5442f820814e40052861aaa18b6e5b9d233bee89412e348",
+    "matched-152389/point/attempt-01/COMPARISON.json": "b9baa8935737c346005df836549e09b3a633e1aff9d3581ffdf29da02ad94f99",
+    "matched-152389/science/attempt-01/COMPLETED.json": "a47f2afeb1b2547f515dfc9883377ae0f11c819f3fb7335b0e6111b1c2a59d5b",
+    "matched-152389/science/attempt-01/COMPARISON.json": "452ef0596f91c404e1a76cb6fdc03ea34b79b038c8c05d539c7b35801b56404d"
+  }
+}

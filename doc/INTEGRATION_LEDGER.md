@@ -1,3 +1,13 @@
+## CFITSIO 4.7.0 Mac acceptance — 2026-11-09
+
+At Grant’s direction, clean local `codex/refactor-mainline` fast-forwarded from
+`302f32e5b193ffd33bce030a5011d0ff2d3f77ee` to the tested dependency revision
+`5a041bcdbf9a97398177ea2eaaf17e3ab38d22e7`, tree
+`58ef1390fec3ae28386864d4cfccda3b8ef483da`. The following documentation
+commit records Grant’s bounded Mac acceptance. The receipt binds the archive,
+Spack lock, executable, software checks and both 152389 comparisons. Grant
+owns GitHub publication. [Acceptance record](../validation/cfitsio_mac_2026-11-09/OWNER_ACCEPTANCE.json)
+
 ## Single-observation SCIENCE acceptance — 2026-11-09
 
 Local mainline fast-forwarded from `8738316bb6091706849f493b46d1f657b03f79cf`

@@ -1,5 +1,10 @@
 # Citlali refactor — current state
 
+Grant accepted CFITSIO 4.7.0 at `5a041bcdb` on 2026-11-09 for Mac development.
+The configured 152389 POINT and single-observation SCIENCE products through
+M5 matched their CFITSIO 4.3.0 controls. Unity qualification and end-to-end
+retained-driver replay remain open. [Mac acceptance](../validation/cfitsio_mac_2026-11-09/OWNER_ACCEPTANCE.json)
+
 Grant accepted compact-source SCIENCE application `3b816fbee` on 2026-11-09.
 Local mainline now includes the single-observation RA/Dec route for 152389
 through M5. Grant ran the Mac Spack software gates, both SCIENCE reductions

@@ -1,3 +1,11 @@
+## Mac CFITSIO 4.7.0 upgrade accepted — 2026-11-09
+
+Grant accepted `5a041bcdb` for the Mac Spack development build. All eight
+software gates passed. The six-worker 152389 M0–M5 comparisons passed all
+51 POINT checks and all 46 SCIENCE checks against the accepted 4.3.0 controls.
+Qualification on Unity, retained-driver replay and deployment remain separate.
+[Owner acceptance and evidence](../validation/cfitsio_mac_2026-11-09/OWNER_ACCEPTANCE.json)
+
 ## Single-observation SCIENCE accepted locally — 2026-11-09
 
 Grant accepted compact-source SCIENCE application `3b816fbee` on 2026-11-09.

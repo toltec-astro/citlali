@@ -8,7 +8,7 @@ compatibility infrastructure. Immutable package/export/release acceptance has
 separate gates below. For this Mac's exact LLVM20/SDK26.5 realization, use the
 [October 30 qualification record](../doc/SPACK_QUALIFICATION_2026-10-30.md).
 
-## CFITSIO 4.7.0 qualification candidate
+## CFITSIO 4.7.0 on the Mac
 
 The two full Citlali development profiles request CFITSIO 4.7.0 with Fortran
 disabled. The retained Spack 1.2.2 recipe snapshot ends at 4.6.3. A small
@@ -17,15 +17,13 @@ checksum and required zlib dependency. The CCfits 2.6 C++ library and the
 TulaCcfits 1.0.0 adapter both link CFITSIO. Configured native map writers
 also use the CFITSIO C API directly. [HEASARC release](https://github.com/HEASARC/cfitsio/releases/tag/cfitsio-4.7.0)
 
-Grant qualifies the new environment in a separate store. First resolve the
-Mac graph and verify the source archive. Compare the lock with the accepted
-4.3.0 graph and inspect any changes outside CFITSIO and its dependents.
-Then rebuild the affected libraries and Citlali, inspect actual header and
-loaded-library paths, and exercise the native writer, failure propagation and
-retained CCfits read/write path. Compare 152389 POINT and SCIENCE M0–M5
-products with their accepted 4.3.0 references, including feedback, map pixels,
-units, WCS and final publication. Track Unity qualification separately.
-The SCIENCE acceptance record binds its original 4.3.0 environment.
+Grant accepted the isolated Mac build at `5a041bcdb` on 2026-11-09.
+Build and loader records identify the expected CFITSIO and CCfits headers
+and libraries. The software gates covered the native writer, failure propagation
+and retained CCfits I/O. Configured POINT and SCIENCE products matched the
+4.3.0 controls through M5 on 152389. Unity qualification and end-to-end retained
+replay remain open. The earlier SCIENCE record binds its original 4.3.0 build.
+[Mac acceptance and evidence](../validation/cfitsio_mac_2026-11-09/OWNER_ACCEPTANCE.json)
 
 ## Supported Development Sequence
 
