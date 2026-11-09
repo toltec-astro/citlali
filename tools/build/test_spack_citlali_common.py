@@ -41,6 +41,12 @@ class SpackCitlaliGraphTest(unittest.TestCase):
                 "version": version,
                 "namespace": namespace,
             }
+        hashes = {node["name"]: h for h, node in concrete_specs.items()}
+        for consumer, dependencies in (("ccfits", ["cfitsio"]), ("tula-ccfits", ["ccfits", "cfitsio"])):
+            concrete_specs[hashes[consumer]]["dependencies"] = [
+                {"name": dep, "hash": hashes[dep], "parameters": {"deptypes": ["build", "link"]}}
+                for dep in dependencies
+            ]
         concrete_specs["macos-openmp"] = {
             "name": "llvm-openmp",
             "version": "20.1.8",
@@ -63,6 +69,27 @@ class SpackCitlaliGraphTest(unittest.TestCase):
         self._write_lock()
         root_hash, _ = validate_concrete_graph(self.environment)
         self.assertEqual(root_hash, "a" * 32)
+
+    def test_rejects_a_second_fits_library(self) -> None:
+        self._write_lock()
+        path = self.environment / "spack.lock"
+        lock = json.loads(path.read_text())
+        lock["concrete_specs"]["another-fits"] = {
+            "name": "cfitsio", "version": "4.7.0", "namespace": "toltec.citlali",
+        }
+        path.write_text(json.dumps(lock))
+        with self.assertRaisesRegex(RuntimeError, "exactly one concrete cfitsio"):
+            validate_concrete_graph(self.environment)
+
+    def test_rejects_wrapper_link_to_another_fits_library(self) -> None:
+        self._write_lock()
+        path = self.environment / "spack.lock"
+        lock = json.loads(path.read_text())
+        wrapper = next(n for n in lock["concrete_specs"].values() if n["name"] == "ccfits")
+        wrapper["dependencies"][0]["hash"] = "old-library"
+        path.write_text(json.dumps(lock))
+        with self.assertRaisesRegex(RuntimeError, "ccfits must link"):
+            validate_concrete_graph(self.environment)
 
     def test_rejects_missing_performance_variant(self) -> None:
         self._write_lock("citlali@4.0.0+openmp+tests %cxx=clang@20.1.8")

@@ -9,7 +9,7 @@ spack:
       ^tula@3.1.0+ecsv+netcdf+enum+cli+perflibs+grppi+openmp~fitting
       ^netcdf-c@4.10.0+shared~blosc+szip+zstd build_system=cmake
       ^hdf5@1.14.6+hl+shared~mpi~szip
-      ^cfitsio@4.3.0~fortran
+      ^cfitsio@4.7.0~fortran
       ^fftw@3.3.10~mpi
       ^openblas~fortran
 

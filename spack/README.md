@@ -8,6 +8,25 @@ compatibility infrastructure. Immutable package/export/release acceptance has
 separate gates below. For this Mac's exact LLVM20/SDK26.5 realization, use the
 [October 30 qualification record](../doc/SPACK_QUALIFICATION_2026-10-30.md).
 
+## CFITSIO 4.7.0 qualification candidate
+
+The two full Citlali development profiles request CFITSIO 4.7.0 with Fortran
+disabled. The retained Spack 1.2.2 recipe snapshot ends at 4.6.3. A small
+Citlali-owned recipe inherits its Autotools build and adds the release archive,
+checksum and required zlib dependency. The CCfits 2.6 C++ library and the
+TulaCcfits 1.0.0 adapter both link CFITSIO. Configured native map writers
+also use the CFITSIO C API directly. [HEASARC release](https://github.com/HEASARC/cfitsio/releases/tag/cfitsio-4.7.0)
+
+Grant qualifies the new environment in a separate store. First resolve the
+Mac graph and verify the source archive. Compare the lock with the accepted
+4.3.0 graph and inspect any changes outside CFITSIO and its dependents.
+Then rebuild the affected libraries and Citlali, inspect actual header and
+loaded-library paths, and exercise the native writer, failure propagation and
+retained CCfits read/write path. Compare 152389 POINT and SCIENCE M0–M5
+products with their accepted 4.3.0 references, including feedback, map pixels,
+units, WCS and final publication. Track Unity qualification separately.
+The SCIENCE acceptance record binds its original 4.3.0 environment.
+
 ## Supported Development Sequence
 
 1. Materialize the exact accepted `tula_cmake`, `tula`, and `kidscpp` revisions

@@ -25,7 +25,8 @@ EXPECTED_PACKAGES = {
     "tula-ccfits": ("1.0.0", "toltec.tula_cmake"),
     "tula-netcdf-cxx4": ("4.3.1", "toltec.tula_cmake"),
     "tula-perflibs": ("0.1.0", "toltec.tula_cmake"),
-    "cfitsio": ("4.3.0", "builtin"),
+    "cfitsio": ("4.7.0", "toltec.citlali"),
+    "ccfits": ("2.6", "builtin"),
     "hdf5": ("1.14.6", "builtin"),
 }
 
@@ -310,6 +311,18 @@ def validate_concrete_graph(
                 f"unexpected {name} identity: {actual}; "
                 f"expected {(version, namespace)}"
             )
+    # CCfits and the adapter must resolve the same C library as the native writer.
+    fits_hashes = {}
+    for name in ("cfitsio", "ccfits", "tula-ccfits"):
+        matches = [h for h, node in lock["concrete_specs"].items() if node.get("name") == name]
+        if len(matches) != 1:
+            raise RuntimeError(f"expected exactly one concrete {name} node")
+        fits_hashes[name] = matches[0]
+    for consumer, dependency in (("ccfits", "cfitsio"), ("tula-ccfits", "cfitsio"), ("tula-ccfits", "ccfits")):
+        edges = packages[consumer].get("dependencies", [])
+        linked = [e["hash"] for e in edges if e["name"] == dependency and "link" in e["parameters"]["deptypes"]]
+        if linked != [fits_hashes[dependency]]:
+            raise RuntimeError(f"{consumer} must link the qualified {dependency} node")
     for name in required_graph_packages:
         if name not in packages:
             raise RuntimeError(f"concrete graph is missing {name}")
