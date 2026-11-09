@@ -1,0 +1,135 @@
+{
+  "date": "2026-11-09",
+  "owner": "Grant Wilson",
+  "directive": "I accept the single-observation SCIENCE increment at `3b816fbee` as a bounded software increment. Record the acceptance and integrate it locally into mainline.",
+  "disposition": "Accepted and integrated locally as a bounded software increment",
+  "accepted_application": "3b816fbee2a13053e072afac4b4ede50ce6a7423",
+  "accepted_tree": "ec19702be4604f42637d86092925622fa4f45499",
+  "execution_owner": "Grant",
+  "integration": {
+    "branch": "codex/refactor-mainline",
+    "previous_mainline": "8738316bb6091706849f493b46d1f657b03f79cf",
+    "method": "Fast-forward to the tested application, followed by a documentation and evidence commit."
+  },
+  "scope": "Configured compact-source SCIENCE on acquisition 152389_0_2 in FK5/J2000 TAN, with one observation, all three arrays, six workers, and five feedback applications through M5 on the retained Mac Spack realization.",
+  "environment": {
+    "kind": "Retained Mac Spack development realization",
+    "dag": "kqk3pl4f6jgsb5yksobnynlx2gmnqks6",
+    "compiler": "Clang 20.1.8",
+    "build": "Release C++23 +openmp +wiener_openmp",
+    "cfitsio": "4.3.0",
+    "fftw_threads": "Configured /opt/homebrew/opt/fftw/lib/libfftw3_threads.dylib; unchanged from parent",
+    "spack_lock_sha256": "00964e0c57c1df96b0ddc3f6d214bef1c1ab8f59cc4e5c4da653cefbcb915238",
+    "process_environment_sha256": "255ae04aa1ae7991349caee609a34675221083055d767e25b57b4b69684c9c3e",
+    "scope": "Local software evidence; not Unity or historical V2 campaign reproduction"
+  },
+  "executable": {
+    "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-science-single-20261106/admission-repair/owner-run-20261106T181220.549633Z/build/citlali",
+    "sha256": "873441be7c758033ed6a2b6c645acbf19c1ca211333dc8a8d015b8da8225bf8c"
+  },
+  "software": {
+    "focused_native_admission": 7,
+    "focused_python": 394,
+    "science_python": 22,
+    "enabled_ctest": 1455,
+    "baseline": 207,
+    "configuration_unit": 130,
+    "configuration_compatibility": 8
+  },
+  "disabled_ctest": {
+    "name": "MapFitterLifecycle.ExactProductSequence",
+    "disposition": "pre-existing explicitly disabled external-replay case; not counted as passed"
+  },
+  "scientific_behavioral": {
+    "science": "Grant’s zero-offset and a2000-offset SCIENCE runs published the three expected maps after M5. All five feedback applications completed in each run.",
+    "offset_check": {
+      "array": "a2000",
+      "applied_az_el_arcsec": [
+        -7.553953860203746,
+        0.6317076515932535
+      ],
+      "measured_east_north_arcsec": [
+        0.5890218353468414,
+        0.9005697035177228
+      ],
+      "interpretation": "Applying the negative POINT displacement moved the SCIENCE source west and north as predicted. The remaining northeast displacement agrees to 0.048 arcsec with the mean difference between the telescope boresights used by the two projection paths before gridding."
+    },
+    "point_reference": "ec3a447c1666fddb6be5c5823cee1b438f9c57c7",
+    "point_comparison": "14 of 14 checks passed. The M0–M5 and published map planes, feedback planes, detector decisions, final fits and pointing-table scientific values matched."
+  },
+  "architecture_ownership": "Accepted within the observed shared RTC/CAL/health and map lifecycle. One CAL preparation and frozen in-memory health are reused through M5. Parallel budgets and ordinary-mode diagnostic export policy are preserved.",
+  "repository_evidence": "Independent exact-source and read-only result reviews passed with recorded limits. The isolated tested worktree, the original failed admission and its records, and the 4.3.0 environment are retained.",
+  "timing_observation": "POINT pipeline wall time was 65.40 s versus 52.15 s in the archived reference. Most of the excess elapsed between detector-drop publication and health-request creation. The cause and repeatability are open.",
+  "remaining_scope": [
+    "Independent absolute sky astrometry and separate axis-sign tests",
+    "Flux calibration, amplitude and broad/extended-source recovery",
+    "Feedback convergence",
+    "Multiple observations, coaddition, long timestreams, square-degree fields, Unity performance and production qualification"
+  ],
+  "external_evidence": [
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-science-single-20261106/admission-repair/CANDIDATE.json",
+      "sha256": "c3338942ecefe662bb4e6c50e3a4aa4824ebedcb84189919a23e1f6015fd4984"
+    },
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-science-single-20261106/admission-repair/FINAL_REVIEW.json",
+      "sha256": "3a80190716e0f730c0c9dec3c339ac61cfb4393f52b32402a0407422cd6158e0"
+    },
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-science-single-20261106/admission-repair/SOFTWARE_ASSESSMENT.json",
+      "sha256": "86c5db4b06cb4b0bc6b32095ca2617749965107ab0202be55a4480959ebe80f2"
+    },
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-science-single-20261106/admission-repair/owner-run-20261106T181220.549633Z/COMMANDS_COMPLETED.json",
+      "sha256": "26d1faa2cf06f23d3fef8fa90e08872db6e9bb7e03dafa0bce11b092575b09e9"
+    },
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-science-single-20261106/admission-repair/reduction-152389/RUN_ASSESSMENT.json",
+      "sha256": "bb909f7aad1e56266cca1e3f22cbb75b8732f57d27dc4b55696b1f3e8fe08cd1"
+    },
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-science-single-20261106/admission-repair/reduction-152389/RESULT_REVIEW.json",
+      "sha256": "6576f5c9063e434fe833b36312b596d6c1902beb8a4fc2fe048aabbe139fd800"
+    },
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-science-single-20261106/admission-repair/reduction-152389/attempt-01/COMPLETED.json",
+      "sha256": "3a1b60b7e9caadfe41a8e460c0505b49eb82641fa0587d2dbe0a372d3346a555"
+    },
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-science-single-20261106/admission-repair/offset-a2000-152389/RUN_ASSESSMENT.json",
+      "sha256": "1434b51665a968797a9c73c1204292b1ad167c599506bccc0cb4beb4183d3702"
+    },
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-science-single-20261106/admission-repair/offset-a2000-152389/RESULT_REVIEW.json",
+      "sha256": "f6e6bb2e8553e88adae02a6fee6e135459ed7f5ca795f9c5d41d327ac368473d"
+    },
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-science-single-20261106/admission-repair/offset-a2000-152389/attempt-01/COMPLETED.json",
+      "sha256": "27573b5ce05d52cb4a3bdfcebb6f232c1428441473fd530aa367f1859711444f"
+    },
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-science-single-20261106/admission-repair/residual-trace-152389/OFFSET_CHECK_CLOSURE.json",
+      "sha256": "b3cd7e4e0e8bf9c8c4c69ae9eb8bfce0acbcbef5d9a8aa999d80e2ce211eaf2d"
+    },
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-science-single-20261106/admission-repair/residual-trace-152389/trace-20261109T141459.550103Z.json",
+      "sha256": "c893a6c1c9cef44ba6582b21caf899c7b2d5296b7276de9e13c43dc95d3779b0"
+    },
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-science-single-20261106/admission-repair/point-regression-152389/PACKET_REVIEW.json",
+      "sha256": "babd5c181b19d7e4ca254be44da57362b13621d2a115a1e00f0960f1a2ba0ce0"
+    },
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-science-single-20261106/admission-repair/point-regression-152389/RUN_ASSESSMENT.json",
+      "sha256": "c00cbc49bb2554f2a7139097a5252f18869f44975560bd9144d509febc5a1031"
+    },
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-science-single-20261106/admission-repair/point-regression-152389/attempt-01/COMPARISON.json",
+      "sha256": "3500943c638a0fc222bd48b0d01917b9d53e24480fd11b04854945e6ee34172a"
+    },
+    {
+      "path": "/Users/gwilson/.codex/visualizations/2026/11/03/01a19edc-cf82-74b0-a34b-01547e7314a9/citlali-science-single-20261106/admission-repair/point-regression-152389/attempt-01/COMPLETED.json",
+      "sha256": "228e2a49193a9775751bf4eb755132a084f91a491779125ea6eba9f90da38f78"
+    }
+  ]
+}

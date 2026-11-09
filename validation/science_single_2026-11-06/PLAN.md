@@ -1,10 +1,9 @@
 # Single-observation SCIENCE with iterative feedback
 
-Owner: Grant Wilson. Execution owner: Grant for every build, test, probe,
-benchmark, reduction and validation runner. Codex prepares and statically reviews
-the candidate and owner commands. Current gate status is recorded below; earlier
-preparation statements are historical. No push, Unity
-access, canonical integration, runtime replacement or cleanup is authorized.
+On 2026-11-09 Grant [accepted the tested increment](OWNER_ACCEPTANCE.json) at
+`3b816fbee2a13053e072afac4b4ede50ce6a7423` and authorized local mainline integration.
+Grant executed the Mac software and observational gates. The preparation,
+failed admission and repair records below preserve the sequence of that work.
 
 Base: `8738316bb6091706849f493b46d1f657b03f79cf`, clean local mainline.
 One spine increment: `codex/science-single-20261106`, isolated checkout under

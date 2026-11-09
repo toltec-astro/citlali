@@ -1,16 +1,12 @@
-## SCIENCE single-observation candidate — 2026-11-06
+## Single-observation SCIENCE accepted locally — 2026-11-09
 
-2026-11-06 the isolated [single-observation SCIENCE candidate](../validation/science_single_2026-11-06/PLAN.md)
-connects 152389 to FK5/J2000 TAN maps and iterative compact-source feedback.
-The explicit `citlali-science-compact-v1` profile reuses accepted CAL/health
-memory handoffs, deterministic workers and ordinary-mode diagnostic I/O policy.
-It emits no POINT consumer products and admits no coadds or extended fields.
-Grant’s Mac Spack software gates passed for `3a3cd6d7e`, but the first native
-152389 reduction stopped before health/M0: the shared saved-MAP acquisition
-guard still rejected SCIENCE as non-POINT. The [failure reassessment and repair](../validation/science_single_2026-11-06/PLAN.md#native-admission-failure-and-bounded-repair)
-keep the explicit compact SCIENCE scope and preserve POINT/OOF behavior. The
-corrected candidate requires new owner-run software gates and a freshly bound
-reduction; it is not accepted or integrated. No push or Unity access is authorized.
+Grant accepted compact-source SCIENCE application `3b816fbee` on 2026-11-09.
+Local mainline now includes the single-observation RA/Dec route for 152389
+through M5. Grant ran the Mac Spack software gates, both SCIENCE reductions
+and the matched POINT regression. All 14 POINT comparisons passed. The
+[owner acceptance](../validation/science_single_2026-11-06/OWNER_ACCEPTANCE.json)
+binds the exact executable, the a2000 offset check and the independent reviews.
+Coaddition, source recovery, absolute astrometry and Unity scaling remain open.
 
 ## SCIENCE single-node planning scope — 2026-11-06
 

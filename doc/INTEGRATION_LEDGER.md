@@ -1,3 +1,12 @@
+## Single-observation SCIENCE acceptance — 2026-11-09
+
+Local mainline fast-forwarded from `8738316bb6091706849f493b46d1f657b03f79cf`
+to tested application `3b816fbee2a13053e072afac4b4ede50ce6a7423`, tree
+`ec19702be4604f42637d86092925622fa4f45499`. The [acceptance record](../validation/science_single_2026-11-06/OWNER_ACCEPTANCE.json)
+binds Grant’s decision, the corrected CAL-to-health admission check, the Mac
+Spack evidence on CFITSIO 4.3.0 and the matched 152389 POINT regression.
+The following documentation commit records the bounded software acceptance.
+
 ## POINT assessment foundation acceptance — 2026-11-06
 
 Grant accepted application `ec3a447c1666fddb6be5c5823cee1b438f9c57c7`, tree
